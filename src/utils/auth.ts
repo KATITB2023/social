@@ -14,7 +14,7 @@ export const compareHash = async (
   return await compare(plain, hashed);
 };
 
-export const generateResetToken = async (userId: number) => {
+export const generateResetToken = async () => {
   const resetToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = await generateHash(resetToken);
 
