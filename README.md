@@ -1,28 +1,44 @@
-# Create T3 App
+# Social Site
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Sosyel
 
-## What's next? How do I make an app with this?
+## Local Development Setup
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### Sistem Operasi
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+![Alt text](readme/no-windows.png)
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Bila anda penggguna Windows, gunakan Ubuntu atau distro lain dengan WSL2. Selain itu, anda bisa menggunakan Linux distribusi apa pun atau Mac OS. Referensi instalasi WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 
-## Learn More
+### Git
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Authorize ke github menggunakan SSH/ HTTPs. Referensi untuk SSH:
+https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Requirements
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+1. Node versi 18
+2. Yarn
+3. Redis
+4. Postgres
 
-## How do I deploy this?
+### Instalasi Requirements
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. Install node 18 melalui node version manager. Referensi: https://github.com/nvm-sh/nvm#installing-and-updating
+
+`nvm install 18 --lts`
+
+2. Install postgres, buat database baru (nama bebas). Referensi: https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-database#install-postgresql
+3. Install Redis. Referensi: https://redis.io/docs/getting-started/installation/install-redis-on-windows/
+
+### Langkah-Langkah
+
+1. Clone repo `git clone git@github.com:KATITB2023/social.git` atau `git clone https://github.com/KATITB2023/social.git`
+2. Install Yarn `npm install --global yarn`
+3. Jalankan `yarn install`
+4. Copy file `.env.example` menjadi `.env`
+5. Ubah nilai dari `DATABASE_URL` menjadi alamat database kalian
+6. Hapus baris `NEXT_PUBLIC_WS_URL="ws://localhost:3000"`
+7. Jalankan database migration. `yarn migrate-dev`
+8. Jalankan local dev server. `yarn dev`
