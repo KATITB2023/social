@@ -1,16 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { env } from "~/env.cjs";
-import { otelSetup } from "~/server/db/setup";
+// import { otelSetup } from "~/server/db/setup";
 
 // This is a helper function that instantiates Prisma
 const instantiatePrisma = () => {
   const prisma = new PrismaClient({
-    log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    // log:
+    //   env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 
   // Register OpenTelemetry
-  otelSetup();
+  // otelSetup();
 
   // Add middleware to handle soft deletes
   // Comment this out to disable soft deletes
