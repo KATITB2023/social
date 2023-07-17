@@ -1,5 +1,5 @@
 import { type Profile } from "@prisma/client";
-import { createTRPCRouter } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 /* Status pertemanan
  * REQUESTING_FRIENDSHIP: ketika user A (yang login saat ini) mengirim permintaan pertemanan kepada B, tetapi belum diterima
@@ -20,4 +20,8 @@ export type UserProfile = SelfProfile & {
   status: FRIENDSHIP_STATUS;
 };
 
-export const profileRouter = createTRPCRouter({});
+export const profileRouter = createTRPCRouter({
+  hello: publicProcedure.query(() => {
+    return "hello world";
+  }),
+});
