@@ -3,6 +3,38 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 export const friendRouter = createTRPCRouter({
+  searchUsers: protectedProcedure
+    .input(
+      z.object({
+        q: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const users = await ctx.prisma.user.findMany({
+        where: {
+          OR: [
+            {
+              profile: {
+                name: {
+                  contains: input.q || "",
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              nim: {
+                startsWith: input.q || "",
+              },
+            },
+          ],
+        },
+        select: {
+          profile: true,
+        },
+      });
+      const profiles = users.map((user) => user.profile);
+      return profiles;
+    }),
   removeFriend: protectedProcedure
     .input(
       z.object({
