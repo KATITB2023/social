@@ -193,9 +193,8 @@ export const friendRouter = createTRPCRouter({
       const friendIds = friendships.map((friendship) => {
         if (friendship.userInitiatorId === userId) {
           return friendship.userReceiverId;
-        } else {
-          return friendship.userInitiatorId;
         }
+        return friendship.userInitiatorId;
       });
 
       const friendProfiles = await ctx.prisma.user.findMany({
@@ -207,6 +206,16 @@ export const friendRouter = createTRPCRouter({
         },
       });
 
-      return friendProfiles.map((user) => user.profile);
+      return friendProfiles.map((user) => {
+        if (user.profile) {
+          const { updatedAt, userId, ...rest } = user.profile;
+          return {
+            ...rest,
+            id: user.id,
+            nim: user.nim,
+            status: input.status,
+          };
+        }
+      });
     }),
 });
