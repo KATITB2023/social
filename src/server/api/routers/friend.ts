@@ -77,7 +77,7 @@ export const friendRouter = createTRPCRouter({
       if (!userExists) {
         throw new TRPCError({
           message: "User not found",
-          code: "NOT_FOUND",
+          code: "BAD_REQUEST",
         });
       }
 
@@ -116,11 +116,9 @@ export const friendRouter = createTRPCRouter({
             });
 
             // update friendship status
-            await ctx.prisma.friendship.updateMany({
+            await ctx.prisma.friendship.update({
               where: {
-                userInitiatorId: {
-                  in: [input.userId],
-                },
+                userInitiatorId: input.userId,
               },
               data: {
                 accepted: true,
