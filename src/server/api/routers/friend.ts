@@ -2,7 +2,10 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { getFriendStatus } from "~/utils/friend";
-import { type SelfProfile } from "~/server/types/user-profile";
+import {
+  type SelfProfile,
+  type UserProfile,
+} from "~/server/types/user-profile";
 import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
 
 const ACCEPTED_FRIENDSHIP_STATUS = [
@@ -262,7 +265,7 @@ export const friendRouter = createTRPCRouter({
           message: "Status must be one of the accepted friendship statuses",
         })
     )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }): Promise<UserProfile[]> => {
       const currUser = ctx.session.user;
       const userId = currUser.id;
 
@@ -291,25 +294,23 @@ export const friendRouter = createTRPCRouter({
         return friendship.userInitiatorId;
       });
 
-      const friendProfiles = await ctx.prisma.user.findMany({
+      const friendProfiles = await ctx.prisma.profile.findMany({
         where: {
-          id: { in: friendIds },
+          userId: { in: friendIds },
         },
         include: {
-          profile: true,
+          user: true,
         },
       });
 
-      return friendProfiles.map((user) => {
-        if (user.profile) {
-          const { updatedAt, userId, ...rest } = user.profile;
-          return {
-            ...rest,
-            id: user.id,
-            nim: user.nim,
-            status: input.status,
-          };
-        }
+      return friendProfiles.map((profile) => {
+        const { updatedAt, userId, ...rest } = profile;
+        return {
+          ...rest,
+          id: profile.user.id,
+          nim: profile.user.nim,
+          status: input.status,
+        };
       });
     }),
 });
