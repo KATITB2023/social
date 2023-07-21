@@ -1,9 +1,52 @@
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { date, z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { compareHash, generateHash, generateResetToken } from "~/utils/auth";
+import { generateResetToken } from "~/utils/auth";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = createTRPCRouter({
+  requestResetPassword: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const profile = await ctx.prisma.profile.findUnique({
+        where: {
+          email: input.email,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!profile) {
+        throw new TRPCError({
+          message: "User not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.resetToken.deleteMany({
+        where: {
+          userId: profile.userId,
+        },
+      });
+
+      const { resetToken, hashedToken } = await generateResetToken();
+
+      await ctx.prisma.resetToken.create({
+        data: {
+          token: hashedToken,
+          userId: profile.userId,
+        },
+      });
+
+      return `https://BASE_URL/reset-password/${profile.userId}/${resetToken}`;
+    }),
   hello: publicProcedure.query(() => {
     return "hello world";
   }),
@@ -35,8 +78,8 @@ export const authRouter = createTRPCRouter({
         })
 
       } else { // User ditemukan
-      
-        const createdAt = getToken.createdAt 
+
+        const createdAt = getToken.createdAt
         const expiredTime = (createdAt.getTime() / 1000) + getToken.expireTime
         const currentTime = new Date().getTime() / 1000
 
@@ -74,11 +117,10 @@ export const authRouter = createTRPCRouter({
               userId: input.userId
             }
           })
-          
+
           // Message Berhasil Ubah Password
           return "Password telah diubah!"
         }
       }
     }),
 });
-
