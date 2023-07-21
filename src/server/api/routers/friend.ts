@@ -212,7 +212,10 @@ export const friendRouter = createTRPCRouter({
             // update friendship status
             await ctx.prisma.friendship.update({
               where: {
-                userInitiatorId: input.userId,
+                userInitiatorId_userReceiverId: {
+                  userReceiverId: friendship.userReceiverId,
+                  userInitiatorId: friendship.userInitiatorId,
+                },
               },
               data: {
                 accepted: true,
