@@ -1,12 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { generateResetToken } from "~/utils/auth";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return "hello world";
-  }),
-
   requestResetPassword: publicProcedure
     .input(
       z.object({
@@ -24,34 +21,27 @@ export const authRouter = createTRPCRouter({
       });
 
       if (!profile) {
-        throw new Error("User not found");
+        throw new TRPCError({
+          message: "User not found",
+          code: "BAD_REQUEST",
+        });
       }
 
-      const user = await ctx.prisma.user.findUnique({
+      await ctx.prisma.resetToken.deleteMany({
         where: {
-          id: profile.userId,
-        },
-      });
-
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      const deleteToken = await ctx.prisma.resetToken.deleteMany({
-        where: {
-          userId: user.id,
+          userId: profile.userId,
         },
       });
 
       const { resetToken, hashedToken } = await generateResetToken();
 
-      const newResetToken = await ctx.prisma.resetToken.create({
+      await ctx.prisma.resetToken.create({
         data: {
           token: hashedToken,
-          userId: user.id,
+          userId: profile.userId,
         },
       });
 
-      return `https://BASE_URL/reset-password/${user.id}/${resetToken}`;
+      return `https://BASE_URL/reset-password/${profile.userId}/${resetToken}`;
     }),
 });
