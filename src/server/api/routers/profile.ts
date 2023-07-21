@@ -33,7 +33,6 @@ export const profileRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().uuid(),
-        name: z.string().optional(),
         email: z.string().optional(),
         image: z.string().optional(),
         bio: z.string().optional(),
@@ -46,7 +45,6 @@ export const profileRouter = createTRPCRouter({
           userId: input.userId,
         },
         data: {
-          name: input.name,
           email: input.email,
           image: input.image,
           bio: input.bio,
