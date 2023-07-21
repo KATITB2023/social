@@ -2,8 +2,17 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { getFriendStatus } from "~/utils/friend";
-import { type SelfProfile } from "~/server/types/user-profile";
+import {
+  type SelfProfile,
+  type UserProfile,
+} from "~/server/types/user-profile";
 import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
+
+const ACCEPTED_FRIENDSHIP_STATUS = [
+  "FRIEND",
+  "REQUESTING_FRIENDSHIP",
+  "WAITING_FOR_ACCEPTANCE",
+] as const;
 
 export const friendRouter = createTRPCRouter({
   searchUsers: protectedProcedure
@@ -152,7 +161,6 @@ export const friendRouter = createTRPCRouter({
         code: "BAD_REQUEST",
       });
     }),
-
   addFriend: protectedProcedure
     .input(
       z.object({
@@ -246,5 +254,63 @@ export const friendRouter = createTRPCRouter({
           },
         });
       }
+    }),
+  friendList: protectedProcedure
+    .input(
+      z
+        .object({
+          status: z.enum(ACCEPTED_FRIENDSHIP_STATUS),
+        })
+        .refine((data) => ACCEPTED_FRIENDSHIP_STATUS.includes(data.status), {
+          message: "Status must be one of the accepted friendship statuses",
+        })
+    )
+    .query(async ({ ctx, input }): Promise<UserProfile[]> => {
+      const currUser = ctx.session.user;
+      const userId = currUser.id;
+
+      let whereCondition;
+      if (input.status === "FRIEND") {
+        whereCondition = { accepted: true };
+      } else if (input.status === "REQUESTING_FRIENDSHIP") {
+        whereCondition = { accepted: false, userInitiatorId: userId };
+      } else if (input.status === "WAITING_FOR_ACCEPTANCE") {
+        whereCondition = { accepted: false, userReceiverId: userId };
+      } else {
+        whereCondition = {};
+      }
+
+      const friendships = await ctx.prisma.friendship.findMany({
+        where: {
+          ...whereCondition,
+          OR: [{ userInitiatorId: userId }, { userReceiverId: userId }],
+        },
+      });
+
+      const friendIds = friendships.map((friendship) => {
+        if (friendship.userInitiatorId === userId) {
+          return friendship.userReceiverId;
+        }
+        return friendship.userInitiatorId;
+      });
+
+      const friendProfiles = await ctx.prisma.profile.findMany({
+        where: {
+          userId: { in: friendIds },
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return friendProfiles.map((profile) => {
+        const { updatedAt, userId, ...rest } = profile;
+        return {
+          ...rest,
+          id: profile.user.id,
+          nim: profile.user.nim,
+          status: input.status,
+        };
+      });
     }),
 });
