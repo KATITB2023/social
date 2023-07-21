@@ -15,18 +15,9 @@ export const authRouter = createTRPCRouter({
     .query(async ({ctx, input}) => {
 
       // Ambil token dari userId
-      const getToken = await ctx.prisma.resetToken.findMany({
+      const getToken = await ctx.prisma.resetToken.findFirst({
         select:{
-          token: true
-        },
-        where:{
-          userId: input.userId
-        },
-      })
-
-      // Ambil data expire (createdAt & expireTime)
-      const expire = await ctx.prisma.resetToken.findMany({
-        select:{
+          token: true,
           createdAt: true,
           expireTime: true
         },
@@ -34,19 +25,19 @@ export const authRouter = createTRPCRouter({
           userId: input.userId
         }
       })
-      
+
       // Error Message (User tidak ada di table "Reset Token")
-      if (getToken[0] && !getToken[0].token || !getToken[0]){
+      if (!getToken){
+
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "User Tidak Ditemukan!"
         })
-      }
+
+      } else { // User ditemukan
       
-      // Cek Expire
-      if (expire[0]){
-        const createdAt = expire[0].createdAt 
-        const expiredTime = (createdAt.getTime() / 1000) + expire[0].expireTime
+        const createdAt = getToken.createdAt 
+        const expiredTime = (createdAt.getTime() / 1000) + getToken.expireTime
         const currentTime = new Date().getTime() / 1000
 
         // Error Message (Token Expired)
@@ -56,19 +47,16 @@ export const authRouter = createTRPCRouter({
             message: "Token Expired!"
           })
         }
-      }
 
-      // Cek Token Valid
-      if (getToken[0]){
+        // Cek Token Valid atau Tidak Valid
+        if (!await compareHash(input.token, getToken.token)){
+          // Error Message (Token Tidak Valid)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Token Tidak Valid!"
+          })
 
-        // Error Message (Token Tidak Valid)
-        if (!await compareHash(input.token, getToken[0].token)){
-            throw new TRPCError({
-              code: "BAD_REQUEST",
-              message: "Token Tidak Valid!"
-            })
-
-        } else {
+        } else { // Token Valid
 
           // Change Password
           await ctx.prisma.user.update({
