@@ -1,4 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { getFriendStatus } from "~/utils/friend";
@@ -151,5 +155,33 @@ export const friendRouter = createTRPCRouter({
         message: "User is not a friend or in request for friendship",
         code: "BAD_REQUEST",
       });
+    }),
+
+  incrementVisitCounter: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.profile.update({
+          where: {
+            userId: input.userId,
+          },
+          data: {
+            visitedCount: {
+              increment: 1,
+            },
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          message: "Target Profile not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return true;
     }),
 });
