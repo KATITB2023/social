@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import type { ServerToClientEvents } from "~/server/socket/setup";
 import { socket } from "~/utils/socket";
 
@@ -20,17 +20,17 @@ function useSubscription<T extends keyof ServerToClientEvents>(
   callback: ServerToClientEvents[T],
   dependencies: React.DependencyList = []
 ) {
-  const memoizedCallback = useCallback(callback, [callback, ...dependencies]);
-
   useEffect(() => {
     // @ts-expect-error typing is safe by the interface
-    socket.on(event, memoizedCallback);
+    socket.on(event, callback);
 
     return () => {
       // @ts-expect-error typing is safe by the interface
-      socket.off(event, memoizedCallback);
+      socket.off(event, callback);
     };
-  }, [event, memoizedCallback]);
+    // make so that callback depends on the dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event, ...dependencies]);
 }
 
 export default useSubscription;
