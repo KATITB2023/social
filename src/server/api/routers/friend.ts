@@ -320,18 +320,40 @@ export const friendRouter = createTRPCRouter({
 
   getOtherUserProfile: protectedProcedure
     .input(
-      z.object({
-        pin: z.string().optional(),
-        nim: z.string().optional(),
-        userId: z.string().optional(),
-      })
-        .and(z.union([
-          z.object({ pin: z.string(), nim: z.undefined(), userId: z.undefined() }),
-          z.object({ pin: z.undefined(), nim: z.string(), userId: z.undefined() }),
-          z.object({ pin: z.undefined(), nim: z.undefined(), userId: z.string() }),
-        ], {}))
-    ).query(async ({ ctx, input }) => {
-      if ((input.userId && ctx.session.user.id === input.userId) || (input.nim && ctx.session.user.nim === input.nim)) {
+      z
+        .object({
+          pin: z.string().optional(),
+          nim: z.string().optional(),
+          userId: z.string().optional(),
+        })
+        .and(
+          z.union(
+            [
+              z.object({
+                pin: z.string(),
+                nim: z.undefined(),
+                userId: z.undefined(),
+              }),
+              z.object({
+                pin: z.undefined(),
+                nim: z.string(),
+                userId: z.undefined(),
+              }),
+              z.object({
+                pin: z.undefined(),
+                nim: z.undefined(),
+                userId: z.string(),
+              }),
+            ],
+            {}
+          )
+        )
+    )
+    .query(async ({ ctx, input }) => {
+      if (
+        (input.userId && ctx.session.user.id === input.userId) ||
+        (input.nim && ctx.session.user.nim === input.nim)
+      ) {
         // request user's own profile
         throw new TRPCError({
           message: "Cannot request user's own profile",
@@ -353,7 +375,7 @@ export const friendRouter = createTRPCRouter({
                 user: {
                   nim: input.nim,
                 },
-              }
+              },
             ],
           },
           include: {
@@ -362,7 +384,12 @@ export const friendRouter = createTRPCRouter({
         });
 
         // user is not found
-        if (!profile) return null;
+        if (!profile) {
+          throw new TRPCError({
+            message: "Profile not found",
+            code: "BAD_REQUEST",
+          });
+        }
 
         // user is found
         const friendship = await ctx.prisma.friendship.findFirst({
@@ -384,9 +411,13 @@ export const friendRouter = createTRPCRouter({
           ...profile,
           id: profile.userId,
           nim: profile.user.nim,
-          status: friendship ? (
-            friendship.accepted ? "FRIEND" :
-              friendship.userInitiatorId === ctx.session.user.id ? "REQUESTING_FRIENDSHIP" : "WAITING_FOR_ACCEPTANCE") : "NOT_FRIEND",
+          status: friendship
+            ? friendship.accepted
+              ? "FRIEND"
+              : friendship.userInitiatorId === ctx.session.user.id
+              ? "REQUESTING_FRIENDSHIP"
+              : "WAITING_FOR_ACCEPTANCE"
+            : "NOT_FRIEND",
         };
       }
     }),
