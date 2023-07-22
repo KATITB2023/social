@@ -421,4 +421,32 @@ export const friendRouter = createTRPCRouter({
         };
       }
     }),
+
+  incrementVisitCounter: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.profile.update({
+          where: {
+            userId: input.userId,
+          },
+          data: {
+            visitedCount: {
+              increment: 1,
+            },
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          message: "Target Profile not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return true;
+    }),
 });
