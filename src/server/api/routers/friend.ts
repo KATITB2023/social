@@ -260,6 +260,8 @@ export const friendRouter = createTRPCRouter({
       z
         .object({
           status: z.enum(ACCEPTED_FRIENDSHIP_STATUS),
+          limit: z.number().min(5).max(40).default(20),
+          page: z.number().min(1).default(1),
         })
         .refine((data) => ACCEPTED_FRIENDSHIP_STATUS.includes(data.status), {
           message: "Status must be one of the accepted friendship statuses",
@@ -285,6 +287,8 @@ export const friendRouter = createTRPCRouter({
           ...whereCondition,
           OR: [{ userInitiatorId: userId }, { userReceiverId: userId }],
         },
+        skip: input.limit * (input.page - 1),
+        take: input.limit,
       });
 
       const friendIds = friendships.map((friendship) => {
