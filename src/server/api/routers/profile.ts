@@ -1,4 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type SelfProfile } from "~/server/types/user-profile";
 import { z } from "zod";
 
 export const profileRouter = createTRPCRouter({
@@ -27,4 +28,25 @@ export const profileRouter = createTRPCRouter({
         message: "Edit succesful",
       };
     }),
+  getUserProfile: protectedProcedure.query(
+    async ({ ctx }): Promise<SelfProfile> => {
+      const sessionUser = ctx.session.user;
+
+      const currProfile = await ctx.prisma.profile.findUniqueOrThrow({
+        include: {
+          user: true,
+        },
+        where: {
+          userId: sessionUser.id,
+        },
+      });
+
+      const { userId, updatedAt, ...profileDetails } = currProfile;
+      return {
+        id: currProfile.user.id,
+        nim: currProfile.user.nim,
+        ...profileDetails,
+      };
+    }
+  ),
 });
