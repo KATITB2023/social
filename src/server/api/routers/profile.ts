@@ -1,10 +1,5 @@
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
-import { SelfProfile } from "~/server/types/user-profile";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type SelfProfile } from "~/server/types/user-profile";
 import { z } from "zod";
 
 export const profileRouter = createTRPCRouter({
@@ -33,31 +28,25 @@ export const profileRouter = createTRPCRouter({
         message: "Edit succesful",
       };
     }),
-  hello: publicProcedure.query(() => {
-    return "hello world";
-  }),
+  getUserProfile: protectedProcedure.query(
+    async ({ ctx }): Promise<SelfProfile> => {
+      const sessionUser = ctx.session.user;
 
-  getUserProfile: protectedProcedure.query(async ({ ctx }) => {
-    const sessionUser = ctx.session.user;
+      const currProfile = await ctx.prisma.profile.findUniqueOrThrow({
+        include: {
+          user: true,
+        },
+        where: {
+          userId: sessionUser.id,
+        },
+      });
 
-    const currUser = await ctx.prisma.user.findUnique({
-      select: {
-        profile: true,
-        nim: true,
-        id: true,
-      },
-      where: {
-        nim: sessionUser.nim,
-      },
-    });
-
-    if (currUser?.profile) {
-      const { userId, updatedAt, ...profileDetails } = currUser.profile;
+      const { userId, updatedAt, ...profileDetails } = currProfile;
       return {
-        id: currUser.id,
-        nim: currUser.nim,
+        id: currProfile.user.id,
+        nim: currProfile.user.nim,
         ...profileDetails,
-      } as SelfProfile;
+      };
     }
-  }),
+  ),
 });
