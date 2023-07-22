@@ -1,13 +1,10 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { z } from "zod";
 
 export const profileRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return "hello world";
-  }),
   editProfile: protectedProcedure
     .input(
       z.object({
-        userId: z.string().uuid(),
         email: z.string().optional(),
         image: z.string().optional(),
         bio: z.string().optional(),
@@ -17,7 +14,7 @@ export const profileRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.profile.update({
         where: {
-          userId: input.userId,
+          userId: ctx.session.user.id,
         },
         data: {
           email: input.email,
