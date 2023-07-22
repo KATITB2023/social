@@ -1,8 +1,4 @@
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { getFriendStatus } from "~/utils/friend";
@@ -429,7 +425,7 @@ export const friendRouter = createTRPCRouter({
   incrementVisitCounter: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
+        userId: z.string().uuid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
