@@ -1214,9 +1214,9 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@katitb2023/database@ssh://git@github.com:KATITB2023/database.git#f2ffebc17244304e26005a7dee6dffebb7603a25":
+"@katitb2023/database@ssh://git@github.com:KATITB2023/database.git#1145e0ec4f5f0dace38e04685ce889b3cae030df":
   version "1.0.0"
-  resolved "ssh://git@github.com:KATITB2023/database.git#f2ffebc17244304e26005a7dee6dffebb7603a25"
+  resolved "ssh://git@github.com:KATITB2023/database.git#1145e0ec4f5f0dace38e04685ce889b3cae030df"
   dependencies:
     "@prisma/client" "4.15.0"
     dotenv-cli "^7.2.1"
