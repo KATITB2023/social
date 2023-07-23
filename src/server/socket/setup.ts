@@ -2,12 +2,16 @@ import { createAdapter } from "@socket.io/redis-streams-adapter";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Server, Socket } from "socket.io";
-import { type Message } from "@prisma/client";
+import { type Message, type UserMatch } from "@prisma/client";
 import type { ServerEventsResolver } from "~/server/socket/helper";
 import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
 import { isTypingEvent, messageEvent } from "~/server/socket/events/message";
-import { addUserSockets, removeUserSockets } from "~/server/socket/room";
+import {
+  addUserSockets,
+  removeUserSockets,
+} from "~/server/socket/messaging/room";
+import { endMatchEvent, findMatchEvent } from "~/server/socket/events/queue";
 
 /**
  * @description server events are events that are emmited from the client to the server.
@@ -17,7 +21,12 @@ import { addUserSockets, removeUserSockets } from "~/server/socket/room";
  * @summary
  * DONT FORGET TO ADD THE EVENT TO THIS ARRAY
  */
-const serverEvents = [messageEvent, isTypingEvent] as const;
+const serverEvents = [
+  messageEvent,
+  isTypingEvent,
+  findMatchEvent,
+  endMatchEvent,
+] as const;
 
 /**
  * @description
@@ -53,6 +62,8 @@ export type ServerToClientEvents = {
   hello: (name: string) => void;
   whoIsTyping: (data: string[]) => void;
   add: (post: Message) => void;
+  match: (match: UserMatch) => void;
+  endMatch: (match: UserMatch) => void;
 };
 
 interface InterServerEvents {
@@ -70,6 +81,7 @@ interface InterServerEvents {
  */
 export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;
+  match: UserMatch | null;
 };
 
 /**
