@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
 import { currentlyTyping } from "../state";
-import { getUserSockets } from "~/server/socket/messaging/room";
 
 export const messageEvent = createEvent(
   {
@@ -20,13 +19,8 @@ export const messageEvent = createEvent(
         message: input.message,
       },
     });
-    ctx.client.emit("add", message);
 
-    const receiverSockets = await getUserSockets(input.receiverId);
-
-    if (receiverSockets.length !== 0) {
-      ctx.io.to(receiverSockets).emit("add", message);
-    }
+    ctx.io.to([message.senderId, message.receiverId]).emit("add", message);
 
     delete currentlyTyping[ctx.client.data.session.user.id];
     ctx.io.emit("whoIsTyping", Object.keys(currentlyTyping));

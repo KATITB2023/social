@@ -8,10 +8,11 @@ import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
 import { isTypingEvent, messageEvent } from "~/server/socket/events/message";
 import {
-  addUserSockets,
-  removeUserSockets,
-} from "~/server/socket/messaging/room";
-import { endMatchEvent, findMatchEvent } from "~/server/socket/events/queue";
+  cancelMatchEvent,
+  endMatchEvent,
+  findMatchEvent,
+} from "~/server/socket/events/queue";
+import { type UserQueue } from "~/server/types/message";
 
 /**
  * @description server events are events that are emmited from the client to the server.
@@ -26,6 +27,7 @@ const serverEvents = [
   isTypingEvent,
   findMatchEvent,
   endMatchEvent,
+  cancelMatchEvent,
 ] as const;
 
 /**
@@ -82,6 +84,7 @@ interface InterServerEvents {
 export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;
   match: UserMatch | null;
+  matchQueue: UserQueue | null;
 };
 
 /**
@@ -145,13 +148,12 @@ export function setupSocket(io: SocketServer) {
   io.on("connection", (socket) => {
     if (socket.data.session) {
       serverEvents.forEach((event) => event(io, socket));
-      const socketId = socket.id;
       const userId = socket.data.session.user.id;
 
-      void addUserSockets(userId, socketId);
+      void socket.join(userId);
 
       socket.on("disconnect", () => {
-        void removeUserSockets(userId, socketId);
+        void socket.leave(userId);
       });
     }
   });

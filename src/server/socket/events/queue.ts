@@ -1,7 +1,6 @@
 import { createEvent } from "~/server/socket/helper";
 import { z } from "zod";
-import { findMatch } from "~/server/socket/messaging/queue";
-import { getUserSockets } from "~/server/socket/messaging/room";
+import { cancelQueue, findMatch } from "~/server/socket/messaging/queue";
 
 export const findMatchEvent = createEvent(
   {
@@ -12,12 +11,24 @@ export const findMatchEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
+    if (ctx.client.data.matchQueue !== null) {
+      // reject since already in queue
+      return;
+    }
+
     const userSession = ctx.client.data.session.user;
-    const matchResult = await findMatch({
+    const userQueue = {
       userId: userSession.id,
-    });
+    };
+
+    const matchResult = await findMatch(userQueue);
 
     if (matchResult === null) {
+      for (const otherSocket of await ctx.io
+        .in(userSession.id)
+        .fetchSockets()) {
+        otherSocket.data.matchQueue = userQueue;
+      }
       return;
     }
 
@@ -28,23 +39,13 @@ export const findMatchEvent = createEvent(
       },
     });
 
-    ctx.client.data.match = match;
-    ctx.client.emit("match", match);
-
-    const receiverSockets = await getUserSockets(
-      match.firstUserId === userSession.id
-        ? match.secondUserId
-        : match.firstUserId
-    );
-
-    if (receiverSockets.length !== 0) {
-      ctx.io.to(receiverSockets).emit("match", match);
-      for (const otherSocket of await ctx.io
-        .in(receiverSockets)
-        .fetchSockets()) {
-        otherSocket.data.match = match;
-      }
+    for (const otherSocket of await ctx.io
+      .in([match.firstUserId, match.secondUserId])
+      .fetchSockets()) {
+      otherSocket.data.match = match;
     }
+
+    ctx.io.to([match.firstUserId, match.secondUserId]).emit("match", match);
   }
 );
 
@@ -58,7 +59,7 @@ export const endMatchEvent = createEvent(
 
     if (currentMatch === null) return;
 
-    const endedMatch = await ctx.prisma.userMatch.update({
+    const match = await ctx.prisma.userMatch.update({
       where: {
         id: currentMatch.id,
       },
@@ -67,22 +68,34 @@ export const endMatchEvent = createEvent(
       },
     });
 
-    ctx.client.emit("endMatch", endedMatch);
-    ctx.client.data.match = null;
+    for (const otherSocket of await ctx.io
+      .in([match.firstUserId, match.secondUserId])
+      .fetchSockets()) {
+      otherSocket.data.match = null;
+    }
 
-    const receiverSockets = await getUserSockets(
-      endedMatch.firstUserId === ctx.client.data.session.user.id
-        ? endedMatch.secondUserId
-        : endedMatch.firstUserId
-    );
+    ctx.io.to([match.firstUserId, match.secondUserId]).emit("endMatch", match);
+  }
+);
 
-    if (receiverSockets.length !== 0) {
-      ctx.io.to(receiverSockets).emit("match", endedMatch);
-      for (const otherSocket of await ctx.io
-        .in(receiverSockets)
-        .fetchSockets()) {
-        otherSocket.data.match = null;
-      }
+export const cancelMatchEvent = createEvent(
+  {
+    name: "cancelMatch",
+    authRequired: true,
+  },
+  async ({ ctx }) => {
+    const queue = ctx.client.data.matchQueue;
+
+    if (queue === null) {
+      // reject since not in queue
+      return;
+    }
+
+    await cancelQueue(queue);
+    for (const otherSocket of await ctx.io
+      .in(ctx.client.data.session.user.id)
+      .fetchSockets()) {
+      otherSocket.data.matchQueue = null;
     }
   }
 );

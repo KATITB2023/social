@@ -11,8 +11,12 @@ const deserializeUserQueue = (raw: string): UserQueue => {
   };
 };
 
+const generateKey = (queue: UserQueue) => {
+  return "QUEUE:";
+};
+
 export const findMatch = async (queue: UserQueue) => {
-  const key = "QUEUE:";
+  const key = generateKey(queue);
   const redis = await Redis.getClient();
   const redlock = await Redis.getRedlock();
 
@@ -46,4 +50,18 @@ export const findMatch = async (queue: UserQueue) => {
   }
 
   return result;
+};
+
+export const cancelQueue = async (queue: UserQueue) => {
+  const key = generateKey(queue);
+  const redis = await Redis.getClient();
+  const redlock = await Redis.getRedlock();
+
+  const lock = await redlock.acquire([key], 5000);
+
+  try {
+    await redis.LREM(key, 0, serializeUserQueue(queue));
+  } finally {
+    await lock.release();
+  }
 };
