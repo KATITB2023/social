@@ -124,6 +124,14 @@ export const theme = extendTheme({
     },
     orange: "#E85535",
   },
+  styles: {
+    global: {
+      body: {
+        bg: "#12122E",
+        color: "white",
+      },
+    },
+  },
 });
 
 // DESIGN SYSTEM TYPOGRAPHY:
@@ -141,8 +149,6 @@ for body and additional, use:
 <Text size = "A"> some additional text <Text>
 <Text>Default for text is -> size = "B4" </Text>
 */
-
-
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
