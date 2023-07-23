@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
 import { currentlyTyping } from "../state";
-import { getUserSockets } from "../room";
+import { getUserSockets } from "~/server/socket/messaging/room";
 
 export const messageEvent = createEvent(
   {
