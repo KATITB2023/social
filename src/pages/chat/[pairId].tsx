@@ -14,7 +14,7 @@ import Footer from "~/components/chat/Footer";
 
 const Chat: NextPage = () => {
   const router = useRouter();
-  const { data: session } = useSession({ required: true });
+  const { data: session, status } = useSession({ required: true });
   const pairId = router.query.pairId as string;
   const userPair = api.message.getUser.useQuery({ pairId }).data;
 
@@ -22,6 +22,7 @@ const Chat: NextPage = () => {
     { pairId },
     {
       getPreviousPageParam: (d) => d.prevCursor,
+      refetchInterval: false,
     }
   );
 
@@ -54,14 +55,18 @@ const Chat: NextPage = () => {
   }, [messageQuery.data?.pages, addMessages]);
 
   // Subscribe to new posts and add
-  useSubscription("add", (post) => {
-    if (
-      post.receiverId === session?.user.id ||
-      post.senderId === session?.user.id
-    ) {
-      addMessages([post]);
-    }
-  });
+  useSubscription(
+    "add",
+    (post) => {
+      if (
+        post.receiverId === session?.user.id ||
+        post.senderId === session?.user.id
+      ) {
+        addMessages([post]);
+      }
+    },
+    [session]
+  );
 
   return (
     <Layout title="Chat">
