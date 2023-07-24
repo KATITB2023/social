@@ -9,6 +9,7 @@ import { Redis } from "~/server/redis";
 import { isTypingEvent, messageEvent } from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
+  checkMatchEvent,
   endMatchEvent,
   findMatchEvent,
 } from "~/server/socket/events/queue";
@@ -28,6 +29,7 @@ const serverEvents = [
   findMatchEvent,
   endMatchEvent,
   cancelMatchEvent,
+  checkMatchEvent,
 ] as const;
 
 /**
