@@ -14,6 +14,69 @@ const colors = {
 };
 
 export const theme = extendTheme({
+  fonts: {
+    heading: "Bodwars",
+    body: "SomarRounded-Regular",
+    subheading: "SomarRounded-Bold",
+  },
+  components: {
+    Heading: {
+      baseStyle: {},
+      sizes: {
+        H1: {
+          fontSize: "64px",
+        },
+        H2: {
+          fontSize: "48px",
+        },
+        H3: {
+          fontSize: "32px",
+        },
+        H4: {
+          fontSize: "24px",
+        },
+        H5: {
+          fontSize: "20px",
+        },
+        H6: {
+          fontSize: "16px",
+        },
+        SH1: {
+          fontSize: "36px",
+          fontFamily: "subheading",
+        },
+        SH2: {
+          fontSize: "32px",
+          fontFamily: "subheading",
+        },
+        SH3: {
+          fontSize: "24px",
+          fontFamily: "subheading",
+        },
+        SH4: {
+          fontSize: "20px",
+          fontFamily: "subheading",
+        },
+        SH5: {
+          fontSize: "16px",
+          fontFamily: "subheading",
+        },
+      },
+      variants: {},
+      defaultProps: { lineHeight: "120%", size: "H4" },
+    },
+    Text: {
+      sizes: {
+        B1: { fontSize: "24px" },
+        B2: { fontSize: "20px" },
+        B3: { fontSize: "16px" },
+        B4: { fontSize: "14px" },
+        B5: { fontSize: "12px" },
+        A: { fontSize: "10px" },
+      },
+      defaultProps: { lineHeight: "120%", size: "B4" },
+    },
+  },
   colors: {
     white: "#FFFFFF",
     black: "#0B0A0A",
@@ -62,6 +125,24 @@ export const theme = extendTheme({
     orange: "#E85535",
   },
 });
+
+// DESIGN SYSTEM TYPOGRAPHY:
+// Now you can use component Heading and Text for designed system typography.
+/* 
+ex: 
+for heading and subheading, use:
+<Heading size="H1"> some heading </Heading>
+<Heading size="SH1"> some subheading </Heading>
+<Heading> some heading <Heading> // default is -> size="H4"
+
+and
+for body and additional, use:
+<Text size= "B1"> Some body text </Text>
+<Text size = "A"> some additional text <Text>
+<Text>Default for text is -> size = "B4" </Text>
+*/
+
+
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
