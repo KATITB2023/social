@@ -17,6 +17,11 @@ import {
   DrawerContent,
   Link,
   Icon,
+  type ResponsiveValue,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import {
@@ -35,12 +40,6 @@ import {
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 
-function toTitleCase(str: string) {
-  return str.replace(/\w\S*/g, function (txt: string) {
-    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
-  });
-}
-
 interface LabelValueType {
   label: string;
   value?: string;
@@ -57,14 +56,18 @@ interface ProfileInfoComponentType {
 }
 
 const defaultUserProfile: { [key: string]: string | undefined } = {
-  nama: "Nyoman Ganadipa Narayana",
-  nim: "19622191",
-  fakultas: "STEI-K",
-  gender: "Laki-laki",
-  kampus: "Ganesha",
-  bio: "Super tampan",
-  email: "gana.dipa05@gmail.com",
-  pin: "13pkI7Fr",
+  Nama: "Nyoman Ganadipa Narayana",
+  NIM: "19622191",
+  Fakultas: "STEI-K",
+  Gender: "Laki-laki",
+  Kampus: "Ganesha",
+  Bio: "Super tampan",
+  Email: "gana.dipa05@gmail.com",
+  PIN: "13pkI7Fr",
+};
+
+type childrenOnlyProps = {
+  children: string | JSX.Element | JSX.Element[];
 };
 
 export default function ProfilePage() {
@@ -86,19 +89,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <Flex
-      width="100%"
-      height="100%"
-      background="url('/images/blur-oskm.jpg')"
-      backgroundSize="cover"
-      backgroundRepeat="no-repeat"
-      backgroundPosition="center"
-      minHeight="100vh"
-      minWidth="100%"
-      flexDirection="column"
-    >
-      <NavigationBarAndMenu />
-
+    <DefaultBackgroundAndNavigationBar>
       <Flex
         flexDirection="column"
         justifyContent="space-between"
@@ -119,11 +110,11 @@ export default function ProfilePage() {
           color="white"
         >
           <MdPersonPin style={{ fontSize: "20px" }} />
-          <Text size="B4"> PIN : {userProfile.pin}</Text>
+          <Text size="B3"> PIN : {userProfile.PIN}</Text>
         </Flex>
         <ProfileInfo info={userProfile} onProfileEdit={handleProfileEdit} />
       </Flex>
-    </Flex>
+    </DefaultBackgroundAndNavigationBar>
   );
 }
 
@@ -236,24 +227,17 @@ function NavigationBarAndMenu() {
 
 function LabelValueContainer({ label, value = "-" }: LabelValueType) {
   return (
-    <Box h="52px" color="white">
+    <Flex color="white" gap="4px" flexDirection="column">
       <Text size="B5">{label}</Text>
       <Text size="B2">{value}</Text>
-    </Box>
+    </Flex>
   );
 }
 
 function UserProfilePicture({ src }: { src?: string }) {
   return (
     <Box position="relative" alignSelf="center">
-      <Image
-        src={src}
-        fallbackSrc="https://via.placeholder.com/150"
-        alt="Ga ke load"
-        borderRadius="full"
-        boxSize="10.25em"
-        alignSelf="center"
-      />
+      <ProfilePicture src={src} />
       <IconButton
         backgroundColor="purple.1"
         aria-label="Call Segun"
@@ -384,17 +368,17 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
         gap="16px"
       >
         {[
-          "nama",
-          "nim",
-          "fakultas",
-          "gender",
-          "kampus",
-          "bio",
-          "instargram",
-          "email",
+          "Nama",
+          "NIM",
+          "Fakultas",
+          "Gender",
+          "Kampus",
+          "Bio",
+          "Instargram",
+          "Email",
         ].map((key) => (
           <LabelValueContainer
-            label={toTitleCase(key)}
+            label={key}
             key={key}
             value={info?.[key] || "-"}
           />
@@ -412,3 +396,60 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
     </>
   );
 }
+
+function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
+  return (
+    <Flex
+      width="100%"
+      height="100%"
+      background="url('/images/blur-oskm.jpg')"
+      backgroundSize="cover"
+      backgroundRepeat="no-repeat"
+      backgroundPosition="center"
+      minHeight="100vh"
+      minWidth="100%"
+      flexDirection="column"
+    >
+      <NavigationBarAndMenu />
+      {children}
+    </Flex>
+  );
+}
+
+function ProfilePicture({
+  src = "/images/oskm-default-profile.png",
+  size = "164px",
+  br = "full",
+}: {
+  src?: string;
+  size?: ResponsiveValue<number | string>;
+  br?: ResponsiveValue<number | string>;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Image
+        src={src}
+        alt="Profile Picture"
+        borderRadius={br}
+        boxSize={size}
+        alignSelf="center"
+        onClick={onOpen}
+      />
+
+      <Modal isOpen={isOpen} onClose={onClose} size="full">
+        <ModalOverlay />
+        <ModalContent backgroundColor="black" justifyContent="space-evenly">
+          <ModalCloseButton size="24px" mx="24px" my="24px" />
+          <ProfilePicture size="100%" br="0" />
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
+export {
+  DefaultBackgroundAndNavigationBar,
+  ProfilePicture,
+  LabelValueContainer,
+};
