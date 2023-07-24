@@ -99,3 +99,30 @@ export const cancelMatchEvent = createEvent(
     }
   }
 );
+
+export const checkMatchEvent = createEvent(
+  {
+    name: "checkMatch",
+    authRequired: true,
+  },
+  async ({ ctx }) => {
+    if (ctx.client.data.match === null) {
+      const userId = ctx.client.data.session.user.id;
+      const userMatch = await ctx.prisma.userMatch.findFirst({
+        where: {
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
+          endedAt: null,
+        },
+      });
+
+      if (userMatch === null) {
+        return null;
+      } else {
+        ctx.client.data.match = userMatch;
+        return userMatch;
+      }
+    }
+
+    return ctx.client.data.match;
+  }
+);
