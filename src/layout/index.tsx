@@ -1,6 +1,9 @@
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useSession } from "next-auth/react";
+import { socket } from "~/utils/socket";
+import { useEffect } from "react";
 
 interface Props {
   title: string;
@@ -8,6 +11,16 @@ interface Props {
 }
 
 export default function Layout({ title, children }: Props) {
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated" && !socket.connected) {
+      socket.connect();
+    } else if (status === "unauthenticated" && socket.connected) {
+      socket.disconnect();
+    }
+  }, [status]);
+
   return (
     <>
       <Head>
