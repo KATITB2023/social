@@ -59,8 +59,8 @@ const Chat: NextPage = () => {
     "add",
     (post) => {
       if (
-        post.receiverId === session?.user.id ||
-        post.senderId === session?.user.id
+        (post.receiverId === session?.user.id && post.senderId === pairId) ||
+        (post.senderId === session?.user.id && post.receiverId === pairId)
       ) {
         addMessages([post]);
       }
@@ -79,7 +79,7 @@ const Chat: NextPage = () => {
           backgroundColor={"gray.50"}
         >
           <Flex w={"100%"} h="90%" flexDir="column">
-            <Header name={userPair ? userPair.nim : ""} />
+            <Header name={userPair ? userPair.nim : ""} isTyping={true} />
             <Divider />
             <Messages messages={messages ?? []} />
             <Divider />
