@@ -11,10 +11,11 @@ import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
+import useEmit from "~/hooks/useEmit";
 
 const Chat: NextPage = () => {
   const router = useRouter();
-  const { data: session, status } = useSession({ required: true });
+  const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
   const userPair = api.message.getUser.useQuery({ pairId }).data;
 
@@ -59,14 +60,17 @@ const Chat: NextPage = () => {
     "add",
     (post) => {
       if (
-        (post.receiverId === session?.user.id && post.senderId === pairId) ||
-        (post.senderId === session?.user.id && post.receiverId === pairId)
+        ((post.receiverId === session?.user.id && post.senderId === pairId) ||
+          (post.senderId === session?.user.id && post.receiverId === pairId)) &&
+        post.userMatchId === null
       ) {
         addMessages([post]);
       }
     },
     [session]
   );
+
+  const messageEmit = useEmit("message");
 
   return (
     <Layout title="Chat">
@@ -83,7 +87,11 @@ const Chat: NextPage = () => {
             <Divider />
             <Messages messages={messages ?? []} />
             <Divider />
-            <Footer />
+            <Footer
+              onSubmit={(text) =>
+                messageEmit.mutate({ message: text, receiverId: pairId })
+              }
+            />
           </Flex>
         </Flex>
       </Container>
