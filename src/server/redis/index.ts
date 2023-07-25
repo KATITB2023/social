@@ -1,18 +1,14 @@
 import { env } from "~/env.cjs";
-import { createClient, type RedisClientType } from "redis";
-import Redlock from "redlock";
-
-export type RedisClient = ReturnType<typeof createClient>;
+import Redlock, { ResourceLockedError } from "redlock";
+import RedisClient from "ioredis";
 
 export class Redis {
   private static client: RedisClient;
   private static redlock: Redlock;
 
-  private static async init() {
+  private static init() {
     if (!Redis.client) {
-      const redis = createClient({ url: env.REDIS_URL });
-      await redis.connect();
-      Redis.client = redis;
+      Redis.client = new RedisClient(env.REDIS_URL);
     }
 
     if (!Redis.redlock) {
@@ -42,18 +38,28 @@ export class Redis {
           automaticExtensionThreshold: 500, // time in ms
         }
       );
+
+      Redis.redlock.on("error", (error) => {
+        // Ignore cases where a resource is explicitly marked as locked on a client.
+        if (error instanceof ResourceLockedError) {
+          return;
+        }
+
+        // Log all other errors.
+        console.error(error);
+      });
     }
   }
 
-  public static async getClient(): Promise<RedisClientType> {
-    if (!Redis.client) await Redis.init();
+  public static getClient(): RedisClient {
+    if (!Redis.client) Redis.init();
 
     // the "correct" typing performance was just terrible
-    return Redis.client as unknown as RedisClientType;
+    return Redis.client;
   }
 
-  public static async getRedlock() {
-    if (!Redis.redlock) await Redis.init();
+  public static getRedlock() {
+    if (!Redis.redlock) Redis.init();
 
     return Redis.redlock;
   }
