@@ -1,4 +1,4 @@
-import { createAdapter } from "@socket.io/redis-streams-adapter";
+import { createAdapter } from "@socket.io/redis-adapter";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Server, Socket } from "socket.io";
@@ -166,7 +166,7 @@ export function setupSocket(io: SocketServer) {
   });
 }
 
-export async function getAdapter() {
-  const redisClient = await Redis.getClient();
-  return createAdapter(redisClient);
+export function getAdapter() {
+  const redisClient = Redis.getClient();
+  return createAdapter(redisClient.duplicate(), redisClient.duplicate());
 }

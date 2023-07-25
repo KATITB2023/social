@@ -17,24 +17,35 @@ const generateKey = (queue: UserQueue) => {
 
 export const findMatch = async (queue: UserQueue) => {
   const key = generateKey(queue);
-  const redis = await Redis.getClient();
-  const redlock = await Redis.getRedlock();
+  const redis = Redis.getClient();
+  const redlock = Redis.getRedlock();
 
-  const lock = await redlock.acquire([key], 5000);
+  const lock = await redlock.acquire([`lock:${key}`], 5000);
+  console.log("lock acquired");
 
   let result;
 
   try {
-    const queueLength = await redis.LLEN(key);
+    const keyType = await redis.type(key);
+
+    if (keyType !== "list" && keyType !== "none") {
+      await redis.del(key);
+    }
+
+    const queueLength = await redis.llen(key);
 
     if (queueLength === 0) {
-      await redis.RPUSH(key, serializeUserQueue(queue));
+      await redis.rpush(key, serializeUserQueue(queue));
       result = null;
     } else {
-      const match = await redis.LPOP(key);
+      const match = await redis.lpop(key);
+      console.log("popping got");
+      console.log(match);
+      console.log("remaining");
+      console.log(await redis.llen(key));
 
-      if (match === null) {
-        await redis.RPUSH(key, serializeUserQueue(queue));
+      if (!match) {
+        await redis.rpush(key, serializeUserQueue(queue));
         result = null;
       } else {
         const matchQueue = deserializeUserQueue(match);
@@ -45,8 +56,13 @@ export const findMatch = async (queue: UserQueue) => {
         };
       }
     }
+  } catch (e) {
+    if (e instanceof Error) {
+      console.log(e.stack);
+    }
   } finally {
     await lock.release();
+    console.log("lock released");
   }
 
   return result;
@@ -54,13 +70,13 @@ export const findMatch = async (queue: UserQueue) => {
 
 export const cancelQueue = async (queue: UserQueue) => {
   const key = generateKey(queue);
-  const redis = await Redis.getClient();
-  const redlock = await Redis.getRedlock();
+  const redis = Redis.getClient();
+  const redlock = Redis.getRedlock();
 
-  const lock = await redlock.acquire([key], 5000);
+  const lock = await redlock.acquire([`lock:${key}`], 5000);
 
   try {
-    await redis.LREM(key, 0, serializeUserQueue(queue));
+    await redis.lrem(key, 0, serializeUserQueue(queue));
   } finally {
     await lock.release();
   }
