@@ -6,7 +6,11 @@ import { type Message, type UserMatch } from "@prisma/client";
 import type { ServerEventsResolver } from "~/server/socket/helper";
 import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
-import { isTypingEvent, messageEvent } from "~/server/socket/events/message";
+import {
+  anonymousMessageEvent,
+  isTypingEvent,
+  messageEvent,
+} from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
   checkMatchEvent,
@@ -30,6 +34,7 @@ const serverEvents = [
   endMatchEvent,
   cancelMatchEvent,
   checkMatchEvent,
+  anonymousMessageEvent,
 ] as const;
 
 /**
