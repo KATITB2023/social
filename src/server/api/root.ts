@@ -4,6 +4,7 @@ import { messageRouter } from "./routers/message";
 import { authRouter } from "~/server/api/routers/auth";
 import { friendRouter } from "~/server/api/routers/friend";
 import { profileRouter } from "~/server/api/routers/profile";
+import { absensiRouter } from "~/server/api/routers/absensi";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   friend: friendRouter,
   profile: profileRouter,
+  absensi: absensiRouter,
 });
 
 // export type definition of API
