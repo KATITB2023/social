@@ -74,17 +74,19 @@ export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
 
   function handleProfileEdit({
-    bio,
-    instagram,
-    email,
+    bio: Bio,
+    instagram: Instagram,
+    email: Email,
   }: {
-    [key: string]: string | undefined;
+    bio?: string;
+    instagram?: string;
+    email?: string;
   }) {
     setUserProfile((userProfile) => ({
       ...userProfile,
-      bio,
-      instagram,
-      email,
+      Bio,
+      Instagram,
+      Email,
     }));
   }
 
@@ -100,7 +102,7 @@ export default function ProfilePage() {
         <Heading color="yellow.5" size="H4" alignSelf="center">
           Profile
         </Heading>
-        <UserProfilePicture />
+        <UserProfilePicture src={userProfile.src} />
         <Flex
           alignSelf="center"
           width="140px"
@@ -254,9 +256,9 @@ function UserProfilePicture({ src }: { src?: string }) {
 }
 
 function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
-  const [bio, setBio] = useState(info.bio || "");
-  const [instagram, setInstagram] = useState(info.instagram || "");
-  const [email, setEmail] = useState(info.email || "");
+  const [bio, setBio] = useState(info.Bio || "");
+  const [instagram, setInstagram] = useState(info.Instagram || "");
+  const [email, setEmail] = useState(info.Email || "");
   const [isEditMode, setIsEditMode] = useState(false);
 
   function handleSave(e: React.FormEvent<HTMLFormElement>) {
@@ -266,9 +268,9 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
   }
 
   function handleCancel() {
-    setBio(info.bio ?? "");
-    setInstagram(info.instagram ?? "");
-    setEmail(info.email ?? "");
+    setBio(info.Bio ?? "");
+    setInstagram(info.Instagram ?? "");
+    setEmail(info.Email ?? "");
     setIsEditMode((isEditMode) => !isEditMode);
   }
 
@@ -283,7 +285,7 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
             <Input
               type="text"
               value={bio}
-              placeholder={info.bio ?? ""}
+              placeholder={info.Bio ?? ""}
               onChange={(e) => setBio(e.target.value)}
               size="B3"
               py="0.75em"
@@ -301,7 +303,7 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
             <Input
               type="text"
               value={instagram}
-              placeholder={info.instagram ?? ""}
+              placeholder={info.Instagram ?? ""}
               onChange={(e) => setInstagram(e.target.value)}
               size="B3"
               py="0.75em"
@@ -319,7 +321,7 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
             <Input
               type="email"
               value={email}
-              placeholder={info.email ?? ""}
+              placeholder={info.Email ?? ""}
               onChange={(e) => setEmail(e.target.value)}
               size="B3"
               py="0.75em"
@@ -374,7 +376,7 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
           "Gender",
           "Kampus",
           "Bio",
-          "Instargram",
+          "Instagram",
           "Email",
         ].map((key) => (
           <LabelValueContainer
@@ -399,25 +401,27 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
 
 function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
   return (
-    <Flex
-      width="100%"
-      height="100%"
-      background="url('/images/blur-oskm.jpg')"
-      backgroundSize="cover"
-      backgroundRepeat="no-repeat"
-      backgroundPosition="center"
-      minHeight="100vh"
-      minWidth="100%"
-      flexDirection="column"
-    >
-      <NavigationBarAndMenu />
-      {children}
-    </Flex>
+    <Box position="relative" minHeight="100vh" height="100%">
+      <Image
+        src="background.svg"
+        alt="wheew wheew *pretend as if the background is in outer space*"
+        height="100%"
+        zIndex="-1"
+        position="absolute"
+        objectFit="cover"
+        minWidth="100%"
+        width="100%"
+      />
+      <Flex flexDirection="column">
+        <NavigationBarAndMenu />
+        {children}
+      </Flex>
+    </Box>
   );
 }
 
 function ProfilePicture({
-  src = "/images/oskm-default-profile.png",
+  src = "/defaultprofpict.svg",
   size = "164px",
   br = "full",
 }: {
