@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
+import { Prisma } from "@prisma/client";
+import {type SUBMISSION_STATUS} from "~/server/types/assignment";
 
 export const assignmentRouter = createTRPCRouter({
 
@@ -13,12 +16,11 @@ export const assignmentRouter = createTRPCRouter({
 
         .query(async ({ ctx, input }) => {
             
-            const assignment = await ctx.prisma.assignment.find({
+            const assignment = await ctx.prisma.assignment.findFirst({
                 where: {
                   id: input.assignmentId,
                 },
 
-                // Exclude id field
                 select: {
                   id : true,
                   title: true,
@@ -27,34 +29,40 @@ export const assignmentRouter = createTRPCRouter({
                   startTime: true,
                   endTime: true,
                 },
-
             });
 
-            const isSubmissionExists = await ctx.prisma.assignmentsubmission.find({
-
-                where: {
-                    studentId_assignmentId: {
-                        studentId: ctx.session.user.id, 
-                        assignmentId: input.assignmentId,
-                      },
-                },
-
-            });
-
-            if (isSubmissionExists) { // if assignment has been submitted
-                
-                // add new field, 'submission' : boolean
-                assignment.submission = true
-
-            } else {
-
-                assignment.submission = false
-
+            // Error : Assignment not found
+            if (!assignment) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Assignment not found",
+                });
             }
 
-            return assignment;
+            const isSubmissionExists = await ctx.prisma.assignmentSubmission.findFirst({
+                where: {
+                    studentId: ctx.session.user.id, 
+                    assignmentId: input.assignmentId,
+                },
+            });
+            
+            let submissionStatus: SUBMISSION_STATUS;
+            
+            if (isSubmissionExists) { // if assignment has been submitted
+                submissionStatus = "SUBMITTED";
+            } else {
+                const currentTime = new Date();
+                if (currentTime > assignment.endTime) {
+                  // if current time passed assignment's deadline
+                  submissionStatus = "PASSED_DEADLINE";
+                } else {
+                  // if deadline has not been passed
+                  submissionStatus = "NOT_SUBMITTED";
+                }
+            }
+
+            return { ...assignment, submissionStatus };
     
         }),
 
-
-});
+})
