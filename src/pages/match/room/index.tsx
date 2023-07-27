@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
@@ -15,13 +15,17 @@ const Room: NextPage = () => {
   useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
 
-  useEmit("checkMatch", {
+  const checkMatch = useEmit("checkMatch", {
     onSuccess: (data) => {
       if (data !== null) {
         setMatch(data);
       }
     },
   });
+
+  useEffect(() => {
+    checkMatch.mutate({});
+  }, []);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);

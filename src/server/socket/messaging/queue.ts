@@ -44,17 +44,16 @@ export const findMatch = async (queue: UserQueue) => {
       console.log("remaining");
       console.log(await redis.llen(key));
 
-      if (!match) {
-        await redis.rpush(key, serializeUserQueue(queue));
-        result = null;
-      } else {
-        const matchQueue = deserializeUserQueue(match);
-
-        result = {
-          firstPair: matchQueue,
-          secondPair: queue,
-        };
+      if (match === null) {
+        throw new Error("Match should not be null");
       }
+
+      const matchQueue = deserializeUserQueue(match);
+
+      result = {
+        firstPair: matchQueue,
+        secondPair: queue,
+      };
     }
   } catch (e) {
     if (e instanceof Error) {
