@@ -12,6 +12,7 @@ const Match: NextPage = () => {
 
   const [needQueue, setNeedQueue] = useState<boolean>(false);
   const [queued, setQueued] = useState<boolean>(false);
+  const [foundMatch, setFoundMatch] = useState<boolean>(false);
 
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
@@ -30,19 +31,23 @@ const Match: NextPage = () => {
     checkEmit.mutate({});
 
     return () => {
-      if (queued) cancelEmit.mutate({});
+      if (queued) {
+        console.log("cancelling emit");
+        cancelEmit.mutate({});
+      }
     };
   }, []);
 
   useEffect(() => {
-    if (!queued && needQueue) {
+    if (!queued && needQueue && !foundMatch) {
+      console.log("request queue");
       queueEmit.mutate({ baka: "yayaya" });
       setQueued(true);
     }
-  }, [queued, needQueue, queueEmit]);
+  }, [queued, needQueue, queueEmit, foundMatch]);
 
   useSubscription("match", (match) => {
-    setQueued(false);
+    setFoundMatch(true);
     void router.push(`/match/room`);
   });
 
