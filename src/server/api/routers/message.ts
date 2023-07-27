@@ -1,6 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { type ChatHeader } from "~/server/types/message";
 
 export const messageRouter = createTRPCRouter({
@@ -107,25 +111,69 @@ export const messageRouter = createTRPCRouter({
       return [];
     }
   ),
-  reportUser : publicProcedure
+  reportUser: publicProcedure
     .input(
       // Menerima input berupa uuid pengguna
       z.object({
-        userId : z.string().uuid()
+        userId: z.string().uuid(),
+        message : z.string()
       })
     )
-    .mutation(async ({ctx,input}) =>{
-      // Mencari pengguna
-      const user = await ctx.prisma.user.findFirst({
-        where : {
-          id : input.userId
-        }
-      })
-      if(!user){
+    .mutation(async ({ ctx, input }) => {
+      // Mencari pengguna yang dilaporkan
+      const reportedUser = await ctx.prisma.user.findFirst({
+        where: {
+          id: input.userId,
+        },
+      });
+      // Mencari pengguna yang melaporkan
+      const currentUser = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx.session?.user.id,
+        },
+      });
+
+      // Jika salah satunya tidak ada, throw Error
+      if (!reportedUser || !currentUser) {
         throw new TRPCError({
-          message : "User not found",
+          message: "User not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      // Memastikan keduanya sedang berpasangan
+      const matched = await ctx.prisma.userMatch.findFirst({
+        where: {
+          OR: [
+            {
+              firstUserId: reportedUser.id,
+              secondUserId: currentUser.id,
+              endedAt: null,
+            },
+            {
+              firstUserId : currentUser.id,
+              secondUserId : reportedUser.id,
+              endedAt : null,
+            }
+          ],
+        },
+      });
+      // Kalau ternyata tidak matched, berarti gabisa direport
+      if(!matched){
+        throw new TRPCError({
+          message : "You are not a matched!",
           code : "BAD_REQUEST"
         })
       }
-    })
+
+      // Kalau ternyata emang matched dan bisa direport
+      await ctx.prisma.chatReport.create({
+        data :{
+           reportedUserId : reportedUser.id,
+           userMatchId : matched.id,
+           message : input.message,
+        }
+      })
+      
+    }),
 });
