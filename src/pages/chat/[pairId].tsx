@@ -24,16 +24,15 @@ const Chat: NextPage = () => {
     {
       getPreviousPageParam: (d) => d.prevCursor,
       refetchInterval: false,
+      refetchOnWindowFocus: false,
     }
   );
 
-  // const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-  //   messageQuery;
+  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
+    messageQuery;
 
   // List of messages that are rendered
-  const [messages, setMessages] = useState(() => {
-    return messageQuery.data?.pages.map((page) => page.items).flat();
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
 
   // Function to add and dedupe new messages onto state
   const addMessages = useCallback((incoming?: Message[]) => {
@@ -85,12 +84,17 @@ const Chat: NextPage = () => {
           <Flex w={"100%"} h="90%" flexDir="column">
             <Header name={userPair ? userPair.nim : ""} isTyping={true} />
             <Divider />
-            <Messages messages={messages ?? []} />
+            <Messages
+              messages={messages ?? []}
+              hasPreviousPage={hasPreviousPage}
+              fetchPreviousPage={() => void fetchPreviousPage()}
+              isFetchingPreviousPage={isFetchingPreviousPage}
+            />
             <Divider />
             <Footer
-              onSubmit={(text) =>
-                messageEmit.mutate({ message: text, receiverId: pairId })
-              }
+              onSubmit={(text) => {
+                messageEmit.mutate({ message: text, receiverId: pairId });
+              }}
             />
           </Flex>
         </Flex>
