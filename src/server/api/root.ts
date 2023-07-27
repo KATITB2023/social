@@ -5,6 +5,7 @@ import { authRouter } from "~/server/api/routers/auth";
 import { friendRouter } from "~/server/api/routers/friend";
 import { profileRouter } from "~/server/api/routers/profile";
 import { anonymousMessageRouter } from "~/server/api/routers/anon-message";
+import { assignmentRouter } from "./routers/assignment";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   friend: friendRouter,
   profile: profileRouter,
+  assignment: assignmentRouter,
 });
 
 // export type definition of API
