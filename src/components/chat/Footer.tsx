@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Flex, Input, Button } from "@chakra-ui/react";
+import useEmit from "~/hooks/useEmit";
 
 interface FooterProps {
   onSubmit: (text: string) => void;
+  receiverId: string;
 }
 
-const Footer = ({ onSubmit }: FooterProps) => {
+const Footer = ({ onSubmit, receiverId }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
-  // const isTyping = useEmit("isTyping");
+  const isTyping = useEmit("isTyping");
 
   const handleSubmit = (text: string) => {
     if (text !== "") {
@@ -26,7 +28,7 @@ const Footer = ({ onSubmit }: FooterProps) => {
       handleSubmit(text);
     }
 
-    // isTyping.mutate({ typing: true });
+    isTyping.mutate({ typing: true, receiverId });
   };
 
   const onKeyUpCustom: React.KeyboardEventHandler<HTMLInputElement> = (
@@ -37,7 +39,7 @@ const Footer = ({ onSubmit }: FooterProps) => {
 
   const onBlurCustom: React.FocusEventHandler<HTMLInputElement> = () => {
     setEnterToPostMessage(true);
-    // isTyping.mutate({ typing: false });
+    isTyping.mutate({ typing: false, receiverId });
   };
 
   return (

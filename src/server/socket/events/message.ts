@@ -23,7 +23,9 @@ export const messageEvent = createEvent(
     ctx.io.to([message.senderId, message.receiverId]).emit("add", message);
 
     delete currentlyTyping[ctx.client.data.session.user.id];
-    ctx.io.emit("whoIsTyping", Object.keys(currentlyTyping));
+    ctx.io
+      .to(message.receiverId)
+      .emit("whoIsTyping", Object.keys(currentlyTyping));
 
     return message;
   }
@@ -64,7 +66,7 @@ export const anonymousMessageEvent = createEvent(
 export const isTypingEvent = createEvent(
   {
     name: "isTyping",
-    input: z.object({ typing: z.boolean() }),
+    input: z.object({ typing: z.boolean(), receiverId: z.string().uuid() }),
     authRequired: true,
   },
   ({ ctx, input }) => {
@@ -76,6 +78,8 @@ export const isTypingEvent = createEvent(
       };
     }
 
-    ctx.io.emit("whoIsTyping", Object.keys(currentlyTyping));
+    ctx.io
+      .to([input.receiverId])
+      .emit("whoIsTyping", Object.keys(currentlyTyping));
   }
 );
