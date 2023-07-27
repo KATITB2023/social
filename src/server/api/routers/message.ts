@@ -1,5 +1,6 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { type ChatHeader } from "~/server/types/message";
 
 export const messageRouter = createTRPCRouter({
@@ -106,4 +107,25 @@ export const messageRouter = createTRPCRouter({
       return [];
     }
   ),
+  reportUser : publicProcedure
+    .input(
+      // Menerima input berupa uuid pengguna
+      z.object({
+        userId : z.string().uuid()
+      })
+    )
+    .mutation(async ({ctx,input}) =>{
+      // Mencari pengguna
+      const user = await ctx.prisma.user.findFirst({
+        where : {
+          id : input.userId
+        }
+      })
+      if(!user){
+        throw new TRPCError({
+          message : "User not found",
+          code : "BAD_REQUEST"
+        })
+      }
+    })
 });
