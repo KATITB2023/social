@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Layout from "~/layout";
 import { Container, Heading, theme, Text } from "@chakra-ui/react";
+import { SelectImage } from "~/components/SelectImage";
 
 const Home: NextPage = () => {
   return (
@@ -15,6 +16,7 @@ const Home: NextPage = () => {
       <Text size="B1">B1</Text>
       <Text size="B5">B5</Text>
       <Text size="A">Additional</Text>
+      <SelectImage/>
     </Layout>
   );
 };
