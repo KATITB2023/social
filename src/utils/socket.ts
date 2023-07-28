@@ -13,4 +13,5 @@ export const socket: SocketClient = io(env.NEXT_PUBLIC_WS_URL, {
   withCredentials: true,
   parser,
   transports: ["websocket"],
+  autoConnect: false,
 });

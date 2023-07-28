@@ -1,13 +1,23 @@
-import { createAdapter } from "@socket.io/redis-streams-adapter";
+import { createAdapter } from "@socket.io/redis-adapter";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Server, Socket } from "socket.io";
-import { type Message } from "@prisma/client";
+import { type Message, type UserMatch } from "@prisma/client";
 import type { ServerEventsResolver } from "~/server/socket/helper";
 import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
-import { isTypingEvent, messageEvent } from "~/server/socket/events/message";
-import { addUserSockets, removeUserSockets } from "~/server/socket/room";
+import {
+  anonymousMessageEvent,
+  isTypingEvent,
+  messageEvent,
+} from "~/server/socket/events/message";
+import {
+  cancelMatchEvent,
+  checkMatchEvent,
+  endMatchEvent,
+  findMatchEvent,
+} from "~/server/socket/events/queue";
+import { type UserQueue } from "~/server/types/message";
 
 /**
  * @description server events are events that are emmited from the client to the server.
@@ -17,7 +27,15 @@ import { addUserSockets, removeUserSockets } from "~/server/socket/room";
  * @summary
  * DONT FORGET TO ADD THE EVENT TO THIS ARRAY
  */
-const serverEvents = [messageEvent, isTypingEvent] as const;
+const serverEvents = [
+  messageEvent,
+  isTypingEvent,
+  findMatchEvent,
+  endMatchEvent,
+  cancelMatchEvent,
+  checkMatchEvent,
+  anonymousMessageEvent,
+] as const;
 
 /**
  * @description
@@ -53,6 +71,8 @@ export type ServerToClientEvents = {
   hello: (name: string) => void;
   whoIsTyping: (data: string[]) => void;
   add: (post: Message) => void;
+  match: (match: UserMatch) => void;
+  endMatch: (match: UserMatch) => void;
 };
 
 interface InterServerEvents {
@@ -70,6 +90,8 @@ interface InterServerEvents {
  */
 export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;
+  match: UserMatch | null;
+  matchQueue: UserQueue | null;
 };
 
 /**
@@ -133,19 +155,18 @@ export function setupSocket(io: SocketServer) {
   io.on("connection", (socket) => {
     if (socket.data.session) {
       serverEvents.forEach((event) => event(io, socket));
-      const socketId = socket.id;
       const userId = socket.data.session.user.id;
 
-      void addUserSockets(userId, socketId);
+      void socket.join(userId);
 
       socket.on("disconnect", () => {
-        void removeUserSockets(userId, socketId);
+        void socket.leave(userId);
       });
     }
   });
 }
 
-export async function getAdapter() {
-  const redisClient = await Redis.getClient();
-  return createAdapter(redisClient);
+export function getAdapter() {
+  const redisClient = Redis.getClient();
+  return createAdapter(redisClient.duplicate(), redisClient.duplicate());
 }
