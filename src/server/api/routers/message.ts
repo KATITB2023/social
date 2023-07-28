@@ -148,10 +148,12 @@ export const messageRouter = createTRPCRouter({
             {
               firstUserId: reportedUser.id,
               secondUserId: currentUser.id,
+              endedAt : null,
             },
             {
               firstUserId : currentUser.id,
               secondUserId : reportedUser.id,
+              endedAt : null,
             }
           ],
         },
@@ -163,14 +165,32 @@ export const messageRouter = createTRPCRouter({
           code : "BAD_REQUEST"
         })
       }
+      const matchId = matched.id
 
-      // Kalau ternyata emang matched dan bisa direport
-      await ctx.prisma.chatReport.create({
-        data :{
-           reportedUserId : reportedUser.id,
-           userMatchId : matched.id,
-           message : input.message,
+      // Mencari apakah sudah pernah direport di session yang sama
+      const hasReported = await ctx.prisma.chatReport.findFirst({
+        where:{
+          userMatchId : matchId
         }
       })
+
+      // Kalau misalnya belum, masukan ke dalam database
+      if(!hasReported){
+        await ctx.prisma.chatReport.create({
+          data :{
+             reportedUserId : reportedUser.id,
+             userMatchId : matched.id,
+             message : input.message,
+          }
+        })
+      }
+      // Kalau misalnya sudah, jangan dimasukkan
+      else{
+        throw new TRPCError({
+          message : "Your report has been submitted before!",
+          code : "CONFLICT"
+        })
+      }
+      
     }),
 });
