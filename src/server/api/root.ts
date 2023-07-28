@@ -5,6 +5,8 @@ import { authRouter } from "~/server/api/routers/auth";
 import { friendRouter } from "~/server/api/routers/friend";
 import { profileRouter } from "~/server/api/routers/profile";
 import { absensiRouter } from "~/server/api/routers/absensi";
+import { anonymousMessageRouter } from "~/server/api/routers/anon-message";
+import { assignmentRouter } from "./routers/assignment";
 
 /**
  * This is the primary router for your server.
@@ -14,10 +16,12 @@ import { absensiRouter } from "~/server/api/routers/absensi";
 export const appRouter = createTRPCRouter({
   storage: storageRouter,
   message: messageRouter,
+  messageAnonymous: anonymousMessageRouter,
   auth: authRouter,
   friend: friendRouter,
   profile: profileRouter,
   absensi: absensiRouter,
+  assignment: assignmentRouter,
 });
 
 // export type definition of API
