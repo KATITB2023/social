@@ -1,26 +1,30 @@
 import React, { useState } from "react";
 import WebcamComponent from "./WebcamComponent";
-import { Box, Image, Text, Button, SlideFade } from "@chakra-ui/react";
+import { Box, Image, Text, Button, Collapse} from "@chakra-ui/react";
 
 export const ProfilePhotoSelectImage = ({
   open,
   setOpen,
+  changeImage
 }: {
   open: boolean;
   setOpen: any;
+  changeImage : any;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
   const [image, setImage] = useState<any>(undefined);
 
   function onImageChange(file: FileList) {
-    setPictureSelected(true);
-    setImage(URL.createObjectURL(file[0]!));
-    // console.log(image)
+    if (file[0]){
+        setPictureSelected(true);
+        setImage(URL.createObjectURL(file[0]!));
+        // console.log(image)
+    }
   }
 
   return (
-    <Box zIndex={-10}>
-      <SlideFade in={open} offsetY={"20px"}>
+    <Box zIndex={10}>
+      <Collapse in={open} animateOpacity>
         <Box
           display={"flex"}
           w={"full"}
@@ -45,7 +49,7 @@ export const ProfilePhotoSelectImage = ({
             flexDirection={"column"}
             justifyContent={"center"}
             alignItems={"center"}
-            position={"absolute"}
+            position={"fixed"}
             bottom={0}
             background={"purple.1"}
             height={"274px"}
@@ -66,7 +70,7 @@ export const ProfilePhotoSelectImage = ({
               </Text>
               <Box display={"flex"} gap={"15px"}>
                 <Image
-                  onClick={() => setOpen(false)}
+                  onClick={() => {changeImage(undefined); setOpen(false)}}
                   src="/components/trashbin.svg"
                 />
                 <Image
@@ -134,7 +138,7 @@ export const ProfilePhotoSelectImage = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && setOpen(false);
+                pictureSelected && changeImage(image); setOpen(false); setPictureSelected(false); 
               }}
             >
               <Text fontWeight={700} color={"white"} size={"SH5"}>
@@ -144,7 +148,7 @@ export const ProfilePhotoSelectImage = ({
             </Button>
           </Box>
         </Box>
-      </SlideFade>
+      </Collapse>
     </Box>
   );
 };
