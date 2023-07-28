@@ -126,15 +126,10 @@ export const messageRouter = createTRPCRouter({
           id: input.userId,
         },
       });
-      // Mencari pengguna yang melaporkan
-      const currentUser = await ctx.prisma.user.findFirst({
-        where: {
-          id: ctx.session?.user.id,
-        },
-      });
+      
 
       // Jika salah satunya tidak ada, throw Error
-      if (!reportedUser || !currentUser) {
+      if (!reportedUser) {
         throw new TRPCError({
           message: "User not found",
           code: "BAD_REQUEST",
@@ -147,11 +142,11 @@ export const messageRouter = createTRPCRouter({
           OR: [
             {
               firstUserId: reportedUser.id,
-              secondUserId: currentUser.id,
+              secondUserId: ctx.session?.user.id,
               endedAt : null,
             },
             {
-              firstUserId : currentUser.id,
+              firstUserId : ctx.session?.user.id,
               secondUserId : reportedUser.id,
               endedAt : null,
             }
