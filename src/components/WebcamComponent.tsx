@@ -18,7 +18,7 @@ const WebcamComponent = () => {
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
   const webCamRef = useRef<Webcam>(null);
   const capture = useCallback(() => {
-    const imageSrc = webCamRef.current.getScreenshot();
+    const imageSrc = webCamRef.current!.getScreenshot();
   }, [webCamRef]);
 
   const switchCam = useCallback(() => {
