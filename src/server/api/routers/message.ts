@@ -148,12 +148,10 @@ export const messageRouter = createTRPCRouter({
             {
               firstUserId: reportedUser.id,
               secondUserId: currentUser.id,
-              endedAt: null,
             },
             {
               firstUserId : currentUser.id,
               secondUserId : reportedUser.id,
-              endedAt : null,
             }
           ],
         },
@@ -174,6 +172,5 @@ export const messageRouter = createTRPCRouter({
            message : input.message,
         }
       })
-      
     }),
 });
