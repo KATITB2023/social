@@ -1,75 +1,79 @@
-import { z } from "zod";
+import { record, z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "@prisma/client";
+import { Prisma, Status } from "@prisma/client";
 
 export const absensiRouter = createTRPCRouter({
   viewAbsensi: publicProcedure
-    .input(z.object({ studentId: z.string().uuid(),
-                      eventId: z.string().uuid()}))
-    .query(async ({ctx, input}) => {
-
-    const getAttendanceRecord = await ctx.prisma.attendanceRecord.findFirst({
-      where:{
-        studentId: input.studentId,
-        eventId: input.eventId
-      },
-      select:{
-        status: true
-      }
-    })
-
-    const getEventData = await ctx.prisma.attendanceEvent.findFirst({
-      where:{
-        id: input.eventId
-      },
-    })
-
-    // Validasi event
-    if (!getEventData) {
+    .query(async ({ctx}) => {
+      
+    let absenStatus = []
+    const student = await ctx.session?.user
+    if (!student){
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "Event tidak ditemukan"
+        message: "User tidak ada!"
       })
     }
 
-    // Validasi waktu
-    if (!getAttendanceRecord) {
-      // const endTime = getEventData.endTime.getTime() / 1000;
-      // const startTime = getEventData.startTime.getTime() / 1000;
-      // const currentTime = new Date().getTime() / 1000;
-
-      // if (endTime < currentTime) {
-      //   return "Tidak Absen"
-      // } else if (startTime > currentTime) {
-      //   return "Absensi belum dimulai"
-      // } else {
-      //   return "Belum Absen"
-      // }
-
-      const currentTime = new Date()
-      if (getEventData.endTime < currentTime) {
-        return "Tidak Absen" // Sudah lewat batas waktu
-      } else if (getEventData.startTime > currentTime) {
-        return "Absensi belum dimulai" // Belum masuk batas waktu
-      } else {
-        return "Belum Absen" // Dalam batas waktu
+    let getEventData = await ctx.prisma.attendanceEvent.findMany({
+      include:{
+        record:{
+          where:{
+            studentId: student.id 
+          }
+        }
       }
+    })
+    
+    for (let eventData of getEventData) {
+      // Status
+      let status
+      if (!eventData.record[0]) {
+        status = Status.TIDAK_HADIR
+      } else {
+        status = eventData.record[0].status
+      }
+      if (!status) {
+        status = null
+      }
+
+      // Record
+      let record
+      if (!eventData.record[0]) {
+        record = null
+      } else {
+        record = eventData.record[0] 
+      }
+      
+      // Event
+      let event
+      var {record:r, ...rest} = eventData;
+      event = rest;
+
+      absenStatus.push({event, record, "status": status})
     }
-  
-    return "Sudah Absen"   
+
+    return absenStatus
   }),
     
   submitAbsensi: publicProcedure
-    .input(z.object({ studentId: z.string().uuid(),
-                      eventId: z.string().uuid()}))
-    .query(async ({ctx, input}) => {
-      
+  .input(z.object({eventId: z.string().uuid()}))
+  .query(async ({ctx, input}) => {
+    
     // Error jika absen lebih dari 1 kali
+    const student = await ctx.session?.user
+    if (!student){
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "User tidak ada!"
+      })
+    }
+
     const findRecord = await ctx.prisma.attendanceRecord.findFirst({
       where:{
         eventId: input.eventId,
-        studentId: input.studentId
+        studentId: student.id,
       }
     })
     if (findRecord){
@@ -112,11 +116,11 @@ export const absensiRouter = createTRPCRouter({
 
     createNewRecord = {
       date: new Date(),
-      status: "HADIR",
+      status: Status.HADIR,
       reason: "tidak ada",
       student:{
         connect:{
-          id: input.studentId
+          id: student?.id,
         } 
       },
       event:{
