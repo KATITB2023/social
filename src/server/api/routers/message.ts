@@ -111,7 +111,7 @@ export const messageRouter = createTRPCRouter({
       return [];
     }
   ),
-  reportUser: publicProcedure
+  reportUser: protectedProcedure
     .input(
       // Menerima input berupa uuid pengguna
       z.object({
