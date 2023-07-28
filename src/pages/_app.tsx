@@ -4,6 +4,7 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 const colors = {
   test: {
@@ -149,11 +150,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <ChakraProvider theme={theme}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </ChakraProvider>
+    <div style={{maxWidth: "375px", margin : "auto"}}> 
+    {/* Set max width for mobile-only resolution */}
+        <ChakraProvider theme={theme}> 
+            <SessionProvider session={session}>
+                <Component {...pageProps}/>
+            </SessionProvider>
+        </ChakraProvider>
+    </div>
+
   );
 };
 
