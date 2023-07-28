@@ -1,28 +1,25 @@
 import { record, z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { Prisma, Status } from "@prisma/client";
 
 export const absensiRouter = createTRPCRouter({
-  viewAbsensi: publicProcedure
+  viewAbsensi: protectedProcedure
     .query(async ({ctx}) => {
       
     let absenStatus = []
-    const student = await ctx.session?.user
-    if (!student){
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "User tidak ada!"
-      })
-    }
+    const student = await ctx.session.user
 
     let getEventData = await ctx.prisma.attendanceEvent.findMany({
       include:{
         record:{
           where:{
-            studentId: student.id 
-          }
+            studentId: student.id,
+          },
         }
+      },
+      orderBy : {
+        startTime: 'desc',
       }
     })
     
@@ -57,18 +54,12 @@ export const absensiRouter = createTRPCRouter({
     return absenStatus
   }),
     
-  submitAbsensi: publicProcedure
+  submitAbsensi: protectedProcedure
   .input(z.object({eventId: z.string().uuid()}))
   .query(async ({ctx, input}) => {
     
     // Error jika absen lebih dari 1 kali
-    const student = await ctx.session?.user
-    if (!student){
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "User tidak ada!"
-      })
-    }
+    const student = await ctx.session.user
 
     const findRecord = await ctx.prisma.attendanceRecord.findFirst({
       where:{
