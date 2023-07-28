@@ -1,11 +1,9 @@
 import { type NextPage } from "next";
 import Layout from "~/layout";
 import { Container, Heading, theme, Text, Box, Button } from "@chakra-ui/react";
-import { ProfilePhotoSelectImage } from "~/components/ProfilePhotoSelectImage";
 import { useState } from "react";
 
 const Home: NextPage = () => {
-  const [open, setOpen] = useState(true);
 
   return (
     <Layout title="Home">
@@ -20,7 +18,6 @@ const Home: NextPage = () => {
       <Text size="B1">B1</Text>
       <Text size="B5">B5</Text>
       <Text size="A">Additional</Text>
-      <ProfilePhotoSelectImage open={open} setOpen={setOpen}/>
     </Layout>
   );
 };
