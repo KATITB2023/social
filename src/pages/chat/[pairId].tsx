@@ -68,7 +68,7 @@ const Chat: NextPage = () => {
         addMessages([post]);
       }
     },
-    [session]
+    [session, messageQuery]
   );
 
   useSubscription(
@@ -113,6 +113,7 @@ const Chat: NextPage = () => {
                 messageEmit.mutate({ message: text, receiverId: pairId });
               }}
               receiverId={pairId}
+              isAnon={false}
             />
           </Flex>
         </Flex>

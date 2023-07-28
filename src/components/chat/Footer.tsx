@@ -5,12 +5,14 @@ import useEmit from "~/hooks/useEmit";
 interface FooterProps {
   onSubmit: (text: string) => void;
   receiverId: string;
+  isAnon: boolean;
 }
 
-const Footer = ({ onSubmit, receiverId }: FooterProps) => {
+const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
-  const isTyping = useEmit("isTyping");
+  const clientEvent = isAnon ? "anonTyping" : "isTyping";
+  const isTyping = useEmit(clientEvent);
 
   const handleSubmit = (text: string) => {
     if (text !== "") {
