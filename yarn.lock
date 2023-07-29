@@ -1249,9 +1249,9 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@katitb2023/database@git+https://github.com/KATITB2023/database.git#520c29ee4e2a06f9beec0789164aec58915c51d2":
+"@katitb2023/database@git+https://github.com/KATITB2023/database.git#176f790047686f1706727a8778400bd1f8e17d23":
   version "1.0.0"
-  resolved "git+https://github.com/KATITB2023/database.git#520c29ee4e2a06f9beec0789164aec58915c51d2"
+  resolved "git+https://github.com/KATITB2023/database.git#176f790047686f1706727a8778400bd1f8e17d23"
   dependencies:
     "@prisma/client" "4.15.0"
     dotenv-cli "^7.2.1"
