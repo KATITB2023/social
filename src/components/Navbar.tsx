@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import { NextPage } from "next";
 import { useState } from "react";
 import Layout from "~/layout";
 import {
@@ -11,6 +11,11 @@ import {
   Flex,
   Image,
   Icon,
+  useDisclosure,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
 } from "@chakra-ui/react";
 import {
   MdPersonAddAlt,
@@ -21,10 +26,12 @@ import {
   MdChatBubbleOutline,
   MdOutlinePersonOutline,
   MdLogout,
+  MdOutlineAssignmentInd,
 } from "react-icons/md";
 
 const Navbar: NextPage = () => {
-  const [sidebarStatus, setSidebarStatus] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Layout title="Navbar">
       <Center>
@@ -32,7 +39,6 @@ const Navbar: NextPage = () => {
           background="url('/navbarbg.svg')"
           w="90%"
           minHeight="60px"
-          color="white"
           borderRadius="50px"
           position="fixed"
           top="20px"
@@ -80,168 +86,126 @@ const Navbar: NextPage = () => {
               src="/hamburgermenu.svg"
               height="30px"
               width="30px"
-              onClick={() => setSidebarStatus(true)}
+              onClick={onOpen}
             ></Image>
           </Flex>
         </Flex>
       </Center>
-      {sidebarStatus === true ? (
-        <Box
-          position="relative"
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
-          minH="100vh"
-          w="full"
-          backgroundColor="rgba(0, 0, 0, 0.9)"
-          zIndex="3"
-          onClick={() => setSidebarStatus(false)}
-        >
-          <Flex
-            height="100vh"
-            width="70%"
-            backgroundColor="#1D0263"
-            position="absolute"
-            justifyContent="space-evenly"
-            right="0"
-            paddingY="80px"
-            paddingX="30px"
-            flexDir="column"
-            zIndex="3"
-            opacity="1"
-          >
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdPersonAddAlt}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
+      <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerBody>
+            <Flex
+              height="100%"
+              width="100%"
+              backgroundColor="#1D0263"
+              position="absolute"
+              top="0"
+              justifyContent="space-evenly"
+              right="0"
+              paddingY="80px"
+              paddingX="20px"
+              flexDir="column"
+              zIndex="3"
+              opacity="1"
+            >
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdOutlineHome}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="3px" size="B4" marginLeft="10px">
+                  Back to Home
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdNewspaper}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="3px" size="B4" marginLeft="10px">
+                  Feeds
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdOutlineAssignmentInd}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="1px" size="B4" marginLeft="10px">
+                  Attendance
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdOutlineAssignment}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="1px" size="B4" marginLeft="10px">
+                  Assignment
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdStarOutline}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="3px" size="B4" marginLeft="10px">
+                  Showcase
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="white">
+                <Icon
+                  as={MdChatBubbleOutline}
+                  height="20px"
+                  width="20px"
+                  marginLeft="11px"
+                ></Icon>
+                <Text marginTop="1px" size="B4" marginLeft="9px">
+                  Chat
+                </Text>
+              </Flex>
+              <Flex
+                flexDir="row"
+                alignItems="center"
+                color="yellow"
+                borderLeft="2px"
               >
-                Back to Home
-              </Text>
+                <Icon
+                  as={MdOutlinePersonOutline}
+                  height="22px"
+                  width="22px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="2px" size="B4" marginLeft="10px">
+                  Profile
+                </Text>
+              </Flex>
+              <Flex flexDir="row" alignItems="center" color="#E8553E">
+                <Icon
+                  as={MdLogout}
+                  height="20px"
+                  width="20px"
+                  marginLeft="10px"
+                ></Icon>
+                <Text marginTop="3px" size="B4" marginLeft="10px">
+                  Logout
+                </Text>
+              </Flex>
             </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdOutlineHome}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Feeds
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdNewspaper}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Attendance
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdOutlineAssignment}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Assignment
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdStarOutline}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Showcase
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdChatBubbleOutline}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Chat
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdOutlinePersonOutline}
-                height="17px"
-                width="17px"
-                color="white"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="white"
-              >
-                Profile
-              </Text>
-            </Flex>
-            <Flex flexDir="row" alignItems="center">
-              <Icon
-                as={MdLogout}
-                height="17px"
-                width="17px"
-                color="#E8553E"
-              ></Icon>
-              <Text
-                verticalAlign="middle"
-                size="B5"
-                marginLeft="10px"
-                color="#E8553E"
-              >
-                Logout
-              </Text>
-            </Flex>
-          </Flex>
-        </Box>
-      ) : null}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Layout>
   );
 };
