@@ -1249,9 +1249,9 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@katitb2023/database@git+https://github.com/KATITB2023/database.git#d0fa9702d8c21909e852e084f1fc59b521cac286":
+"@katitb2023/database@git+https://github.com/KATITB2023/database.git#ebb596e1a226ec201ed2e0b6ca62e0b9be6c20ec":
   version "1.0.0"
-  resolved "git+https://github.com/KATITB2023/database.git#d0fa9702d8c21909e852e084f1fc59b521cac286"
+  resolved "git+https://github.com/KATITB2023/database.git#ebb596e1a226ec201ed2e0b6ca62e0b9be6c20ec"
   dependencies:
     "@prisma/client" "4.15.0"
     dotenv-cli "^7.2.1"
@@ -4926,11 +4926,6 @@ react-hook-form@^7.45.0:
   version "7.45.0"
   resolved "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.45.0.tgz"
   integrity sha512-AbHeZ4ad+0dEIknSW9dBgIwcvRDfZ1O97sgj75WaMdOX0eg8TBiUf9wxzVkIjZbk76BBIE9lmFOzyD4PN80ZQg==
-
-react-icons@^4.10.1:
-  version "4.10.1"
-  resolved "https://registry.npmjs.org/react-icons/-/react-icons-4.10.1.tgz"
-  integrity sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
