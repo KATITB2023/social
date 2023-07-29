@@ -77,6 +77,7 @@ const Navbar: NextPage = () => {
           <Box w="20%"></Box>
           <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
             <Icon
+              color="white"
               as={MdPersonAddAlt}
               height="30px"
               width="30px"
