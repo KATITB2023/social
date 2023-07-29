@@ -73,7 +73,26 @@ const Room: NextPage = () => {
         setMessages((prev) => [...prev, post]);
       }
     },
-    [match]
+    [match, messageQuery]
+  );
+
+  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
+
+  useSubscription(
+    "anonIsTyping",
+    (data) => {
+      if (match) {
+        if (
+          data.includes(match.firstUserId) ||
+          data.includes(match.secondUserId)
+        ) {
+          setCurrentlyTyping(true);
+        } else {
+          setCurrentlyTyping(false);
+        }
+      }
+    },
+    [match, messageQuery]
   );
 
   const messageEmit = useEmit("anonymousMessage");
@@ -93,7 +112,7 @@ const Room: NextPage = () => {
               backgroundColor={"gray.50"}
             >
               <Flex w={"100%"} h="90%" flexDir="column">
-                <Header name="Anonymous" isTyping={true} />
+                <Header name="Anonymous" isTyping={currentlyTyping} />
                 <Divider />
                 <Messages
                   messages={messages ?? []}
@@ -104,6 +123,8 @@ const Room: NextPage = () => {
                 <Divider />
                 <Footer
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
+                  receiverId={match.id}
+                  isAnon={true}
                 />
               </Flex>
             </Flex>
