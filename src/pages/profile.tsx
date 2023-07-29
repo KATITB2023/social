@@ -39,6 +39,7 @@ import {
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
+import { ProfilePhotoSelectImage } from "~/components/ProfilePhotoSelectImage";
 
 interface LabelValueType {
   label: string;
@@ -72,6 +73,8 @@ type childrenOnlyProps = {
 
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
+  const [openSelectImage, setOpenSelectImage] = useState(false);
+  const [profileImage, setProfileImage] = useState<any>(undefined);
 
   function handleProfileEdit({
     bio: Bio,
@@ -102,7 +105,10 @@ export default function ProfilePage() {
         <Heading color="yellow.5" size="H4" alignSelf="center">
           Profile
         </Heading>
-        <UserProfilePicture src={userProfile.src} />
+        <UserProfilePicture
+          src={ profileImage? profileImage : userProfile.src}
+          setOpen={setOpenSelectImage}
+        />
         <Flex
           alignSelf="center"
           width="140px"
@@ -115,6 +121,11 @@ export default function ProfilePage() {
           <Text size="B3"> PIN : {userProfile.PIN}</Text>
         </Flex>
         <ProfileInfo info={userProfile} onProfileEdit={handleProfileEdit} />
+        <ProfilePhotoSelectImage
+          open={openSelectImage}
+          setOpen={setOpenSelectImage}
+          changeImage={setProfileImage}
+        />
       </Flex>
     </DefaultBackgroundAndNavigationBar>
   );
@@ -236,11 +247,12 @@ function LabelValueContainer({ label, value = "-" }: LabelValueType) {
   );
 }
 
-function UserProfilePicture({ src }: { src?: string }) {
+function UserProfilePicture({ src, setOpen }: { src?: string; setOpen: any }) {
   return (
     <Box position="relative" alignSelf="center">
       <ProfilePicture src={src} />
       <IconButton
+        onClick={() => setOpen(true)}
         backgroundColor="purple.1"
         aria-label="Call Segun"
         size="lg"
