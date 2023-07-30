@@ -8,7 +8,3 @@ export interface ChatHeader {
     profileImage: string;
   };
 }
-
-export interface UserQueue {
-  userId: string;
-}
