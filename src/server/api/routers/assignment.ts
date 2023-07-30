@@ -110,8 +110,7 @@ export const assignmentRouter = createTRPCRouter({
           },
         });
 
-      if (isSubmissionExists) {
-        // Update existing submission
+      if (isSubmissionExists) { // Update existing submission
 
         // Get latest assignment submission score
         const prevAssgnScore = await ctx.prisma.assignmentSubmission.findFirst({
@@ -156,8 +155,9 @@ export const assignmentRouter = createTRPCRouter({
             score: null,
           },
         });
-      } else {
-        // Create new submission
+
+        return "Tugas berhasil direvisi";
+      } else {  // Create new submission
 
         let createNewSubmission: Prisma.AssignmentSubmissionCreateInput;
 
