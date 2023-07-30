@@ -4,6 +4,7 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 const colors = {
   test: {
@@ -124,6 +125,14 @@ export const theme = extendTheme({
     },
     orange: "#E85535",
   },
+  styles: {
+    global: {
+      body: {
+        bg: "#12122E",
+        color: "white",
+      },
+    },
+  },
 });
 
 // DESIGN SYSTEM TYPOGRAPHY:
@@ -142,18 +151,19 @@ for body and additional, use:
 <Text>Default for text is -> size = "B4" </Text>
 */
 
-
-
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <ChakraProvider theme={theme}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </ChakraProvider>
+    <div style={{ maxWidth: "375px", margin: "auto" }}>
+      {/* Set max width for mobile-only resolution */}
+      <ChakraProvider theme={theme}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </ChakraProvider>
+    </div>
   );
 };
 
