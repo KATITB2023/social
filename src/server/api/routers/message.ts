@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { type ChatHeader } from "~/server/types/message";
@@ -106,4 +107,79 @@ export const messageRouter = createTRPCRouter({
       return [];
     }
   ),
+  reportUser: protectedProcedure
+    .input(
+      // Menerima input berupa uuid pengguna
+      z.object({
+        userId: z.string().uuid(),
+        message: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Mencari pengguna yang dilaporkan
+      const reportedUser = await ctx.prisma.user.findFirst({
+        where: {
+          id: input.userId,
+        },
+      });
+
+      // Jika salah satunya tidak ada, throw Error
+      if (!reportedUser) {
+        throw new TRPCError({
+          message: "User not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      // Memastikan keduanya sedang berpasangan
+      const matched = await ctx.prisma.userMatch.findFirst({
+        where: {
+          OR: [
+            {
+              firstUserId: reportedUser.id,
+              secondUserId: ctx.session?.user.id,
+              endedAt: null,
+            },
+            {
+              firstUserId: ctx.session?.user.id,
+              secondUserId: reportedUser.id,
+              endedAt: null,
+            },
+          ],
+        },
+      });
+      // Kalau ternyata tidak matched, berarti gabisa direport
+      if (!matched) {
+        throw new TRPCError({
+          message: "You are not a matched!",
+          code: "BAD_REQUEST",
+        });
+      }
+      const matchId = matched.id;
+
+      // Mencari apakah sudah pernah direport di session yang sama
+      const hasReported = await ctx.prisma.chatReport.findFirst({
+        where: {
+          userMatchId: matchId,
+        },
+      });
+
+      // Kalau misalnya belum, masukan ke dalam database
+      if (!hasReported) {
+        await ctx.prisma.chatReport.create({
+          data: {
+            reportedUserId: reportedUser.id,
+            userMatchId: matched.id,
+            message: input.message,
+          },
+        });
+      }
+      // Kalau misalnya sudah, jangan dimasukkan
+      else {
+        throw new TRPCError({
+          message: "Your report has been submitted before!",
+          code: "BAD_REQUEST",
+        });
+      }
+    }),
 });
