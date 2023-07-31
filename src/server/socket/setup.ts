@@ -7,6 +7,7 @@ import type { ServerEventsResolver } from "~/server/socket/helper";
 import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
 import {
+  anonTypingEvent,
   anonymousMessageEvent,
   isTypingEvent,
   messageEvent,
@@ -30,6 +31,7 @@ import { type UserQueue } from "~/server/types/message";
 const serverEvents = [
   messageEvent,
   isTypingEvent,
+  anonTypingEvent,
   findMatchEvent,
   endMatchEvent,
   cancelMatchEvent,
@@ -70,6 +72,7 @@ export type ClientToServerEvents = ServerEventsResolver<typeof serverEvents>;
 export type ServerToClientEvents = {
   hello: (name: string) => void;
   whoIsTyping: (data: string[]) => void;
+  anonIsTyping: (data: string[]) => void;
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
