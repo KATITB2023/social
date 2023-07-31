@@ -34,6 +34,8 @@ const Chat: NextPage = () => {
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
+
   // Function to add and dedupe new messages onto state
   const addMessages = useCallback((incoming?: Message[]) => {
     setMessages((current) => {
@@ -66,7 +68,19 @@ const Chat: NextPage = () => {
         addMessages([post]);
       }
     },
-    [session]
+    [session, messageQuery]
+  );
+
+  useSubscription(
+    "whoIsTyping",
+    (data) => {
+      if (data.includes(pairId)) {
+        setCurrentlyTyping(true);
+      } else {
+        setCurrentlyTyping(false);
+      }
+    },
+    [session, messageQuery]
   );
 
   const messageEmit = useEmit("message");
@@ -82,7 +96,10 @@ const Chat: NextPage = () => {
           backgroundColor={"gray.50"}
         >
           <Flex w={"100%"} h="90%" flexDir="column">
-            <Header name={userPair ? userPair.nim : ""} isTyping={true} />
+            <Header
+              name={userPair ? userPair.nim : ""}
+              isTyping={currentlyTyping}
+            />
             <Divider />
             <Messages
               messages={messages ?? []}
@@ -95,6 +112,8 @@ const Chat: NextPage = () => {
               onSubmit={(text) => {
                 messageEmit.mutate({ message: text, receiverId: pairId });
               }}
+              receiverId={pairId}
+              isAnon={false}
             />
           </Flex>
         </Flex>
