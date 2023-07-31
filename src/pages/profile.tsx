@@ -106,7 +106,7 @@ export default function ProfilePage() {
           Profile
         </Heading>
         <UserProfilePicture
-          src={ profileImage? profileImage : userProfile.src}
+          src={profileImage ? profileImage : userProfile.src}
           setOpen={setOpenSelectImage}
         />
         <Flex
@@ -457,7 +457,12 @@ function ProfilePicture({
         <ModalOverlay />
         <ModalContent backgroundColor="black" justifyContent="space-evenly">
           <ModalCloseButton size="24px" mx="24px" my="24px" />
-          <ProfilePicture size="100%" br="0" />
+          <Image
+            src={src}
+            alt="Profile Picture"
+            borderRadius={0}
+            boxSize="100%"
+          />
         </ModalContent>
       </Modal>
     </>
