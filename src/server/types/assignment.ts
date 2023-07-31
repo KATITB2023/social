@@ -2,3 +2,7 @@ export type SUBMISSION_STATUS =
   | "SUBMITTED"
   | "NOT_SUBMITTED"
   | "PASSED_DEADLINE";
+
+  export enum ASSIGNMENT_TYPE {
+    MANDATORY = "MANDATORY",
+  }
