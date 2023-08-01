@@ -8,7 +8,7 @@ import {
 import { RxCross2 } from "react-icons/rx";
 import { MdDone } from "react-icons/md";
 
-export default function PopUpRequestsFriends() {
+export default function RequestFriendPopUp() {
   return (
     <Flex
         position="fixed"

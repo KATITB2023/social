@@ -9,7 +9,7 @@ import {
 
 import { MdOutlineChatBubbleOutline } from "react-icons/md";
 
-export default function CardMyFriends() {
+export default function MyFriendCard() {
   return (
   <Card
     display="flex"
