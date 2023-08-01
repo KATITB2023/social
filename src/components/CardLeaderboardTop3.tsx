@@ -66,7 +66,7 @@ const CardLeaderboardTop3 = ({
           w="59px"
           h="59px"
           borderRadius="full"
-          bgColor="#FFFC83"
+          bgColor="yellow.5"
           opacity="100%"
         >
           <Image
@@ -85,7 +85,7 @@ const CardLeaderboardTop3 = ({
             w="26px"
             h="26px"
             borderRadius="full"
-            bgColor="#340C8F"
+            bgColor="purple.1"
             alignItems="center"
             justifyContent="center"
           >
@@ -113,7 +113,7 @@ const CardLeaderboardTop3 = ({
           w="73px"
           h="28px"
           borderRadius="12px"
-          bgColor="#340C8F"
+          bgColor="purple.1"
           alignItems="center"
           justifyContent="center"
           marginTop="2px"
@@ -122,11 +122,11 @@ const CardLeaderboardTop3 = ({
             w="70px"
             h="25px"
             borderRadius="11px"
-            bgColor="#FFFC83"
+            bgColor="yellow.5"
             alignItems="center"
             justifyContent="center"
           >
-            <Text size="B4" color="#340C8F" fontWeight="700">
+            <Text size="B4" color="purple.1" fontWeight="700">
               {points}
             </Text>
           </Flex>
