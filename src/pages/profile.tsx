@@ -39,7 +39,7 @@ import {
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
-import { ProfilePhotoSelectImage } from "~/components/ProfilePhotoSelectImage";
+import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
 
 interface LabelValueType {
   label: string;
@@ -121,7 +121,7 @@ export default function ProfilePage() {
           <Text size="B3"> PIN : {userProfile.PIN}</Text>
         </Flex>
         <ProfileInfo info={userProfile} onProfileEdit={handleProfileEdit} />
-        <ProfilePhotoSelectImage
+        <SelectPhotoImageProfile
           open={openSelectImage}
           setOpen={setOpenSelectImage}
           changeImage={setProfileImage}
