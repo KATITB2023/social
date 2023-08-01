@@ -74,7 +74,7 @@ type childrenOnlyProps = {
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
   const [openSelectImage, setOpenSelectImage] = useState(false);
-  const [profileImage, setProfileImage] = useState<any>(undefined);
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
 
   function handleProfileEdit({
     bio: Bio,
@@ -247,7 +247,7 @@ function LabelValueContainer({ label, value = "-" }: LabelValueType) {
   );
 }
 
-function UserProfilePicture({ src, setOpen }: { src?: string; setOpen: any }) {
+function UserProfilePicture({ src, setOpen }: { src?: string; setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
   return (
     <Box position="relative" alignSelf="center">
       <ProfilePicture src={src} />
