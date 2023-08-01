@@ -9,7 +9,7 @@ import {
 
 import { MdOutlineCancel } from "react-icons/md";
 
-export default function CardRequestsFriend() {
+export default function RequestFriendCard() {
     return (
     <Card
         display="flex"
