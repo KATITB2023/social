@@ -6,12 +6,13 @@ import { useCallback, useEffect, useState } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
-import { Container, Flex } from "@chakra-ui/react";
+import { Container, Flex , Text} from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
 import useEmit from "~/hooks/useEmit";
+import Navbar from "~/components/Navbar";
 
 const Chat: NextPage = () => {
   const router = useRouter();
@@ -93,8 +94,9 @@ const Chat: NextPage = () => {
           h="100vh"
           justify="center"
           align="center"
-          backgroundColor={"gray.50"}
+          backgroundColor={"gray.500"}
         >
+          <Navbar />
           <Flex w={"100%"} h="90%" flexDir="column">
             <Header
               name={userPair ? userPair.nim : ""}

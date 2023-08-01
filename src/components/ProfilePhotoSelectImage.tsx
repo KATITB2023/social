@@ -8,11 +8,11 @@ export const ProfilePhotoSelectImage = ({
   changeImage
 }: {
   open: boolean;
-  setOpen: any;
-  changeImage : any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  changeImage : React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
-  const [image, setImage] = useState<any>(undefined);
+  const [image, setImage] = useState<string | undefined>(undefined);
 
   function onImageChange(file: FileList) {
     if (file[0]){
@@ -138,7 +138,7 @@ export const ProfilePhotoSelectImage = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && changeImage(image); setOpen(false); setPictureSelected(false); 
+                pictureSelected && changeImage(image!); setOpen(false); setPictureSelected(false); 
               }}
             >
               <Text fontWeight={700} color={"white"} size={"SH5"}>

@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Layout from "~/layout";
 import { Container, Heading, theme, Text, Box, Button } from "@chakra-ui/react";
 import { useState } from "react";
+import ProfilePage from "./profile";
 
 const Home: NextPage = () => {
 
@@ -18,6 +19,7 @@ const Home: NextPage = () => {
       <Text size="B1">B1</Text>
       <Text size="B5">B5</Text>
       <Text size="A">Additional</Text>
+      <ProfilePage />
     </Layout>
   );
 };
