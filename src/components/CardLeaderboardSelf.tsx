@@ -8,7 +8,13 @@ interface CardProps {
   ranking: number;
   points: string;
 }
-const CardSelf = ({ Name, Nim, image, ranking, points }: CardProps) => {
+const CardLeaderboardSelf = ({
+  Name,
+  Nim,
+  image,
+  ranking,
+  points,
+}: CardProps) => {
   const isOverflowing = (Name: string) => {
     let tes: string = "";
     for (let i = 0; i < Name.length; i++) {
@@ -119,4 +125,4 @@ const CardSelf = ({ Name, Nim, image, ranking, points }: CardProps) => {
   );
 };
 
-export default CardSelf;
+export default CardLeaderboardSelf;

@@ -9,7 +9,13 @@ interface CardProps {
   points: string;
 }
 
-const CardParticipant = ({ Name, Nim, image, ranking, points }: CardProps) => {
+const CardLeaderboardParticipant = ({
+  Name,
+  Nim,
+  image,
+  ranking,
+  points,
+}: CardProps) => {
   const isOverflowing = (Name: string) => {
     let tes: string = "";
     for (let i = 0; i < Name.length; i++) {
@@ -121,4 +127,4 @@ const CardParticipant = ({ Name, Nim, image, ranking, points }: CardProps) => {
   );
 };
 
-export default CardParticipant;
+export default CardLeaderboardParticipant;
