@@ -1,152 +1,116 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "@prisma/client";
-import {type SUBMISSION_STATUS} from "~/server/types/assignment";
-import { ASSIGNMENT_TYPE} from "~/server/types/assignment";
+import { AssignmentType } from "@prisma/client";
+import { type SUBMISSION_STATUS } from "~/server/types/assignment";
 
 export const assignmentRouter = createTRPCRouter({
+  viewAssignment: protectedProcedure
+    .input(
+      z.object({
+        assignmentId: z.string().uuid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const assignment = await ctx.prisma.assignment.findFirst({
+        where: {
+          id: input.assignmentId,
+        },
+      });
 
-    viewAssignment: protectedProcedure
+      // Error : Assignment not found
+      if (!assignment) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Assignment not found",
+        });
+      }
 
-        .input(
-            z.object({
-                assignmentId: z.string().uuid()
-            })
-        )
+      const submission = await ctx.prisma.assignmentSubmission.findFirst({
+        where: {
+          studentId: ctx.session.user.id,
+          assignmentId: input.assignmentId,
+        },
+      });
 
-        .query(async ({ ctx, input }) => {
-            
-            const assignment = await ctx.prisma.assignment.findFirst({
-                where: {
-                  id: input.assignmentId,
-                },
+      let submissionStatus: SUBMISSION_STATUS;
 
-                select: {
-                  id : true,
-                  title: true,
-                  filePath: true,
-                  description: true,
-                  startTime: true,
-                  endTime: true,
-                },
-            });
+      if (submission) {
+        // if assignment has been submitted
+        submissionStatus = "SUBMITTED";
+      } else {
+        const currentTime = new Date();
+        if (currentTime > assignment.endTime) {
+          // if current time passed assignment's deadline
+          submissionStatus = "PASSED_DEADLINE";
+        } else {
+          // if deadline has not been passed
+          submissionStatus = "NOT_SUBMITTED";
+        }
+      }
 
-            // Error : Assignment not found
-            if (!assignment) {
-                throw new TRPCError({
-                    code: "BAD_REQUEST",
-                    message: "Assignment not found",
-                });
-            }
+      return { ...assignment, submissionStatus, submission };
+    }),
 
-            const isSubmissionExists = await ctx.prisma.assignmentSubmission.findFirst({
-                where: {
-                    studentId: ctx.session.user.id, 
-                    assignmentId: input.assignmentId,
-                },
-            });
-            
-            let submissionStatus: SUBMISSION_STATUS;
-            
-            if (isSubmissionExists) { // if assignment has been submitted
-                submissionStatus = "SUBMITTED";
-            } else {
-                const currentTime = new Date();
-                if (currentTime > assignment.endTime) {
-                  // if current time passed assignment's deadline
-                  submissionStatus = "PASSED_DEADLINE";
-                } else {
-                  // if deadline has not been passed
-                  submissionStatus = "NOT_SUBMITTED";
-                }
-            }
+  getAssignmentList: protectedProcedure
+    .input(
+      z.object({
+        type: z.nativeEnum(AssignmentType).optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      // Get all assignments
+      const allAssignments = await ctx.prisma.assignment.findMany({
+        where: {
+          type: input.type,
+        },
+        include: {
+          submission: {
+            where: {
+              studentId: ctx.session.user.id,
+            },
+          },
+        },
+      });
 
-            return { ...assignment, submissionStatus };
-    
-        }),
+      return allAssignments.map((assignment) => {
+        const submission = assignment.submission[0];
 
-        getAssignmentList: protectedProcedure
-        .input(z.object({
-            type : z.nativeEnum(ASSIGNMENT_TYPE).optional(),
-        }))
-    
-        .query(async ({input, ctx}) => {
-            
-            // Get all assignments
-            const allAssignments = await ctx.prisma.assignment.findMany({
-                where: {
-                    type: input.type,
-                },
-                select: {
-                    id : true,
-                    title: true,
-                    filePath: true,
-                    description: true,
-                    startTime: true,
-                    endTime: true,
-                    type: true,
-                }
-            });
-    
-            // Iterate over every assignment
-            const assignmentsList = await Promise.all(allAssignments.map(async (assignment) => {
-                const isSubmissionExists = await ctx.prisma.assignmentSubmission.findFirst({
-                    where: {
-                        studentId: ctx.session.user.id, 
-                        assignmentId: assignment.id,
-                    },
-                });
-    
-                // Get score
-                let score : number | null = null;
-                if (isSubmissionExists) {
-                    score = isSubmissionExists.score;
-                } else {
-                    score = null;
-                }
-                
-                // Get submission status
-                let submissionStatus: SUBMISSION_STATUS;
-    
-                if (isSubmissionExists) { // if assignment has been submitted
-                    submissionStatus = "SUBMITTED";
-                } else {
-                    const currentTime = new Date();
-                    if (currentTime > assignment.endTime) {
-                        // if current time passed assignment's deadline
-                        submissionStatus = "PASSED_DEADLINE";
-                    } else {
-                        // if deadline has not been passed
-                        submissionStatus = "NOT_SUBMITTED";
-                    }
-                }
-    
-                return { ...assignment, submissionStatus, score };
-            }));
-    
-            return assignmentsList;
-    
-        }),
-  
-  
+        // Get submission status
+        let submissionStatus: SUBMISSION_STATUS;
+
+        if (submission) {
+          // if assignment has been submitted
+          submissionStatus = "SUBMITTED";
+        } else {
+          const currentTime = new Date();
+          if (currentTime > assignment.endTime) {
+            // if current time passed assignment's deadline
+            submissionStatus = "PASSED_DEADLINE";
+          } else {
+            // if deadline has not been passed
+            submissionStatus = "NOT_SUBMITTED";
+          }
+        }
+
+        return {
+          ...assignment,
+          submissionStatus,
+          score: submission ? submission.score : null,
+        };
+      });
+    }),
   submitAssignment: protectedProcedure
-
     .input(
       z.object({
         assignmentId: z.string().uuid(),
         filePath: z.string(),
       })
     )
-
     .query(async ({ ctx, input }) => {
       const assignment = await ctx.prisma.assignment.findFirst({
         where: {
           id: input.assignmentId,
-        },
-
-        select: {
-          endTime: true,
         },
       });
 
@@ -176,21 +140,23 @@ export const assignmentRouter = createTRPCRouter({
           },
         });
 
-      if (isSubmissionExists) { // Update existing submission
+      if (isSubmissionExists) {
+        // Update existing submission
 
         // Get latest assignment submission score
-        const prevAssgnScore = await ctx.prisma.assignmentSubmission.findFirst({
-          where: {
-            studentId: ctx.session.user.id,
-            assignmentId: input.assignmentId,
-          },
-          select: {
-            score: true,
-          },
-        });
+        const prevAssgnScore =
+          await ctx.prisma.assignmentSubmission.findFirstOrThrow({
+            where: {
+              studentId: ctx.session.user.id,
+              assignmentId: input.assignmentId,
+            },
+            select: {
+              score: true,
+            },
+          });
 
         // Get latest user's point
-        const prevUserPoint = await ctx.prisma.profile.findFirst({
+        const prevUserPoint = await ctx.prisma.profile.findFirstOrThrow({
           where: {
             userId: ctx.session.user.id,
           },
@@ -199,17 +165,19 @@ export const assignmentRouter = createTRPCRouter({
           },
         });
 
-        let updatedPoint = prevUserPoint.point - prevAssgnScore.score;
+        if (prevAssgnScore.score !== null) {
+          const updatedPoint = prevUserPoint.point - prevAssgnScore.score;
 
-        // Update user's point
-        await ctx.prisma.profile.update({
-          where: {
-            userId: ctx.session.user.id,
-          },
-          data: {
-            point: updatedPoint,
-          },
-        });
+          // Update user's point
+          await ctx.prisma.profile.update({
+            where: {
+              userId: ctx.session.user.id,
+            },
+            data: {
+              point: updatedPoint,
+            },
+          });
+        }
 
         // Replace existing submission
         await ctx.prisma.assignmentSubmission.update({
@@ -223,33 +191,25 @@ export const assignmentRouter = createTRPCRouter({
         });
 
         return "Tugas berhasil direvisi";
-      } else {  // Create new submission
-
-        let createNewSubmission: Prisma.AssignmentSubmissionCreateInput;
-
-        createNewSubmission = {
-          filePath: input.filePath,
-          score: null,
-          student: {
-            connect: {
-              id: ctx.session.user.id,
-            },
-          },
-          assignment: {
-            connect: {
-              id: input.assignmentId,
-            },
-          },
-        };
-
+      } else {
         await ctx.prisma.assignmentSubmission.create({
-          data: createNewSubmission,
+          data: {
+            filePath: input.filePath,
+            score: null,
+            student: {
+              connect: {
+                id: ctx.session.user.id,
+              },
+            },
+            assignment: {
+              connect: {
+                id: input.assignmentId,
+              },
+            },
+          },
         });
 
         return "Tugas berhasil dikumpulkan";
       }
     }),
-    
-
-})
-
+});
