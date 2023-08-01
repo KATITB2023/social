@@ -56,7 +56,7 @@ const CardLeaderboardParticipant = ({
         justifyContent="center"
         marginLeft="12px"
       >
-        <Text size="B2" color="#FFFFFF" fontWeight="600">
+        <Text size="B2" color="white" fontWeight="600">
           #{ranking}
         </Text>
       </Flex>
@@ -65,7 +65,7 @@ const CardLeaderboardParticipant = ({
         w="45px"
         h="45px"
         margin="auto 15px"
-        bgColor="#FFFC83"
+        bgColor="yellow.5"
         borderRadius="full"
         alignItems="center"
         justifyContent="center"
@@ -90,10 +90,10 @@ const CardLeaderboardParticipant = ({
         whiteSpace="nowrap"
         overflow="hidden"
       >
-        <Text fontWeight="600" size="B3" color="#FFFFFF">
+        <Text fontWeight="600" size="B3" color="white">
           {isOverflowing(Name)}
         </Text>
-        <Text size="B5" marginTop="-5px" color="#FFFFFF">
+        <Text size="B5" marginTop="-5px" color="white">
           {Nim}
         </Text>
       </Box>
@@ -104,7 +104,7 @@ const CardLeaderboardParticipant = ({
         left="240px"
         top="16px"
         borderRadius="12px"
-        bgColor="#340C8F"
+        bgColor="purple.1"
         alignItems="center"
         justifyContent="center"
         marginTop="2px"
@@ -114,11 +114,11 @@ const CardLeaderboardParticipant = ({
           w="70px"
           h="25px"
           borderRadius="11px"
-          bgColor="#FFFC83"
+          bgColor="yellow.5"
           alignItems="center"
           justifyContent="center"
         >
-          <Text size="B4" color="#340C8F" fontWeight="700">
+          <Text size="B4" color="purple.1" fontWeight="700">
             {points}
           </Text>
         </Flex>
