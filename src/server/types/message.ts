@@ -1,5 +1,9 @@
 import { type Message } from "@prisma/client";
 
+export enum ChatTopic {
+  ITB = "ITB",
+}
+
 export interface ChatHeader {
   message: Message;
   user: {

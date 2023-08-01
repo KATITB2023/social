@@ -5,6 +5,7 @@ import useEmit from "~/hooks/useEmit";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSubscription from "~/hooks/useSubscription";
+import { ChatTopic } from "~/server/types/message";
 
 const Match: NextPage = () => {
   const router = useRouter();
@@ -41,7 +42,11 @@ const Match: NextPage = () => {
   useEffect(() => {
     if (!queued && needQueue && !foundMatch) {
       console.log("request queue");
-      queueEmit.mutate({ baka: "yayaya" });
+      queueEmit.mutate({
+        isAnonymous: true,
+        isFindingFriend: true,
+        topic: ChatTopic.ITB,
+      });
       setQueued(true);
     }
   }, [queued, needQueue, queueEmit, foundMatch]);
