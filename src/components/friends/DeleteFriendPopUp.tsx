@@ -1,13 +1,14 @@
 import {
     Box, 
-    Flex, 
+    Flex,
+    Button, 
     IconButton, 
     Text 
 } from '@chakra-ui/react';
 import { RxCross2 } from "react-icons/rx";
-import { MdDone } from "react-icons/md";
+import { MdQuestionMark } from "react-icons/md";
 
-export default function PopUpNewFriend() {
+export default function DeleteFriendPopUp() {
   return (
     <Flex
         position="fixed"
@@ -22,7 +23,7 @@ export default function PopUpNewFriend() {
     >
         <Box
         width="272px" 
-        height="281px" 
+        height="349px" 
         backgroundColor="#340C8F"
         padding="40px 28px"
         borderRadius={24}
@@ -48,7 +49,7 @@ export default function PopUpNewFriend() {
         </Flex>
         <Box
             borderRadius="36px"
-            background="#2FC1AD"
+            background="#FFFC83"
             width="48px"
             height="48px"
             display="flex"
@@ -56,8 +57,8 @@ export default function PopUpNewFriend() {
             alignItems="center"
             margin="20px auto"
         >
-            <MdDone
-            size={24}
+            <MdQuestionMark
+            size={32}
             color="#000000"
             opacity="50%" 
             />
@@ -86,7 +87,7 @@ export default function PopUpNewFriend() {
             textTransform="uppercase"
             color="#FFFFFF"
             >
-            NEW FRIEND!
+            DELETE
             </Text>
             <Text
             size="B3"
@@ -97,8 +98,68 @@ export default function PopUpNewFriend() {
             textAlign="center"
             color="rgba(255, 255, 255, 0.6)"
             >
-            Selamat kamu mendapatkan teman baru
+            Yakin ingin menghapus "nama" dari request?
             </Text>
+        </Flex>
+        <Flex
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="flex-start"
+            padding="0px"
+            gap="20px"
+            width="216px"
+            marginTop="20px"
+            height="48px"
+            order="3"
+            alignSelf="stretch"
+        >
+            <Button
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding="12px 32px"
+            gap="12px"
+            width="98px"
+            height="48px"
+            background="#2F2E2E"
+            border="2px solid #FFFC83"
+            borderRadius="12px"
+            >
+            <Text
+                width="57px"
+                height="24px"
+                size="SH5"
+                fontWeight={700}
+                lineHeight="150%"
+                color="#FFFC83"
+            >
+            Cancel
+            </Text> 
+            </Button>
+            <Button
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding="12px 32px"
+            gap="12px"
+            width="98px"
+            height="48px"
+            background="#E8553E"
+            borderRadius="12px"
+            >
+            <Text
+                width="53px"
+                height="24px"
+                size="SH5"
+                fontWeight={700}
+                lineHeight="150%"
+                color="#FFFFFF"
+            >
+            Delete
+            </Text> 
+            </Button>
         </Flex>
         </Box>
     </Flex>
