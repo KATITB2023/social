@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import WebcamComponent from "./WebcamComponent";
 import { Box, Image, Text, Button, Collapse} from "@chakra-ui/react";
 
-export const ProfilePhotoSelectImage = ({
+export const SelectPhotoImageProfile = ({
   open,
   setOpen,
   changeImage
