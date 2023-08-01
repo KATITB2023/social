@@ -40,7 +40,7 @@ const Navbar: NextPage = () => {
           w="90%"
           minHeight="60px"
           borderRadius="50px"
-          position="fixed"
+          position="absolute"
           top="20px"
           flexDir="row"
           alignItems="center"
