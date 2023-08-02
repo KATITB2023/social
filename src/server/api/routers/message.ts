@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { type ChatHeader } from "~/server/types/message";
+import { type NonAnonChatHeader } from "~/server/types/message";
 
 export const messageRouter = createTRPCRouter({
   infinite: protectedProcedure
@@ -24,11 +24,11 @@ export const messageRouter = createTRPCRouter({
         },
         cursor: input.cursor
           ? {
-              createdAt_id: {
-                createdAt: input.cursor.date,
-                id: input.cursor.id,
-              },
-            }
+            createdAt_id: {
+              createdAt: input.cursor.date,
+              id: input.cursor.id,
+            },
+          }
           : undefined,
         take: input.take + 1,
         skip: 0,
@@ -100,13 +100,93 @@ export const messageRouter = createTRPCRouter({
       },
     });
   }),
-  chatHeader: protectedProcedure.query(
-    // delete me after implementation
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async ({ ctx }): Promise<ChatHeader[]> => {
-      return [];
-    }
-  ),
+  chatHeader: protectedProcedure.input(
+    z.object(
+      {
+        limit: z.number().min(5).max(40).default(20),
+        page: z.number().min(1).default(1),
+      }
+    )
+  )
+    .query(
+      async ({ ctx, input }): Promise<NonAnonChatHeader[]> => {
+        const chatHeaders = await ctx.prisma.message.findMany({
+          orderBy: {
+            createdAt: "desc",
+          },
+          where: {
+            OR: [
+              {
+                receiverId: ctx.session.user.id,
+              },
+              {
+                senderId: ctx.session.user.id,
+              },
+            ],
+            userMatchId: null,
+          },
+          distinct: ["senderId", "receiverId"],
+          include: {
+            sender: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+            receiver: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    name: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+          skip: input.limit * (input.page - 1),
+          take: input.limit,
+        });
+
+        return Promise.all(chatHeaders.map(async (chatHeader) => {
+          const otherUser = chatHeader.sender.id === ctx.session.user.id ? chatHeader.receiver : chatHeader.sender;
+
+          if (!otherUser.profile) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Other user profile not found",
+            });
+          }
+
+          const unreadCount = await ctx.prisma.message.aggregate({
+            _count: {
+              id: true,
+            },
+            where: {
+              receiverId: ctx.session.user.id,
+              senderId: otherUser.id,
+              isRead: false,
+            },
+          });
+
+          return {
+            user: {
+              id: otherUser.id,
+              name: otherUser.profile.name,
+              profileImage: otherUser.profile.image ? otherUser.profile.image : "profileImage Not Found",
+            },
+            lastMessage: chatHeader,
+            unreadMessageCount: unreadCount._count.id
+          };
+        }));
+      }
+    ),
   reportUser: protectedProcedure
     .input(
       // Menerima input berupa uuid pengguna
