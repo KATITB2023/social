@@ -51,7 +51,7 @@ const inputAssignmentData: { [key: string]: string | undefined } = {
 };
 
 const inputSubmissionData: submission = {
-  isSubmitted: false,
+  isSubmitted: true,
   filePath: "lorem.pdf",
   submissionDate: "00/00/00 00.00",
 };
@@ -268,7 +268,7 @@ function FileUpload(param: submission) {
       flexDirection="column"
       py="10px"
     >
-      <Image src="/kometfile.svg" />
+      <Image src="/komethello.svg" />
       <Box
         borderColor={"white"}
         px="10px"
