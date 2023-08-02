@@ -4,13 +4,22 @@ export enum ChatTopic {
   ITB = "ITB",
 }
 
-export interface ChatHeader {
-  message: Message;
+export interface AnonChatHeader {
   user: {
     id: string;
     name: string;
     profileImage: string;
   };
+}
+
+export interface NonAnonChatHeader {
+  lastMessage: Message;
+  user: {
+    id: string;
+    name: string;
+    profileImage: string;
+  };
+  unreadMessageCount: number;
 }
 
 export interface UserQueue {
