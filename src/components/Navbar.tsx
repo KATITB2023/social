@@ -66,6 +66,7 @@ const Navbar: NextPage = () => {
             objectFit="cover"
             objectPosition="center"
             borderRadius="50px"
+            alt="navbar"
           ></Image>
           <Image
             objectFit="cover"
