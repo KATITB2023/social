@@ -1,12 +1,15 @@
 import { createEvent } from "~/server/socket/helper";
 import { z } from "zod";
 import { cancelQueue, findMatch } from "~/server/socket/messaging/queue";
+import { ChatTopic } from "~/server/types/message";
 
 export const findMatchEvent = createEvent(
   {
     name: "findMatch",
     input: z.object({
-      baka: z.string().default("bakabaka"),
+      isAnonymous: z.boolean(),
+      topic: z.nativeEnum(ChatTopic),
+      isFindingFriend: z.boolean(),
     }),
     authRequired: true,
   },
