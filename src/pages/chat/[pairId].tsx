@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
-import { Container, Flex , Text} from "@chakra-ui/react";
+import { Container, Flex, Text, Box } from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
@@ -88,15 +88,20 @@ const Chat: NextPage = () => {
 
   return (
     <Layout title="Chat">
-      <Container>
+      <Box position={"relative"}>
         <Flex
-          w="100%"
+          w="full"
+          minW={"full"}
           h="100vh"
           justify="center"
           align="center"
           backgroundColor={"gray.500"}
+          flexDirection={"column"}
         >
-          <Navbar />
+          {/* Navbar */}
+          <Navbar />    
+
+          {/* Chat messages */}
           <Flex w={"100%"} h="90%" flexDir="column">
             <Header
               name={userPair ? userPair.nim : ""}
@@ -119,7 +124,7 @@ const Chat: NextPage = () => {
             />
           </Flex>
         </Flex>
-      </Container>
+      </Box>
     </Layout>
   );
 };

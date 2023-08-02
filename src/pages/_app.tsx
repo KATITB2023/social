@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
+import Navbar from "~/components/Navbar";
 
 const colors = {
   test: {
