@@ -22,10 +22,10 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         alt="background"
         height="100%"
         zIndex="-1"
-        position="absolute"
+        position="fixed"
         objectFit="cover"
-        minWidth="100%"
         width="100%"
+        maxWidth={"375px"}
       />
       <Flex flexDirection="column">
         <Navbar 
@@ -350,7 +350,6 @@ export default function AssignmentListPage() {
         justifyContent="space-between"
         gap="40px"
         mx="24px"
-        my="140px"
       >
         <Heading color="#ffe655" size="H4" alignSelf="center" >
           Assignment List
@@ -358,6 +357,11 @@ export default function AssignmentListPage() {
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
         {boxContent === "Daily Quest" ? (
           <>
+            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
+            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
+            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
+            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
+            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="terlambat" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="belum terkumpul" deadline="00/00/00 00.00" />
