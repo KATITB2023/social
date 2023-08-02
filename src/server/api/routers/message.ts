@@ -182,4 +182,29 @@ export const messageRouter = createTRPCRouter({
         });
       }
     }),
+  updateIsRead: protectedProcedure
+    .input(
+      // Menerima input berupa id pengirim dan id penerima
+      z.object({
+        senderId: z.string().uuid(),
+        receiverId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.message.updateMany({
+        where: {
+          AND: [
+            {
+              receiverId: input.receiverId,
+            },
+            {
+              senderId: input.senderId,
+            },
+          ],
+        },
+        data: {
+          isRead: true,
+        },
+      });
+    }),
 });
