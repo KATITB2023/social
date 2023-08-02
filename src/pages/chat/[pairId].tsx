@@ -28,6 +28,8 @@ const Chat: NextPage = () => {
     }
   );
 
+  const updateMessageIsRead = api.message.updateIsRead.useMutation();
+
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
 
@@ -54,6 +56,12 @@ const Chat: NextPage = () => {
   useEffect(() => {
     const msgs = messageQuery.data?.pages.map((page) => page.items).flat();
     addMessages(msgs);
+    if (session) {
+      updateMessageIsRead.mutate({
+        receiverId: session.user.id,
+        senderId: pairId,
+      });
+    }
   }, [messageQuery.data?.pages, addMessages]);
 
   // Subscribe to new posts and add
@@ -66,6 +74,12 @@ const Chat: NextPage = () => {
         post.userMatchId === null
       ) {
         addMessages([post]);
+        if (session) {
+          updateMessageIsRead.mutate({
+            receiverId: session.user.id,
+            senderId: pairId,
+          });
+        }
       }
     },
     [session, messageQuery]
