@@ -8,7 +8,7 @@ export interface AnonChatHeader {
   user: {
     id: string;
     name: string;
-    profileImage: string;
+    profileImage: string | null;
   };
 }
 
@@ -17,7 +17,7 @@ export interface NonAnonChatHeader {
   user: {
     id: string;
     name: string;
-    profileImage: string;
+    profileImage: string | null;
   };
   unreadMessageCount: number;
 }

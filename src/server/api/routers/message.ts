@@ -24,11 +24,11 @@ export const messageRouter = createTRPCRouter({
         },
         cursor: input.cursor
           ? {
-            createdAt_id: {
-              createdAt: input.cursor.date,
-              id: input.cursor.id,
-            },
-          }
+              createdAt_id: {
+                createdAt: input.cursor.date,
+                id: input.cursor.id,
+              },
+            }
           : undefined,
         take: input.take + 1,
         skip: 0,
@@ -100,62 +100,64 @@ export const messageRouter = createTRPCRouter({
       },
     });
   }),
-  chatHeader: protectedProcedure.input(
-    z.object(
-      {
+  chatHeader: protectedProcedure
+    .input(
+      z.object({
         limit: z.number().min(5).max(40).default(20),
         page: z.number().min(1).default(1),
-      }
+      })
     )
-  )
-    .query(
-      async ({ ctx, input }): Promise<NonAnonChatHeader[]> => {
-        const chatHeaders = await ctx.prisma.message.findMany({
-          orderBy: {
-            createdAt: "desc",
-          },
-          where: {
-            OR: [
-              {
-                receiverId: ctx.session.user.id,
-              },
-              {
-                senderId: ctx.session.user.id,
-              },
-            ],
-            userMatchId: null,
-          },
-          distinct: ["senderId", "receiverId"],
-          include: {
-            sender: {
-              select: {
-                id: true,
-                profile: {
-                  select: {
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
+    .query(async ({ ctx, input }): Promise<NonAnonChatHeader[]> => {
+      const chatHeaders = await ctx.prisma.message.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          OR: [
+            {
+              receiverId: ctx.session.user.id,
             },
-            receiver: {
-              select: {
-                id: true,
-                profile: {
-                  select: {
-                    name: true,
-                    image: true,
-                  },
+            {
+              senderId: ctx.session.user.id,
+            },
+          ],
+          userMatchId: null,
+        },
+        distinct: ["senderId", "receiverId"],
+        include: {
+          sender: {
+            select: {
+              id: true,
+              profile: {
+                select: {
+                  name: true,
+                  image: true,
                 },
               },
             },
           },
-          skip: input.limit * (input.page - 1),
-          take: input.limit,
-        });
+          receiver: {
+            select: {
+              id: true,
+              profile: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        skip: input.limit * (input.page - 1),
+        take: input.limit,
+      });
 
-        return Promise.all(chatHeaders.map(async (chatHeader) => {
-          const otherUser = chatHeader.sender.id === ctx.session.user.id ? chatHeader.receiver : chatHeader.sender;
+      return Promise.all(
+        chatHeaders.map(async (chatHeader) => {
+          const otherUser =
+            chatHeader.sender.id === ctx.session.user.id
+              ? chatHeader.receiver
+              : chatHeader.sender;
 
           if (!otherUser.profile) {
             throw new TRPCError({
@@ -179,14 +181,14 @@ export const messageRouter = createTRPCRouter({
             user: {
               id: otherUser.id,
               name: otherUser.profile.name,
-              profileImage: otherUser.profile.image ? otherUser.profile.image : "profileImage Not Found",
+              profileImage: otherUser.profile.image,
             },
             lastMessage: chatHeader,
-            unreadMessageCount: unreadCount._count.id
+            unreadMessageCount: unreadCount._count.id,
           };
-        }));
-      }
-    ),
+        })
+      );
+    }),
   reportUser: protectedProcedure
     .input(
       // Menerima input berupa uuid pengguna
