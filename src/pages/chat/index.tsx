@@ -137,14 +137,15 @@ const ExistingChat = () => {
               {text}
             </Text>
           </Flex>
-          <VStack>
-            <Text color="yellow.5" as="b">
+          <Flex direction="column" justify="space-between" align="flex-end" h="100%" >
+            <Text color="yellow.3" >
               {time.getHours()}.{time.getMinutes()}
             </Text>{" "}
-            <Text color="yellow.5" as="b">
+        
+            <Text color="yellow.5" bg="#E8553E" borderRadius="5px" p="2px 5px 0px 5px" >
               {count}
             </Text>
-          </VStack>
+          </Flex>
         </HStack>
       </CardHomeChat>
     );
