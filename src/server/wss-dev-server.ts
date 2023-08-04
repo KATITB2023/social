@@ -1,11 +1,11 @@
 import { Server } from "socket.io";
 import { env } from "~/env.cjs";
-import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import parser from "~/server/socket/parser";
+import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import type { SocketServer } from "~/server/socket/setup";
 import { getAdapter, setupSocket } from "~/server/socket/setup";
 
-void (async () => {
+void (() => {
   const port = parseInt(process.env.PORT || "3001", 10);
 
   const io: SocketServer = new Server(port, {
@@ -14,7 +14,7 @@ void (async () => {
       credentials: true,
     },
     parser,
-    adapter: await getAdapter(),
+    adapter: getAdapter(),
     transports: ["websocket"],
   });
 
