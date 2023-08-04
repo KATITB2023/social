@@ -25,13 +25,13 @@ export const leaderboardRouter = createTRPCRouter({
     })
     
     let leaderboardData:Leaderboard[] = []
-    let currentRank = ((input.page - 1) * 5) + 1
+    let currentRank = ((input.page - 1) * input.limit) + 1
     let totalSamePoint = 0
     let stillSame = false
 
     for (const profile of profileData) {
       // Cek poin sama/tidak dengan point user sebelumnya 
-      if (leaderboardData[0] && leaderboardData[(currentRank-((input.page - 1)*5)) + totalSamePoint - 2]?.point == profile.point){
+      if (leaderboardData[0] && leaderboardData[(currentRank-((input.page - 1) * input.limit)) + totalSamePoint - 2]?.point == profile.point){
         currentRank--;
         totalSamePoint++
         stillSame = true
