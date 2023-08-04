@@ -1,7 +1,8 @@
-import { createEvent } from "~/server/socket/helper";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { createEvent } from "~/server/socket/helper";
 import { cancelQueue, findMatch } from "~/server/socket/messaging/queue";
-import { ChatTopic } from "~/server/types/message";
+import { ChatTopic, type UserQueue } from "~/server/types/message";
 
 export const findMatchEvent = createEvent(
   {
@@ -18,9 +19,26 @@ export const findMatchEvent = createEvent(
       return;
     }
     const userSession = ctx.client.data.session.user;
+    const profile = await ctx.prisma.profile.findUnique({
+      where: {
+        userId: userSession.id,
+      },
+      select: {
+        gender: true,
+      },
+    });
 
-    const userQueue = {
+    if (!profile || !profile.gender) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Gender must be set to find a match.",
+      });
+    }
+
+    const userQueue: UserQueue = {
       userId: userSession.id,
+      ...input,
+      gender: profile.gender,
     };
 
     const matchResult = await findMatch(userQueue);
