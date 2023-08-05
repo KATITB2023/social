@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { Flex, Input, Button } from "@chakra-ui/react";
 import useEmit from "~/hooks/useEmit";
 
@@ -9,16 +10,23 @@ interface FooterProps {
 }
 
 const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
+  const router = useRouter();
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
   const isTyping = useEmit(clientEvent);
+  const endMatch = useEmit("endMatch");
 
   const handleSubmit = (text: string) => {
     if (text !== "") {
       onSubmit(text);
       setText("");
     }
+  };
+
+  const handleEndMatch = () => {
+    endMatch.mutate(undefined);
+    router.push("/");
   };
 
   const onKeyDownCustom: React.KeyboardEventHandler<HTMLInputElement> = (
@@ -46,6 +54,9 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
 
   return (
     <Flex w="100%" mt="5">
+      <Button colorScheme="teal" size="sm" onClick={handleEndMatch}>
+        End Match
+      </Button>
       <Input
         placeholder="Type Something..."
         border="none"
