@@ -264,4 +264,116 @@ export const messageRouter = createTRPCRouter({
         });
       }
     }),
+  updateIsRead: protectedProcedure
+    .input(
+      // Menerima input berupa id pengirim dan id penerima
+      z.object({
+        senderId: z.string().uuid(),
+        receiverId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        AND: [
+          {
+            receiverId: input.receiverId,
+          },
+          {
+            senderId: input.senderId,
+          },
+          {
+            userMatchId: null,
+          },
+          {
+            isRead: false,
+          },
+        ],
+      };
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
+    }),
+  updateIsReadByMatchId: protectedProcedure
+    .input(
+      z.object({
+        userMatchId: z.string().uuid(),
+        receiverId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        AND: [
+          {
+            receiverId: input.receiverId,
+          },
+          {
+            userMatchId: input.userMatchId,
+          },
+          {
+            isRead: false,
+          },
+        ],
+      };
+
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
+    }),
+  updateOneIsRead: protectedProcedure
+    .input(
+      z.object({
+        messageId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        id: input.messageId,
+        isRead: false,
+      };
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
+    }),
 });
