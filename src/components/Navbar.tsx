@@ -16,6 +16,7 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Spacer,
 } from "@chakra-ui/react";
 import {
   MdPersonAddAlt,
@@ -58,8 +59,10 @@ const Navbar: NextPage = () => {
     <Layout title="Navbar">
 
       {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
-      <Box
+      <Flex
+        position={"relative"}
         display={"block"}
+        backgroundColor={"transparent"}
         h={"60px"}
         my={"20px"}
       />
@@ -80,10 +83,11 @@ const Navbar: NextPage = () => {
         alignItems="center"
         paddingY="2%"
         paddingX="22px"
-        boxShadow="0px 0px 10px #FFFC83"
+        boxShadow = "0px 0px 20px 0px #FFFC8366"
         transitionDuration={"0.3s"}
         transitionTimingFunction={"ease-in-out"}
       >
+
         <Box
           backgroundColor="#0B0A0A"
           opacity="0.6"
