@@ -24,7 +24,7 @@ import { useRouter } from 'next/router';
 import { UserRole } from '@prisma/client';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Head from 'next/head';
-import LoginBackground from '~/pages/login-background';
+import LoginBackground from '~/components/login/login-background';
 import Navbar from '~/components/Navbar';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
@@ -118,6 +118,7 @@ const login: SubmitHandler<FormValues> = async (data: FormValues, event) => {
   }
 
   handleLoggedIn();
+  console.log(session);
   reset();
 };
 
