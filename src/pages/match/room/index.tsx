@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
@@ -13,7 +14,10 @@ import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
 
 const Room: NextPage = () => {
+  const router = useRouter();
+
   useSession({ required: true });
+
   const [match, setMatch] = useState<UserMatch | null>(null);
 
   const checkMatch = useEmit("checkMatch", {
@@ -89,6 +93,19 @@ const Room: NextPage = () => {
           setCurrentlyTyping(true);
         } else {
           setCurrentlyTyping(false);
+        }
+      }
+    },
+    [match, messageQuery]
+  );
+
+  useSubscription(
+    "endMatch",
+    (data) => {
+      if (match) {
+        if (data.endedAt !== null) {
+          setMatch(null);
+          router.push("/");
         }
       }
     },
