@@ -12,6 +12,7 @@ import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
 import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
+import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -138,11 +139,14 @@ const Room: NextPage = () => {
                   isFetchingPreviousPage={isFetchingPreviousPage}
                 />
                 <Divider />
-                <Footer
-                  onSubmit={(text) => messageEmit.mutate({ message: text })}
-                  receiverId={match.id}
-                  isAnon={true}
-                />
+                <Flex>
+                  <AnonFooterMenu />
+                  <Footer
+                    onSubmit={(text) => messageEmit.mutate({ message: text })}
+                    receiverId={match.id}
+                    isAnon={true}
+                  />
+                </Flex>
               </Flex>
             </Flex>
           </>
