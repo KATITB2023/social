@@ -51,7 +51,7 @@ const inputAssignmentData: { [key: string]: string | undefined } = {
 };
 
 const inputSubmissionData: submission = {
-  isSubmitted: false,
+  isSubmitted: true,
   filePath: "lorem.pdf",
   submissionDate: "00/00/00 00.00",
 };
@@ -61,15 +61,15 @@ export default function showSubmissionPage() {
   const [isSubmitOpen, setSubmitOpen] = useState(false);
 
   return (
-    <Flex height="100vh" width="100vw">
+    <Flex minHeight="100vh" minWidth="100vw">
       <Image
         src="background.svg"
         alt="wheew wheew *pretend as if the background is in outer space*"
         zIndex="-1"
         position="absolute"
         objectFit="cover"
-        width="100%"
-        height="100%"
+        minWidth="100%"
+        minHeight="100%"
       />
       <Flex flexDirection="column">
         <Navbar />
