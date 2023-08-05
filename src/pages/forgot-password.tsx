@@ -11,7 +11,7 @@ import {
   } from '@chakra-ui/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Navbar from '~/components/Navbar';
-import LoginBackground from '~/pages/login-background';
+import LoginBackground from '~/components/login/login-background';
   
   type childrenOnlyProps = {
     children: string | JSX.Element | JSX.Element[];
