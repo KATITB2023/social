@@ -54,10 +54,8 @@ const Navbar: NextPage = () => {
     };
   });
 
-
   return (
     <Layout title="Navbar">
-
       {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
       <Flex
         position={"relative"}
@@ -83,11 +81,10 @@ const Navbar: NextPage = () => {
         alignItems="center"
         paddingY="2%"
         paddingX="22px"
-        boxShadow = "0px 0px 20px 0px #FFFC8366"
+        boxShadow="0px 0px 20px 0px #FFFC8366"
         transitionDuration={"0.3s"}
         transitionTimingFunction={"ease-in-out"}
       >
-
         <Box
           backgroundColor="#0B0A0A"
           opacity="0.6"
@@ -119,6 +116,7 @@ const Navbar: NextPage = () => {
 
         <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
           <Icon
+            cursor={"pointer"}
             color="white"
             as={MdPersonAddAlt}
             height="30px"
@@ -126,6 +124,7 @@ const Navbar: NextPage = () => {
             marginRight="10px"
           />
           <Image
+            cursor={"pointer"}
             src="/hamburgermenu.svg"
             height="30px"
             width="30px"
