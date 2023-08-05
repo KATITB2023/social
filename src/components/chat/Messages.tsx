@@ -43,7 +43,17 @@ const Messages = ({
   }, [shouldScroll, messages.length]);
 
   return (
-    <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
+    <Flex
+      w="100%"
+      overflowY="auto"
+      flexDirection="column"
+      p="3"
+      sx={{
+        "::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
+    >
       <div ref={infinityRef} />
       {messages.map((item) => {
         if (item.senderId === session?.user.id) {

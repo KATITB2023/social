@@ -361,8 +361,6 @@ export default function AssignmentListPage() {
             <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
-            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
-            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="terlambat" deadline="00/00/00 00.00" />
             <TugasDailyQuest statusTugas="belum terkumpul" deadline="00/00/00 00.00" />
           </>

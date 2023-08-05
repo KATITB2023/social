@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
-import { Container, Flex, Text, Box } from "@chakra-ui/react";
+import { Container, Flex, Image, Box } from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
@@ -88,43 +88,77 @@ const Chat: NextPage = () => {
 
   return (
     <Layout title="Chat">
-      <Box position={"relative"}>
-        <Flex
-          w="full"
-          minW={"full"}
-          h="100vh"
-          justify="center"
-          align="center"
-          backgroundColor={"gray.500"}
-          flexDirection={"column"}
-        >
-          {/* Navbar */}
-          <Navbar />    
+      <Flex
+        w="100%"
+        h="100%"
+        position={"relative"}
+        backgroundImage="url('/background.svg')"
+        backgroundSize={"cover"}
+        backgroundRepeat={"no-repeat"}
+        overflowY={"hidden"}
+      >
+        {/* Ornaments for Backgrounds */}
+        <Image
+          src="/components/chat_page/chat_aura.svg"
+          position={"absolute"}
+          left={0}
+          top={"379px"}
+        />
+        <Image
+          src="/components/chat_page/chat_moon.svg"
+          position={"absolute"}
+          left={0}
+          top={"549px"}
+        />
+        <Image
+          src="/components/chat_page/chat_comet_left.svg"
+          position={"absolute"}
+          left={0}
+          top={"303px"}
+        />
+        <Image
+          src="/components/chat_page/chat_comet_right.svg"
+          position={"absolute"}
+          right={0}
+          top={"116px"}
+        />
+        <Image
+          src="/components/chat_page/chat_spark_kicik.svg"
+          position={"absolute"}
+          left={0}
+          top={0}
+        />
 
-          {/* Chat messages */}
-          <Flex w={"100%"} h="90%" flexDir="column">
-            <Header
-              name={userPair ? userPair.nim : ""}
-              isTyping={currentlyTyping}
-            />
-            <Divider />
-            <Messages
-              messages={messages ?? []}
-              hasPreviousPage={hasPreviousPage}
-              fetchPreviousPage={() => void fetchPreviousPage()}
-              isFetchingPreviousPage={isFetchingPreviousPage}
-            />
-            <Divider />
-            <Footer
-              onSubmit={(text) => {
-                messageEmit.mutate({ message: text, receiverId: pairId });
-              }}
-              receiverId={pairId}
-              isAnon={false}
-            />
-          </Flex>
+        {/* Room chat */}
+        <Flex
+          w={"100%"}
+          h="100vh"
+          flexDir="column"
+          justifyContent={"space-between"}
+          zIndex={1}
+        >
+          <Header
+            name={userPair ? userPair.nim : ""}
+            isTyping={currentlyTyping}
+          />
+          {/* <Divider /> */}
+          <Messages
+            messages={messages ?? []}
+            hasPreviousPage={hasPreviousPage}
+            fetchPreviousPage={() => void fetchPreviousPage()}
+            isFetchingPreviousPage={isFetchingPreviousPage}
+          />
+
+          {/* <Divider /> */}
+          <Footer
+            onSubmit={(text) => {
+              messageEmit.mutate({ message: text, receiverId: pairId });
+            }}
+            receiverId={pairId}
+            isAnon={false}
+          />
         </Flex>
-      </Box>
+      </Flex>
     </Layout>
   );
 };
