@@ -1,26 +1,37 @@
-import { type UserQueue } from "~/server/types/message";
 import { Redis } from "~/server/redis";
+import { type UserQueue } from "~/server/types/message";
 
 const serializeUserQueue = (queue: UserQueue) => {
   return `${queue.userId}`;
 };
 
-const deserializeUserQueue = (raw: string): UserQueue => {
+const deserializeUserQueue = (raw: string) => {
   return {
     userId: raw,
   };
 };
 
-const generateKey = (queue: UserQueue) => {
-  return "QUEUE:";
+const generateKey = (queue: UserQueue, toFind = false) => {
+  let key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}:${
+    queue.isFindingFriend ? 1 : 0
+  }`;
+  if (!queue.isFindingFriend) {
+    const gender = toFind
+      ? queue.gender === "FEMALE"
+        ? "MALE"
+        : "FEMALE"
+      : queue.gender;
+    key += `:${gender}`;
+  }
+  return key;
 };
 
 export const findMatch = async (queue: UserQueue) => {
-  const key = generateKey(queue);
+  const key = generateKey(queue, true);
   const redis = Redis.getClient();
   const redlock = Redis.getRedlock();
 
-  const lock = await redlock.acquire([`lock:${key}`], 5000);
+  let lock = await redlock.acquire([`lock:${key}`], 5000);
   console.log("lock acquired");
 
   let result;
@@ -35,7 +46,14 @@ export const findMatch = async (queue: UserQueue) => {
     const queueLength = await redis.llen(key);
 
     if (queueLength === 0) {
-      await redis.rpush(key, serializeUserQueue(queue));
+      if (!queue.isFindingFriend) {
+        await lock.release();
+        const insertKey = generateKey(queue, false);
+        lock = await redlock.acquire([`lock:${insertKey}`], 5000);
+        await redis.rpush(insertKey, serializeUserQueue(queue));
+      } else {
+        await redis.rpush(key, serializeUserQueue(queue));
+      }
       result = null;
     } else {
       const match = await redis.lpop(key);
@@ -52,7 +70,9 @@ export const findMatch = async (queue: UserQueue) => {
 
       result = {
         firstPair: matchQueue,
-        secondPair: queue,
+        secondPair: {
+          userId: queue.userId,
+        },
       };
     }
   } catch (e) {
