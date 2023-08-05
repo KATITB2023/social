@@ -90,8 +90,8 @@ const Chat: NextPage = () => {
     <Layout title="Chat">
       <Flex
         w="100%"
-        h="100%"
-        position={"relative"}
+        h="100vh"
+        pos={"relative"}
         backgroundImage="url('/background.svg')"
         backgroundSize={"cover"}
         backgroundRepeat={"no-repeat"}
@@ -142,6 +142,7 @@ const Chat: NextPage = () => {
             isTyping={currentlyTyping}
           />
           {/* <Divider /> */}
+
           <Messages
             messages={messages ?? []}
             hasPreviousPage={hasPreviousPage}

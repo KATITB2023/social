@@ -16,7 +16,7 @@ const Header = ({ name, isTyping }: HeaderProps) => {
       alignItems={"center"}
       mx={"auto"}
       my={"20px"}
-      h={"128px"}
+      minH={"128px"}
       w={"343px"}
       bg={"#191624"}
       borderTopLeftRadius={"50px"}
@@ -29,12 +29,13 @@ const Header = ({ name, isTyping }: HeaderProps) => {
       <Flex
         position={"absolute"}
         paddingX={"15px"}
-        bottom={"10px"}
         left={0}
+        bottom={"10px"}
         justifyContent={"start"}
         alignItems={"center"}
       >
         <Image
+          cursor={"pointer"}
           onClick={() => {
             router.back();
           }}

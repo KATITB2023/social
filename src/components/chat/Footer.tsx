@@ -81,6 +81,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         />
 
         <Image
+          cursor={"pointer"}
           display={text.length === 0 ? "none" : "block"}
           src="/components/chat_page/chat_submit.svg"
           borderRadius="full"
