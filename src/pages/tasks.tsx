@@ -32,7 +32,7 @@ import {
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import Navbar from "~/components/Navbar";
-import SubmitPopUp from "~/components/SubmitPopUp";
+import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 
 // Data Structure
 interface submission {
