@@ -20,11 +20,11 @@
     "start": "cross-env NODE_ENV=production node dist/server/prod-server.js",
     "studio": "prisma studio",
     "postinstall": "yarn generate",
-    "prepare": "husky install",
-    "seed": "env-cmd ts-node ./seeds/seed.ts"
+    "prepare": "husky install"
   },
   "prisma": {
-    "schema": "./node_modules/@katitb2023/database/schema.prisma"
+    "schema": "./node_modules/@katitb2023/database/schema.prisma",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.7.1",
