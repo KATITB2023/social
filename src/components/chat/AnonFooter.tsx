@@ -1,9 +1,9 @@
 import React from "react";
 import { useState } from "react";
 import useEmit from "~/hooks/useEmit";
-import { Text, Flex, Image, SlideFade } from "@chakra-ui/react";
+import { Text, Flex, Image, Collapse } from "@chakra-ui/react";
 
-const AnonFooterMenu = ({
+const AnonFooter = ({
   menuOpen,
   setMenuOpen,
 }: {
@@ -11,6 +11,8 @@ const AnonFooterMenu = ({
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const endMatch = useEmit("endMatch");
+  const [anonMenuOpen, setAnonMenuOpen] = useState(false);
+
 
   const handleEndMatch = () => {
     endMatch.mutate(undefined);
@@ -30,7 +32,7 @@ const AnonFooterMenu = ({
         flexDir={"row"}
         justifyContent={"center"}
         alignItems={"center"}
-        gap={"10px"}
+        gap={"5px"}
         px={"10px"}
         py={"5px"}
         onClick={() => {
@@ -47,4 +49,4 @@ const AnonFooterMenu = ({
   );
 };
 
-export default AnonFooterMenu;
+export default AnonFooter;

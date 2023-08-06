@@ -63,6 +63,7 @@ const Navbar: NextPage = () => {
         backgroundColor={"transparent"}
         h={"60px"}
         my={"20px"}
+        zIndex={2}
       />
 
       <Flex
@@ -71,7 +72,7 @@ const Navbar: NextPage = () => {
         top={navbarPos}
         position={"fixed"}
         insetX={0}
-        zIndex={10}
+        zIndex={1}
         background="url('/navbarbg.svg')"
         maxWidth={"343px"}
         w={"full"}
