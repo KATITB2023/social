@@ -97,7 +97,7 @@ const Navbar: NextPage = () => {
         />
 
         <Image
-          src="ekor.svg"
+          src="/ekor.svg"
           position="absolute"
           left="0"
           height="full"

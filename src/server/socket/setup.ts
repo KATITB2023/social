@@ -1,10 +1,8 @@
+import { type Message, type UserMatch } from "@prisma/client";
 import { createAdapter } from "@socket.io/redis-adapter";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Server, Socket } from "socket.io";
-import { type Message, type UserMatch } from "@prisma/client";
-import type { ServerEventsResolver } from "~/server/socket/helper";
-import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
 import {
   anonTypingEvent,
@@ -18,6 +16,8 @@ import {
   endMatchEvent,
   findMatchEvent,
 } from "~/server/socket/events/queue";
+import type { ServerEventsResolver } from "~/server/socket/helper";
+import { setupScheduleSocket } from "~/server/socket/schedule";
 import { type UserQueue } from "~/server/types/message";
 
 /**

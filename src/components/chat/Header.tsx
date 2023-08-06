@@ -15,7 +15,7 @@ const Header = ({ name, isTyping }: HeaderProps) => {
       position={"relative"}
       alignItems={"center"}
       mx={"auto"}
-      my={"20px"}
+      mt={"20px"}
       minH={"128px"}
       w={"343px"}
       bg={"#191624"}
@@ -79,3 +79,4 @@ const Header = ({ name, isTyping }: HeaderProps) => {
 };
 
 export default Header;
+
