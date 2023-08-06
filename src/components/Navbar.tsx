@@ -1,10 +1,6 @@
-import { NextPage } from "next";
-import { useState } from "react";
+import { type NextPage } from "next";
 import Layout from "~/layout";
 import {
-  Container,
-  Heading,
-  theme,
   Text,
   Center,
   Box,
@@ -89,7 +85,8 @@ const Navbar: NextPage = () => {
               height="30px"
               width="30px"
               onClick={onOpen}
-            ></Image>
+              alt="menu"
+            />
           </Flex>
         </Flex>
       </Center>
