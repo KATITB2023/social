@@ -6,8 +6,8 @@ loadEnvConfig(process.cwd());
 import http from "http";
 import next from "next";
 import { Server } from "socket.io";
+import parser from "socket.io-msgpack-parser";
 import { parse } from "url";
-import parser from "~/server/socket/parser";
 import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import {
   getAdapter,
@@ -20,7 +20,7 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-void app.prepare().then(async () => {
+void app.prepare().then(() => {
   const server = http.createServer((req, res) => {
     const proto = req.headers["x-forwarded-proto"];
     if (proto && proto === "http") {
@@ -45,7 +45,7 @@ void app.prepare().then(async () => {
 
   const io: SocketServer = new Server(server, {
     parser,
-    adapter: await getAdapter(),
+    adapter: getAdapter(),
     transports: ["websocket"],
   });
 
