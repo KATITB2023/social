@@ -77,6 +77,8 @@ const Messages = ({
           var DD = date.date();
           var MM = date.month() + 1;
           var local = dayjs().tz("Asia/Jakarta");
+          var messageArr = item.message.split('\n');
+          console.log(messageArr)
           console.log(local.month(), date.month())
           return (
             <Flex key={item.id} w="100%" justify="flex-end">
@@ -89,11 +91,16 @@ const Messages = ({
                 p="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
-                gap={"10px"}
               >
-                <Text fontSize={"16px"} fontWeight={400}>
-                  {item.message}
-                </Text>
+                {
+                  messageArr.map((m) => {
+                    return (
+                      <>
+                      <Text  fontWeight={400} fontSize={"16px"}> {m} </Text>
+                      </>
+                    )
+                  })
+                }
                 <Flex flexDir={"row"} justify={"end"} gap={2} >
                   {
                     DD === local.date() && MM === local.month() + 1 
@@ -112,6 +119,7 @@ const Messages = ({
           var DD = date.date();
           var MM = date.month() + 1;
           var local = dayjs().tz("Asia/Jakarta");
+          var messageArr = item.message.split('\n');
           return (
             <Flex key={item.id} w="100%">
               <Flex
@@ -123,14 +131,19 @@ const Messages = ({
                 p="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
-                gap={"10px"}
               >
-                <Text fontSize={"16px"} fontWeight={400}>
-                  {item.message}
-                </Text>
+                {
+                  messageArr.map((m) => {
+                    return (
+                      <>
+                      <Text  fontWeight={400} fontSize={"16px"}> {m} </Text>
+                      </>
+                    )
+                  })
+                }
                 <Flex flexDir={"row"} gap={2} >
                   {
-                    DD === local.date() && MM === local.month() 
+                    DD === local.date() && MM === local.month() + 1
                     ? <Text fontSize={"12px"}> Today </Text>
                     : <Text fontSize={"12px"}> {("0" + DD ).slice(-2)}/{("0" + MM).slice(-2)} </Text>
                   }
@@ -141,7 +154,7 @@ const Messages = ({
           );
         }
       })}
-      {/* <div ref={bottomRef} /> */}
+      <div style={{display:"none"}} ref={bottomRef} />
     </Flex>
   );
 };
