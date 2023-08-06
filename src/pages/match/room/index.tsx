@@ -21,8 +21,10 @@ const Room: NextPage = () => {
 
   const checkMatch = useEmit("checkMatch", {
     onSuccess: (data) => {
-      if (data !== null) {
-        setMatch(data);
+      if (data.match !== null) {
+        setMatch(data.match);
+      } else {
+        void router.push("/match");
       }
     },
   });
@@ -123,7 +125,7 @@ const Room: NextPage = () => {
       if (match) {
         if (data.endedAt !== null) {
           setMatch(null);
-          router.push("/");
+          void router.push("/");
         }
       }
     },
@@ -144,7 +146,7 @@ const Room: NextPage = () => {
               h="100vh"
               justify="center"
               align="center"
-              backgroundColor={"gray.50"}
+              backgroundColor={"blue"}
             >
               <Flex w={"100%"} h="90%" flexDir="column">
                 <Header name="Anonymous" isTyping={currentlyTyping} />
