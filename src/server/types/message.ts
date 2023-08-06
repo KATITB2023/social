@@ -1,18 +1,31 @@
-import { type Message } from "@prisma/client";
+import { type Gender, type Message } from "@prisma/client";
 
 export enum ChatTopic {
   ITB = "ITB",
 }
 
-export interface ChatHeader {
-  message: Message;
+export interface AnonChatHeader {
   user: {
     id: string;
     name: string;
-    profileImage: string;
+    profileImage: string | null;
   };
+}
+
+export interface NonAnonChatHeader {
+  lastMessage: Message;
+  user: {
+    id: string;
+    name: string;
+    profileImage: string | null;
+  };
+  unreadMessageCount: number;
 }
 
 export interface UserQueue {
   userId: string;
+  isAnonymous: boolean;
+  topic: ChatTopic;
+  isFindingFriend: boolean;
+  gender: Gender;
 }

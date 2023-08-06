@@ -4,15 +4,6 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { Container } from "@chakra-ui/react";
-
-const colors = {
-  test: {
-    900: "#1a365d",
-    800: "#153e75",
-    700: "#2a69ac",
-  },
-};
 
 export const theme = extendTheme({
   fonts: {
@@ -156,15 +147,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <div style={{maxWidth: "375px", margin : "auto"}}> 
-    {/* Set max width for mobile-only resolution */}
-        <ChakraProvider theme={theme}> 
-            <SessionProvider session={session}>
-                <Component {...pageProps}/>
-            </SessionProvider>
-        </ChakraProvider>
+    <div style={{ maxWidth: "375px", margin: "auto" }}>
+      {/* Set max width for mobile-only resolution */}
+      <ChakraProvider theme={theme}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </ChakraProvider>
     </div>
-
   );
 };
 

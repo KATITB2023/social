@@ -1,10 +1,6 @@
-import { NextPage } from "next";
-import { useState } from "react";
+import { type NextPage } from "next";
 import Layout from "~/layout";
 import {
-  Container,
-  Heading,
-  theme,
   Text,
   Center,
   Box,
@@ -40,7 +36,7 @@ const Navbar: NextPage = () => {
           w="90%"
           minHeight="60px"
           borderRadius="50px"
-          position="absolute"
+          position="relative"
           top="20px"
           flexDir="row"
           alignItems="center"
@@ -60,14 +56,14 @@ const Navbar: NextPage = () => {
             right="0"
           ></Box>
           <Image
-            src="ekor.svg"
+            src="/ekor.svg"
             position="absolute"
             left="0"
             height="full"
             objectFit="cover"
             objectPosition="center"
             borderRadius="50px"
-            alt="navbar"
+            alt="ekor"
           ></Image>
           <Image
             objectFit="cover"
@@ -90,7 +86,8 @@ const Navbar: NextPage = () => {
               height="30px"
               width="30px"
               onClick={onOpen}
-            ></Image>
+              alt="menu"
+            />
           </Flex>
         </Flex>
       </Center>

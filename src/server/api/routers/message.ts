@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { type ChatHeader } from "~/server/types/message";
+import { type NonAnonChatHeader } from "~/server/types/message";
 
 export const messageRouter = createTRPCRouter({
   infinite: protectedProcedure
@@ -70,23 +70,6 @@ export const messageRouter = createTRPCRouter({
         prevCursor,
       };
     }),
-  getUser: protectedProcedure
-    .input(
-      z.object({
-        pairId: z.string().uuid(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.user.findFirstOrThrow({
-        where: {
-          id: input.pairId,
-        },
-        select: {
-          nim: true,
-          id: true,
-        },
-      });
-    }),
   availableUser: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.user.findMany({
       where: {
@@ -100,13 +83,100 @@ export const messageRouter = createTRPCRouter({
       },
     });
   }),
-  chatHeader: protectedProcedure.query(
-    // delete me after implementation
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async ({ ctx }): Promise<ChatHeader[]> => {
-      return [];
-    }
-  ),
+  chatHeader: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(5).max(40).default(20),
+        cursor: z.number().min(1).default(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const chatHeaders = await ctx.prisma.message.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          OR: [
+            {
+              receiverId: ctx.session.user.id,
+            },
+            {
+              senderId: ctx.session.user.id,
+            },
+          ],
+          userMatchId: null,
+        },
+        distinct: ["senderId", "receiverId"],
+        include: {
+          sender: {
+            select: {
+              id: true,
+              profile: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          receiver: {
+            select: {
+              id: true,
+              profile: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        skip: input.limit * (input.cursor - 1),
+        take: input.limit,
+      });
+
+      const data: NonAnonChatHeader[] = await Promise.all(
+        chatHeaders.map(async (chatHeader) => {
+          const otherUser =
+            chatHeader.sender.id === ctx.session.user.id
+              ? chatHeader.receiver
+              : chatHeader.sender;
+
+          if (!otherUser.profile) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Other user profile not found",
+            });
+          }
+
+          const unreadCount = await ctx.prisma.message.aggregate({
+            _count: {
+              id: true,
+            },
+            where: {
+              receiverId: ctx.session.user.id,
+              senderId: otherUser.id,
+              isRead: false,
+            },
+          });
+
+          return {
+            user: {
+              id: otherUser.id,
+              name: otherUser.profile.name,
+              profileImage: otherUser.profile.image,
+            },
+            lastMessage: chatHeader,
+            unreadMessageCount: unreadCount._count.id,
+          };
+        })
+      );
+
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
+    }),
   reportUser: protectedProcedure
     .input(
       // Menerima input berupa uuid pengguna
@@ -181,5 +251,117 @@ export const messageRouter = createTRPCRouter({
           code: "BAD_REQUEST",
         });
       }
+    }),
+  updateIsRead: protectedProcedure
+    .input(
+      // Menerima input berupa id pengirim dan id penerima
+      z.object({
+        senderId: z.string().uuid(),
+        receiverId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        AND: [
+          {
+            receiverId: input.receiverId,
+          },
+          {
+            senderId: input.senderId,
+          },
+          {
+            userMatchId: null,
+          },
+          {
+            isRead: false,
+          },
+        ],
+      };
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
+    }),
+  updateIsReadByMatchId: protectedProcedure
+    .input(
+      z.object({
+        userMatchId: z.string().uuid(),
+        receiverId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        AND: [
+          {
+            receiverId: input.receiverId,
+          },
+          {
+            userMatchId: input.userMatchId,
+          },
+          {
+            isRead: false,
+          },
+        ],
+      };
+
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
+    }),
+  updateOneIsRead: protectedProcedure
+    .input(
+      z.object({
+        messageId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const whereCondition = {
+        id: input.messageId,
+        isRead: false,
+      };
+      const message = await ctx.prisma.message.findFirst({
+        where: whereCondition,
+      });
+
+      if (!message) {
+        throw new TRPCError({
+          message: "Message not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      await ctx.prisma.message.updateMany({
+        where: whereCondition,
+        data: {
+          isRead: true,
+        },
+      });
     }),
 });

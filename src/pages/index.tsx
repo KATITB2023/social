@@ -1,13 +1,10 @@
 import { type NextPage } from "next";
 import Layout from "~/layout";
-import { Container, Heading, theme, Text, Box, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { Container, Heading, Text } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
-
   return (
     <Layout title="Home">
-
       <Container>Hello world </Container>
       <Heading size="SH1">SH1</Heading>
       <Heading size="H3">h3</Heading>
