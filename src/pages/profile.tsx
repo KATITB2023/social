@@ -40,6 +40,7 @@ import {
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
+import Navbar from "~/components/Navbar";
 
 interface LabelValueType {
   label: string;
@@ -415,7 +416,7 @@ function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="/background.svg"
         alt="wheew wheew *pretend as if the background is in outer space*"
         height="100%"
         zIndex="-1"
@@ -425,7 +426,7 @@ function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <NavigationBarAndMenu />
+        <Navbar />
         {children}
       </Flex>
     </Box>
