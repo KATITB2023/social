@@ -3,7 +3,6 @@ import { Flex, Text } from "@chakra-ui/react";
 import { type Message } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useInView } from "framer-motion";
-import * as dayjs from "dayjs";
 
 interface MessagesProps {
   messages: Message[];
@@ -88,9 +87,11 @@ const Messages = ({
                 minW="100px"
                 maxW="268px"
                 my="1"
-                p="3"
+                py="1"
+                px="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
+                boxShadow={"0px 4px 20px 0px #00000080"}
               >
                 {
                   messageArr.map((m) => {
@@ -131,6 +132,7 @@ const Messages = ({
                 p="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
+                boxShadow={"0px 4px 20px 0px #00000080"}
               >
                 {
                   messageArr.map((m) => {
@@ -154,7 +156,7 @@ const Messages = ({
           );
         }
       })}
-      <div style={{display:"none"}} ref={bottomRef} />
+      <div  ref={bottomRef} />
     </Flex>
   );
 };

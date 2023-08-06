@@ -1,4 +1,3 @@
-import { storageRouter } from "~/server/api/routers/storage";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { messageRouter } from "./routers/message";
 import { authRouter } from "~/server/api/routers/auth";
@@ -16,7 +15,6 @@ import { leaderboardRouter } from "~/server/api/routers/leaderboard";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  storage: storageRouter,
   message: messageRouter,
   messageAnonymous: anonymousMessageRouter,
   auth: authRouter,

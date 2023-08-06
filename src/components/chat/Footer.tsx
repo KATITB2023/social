@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { Flex, Textarea, Image, Box } from "@chakra-ui/react";
+import {
+  Flex,
+  Textarea,
+  Image,
+  Slide,
+  Text,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerHeader,
+} from "@chakra-ui/react";
 import ResizeTextarea from "react-textarea-autosize";
 import useEmit from "~/hooks/useEmit";
+import AnonFooterMenu from "./AnonFooterMenu";
 
 interface FooterProps {
   onSubmit: (text: string) => void;
@@ -14,6 +25,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
   const isTyping = useEmit(clientEvent);
+  const [anonMenuOpen, setAnonMenuOpen] = useState(false);
 
   const handleSubmit = (text: string) => {
     if (text !== "") {
@@ -56,17 +68,25 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         paddingY={"15px"}
         borderTopLeftRadius={"10px"}
         borderTopRightRadius={"10px"}
+        position={"relative"}
         gap={"10px"}
         boxShadow={"0px 4px 30px white"}
       >
+        {isAnon && (
+          <AnonFooterMenu
+            menuOpen={anonMenuOpen}
+            setMenuOpen={setAnonMenuOpen}
+          />
+        )}
         <Textarea
+          w={"full"}
           as={ResizeTextarea}
           resize={"none"}
-          minH={"69px"}
+          minH={"39px"}
           maxH={"166px"}
           bg={"white"}
           color={"black"}
-          placeholder="Type Something..."
+          placeholder="Ketik Pesan Anda..."
           border="none"
           borderRadius="10px"
           _focus={{
@@ -93,6 +113,61 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
             handleSubmit(text);
           }}
         />
+
+        {isAnon && (
+          <Slide direction="bottom" in={anonMenuOpen}>
+            <Flex
+              backgroundColor={"#2D3648"}
+              w={"375px"}
+              position={"absolute"}
+              flexDir={"column"}
+              bottom={0}
+              // left={0}
+              // zIndex={-1}
+              gap={"16px"}
+              px={"16px"}
+              pt={"8px"}
+              pb={"24px"}
+              borderTopLeftRadius={"20px"}
+              borderTopRightRadius={"20px"}
+            >
+              <Flex
+                cursor={"pointer"}
+                onClick={() => setAnonMenuOpen(false)}
+                w={"full"}
+                borderRadius={"full"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                py={"2px"}
+                _hover={{ bgColor: "#4D5668" }}
+              >
+                <Flex
+                  my={2}
+                  minW={"49px"}
+                  minH={"8px"}
+                  bgColor={"#D9D9D9"}
+                  borderRadius={"20px"}
+                />
+              </Flex>
+
+              <Flex cursor={"pointer"}>
+                <Text> Stop Pembicaraan </Text>
+              </Flex>
+
+              <Flex cursor={"pointer"}>
+                <Text> Laporkan Teman </Text>
+              </Flex>
+
+              <Flex cursor={"pointer"}>
+                <Text> Minta Reveal Profile </Text>
+              </Flex>
+
+              <Flex cursor={"pointer"}>
+                <Text> Peraturan </Text>
+              </Flex>
+            </Flex>
+          </Slide>
+        )}
       </Flex>
     </>
   );

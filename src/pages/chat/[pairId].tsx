@@ -32,6 +32,9 @@ const Chat: NextPage = () => {
     }
   );
 
+  const updateMessageIsRead = api.message.updateIsRead.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
+
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
 
@@ -54,6 +57,17 @@ const Chat: NextPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (session) {
+      try {
+        updateMessageIsRead.mutate({
+          receiverId: session.user.id,
+          senderId: pairId,
+        });
+      } catch (err) {}
+    }
+  }, []);
+
   // When new data from `useInfiniteQuery`, merge with current state
   useEffect(() => {
     const msgs = messageQuery.data?.pages.map((page) => page.items).flat();
@@ -70,6 +84,17 @@ const Chat: NextPage = () => {
         post.userMatchId === null
       ) {
         addMessages([post]);
+        if (
+          session &&
+          post.receiverId === session.user.id &&
+          post.senderId === pairId
+        ) {
+          try {
+            updateOneMessageIsRead.mutate({
+              messageId: post.id,
+            });
+          } catch (err) {}
+        }
       }
     },
     [session, messageQuery]
@@ -95,47 +120,16 @@ const Chat: NextPage = () => {
         w="100%"
         h="100vh"
         pos={"relative"}
-        backgroundImage="url('/background.svg')"
+        backgroundImage="/components/chat_page/chat_bg.png"
         backgroundSize={"cover"}
         backgroundRepeat={"no-repeat"}
         overflowY={"hidden"}
       >
-        {/* Ornaments for Backgrounds */}
-        <Image
-          src="/components/chat_page/chat_aura.svg"
-          position={"absolute"}
-          left={0}
-          top={"379px"}
-        />
-        <Image
-          src="/components/chat_page/chat_moon.svg"
-          position={"absolute"}
-          left={0}
-          top={"549px"}
-        />
-        <Image
-          src="/components/chat_page/chat_comet_left.svg"
-          position={"absolute"}
-          left={0}
-          top={"303px"}
-        />
-        <Image
-          src="/components/chat_page/chat_comet_right.svg"
-          position={"absolute"}
-          right={0}
-          top={"116px"}
-        />
-        <Image
-          src="/components/chat_page/chat_spark_kicik.svg"
-          position={"absolute"}
-          left={0}
-          top={0}
-        />
 
         {/* Room chat */}
         <Flex
           w={"100%"}
-          h="100vh"
+          h="100%"
           flexDir="column"
           justifyContent={"space-between"}
           zIndex={1}
@@ -144,7 +138,7 @@ const Chat: NextPage = () => {
             name={userPair ? userPair.name : ""}
             isTyping={currentlyTyping}
           />
-          {/* <Divider /> */}
+          <Divider />
 
           <Messages
             messages={messages ?? []}
@@ -153,7 +147,7 @@ const Chat: NextPage = () => {
             isFetchingPreviousPage={isFetchingPreviousPage}
           />
 
-          {/* <Divider /> */}
+          <Divider />
           <Footer
             onSubmit={(text) => {
               messageEmit.mutate({ message: text, receiverId: pairId });
