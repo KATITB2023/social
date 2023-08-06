@@ -18,7 +18,7 @@ export default function FriendProfilePage() {
   const profileQuery = api.friend.getOtherUserProfile.useQuery({
     userId: pairId,
   });
-  
+
   const student = profileQuery.data;
 
   if (!student) {
@@ -27,6 +27,11 @@ export default function FriendProfilePage() {
 
   if (!session) {
     return <NotFound />;
+  }
+
+  if (student.image === null || "" || undefined)
+  {
+    student.image="/defaultprofpict.svg"
   }
   return (
     <DefaultBackgroundAndNavigationBar>
