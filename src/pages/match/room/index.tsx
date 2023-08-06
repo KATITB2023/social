@@ -16,9 +16,7 @@ import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
 
 const Room: NextPage = () => {
   const router = useRouter();
-
-  useSession({ required: true });
-
+  const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
 
   const checkMatch = useEmit("checkMatch", {
@@ -28,6 +26,9 @@ const Room: NextPage = () => {
       }
     },
   });
+
+  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   useEffect(() => {
     checkMatch.mutate({});
@@ -44,6 +45,17 @@ const Room: NextPage = () => {
 
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
+
+  useEffect(() => {
+    if (match && session) {
+      try {
+        updateMessageIsRead.mutate({
+          userMatchId: match.id,
+          receiverId: session.user.id,
+        });
+      } catch (err) {}
+    }
+  }, []);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -76,6 +88,11 @@ const Room: NextPage = () => {
         post.userMatchId === match.id
       ) {
         setMessages((prev) => [...prev, post]);
+        if (match && session && post.receiverId === session.user.id) {
+          try {
+            updateOneMessageIsRead.mutate({ messageId: post.id });
+          } catch (err) {}
+        }
       }
     },
     [match, messageQuery]
