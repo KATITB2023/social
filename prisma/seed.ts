@@ -46,4 +46,52 @@ void (async () => {
       },
     });
   }
+
+  for (let i = 0; i < 3; i++) {
+    const today = new Date();
+    const deadline = new Date();
+
+    deadline.setDate(today.getDate() + faker.number.int({ min: 1, max: 7 }));
+    await prisma.assignment.create({
+      data: {
+        title: faker.lorem.words(3),
+        description: faker.lorem.lines(4),
+        filePath: faker.internet.url(),
+        type: "MANDATORY",
+        startTime: new Date(),
+        endTime: deadline,
+      },
+    });
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const today = new Date();
+    const deadline = new Date();
+
+    deadline.setDate(today.getDate() + 1);
+    await prisma.assignment.create({
+      data: {
+        title: faker.lorem.words(3),
+        description: faker.lorem.lines(4),
+        type: "DAILY_QUEST",
+        startTime: new Date(),
+        endTime: deadline,
+      },
+    });
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const today = new Date();
+    const deadline = new Date();
+    deadline.setDate(today.getDate() + 30);
+    await prisma.assignment.create({
+      data: {
+        title: faker.lorem.words(3),
+        filePath: faker.internet.url(),
+        type: "SIDE_QUEST",
+        startTime: new Date(),
+        endTime: deadline,
+      },
+    });
+  }
 })();
