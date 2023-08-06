@@ -7,14 +7,10 @@ import {
   Text,
   Center,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { type PropsWithChildren, useState } from "react";
 import Navbar from "~/components/Navbar";
 
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
-
-function BackgroundAndNavbar({ children }: childrenOnlyProps) {
+function BackgroundAndNavbar({ children }: PropsWithChildren) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
@@ -28,15 +24,16 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar 
-        />
+        <Navbar />
         {children}
       </Flex>
     </Box>
   );
 }
 
-const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => void }> = ({ handleBoxContentChange }) => {
+const DailySideQuest: React.FC<{
+  handleBoxContentChange: (content: string) => void;
+}> = ({ handleBoxContentChange }) => {
   const [isToggled, setIsToggled] = useState(false);
 
   const handleToggle = () => {
@@ -129,11 +126,15 @@ interface TugasDailyQuestProps {
 
 interface ChipsProps {
   property1: "donei" | "no" | "maybe";
-  className: any;
+  className: string;
   text: string;
 }
 
-const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) => {
+const Chips: React.FC<ChipsProps> = ({
+  property1,
+  className,
+  text = "hadir",
+}) => {
   let chipsBg: string;
   let chipsBorderColor: string;
   let chipsLabelColor: string;
@@ -190,7 +191,10 @@ const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) =
   );
 };
 
-export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ statusTugas, deadline }) => {
+export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
+  statusTugas,
+  deadline,
+}) => {
   let chipsText: string;
   let chipsColor: "donei" | "no" | "maybe";
 
@@ -227,10 +231,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ statusTugas, d
           Lorem Ipsum Dolor Sit Amet
         </Text>
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex
-            flexDirection="row"
-            gap="2px"
-          >
+          <Flex flexDirection="row" gap="2px">
             <Text
               color="#ffffff"
               fontFamily="subheading"
@@ -239,11 +240,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ statusTugas, d
             >
               Deadline
             </Text>
-            <Text
-              color="#ffffff"
-              fontFamily="body"
-              fontSize="12px"
-            >
+            <Text color="#ffffff" fontFamily="body" fontSize="12px">
               : {deadline}
             </Text>
           </Flex>
@@ -262,11 +259,15 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ statusTugas, d
             open
           </Button>
         </Flex>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
       </Box>
     </Center>
   );
-}
+};
 
 interface TugasSideQuestProps {
   statusTugas: "terkumpul" | "belum terkumpul" | "terlambat";
@@ -308,7 +309,11 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ statusTugas }) => {
         >
           Lorem Ipsum Dolor Sit Amet
         </Text>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
         <Flex
           justifyContent="flex-end"
           alignItems="center"
@@ -352,15 +357,24 @@ export default function AssignmentListPage() {
         mx="24px"
         my="140px"
       >
-        <Heading color="#ffe655" size="H4" alignSelf="center" >
+        <Heading color="#ffe655" size="H4" alignSelf="center">
           Assignment List
         </Heading>
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
         {boxContent === "Daily Quest" ? (
           <>
-            <TugasDailyQuest statusTugas="terkumpul" deadline="00/00/00 00.00" />
-            <TugasDailyQuest statusTugas="terlambat" deadline="00/00/00 00.00" />
-            <TugasDailyQuest statusTugas="belum terkumpul" deadline="00/00/00 00.00" />
+            <TugasDailyQuest
+              statusTugas="terkumpul"
+              deadline="00/00/00 00.00"
+            />
+            <TugasDailyQuest
+              statusTugas="terlambat"
+              deadline="00/00/00 00.00"
+            />
+            <TugasDailyQuest
+              statusTugas="belum terkumpul"
+              deadline="00/00/00 00.00"
+            />
           </>
         ) : boxContent === "Side Quest" ? (
           <>

@@ -17,7 +17,9 @@ const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
-  const userPair = api.message.getUser.useQuery({ pairId }).data;
+  const userPair = api.friend.getOtherUserProfile.useQuery({
+    userId: pairId,
+  }).data;
 
   const messageQuery = api.message.infinite.useInfiniteQuery(
     { pairId },

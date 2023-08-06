@@ -1,4 +1,4 @@
-import { Gender, type Message } from "@prisma/client";
+import { type Gender, type Message } from "@prisma/client";
 
 export enum ChatTopic {
   ITB = "ITB",

@@ -18,8 +18,11 @@ const Match: NextPage = () => {
 
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
-      if (data !== null) {
+      if (data.match !== null) {
         void router.push(`/match/room`);
+      } else if (data.queue !== null) {
+        queued.current = true;
+        setNeedQueue(false);
       } else {
         setNeedQueue(true);
       }
