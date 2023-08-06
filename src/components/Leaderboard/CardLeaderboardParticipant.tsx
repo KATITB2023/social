@@ -36,7 +36,6 @@ const CardLeaderboardParticipant = ({
       position="relative"
       borderRadius="12px"
       flexDirection="row"
-      margin="20px"
     >
       <Card
         position="absolute"
