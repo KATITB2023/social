@@ -15,6 +15,10 @@ const dummy = ["Jepang", "Korea", "ITB", "Film", "Makanan", "Film", "Olahraga"];
 type QuestionProps = {
   handlePageChange: (page: number) => void;
 };
+type ThirdQuestionProps = {
+  handlePageChange: (page: number) => void;
+  findMatch :() =>void;
+};
 
 export const FirstQuestion: React.FC<QuestionProps> = ({
   handlePageChange,
@@ -182,8 +186,9 @@ export const SecondQuestion: React.FC<QuestionProps> = ({
   );
 };
 
-export const ThirdQuestion: React.FC<QuestionProps> = ({
+export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
   handlePageChange,
+  findMatch
 }) => {
   return (
     <Box
@@ -277,6 +282,7 @@ export const ThirdQuestion: React.FC<QuestionProps> = ({
         paddingY="10px"
         paddingX={"24px"}
         cursor="pointer"
+        onClick={()=>findMatch()}
       >
         <Text
           fontSize={"28px"}
