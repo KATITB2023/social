@@ -6,8 +6,8 @@ loadEnvConfig(process.cwd());
 import http from "http";
 import next from "next";
 import { Server } from "socket.io";
+import parser from "socket.io-msgpack-parser";
 import { parse } from "url";
-import parser from "~/server/socket/parser";
 import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import {
   getAdapter,

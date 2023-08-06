@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
+import parser from "socket.io-msgpack-parser";
 import { env } from "~/env.cjs";
-import parser from "~/server/socket/parser";
 import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import type { SocketServer } from "~/server/socket/setup";
 import { getAdapter, setupSocket } from "~/server/socket/setup";
