@@ -1,37 +1,5 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Text,
-  useDisclosure,
-  Drawer,
-  DrawerBody,
-  DrawerOverlay,
-  DrawerContent,
-  Link,
-  Icon,
-  Spacer,
-  VStack,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import {
-  MdHome,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdPerson,
-  MdLogout,
-  MdOutlineAssignmentInd,
-  MdOutlineAssignment,
-  MdNewspaper,
-  MdMenu,
-} from "react-icons/md";
-import { type IconType } from "react-icons";
-import { useRouter } from "next/router";
-import Navbar from "~/components/Navbar";
+import { Box, Center, Heading, HStack, Image, Text } from "@chakra-ui/react";
+import React from "react";
 
 const SubmitPopUp = ({
   isSubmitting,
@@ -66,8 +34,14 @@ const SubmitPopUp = ({
           mb="20px"
           alignSelf={"right"}
           onClick={() => submittingFile(false)}
+          alt={"Close Button"}
         />
-        <Image src="qmark.svg" mb="20px" alignSelf={"center"} />
+        <Image
+          src="qmark.svg"
+          mb="20px"
+          alignSelf={"center"}
+          alt={"Question mark"}
+        />
         <Heading mb="10px">SUBMIT</Heading>
         <Text alignSelf={"center"} textAlign={"center"} mb="20px" opacity={0.6}>
           Apakah kamu yakin ingin melakukan submisi tugas? Tugas yang telah

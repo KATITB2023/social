@@ -2,6 +2,7 @@ import {
   Flex,
   Icon,
   IconButton,
+  Spinner,
 } from "@chakra-ui/react";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { type NextPage } from "next";
@@ -25,6 +26,7 @@ const ChatHome: NextPage = () => {
     page: currentAvailChatPage,
   });
 
+
   const [openAddChat, setOpenAddChat] = useState(false);
 
   const addChatHandler = () => {
@@ -47,8 +49,9 @@ const ChatHome: NextPage = () => {
             alignItems="center"
           >
             <Navbar />
+            <AddChatFromFriend hidden={!openAddChat} />
 
-            {!openAddChat ? (
+            { !openAddChat ? (
               <>
                 {availableChat.data?.length == 0 ? (
                   <ChatPageHeader />
@@ -58,7 +61,7 @@ const ChatHome: NextPage = () => {
               </>
             ) : (
               <>
-                <AddChatFromFriend data={[]} />
+                
               </>
             )}
 
