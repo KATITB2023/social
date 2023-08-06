@@ -70,23 +70,6 @@ export const messageRouter = createTRPCRouter({
         prevCursor,
       };
     }),
-  getUser: protectedProcedure
-    .input(
-      z.object({
-        pairId: z.string().uuid(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.user.findFirstOrThrow({
-        where: {
-          id: input.pairId,
-        },
-        select: {
-          nim: true,
-          id: true,
-        },
-      });
-    }),
   availableUser: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.user.findMany({
       where: {
