@@ -1,10 +1,14 @@
 import { Heading, Image, Spacer } from "@chakra-ui/react";
 
-const ChatPageHeader = () => {
+interface ChatPageHeaderProps {
+  hidden: boolean;
+}
+
+const ChatPageHeader : React.FC<ChatPageHeaderProps> = ({ hidden }) => {
   return (
     <>
       <Spacer />
-      <Image alt="maskot oskm" src="maskotglow.svg" w="80%" />
+      <Image alt="maskot oskm" src="maskotglow.svg" w="80%" hidden={hidden} />
       <Heading
         as="h3"
         size="lg"
@@ -12,6 +16,7 @@ const ChatPageHeader = () => {
         textAlign="center"
         fontWeight="normal"
         w="80%"
+        hidden={hidden}
       >
         TAMBAHIN PERCAKAPAN DULU YUK!
       </Heading>
