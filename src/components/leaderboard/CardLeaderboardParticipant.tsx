@@ -1,22 +1,23 @@
-import { Flex, Text, Box, Center, Card, Image } from "@chakra-ui/react";
+import { Flex, Text, Box, Card, Image } from "@chakra-ui/react";
 import React from "react";
 
 interface CardProps {
-  Name: string;
-  Nim: number;
+  name: string;
+  nim: number;
   image: string;
   ranking: number;
   points: string;
 }
-const CardLeaderboardSelf = ({
-  Name,
-  Nim,
+
+const CardLeaderboardParticipant = ({
+  name,
+  nim,
   image,
   ranking,
   points,
 }: CardProps) => {
   const isOverflowing = (Name: string) => {
-    let tes: string = "";
+    let tes = "";
     for (let i = 0; i < Name.length; i++) {
       if (i > 12) {
         tes += "...";
@@ -43,9 +44,9 @@ const CardLeaderboardSelf = ({
         bottom="0"
         left="0"
         right="0"
-        opacity="100%"
+        opacity="50%"
         borderRadius="12px"
-        background="linear-gradient(340deg, rgba(245, 244, 184, 0.60) 0%, #FFFC83 100%)"
+        bgGradient="linear(to-l,rgba(43, 7, 146, 0.9),rgba(221, 179, 248, 0.71),rgba(234, 191, 255, 0.6))"
       ></Card>
       <Flex
         position="relative"
@@ -55,7 +56,7 @@ const CardLeaderboardSelf = ({
         justifyContent="center"
         marginLeft="12px"
       >
-        <Text size="B2" color="navy.1" fontWeight="600">
+        <Text size="B2" color="white" fontWeight="600">
           #{ranking}
         </Text>
       </Flex>
@@ -64,7 +65,7 @@ const CardLeaderboardSelf = ({
         w="45px"
         h="45px"
         margin="auto 15px"
-        bgColor="purple.1"
+        bgColor="yellow.5"
         borderRadius="full"
         alignItems="center"
         justifyContent="center"
@@ -78,7 +79,8 @@ const CardLeaderboardSelf = ({
           objectFit="cover"
           top="0"
           src={image}
-        ></Image>
+          alt={`Image ${name}`}
+        />
       </Box>
       <Box
         position="relative"
@@ -89,11 +91,11 @@ const CardLeaderboardSelf = ({
         whiteSpace="nowrap"
         overflow="hidden"
       >
-        <Text fontWeight="600" size="B3" color="navy.1">
-          {isOverflowing(Name)}
+        <Text fontWeight="600" size="B3" color="white">
+          {isOverflowing(name)}
         </Text>
-        <Text size="B4" marginTop="-5px" color="navy.1">
-          {Nim}
+        <Text size="B5" marginTop="-5px" color="white">
+          {nim}
         </Text>
       </Box>
       <Flex
@@ -109,6 +111,7 @@ const CardLeaderboardSelf = ({
         marginTop="2px"
       >
         <Flex
+          position="relative"
           w="70px"
           h="25px"
           borderRadius="11px"
@@ -125,4 +128,4 @@ const CardLeaderboardSelf = ({
   );
 };
 
-export default CardLeaderboardSelf;
+export default CardLeaderboardParticipant;
