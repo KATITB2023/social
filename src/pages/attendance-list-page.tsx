@@ -12,6 +12,7 @@ import Navbar from "~/components/Navbar";
 
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
+import { stat } from "fs";
 
 const eventList = {
   "Day 1": {
@@ -54,20 +55,24 @@ interface BgAssetProps {
   top: string;
   height?: string;
   width?: string;
+  objPos?: string;
+  objFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
 }
 
 const BackgroundAsset = (props: BgAssetProps) => {
-  const { name, left, top, height, width } = props;
+  const { name, left, top, height, width, objPos, objFit } = props;
   return (
     <Image
       src={`${name}.svg`}
       alt="asset"
       zIndex="-1"
       position="absolute"
-      height={height? height : "200px"}
-      width={width? width : "200px"}
+      height={height ? height : "200px"}
+      width={width ? width : "200px"}
       top={top}
       left={left}
+      objectPosition={objPos ? objPos : ""}
+      objectFit={objFit}
     />
   );
 };
@@ -85,14 +90,48 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
         minWidth="100%"
         width="100%"
       />
-      <BackgroundAsset name="komet4" top="40px" left="-35px"/>
-      <BackgroundAsset name="bulan1" top="380px" left="-30px" height="150px" width="150px" />
-      <BackgroundAsset name="nebulaBiru" top="233px" left="-40px" height="400px" width="400px" />
-      <BackgroundAsset name="nebulaPink" top="-12px" left="20px" height="400px" width="400px" />
+      <BackgroundAsset name="komet4" top="40px" left="-35px" />
+      <BackgroundAsset
+        name="bulan1"
+        top="380px"
+        left="-28px"
+        height="150px"
+        width="150px"
+      />
+      <BackgroundAsset
+        name="nebulaBiru"
+        top="233px"
+        left="-40px"
+        height="400px"
+        width="400px"
+      />
+      <BackgroundAsset
+        name="nebulaPink"
+        top="-2px"
+        left="8px"
+        height="400px"
+        width="400px"
+        objPos="50% 100%"
+        objFit="contain"
+      />
       <BackgroundAsset name="bintang2" top="388px" left="16px" />
-      <BackgroundAsset name="komet1" top="635px" left="242px" />
-      <BackgroundAsset name="spark1Biru" top="403px" left="206px" />
-      <BackgroundAsset name="spark1Merah" top="605px" left="-58px" />
+      <BackgroundAsset
+        name="komet1"
+        top="630px"
+        left="143px"
+        height="220px"
+        width="240px"
+        objPos="475% 100%"
+        objFit="contain"
+      />
+      <BackgroundAsset
+        name="spark1Biru"
+        top="403px"
+        left="180px"
+        objPos="190% 100%"
+        objFit="contain"
+      />
+      <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
         <Navbar />
@@ -112,6 +151,39 @@ interface EventData {
 interface EventCardProps {
   eventData: EventData;
 }
+
+interface StatButtonProps {
+  status: string;
+}
+
+const StatusButton = (props: StatButtonProps) => {
+  const { status } = props;
+  if (status == "tandai hadir") {
+    return (
+      <Button bg="yellow.5" borderRadius="12px" py="4px" px="16px" size="xs">
+        <Text color="purple.2" size="A">
+          {status}
+        </Text>
+      </Button>
+    );
+  } else if (status == "hadir") {
+    return (
+      <Button border="1px" borderColor="green.2" bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderRadius="12px" py="4px" px="16px" size="xs">
+        <Text color="green.2" size="A">
+          {status}
+        </Text>
+      </Button>
+    );
+  } else {
+    return (
+      <Button  border="1px" borderColor="#E8553E" bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderRadius="12px" py="4px" px="16px" size="xs">
+        <Text color="#E8553E" size="A">
+          {status}
+        </Text>
+      </Button>
+    )
+  }
+};
 
 const EventCard = (props: EventCardProps) => {
   const { eventData } = props;
@@ -138,11 +210,7 @@ const EventCard = (props: EventCardProps) => {
         </Flex>
       </Flex>
       <Spacer />
-      <Button bg="yellow.5" borderRadius="12px" py="4px" px="16px" size="xs">
-        <Text color="purple.2" size="A">
-          {eventData.status}
-        </Text>
-      </Button>
+      <StatusButton status="hadir"/>
     </Flex>
   );
 };
@@ -150,7 +218,7 @@ const EventCard = (props: EventCardProps) => {
 const AttendListPage = () => {
   const { data: session } = useSession();
   const eventQuery = api.absensi.viewAbsensi.useQuery();
-  // const eventList = eventQuery?.data;
+  const eventListt = eventQuery?.data;
 
   return (
     <BackgroundAndNavbar>
