@@ -12,7 +12,6 @@ const Footer = () => {
   const handleClicked = (path: string) => {
     void router.push(`/${path}`);
   };
-  console.log(selected);
 
   return (
     <Flex
@@ -60,6 +59,7 @@ const Footer = () => {
             fontWeight={500}
             lineHeight="12px"
             alignSelf="center"
+            color={selected === "chat" ? "yellow.5" : "gray.300"}
           >
             Chat
           </Text>
@@ -91,6 +91,7 @@ const Footer = () => {
             fontWeight={500}
             lineHeight="12px"
             alignSelf="center"
+            color={selected === "match" ? "yellow.5" : "gray.300"}
           >
             Find Match!
           </Text>
@@ -108,14 +109,21 @@ const Footer = () => {
           }}
           cursor={"pointer"}
         >
-          <Image src={
-              selected === "history" ? "VectorHistoryYellow.svg" : "VectorHistory.svg"
-            } alt="Vector History" height="25px" />
+          <Image
+            src={
+              selected === "history"
+                ? "VectorHistoryYellow.svg"
+                : "VectorHistory.svg"
+            }
+            alt="Vector History"
+            height="25px"
+          />
           <Text
             fontSize="13px"
             fontWeight={500}
             lineHeight="12px"
             alignSelf="center"
+            color={selected === "history" ? "yellow.5" : "gray.300"}
           >
             History
           </Text>
