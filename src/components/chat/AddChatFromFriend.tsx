@@ -11,30 +11,17 @@ interface AddChatFromFriendProps {
 const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [isMax, setIsMax] = useState(false);
-  const [data, setData] = useState<UserProfile[] | undefined>([]);
-  const [currPage, setCurrPage] = useState<number>(1);
 
-  const availFriend = api.friend.friendList.useQuery({
-    status: "FRIEND",
-    limit: 10,
-    page: currPage,
-  });
+  const { data, isLoading, isError, isSuccess, fetchNextPage, hasNextPage } =
+    api.friend.friendList.useInfiniteQuery(
+      {
+        status: "FRIEND",
+        limit: 10,
+      },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    );
 
-  useEffect(() => {
-    if (availFriend.data && data && !isMax) {
-      console.log(availFriend.data);
-      setData((d) => {
-        if (d) {
-          if (availFriend.data.length === 0) {
-            setIsMax(true);
-          }
-          const newData = [...d, ...availFriend.data];
-          return newData;
-        }
-      });
-    }
-  }, [availFriend.data]);
+  // console.log(data);
 
   useEffect(() => {
     const vStackElement = vStackRef.current;
@@ -42,7 +29,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
     const handleScroll = () => {
       if (
         vStackElement &&
-        !isMax &&
+        hasNextPage &&
         vStackElement.scrollHeight -
           vStackElement.scrollTop -
           vStackElement.clientHeight <
@@ -53,7 +40,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
         }
 
         timeoutRef.current = setTimeout(() => {
-          setCurrPage((page) => page + 1);
+          void fetchNextPage();
         }, 250);
       }
     };
@@ -73,7 +60,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [isMax, currPage]);
+  }, [hasNextPage]);
 
   return (
     <VStack
@@ -99,26 +86,28 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
         },
       }}
     >
-      {data?.map((item, idx) => {
-        return (
-          <CardAddChatFromFriend
-            key={idx}
-            name={item.name}
-            src={item.image == null ? "" : item.image}
-            path={`chat/${item.id}`}
-          />
-        );
+      {data?.pages.map((page, idx1) => {
+        return page.data.map((item, idx2) => {
+          return (
+            <CardAddChatFromFriend
+              key={`${idx1}-${idx2}`}
+              name={item.name}
+              src={item.image == null ? "" : item.image}
+              path={`chat/${item.id}`}
+            />
+          );
+        });
       })}
-      {availFriend.isLoading && (
-        <Box >
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="white"
-          color="yellow.4"
-          
-          size="lg"
-        />
+
+      {isLoading && (
+        <Box>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="white"
+            color="yellow.4"
+            size="lg"
+          />
         </Box>
       )}
     </VStack>

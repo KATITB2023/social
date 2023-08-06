@@ -2,15 +2,12 @@ import {
   Flex,
   Icon,
   IconButton,
-  Spinner,
 } from "@chakra-ui/react";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import Navbar from "~/components/Navbar";
 import Layout from "~/layout";
-import { api } from "~/utils/api";
 import Footer from "~/components/newchat/Footer";
 import React, { useState } from "react";
 import ChatPageHeader from "~/components/chat/ChatPageHeader";
@@ -19,19 +16,16 @@ import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
 
 const ChatHome: NextPage = () => {
   useSession({ required: true });
-
-  const [currentAvailChatPage, setCurrentAvailChatPage] = useState(1);
-  const availableChat = api.message.chatHeader.useQuery({
-    limit: 10,
-    page: currentAvailChatPage,
-  });
-
-
   const [openAddChat, setOpenAddChat] = useState(false);
+  const [isNoChat, setIsNoChat] = useState(true);
 
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
   };
+
+  const isNoChatHandler = (val : boolean) => {
+    setIsNoChat(val);
+  }
 
   return (
     <Layout title="Home">
@@ -42,38 +36,16 @@ const ChatHome: NextPage = () => {
             direction="column"
             position="relative"
             bg={
-              openAddChat || availableChat.data?.length != 0
+              openAddChat
                 ? "url(./addchatbg.svg)"
                 : "url(./homechatbg.svg)"
             }
             alignItems="center"
           >
             <Navbar />
+            <ChatPageHeader hidden={openAddChat || !isNoChat} />
             <AddChatFromFriend hidden={!openAddChat} />
-
-            { !openAddChat ? (
-              <>
-                {availableChat.data?.length == 0 ? (
-                  <ChatPageHeader />
-                ) : (
-                  <ExistingChat data={availableChat.data} />
-                )}
-              </>
-            ) : (
-              <>
-                
-              </>
-            )}
-
-            {/* {(availableUsers.isLoading || availableChat.isLoading) && (
-              <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="white"
-                color="yellow.4"
-                size="xl"
-              />
-            )} */}
+            <ExistingChat hidden={openAddChat !== isNoChat} onNoChat={isNoChatHandler}/>
 
             <IconButton
               isRound
