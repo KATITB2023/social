@@ -97,4 +97,21 @@ export const feedRouter = createTRPCRouter({
       return feedList;
     }),
   react: protectedProcedure.mutation(() => "hello"),
+  readFeed: protectedProcedure
+    .input(z.object({ feedId: z.number().int() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.feedRead.upsert({
+        where: {
+          userId_feedId: {
+            userId: ctx.session.user.id,
+            feedId: input.feedId,
+          },
+        },
+        create: {
+          userId: ctx.session.user.id,
+          feedId: input.feedId,
+        },
+        update: {},
+      });
+    }),
 });
