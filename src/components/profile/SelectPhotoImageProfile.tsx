@@ -1,24 +1,67 @@
 import React, { useState } from "react";
 import WebcamComponent from "./WebcamComponent";
-import { Box, Image, Text, Button, Collapse} from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Button,
+  Collapse,
+  useToast,
+  Spinner,
+} from "@chakra-ui/react";
+import { sanitizeURL, uploadFile } from "~/utils/file";
+import { api } from "~/utils/api";
 
 export const SelectPhotoImageProfile = ({
   open,
   setOpen,
-  changeImage
+  changeImage,
+  nim,
 }: {
   open: boolean;
   setOpen: any;
-  changeImage : any;
+  changeImage: any;
+  nim: string;
 }) => {
-  const [pictureSelected, setPictureSelected] = useState(false);
-  const [image, setImage] = useState<any>(undefined);
+  const [pictureSelected, setPictureSelected] = useState<boolean>(false);
+  const [image, setImage] = useState<string>("");
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
+  const profileMutaion = api.profile.editProfile.useMutation();
+  const toast = useToast();
 
   function onImageChange(file: FileList) {
-    if (file[0]){
-        setPictureSelected(true);
-        setImage(URL.createObjectURL(file[0]!));
-        // console.log(image)
+    if (file[0]) {
+      setPictureSelected(true);
+      // console.log(image)
+    }
+  }
+
+  async function updateImage(file: FileList) {
+    if (!file[0]) return;
+    try {
+      const url = sanitizeURL(`cdn.oskmitb.con/${nim}`);
+      setIsUpdating(true);
+      await uploadFile(url, file[0], (progressEvent) => {
+        if (progressEvent.loaded == progressEvent.progress) {
+        }
+      });
+      const res = await profileMutaion.mutateAsync({
+        image: url,
+      });
+      toast({
+        title: "Success",
+        status: "success",
+        description: res.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+      console.log(res);
+      console.log("File upload successful");
+    } catch (error) {
+      console.error("File upload failed:", error);
+      return;
     }
   }
 
@@ -70,7 +113,10 @@ export const SelectPhotoImageProfile = ({
               </Text>
               <Box display={"flex"} gap={"15px"}>
                 <Image
-                  onClick={() => {changeImage(undefined); setOpen(false)}}
+                  onClick={() => {
+                    changeImage(undefined);
+                    setOpen(false);
+                  }}
                   src="/components/trashbin.svg"
                 />
                 <Image
@@ -111,7 +157,7 @@ export const SelectPhotoImageProfile = ({
                 </Button>
 
                 <input
-                    hidden
+                  hidden
                   type="file"
                   id="img"
                   accept="image/*"
@@ -138,13 +184,20 @@ export const SelectPhotoImageProfile = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && changeImage(image); setOpen(false); setPictureSelected(false); 
+                pictureSelected && changeImage(image);
+                setOpen(false);
+                setPictureSelected(false);
+                updateImage();
               }}
             >
-              <Text fontWeight={700} color={"white"} size={"SH5"}>
-                {" "}
-                Submit{" "}
-              </Text>
+              {isUpdating ? (
+                <Spinner />
+              ) : (
+                <Text fontWeight={700} color={"white"} size={"SH5"}>
+                  {" "}
+                  Submit{" "}
+                </Text>
+              )}
             </Button>
           </Box>
         </Box>
