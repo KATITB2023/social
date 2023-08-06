@@ -1049,7 +1049,7 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
 };
 
 const Leaderboard = () => {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession();
   const page = 1 as number;
   const limit = 10 as number;
@@ -1141,7 +1141,6 @@ const Leaderboard = () => {
         pageButtons.push("...", totalPages);
       }
     }
-
     return pageButtons;
   };
 
