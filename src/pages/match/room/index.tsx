@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
@@ -11,18 +12,25 @@ import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
 import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
+import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
 
 const Room: NextPage = () => {
-  useSession({ required: true });
+  const router = useRouter();
+  const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
 
   const checkMatch = useEmit("checkMatch", {
     onSuccess: (data) => {
-      if (data !== null) {
-        setMatch(data);
+      if (data.match !== null) {
+        setMatch(data.match);
+      } else {
+        void router.push("/match");
       }
     },
   });
+
+  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   useEffect(() => {
     checkMatch.mutate({});
@@ -39,6 +47,17 @@ const Room: NextPage = () => {
 
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
+
+  useEffect(() => {
+    if (match && session) {
+      try {
+        updateMessageIsRead.mutate({
+          userMatchId: match.id,
+          receiverId: session.user.id,
+        });
+      } catch (err) {}
+    }
+  }, []);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -71,6 +90,11 @@ const Room: NextPage = () => {
         post.userMatchId === match.id
       ) {
         setMessages((prev) => [...prev, post]);
+        if (match && session && post.receiverId === session.user.id) {
+          try {
+            updateOneMessageIsRead.mutate({ messageId: post.id });
+          } catch (err) {}
+        }
       }
     },
     [match, messageQuery]
@@ -95,6 +119,19 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
+  useSubscription(
+    "endMatch",
+    (data) => {
+      if (match) {
+        if (data.endedAt !== null) {
+          setMatch(null);
+          void router.push("/");
+        }
+      }
+    },
+    [match, messageQuery]
+  );
+
   const messageEmit = useEmit("anonymousMessage");
 
   return (
@@ -109,7 +146,7 @@ const Room: NextPage = () => {
               h="100vh"
               justify="center"
               align="center"
-              backgroundColor={"gray.50"}
+              backgroundColor={"blue"}
             >
               <Flex w={"100%"} h="90%" flexDir="column">
                 <Header name="Anonymous" isTyping={currentlyTyping} />
@@ -121,11 +158,14 @@ const Room: NextPage = () => {
                   isFetchingPreviousPage={isFetchingPreviousPage}
                 />
                 <Divider />
-                <Footer
-                  onSubmit={(text) => messageEmit.mutate({ message: text })}
-                  receiverId={match.id}
-                  isAnon={true}
-                />
+                <Flex>
+                  <AnonFooterMenu />
+                  <Footer
+                    onSubmit={(text) => messageEmit.mutate({ message: text })}
+                    receiverId={match.id}
+                    isAnon={true}
+                  />
+                </Flex>
               </Flex>
             </Flex>
           </>

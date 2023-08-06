@@ -17,7 +17,9 @@ const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
-  const userPair = api.message.getUser.useQuery({ pairId }).data;
+  const userPair = api.friend.getOtherUserProfile.useQuery({
+    userId: pairId,
+  }).data;
 
   const messageQuery = api.message.infinite.useInfiniteQuery(
     { pairId },
@@ -27,6 +29,9 @@ const Chat: NextPage = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  const updateMessageIsRead = api.message.updateIsRead.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
@@ -50,6 +55,17 @@ const Chat: NextPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (session) {
+      try {
+        updateMessageIsRead.mutate({
+          receiverId: session.user.id,
+          senderId: pairId,
+        });
+      } catch (err) {}
+    }
+  }, []);
+
   // When new data from `useInfiniteQuery`, merge with current state
   useEffect(() => {
     const msgs = messageQuery.data?.pages.map((page) => page.items).flat();
@@ -66,6 +82,17 @@ const Chat: NextPage = () => {
         post.userMatchId === null
       ) {
         addMessages([post]);
+        if (
+          session &&
+          post.receiverId === session.user.id &&
+          post.senderId === pairId
+        ) {
+          try {
+            updateOneMessageIsRead.mutate({
+              messageId: post.id,
+            });
+          } catch (err) {}
+        }
       }
     },
     [session, messageQuery]
