@@ -1,5 +1,5 @@
 import { Flex, Text, Heading, Button, Box } from "@chakra-ui/react";
-import {
+import ProfilePage, {
   DefaultBackgroundAndNavigationBar,
   LabelValueContainer,
   ProfilePicture,
@@ -19,10 +19,25 @@ export default function FriendProfilePage() {
     userId: pairId,
   });
 
+  const removeFriend = api.friend.removeFriend.useMutation();
+  const removeFriendExecutor = () => {
+   removeFriend
+     .mutateAsync({
+       userId: pairId,
+     })
+     .then(() => {
+        <ProfilePage />
+        console.log("Teman berhasil dihapus")
+     })
+     .catch((error) => {
+       console.error("Error while removing friend:", error);
+     });
+ };
+  
   const student = profileQuery.data;
 
   if (!student) {
-    return <div>Loading...</div>;
+    return <NotFound />;
   }
 
   if (!session) {
@@ -90,6 +105,7 @@ export default function FriendProfilePage() {
           py="12px"
           backgroundColor="yellow.1"
           color="white"
+          onClick={() => removeFriendExecutor()}
         >
           <Text size="B3">delete</Text>
         </Button>
