@@ -7,6 +7,7 @@ interface CardProps {
   image: string;
   ranking: number;
   points: string;
+  marginTop1: string
 }
 
 const CardLeaderboardTop3 = ({
@@ -15,6 +16,7 @@ const CardLeaderboardTop3 = ({
   image,
   ranking,
   points,
+  marginTop1,
 }: CardProps) => {
   const isOverflowing = (Name: string) => {
     let tes: string = "";
@@ -30,6 +32,7 @@ const CardLeaderboardTop3 = ({
   };
   return (
     <Box
+      marginTop={marginTop1}
       position="relative"
       alignItems="center"
       justifyContent="center"
@@ -37,7 +40,7 @@ const CardLeaderboardTop3 = ({
       w="100px"
       h="150px"
       borderRadius="12px"
-      margin="20px"
+      // margin="20px"
     >
       <Box
         position="absolute"
@@ -89,7 +92,7 @@ const CardLeaderboardTop3 = ({
             alignItems="center"
             justifyContent="center"
           >
-            <Text size="B3" fontWeight="600" textAlign="center">
+            <Text size="B3" fontWeight="600" textAlign="center" color="white">
               #{ranking}
             </Text>
           </Flex>
@@ -102,10 +105,10 @@ const CardLeaderboardTop3 = ({
           whiteSpace="nowrap"
           overflow="hidden"
         >
-          <Text fontWeight="600" size="B3">
+          <Text fontWeight="600" size="B3" color="white" textAlign="center">
             {isOverflowing(Name)}
           </Text>
-          <Text size="B5" textAlign="center" marginTop="-5px">
+          <Text size="B5" textAlign="center" marginTop="-5px" color="white">
             {Nim}
           </Text>
         </Box>
