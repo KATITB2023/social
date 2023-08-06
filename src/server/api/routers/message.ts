@@ -87,10 +87,10 @@ export const messageRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
-        page: z.number().min(1).default(1),
+        cursor: z.number().min(1).default(1),
       })
     )
-    .query(async ({ ctx, input }): Promise<NonAnonChatHeader[]> => {
+    .query(async ({ ctx, input }) => {
       const chatHeaders = await ctx.prisma.message.findMany({
         orderBy: {
           createdAt: "desc",
@@ -131,11 +131,11 @@ export const messageRouter = createTRPCRouter({
             },
           },
         },
-        skip: input.limit * (input.page - 1),
+        skip: input.limit * (input.cursor - 1),
         take: input.limit,
       });
 
-      return Promise.all(
+      const data: NonAnonChatHeader[] = await Promise.all(
         chatHeaders.map(async (chatHeader) => {
           const otherUser =
             chatHeader.sender.id === ctx.session.user.id
@@ -171,6 +171,11 @@ export const messageRouter = createTRPCRouter({
           };
         })
       );
+
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
     }),
   reportUser: protectedProcedure
     .input(

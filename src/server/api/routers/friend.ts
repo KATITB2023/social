@@ -261,13 +261,13 @@ export const friendRouter = createTRPCRouter({
         .object({
           status: z.enum(ACCEPTED_FRIENDSHIP_STATUS),
           limit: z.number().min(5).max(40).default(20),
-          page: z.number().min(1).default(1),
+          cursor: z.number().min(1).default(1),
         })
         .refine((data) => ACCEPTED_FRIENDSHIP_STATUS.includes(data.status), {
           message: "Status must be one of the accepted friendship statuses",
         })
     )
-    .query(async ({ ctx, input }): Promise<UserProfile[]> => {
+    .query(async ({ ctx, input }) => {
       const currUser = ctx.session.user;
       const userId = currUser.id;
 
@@ -287,7 +287,7 @@ export const friendRouter = createTRPCRouter({
           ...whereCondition,
           OR: [{ userInitiatorId: userId }, { userReceiverId: userId }],
         },
-        skip: input.limit * (input.page - 1),
+        skip: input.limit * (input.cursor - 1),
         take: input.limit,
       });
 
@@ -307,7 +307,8 @@ export const friendRouter = createTRPCRouter({
         },
       });
 
-      return friendProfiles.map((profile) => {
+      const data: UserProfile[] = friendProfiles.map((profile) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { updatedAt, userId, ...rest } = profile;
         return {
           ...rest,
@@ -316,8 +317,12 @@ export const friendRouter = createTRPCRouter({
           status: input.status,
         };
       });
-    }),
 
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
+    }),
   getOtherUserProfile: protectedProcedure
     .input(
       z
