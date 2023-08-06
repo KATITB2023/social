@@ -6,7 +6,7 @@ export const feedRouter = createTRPCRouter({
   getFeeds: protectedProcedure
     .input(
       z.object({
-        page: z.number().int().positive().default(1),
+        cursor: z.number().int().positive().default(1),
         limit: z.number().int().positive().default(10),
       })
     )
@@ -14,7 +14,7 @@ export const feedRouter = createTRPCRouter({
       // Query feeds
       const feeds = await ctx.prisma.feed.findMany({
         take: input.limit,
-        skip: (input.page - 1) * input.limit,
+        skip: (input.cursor - 1) * input.limit,
         orderBy: {
           createdAt: "desc",
         },
@@ -63,7 +63,7 @@ export const feedRouter = createTRPCRouter({
       });
 
       // Transform into reactions object
-      return feeds.map((feed) => {
+      const data = feeds.map((feed) => {
         const reactions: extendFeed["reactions"] = {};
 
         groupedReactions
@@ -90,6 +90,11 @@ export const feedRouter = createTRPCRouter({
           read,
         };
       });
+
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
     }),
   react: protectedProcedure.mutation(() => "hello"),
   readFeed: protectedProcedure

@@ -6,7 +6,7 @@ export const leaderboardRouter = createTRPCRouter({
   getLeaderboard: publicProcedure
     .input(
       z.object({
-        page: z.number().int().default(1),
+        cursor: z.number().int().default(1),
         limit: z.number().int().default(20),
       })
     )
@@ -14,14 +14,14 @@ export const leaderboardRouter = createTRPCRouter({
       const profileData = await ctx.prisma.profile.findMany({
         orderBy: [{ point: "desc" }],
         take: input.limit,
-        skip: (input.page - 1) * input.limit,
+        skip: (input.cursor - 1) * input.limit,
         include: {
           user: true,
         },
       });
 
       const leaderboardData: Leaderboard[] = [];
-      let currentRank = (input.page - 1) * input.limit + 1;
+      let currentRank = (input.cursor - 1) * input.limit + 1;
       let totalSamePoint = 0;
       let stillSame = false;
 
@@ -34,7 +34,7 @@ export const leaderboardRouter = createTRPCRouter({
         if (
           leaderboardData[0] &&
           leaderboardData[
-            currentRank - (input.page - 1) * input.limit + totalSamePoint - 2
+            currentRank - (input.cursor - 1) * input.limit + totalSamePoint - 2
           ]?.point == profile.point
         ) {
           currentRank--;
@@ -63,6 +63,8 @@ export const leaderboardRouter = createTRPCRouter({
 
       return {
         data: leaderboardData,
+        nextCursor:
+          leaderboardData.length < input.limit ? undefined : input.cursor + 1,
         totalPage: Math.ceil(totalCount._count.userId / input.limit),
       };
     }),
