@@ -7,7 +7,7 @@ await import("./src/env.cjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  standalone: true,
+  output: "standalone",
 
   /**
    * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
