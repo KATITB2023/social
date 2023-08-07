@@ -5,22 +5,11 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
-import Layout from "~/layout";
 import { ChatTopic } from "~/server/types/message";
 import Navbar from "~/components/Navbar";
-import {
-  Box,
-  ButtonGroup,
-  Container,
-  Button,
-  Image,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Image, VStack } from "@chakra-ui/react";
 import Footer from "~/components/newchat/Footer";
-import Eclipse from "~/components/newchat/Eclipse";
-import FirstNewChatButton from "~/components/newchat/Button";
-import QuestionBox from "~/components/newchat/Box";
+
 import {
   FirstQuestion,
   SecondQuestion,
@@ -29,18 +18,21 @@ import {
 
 const Match: NextPage = () => {
   const [questionPage, setQuestionPage] = useState(1);
-  const router = useRouter();
-  useSession({ required: true });
-
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [topic, setTopic] = useState<ChatTopic>(ChatTopic.ITB);
+  const [isFindingFriend, setIsFindingFriend] = useState(false);
   const [needQueue, setNeedQueue] = useState<boolean>(false);
   const queued = useRef(false);
   const [foundMatch, setFoundMatch] = useState<boolean>(false);
+  const router = useRouter();
+  useSession({ required: true });
+
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
-      console.log(data)
+      console.log(data);
       if (data.match !== null) {
         void router.push(`/match/room`);
-      } else if (data.queue !== null) {        
+      } else if (data.queue !== null) {
         queued.current = true;
         setNeedQueue(false);
       } else {
@@ -51,10 +43,7 @@ const Match: NextPage = () => {
   const queueEmit = useEmit("findMatch");
   const cancelEmit = useEmit("cancelMatch");
   useEffect(() => {
-    console.log("Masuk use effect");
     checkEmit.mutate({});
-    console.log(queued,needQueue,foundMatch, " di use effect");
-    
     return () => {
       if (queued.current) {
         console.log("cancelling emit");
@@ -63,22 +52,21 @@ const Match: NextPage = () => {
     };
   }, [checkEmit.mutate, cancelEmit.mutate]);
 
-  const findMatch = () => {    
-    console.log(queued,needQueue,foundMatch)
+  const findMatch = () => {
     if (!queued.current && needQueue && !foundMatch) {
       console.log("request queue");
       queueEmit.mutate({
-        isAnonymous: true,
-        isFindingFriend: true,
-        topic: ChatTopic.ITB,
+        isAnonymous: isAnonymous,
+        isFindingFriend: isFindingFriend,
+        topic: topic,
       });
       queued.current = true;
     }
   };
-  
-  useSubscription("match", (match) => {
+
+  useSubscription("match", (_) => {
     console.log("Masuk use subs");
-    
+
     queued.current = false;
     setFoundMatch(true);
     void router.push(`/match/room`);
@@ -137,17 +125,32 @@ const Match: NextPage = () => {
         left={0}
       />
       <Navbar />
-      <VStack minH="80vh" width="100%" marginTop={"0px"} justifyContent={"center"} zIndex={4}>
+      <VStack
+        minH="80vh"
+        width="100%"
+        marginTop={"0px"}
+        justifyContent={"center"}
+        zIndex={4}
+      >
         {questionPage === 1 && (
-          <FirstQuestion handlePageChange={handlePageChange} />
+          <FirstQuestion
+            handlePageChange={handlePageChange}
+            setIsAnonymous={setIsAnonymous}
+          />
         )}
         {questionPage === 2 && (
-          <SecondQuestion handlePageChange={handlePageChange} />
+          <SecondQuestion
+            handlePageChange={handlePageChange}
+            setTopic={setTopic}
+            topic={topic}
+          />
         )}
         {questionPage === 3 && (
           <ThirdQuestion
             handlePageChange={handlePageChange}
             findMatch={findMatch}
+            setIsFindingFriend={setIsFindingFriend}
+            isFindingFriend = {isFindingFriend}
           />
         )}
         <Footer />
