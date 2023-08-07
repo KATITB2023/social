@@ -5,14 +5,6 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
-const colors = {
-  test: {
-    900: "#1a365d",
-    800: "#153e75",
-    700: "#2a69ac",
-  },
-};
-
 export const theme = extendTheme({
   fonts: {
     heading: "Bodwars",
@@ -124,6 +116,14 @@ export const theme = extendTheme({
     },
     orange: "#E85535",
   },
+  styles: {
+    global: {
+      body: {
+        bg: "#12122E",
+        color: "white",
+      },
+    },
+  },
 });
 
 // DESIGN SYSTEM TYPOGRAPHY:
@@ -142,18 +142,19 @@ for body and additional, use:
 <Text>Default for text is -> size = "B4" </Text>
 */
 
-
-
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <ChakraProvider theme={theme}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </ChakraProvider>
+    <div style={{ maxWidth: "375px", margin: "auto" }}>
+      {/* Set max width for mobile-only resolution */}
+      <ChakraProvider theme={theme}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </ChakraProvider>
+    </div>
   );
 };
 
