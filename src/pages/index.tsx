@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Layout from "~/layout";
-import { Container, Heading, theme, Text } from "@chakra-ui/react";
+import { Container, Heading, Text } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   return (
