@@ -27,14 +27,13 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs",
-    "src/components/Popup_Chat/kamu-yakin.tsx"
+    "**/*.mjs"
   ],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true,
     "compilerOptions": {
-      "module": "NodeNext"
+      "module": "NodeNext",
     }
   }
 }
