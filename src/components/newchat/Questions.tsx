@@ -200,6 +200,7 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
       padding={0}
       alignItems={"center"}
       gap={"10px"}
+      justifyContent={"center"}
     >
       <QuestionBox
         w={"336px"}
