@@ -15,7 +15,7 @@ import ExistingChat from "~/components/chat/ExistingChat";
 import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
 
 const ChatHome: NextPage = () => {
-  useSession({ required: true });
+  const { data: session } = useSession({ required: true });
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
 
