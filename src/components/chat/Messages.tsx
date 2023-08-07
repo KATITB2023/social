@@ -9,6 +9,7 @@ interface MessagesProps {
   hasPreviousPage?: boolean;
   isFetchingPreviousPage: boolean;
   fetchPreviousPage: () => void;
+  bottomRef : React.RefObject<HTMLDivElement>;
 }
 
 const Messages = ({
@@ -16,6 +17,7 @@ const Messages = ({
   hasPreviousPage,
   isFetchingPreviousPage,
   fetchPreviousPage,
+  bottomRef
 }: MessagesProps) => {
   const { data: session } = useSession({ required: true });
   const dayjs = require("dayjs");
@@ -24,7 +26,7 @@ const Messages = ({
   dayjs.extend(timezone);
   dayjs.extend(utc);
   const infinityRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  // const bottomRef = useRef<HTMLDivElement>(null);
   const inView = useInView(infinityRef);
   const [shouldScroll, setShouldScroll] = useState<boolean>(true);
 
