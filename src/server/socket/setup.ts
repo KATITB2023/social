@@ -9,6 +9,7 @@ import {
   anonymousMessageEvent,
   isTypingEvent,
   messageEvent,
+  askRevealEvent,
 } from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
@@ -37,6 +38,7 @@ const serverEvents = [
   cancelMatchEvent,
   checkMatchEvent,
   anonymousMessageEvent,
+  askRevealEvent,
 ] as const;
 
 /**
@@ -76,6 +78,7 @@ export type ServerToClientEvents = {
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
+  askReveal: (match: UserMatch, message: string) => void;
 };
 
 interface InterServerEvents {
