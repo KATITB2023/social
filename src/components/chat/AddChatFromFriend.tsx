@@ -1,7 +1,6 @@
 import { Box, Spinner, VStack } from "@chakra-ui/react";
 import CardAddChatFromFriend from "./CardAddChatFromFriend";
-import { useEffect, useRef, useState } from "react";
-import { UserProfile } from "~/server/types/user-profile";
+import { useEffect, useRef } from "react";
 import { api } from "~/utils/api";
 
 interface AddChatFromFriendProps {
@@ -21,7 +20,6 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
 
-  // console.log(data);
 
   useEffect(() => {
     const vStackElement = vStackRef.current;

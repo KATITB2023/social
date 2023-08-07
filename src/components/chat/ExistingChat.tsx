@@ -60,8 +60,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       },
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
-  const [userIdFetched, setUserIdFetched] = useState<string>("");
-  // const [searchedUser, setSearcherUser] = useState();
+  const [userIdFetched, setUserIdFetched] = useState<string>(session?.user.id ?? "");
   const getUserProfile = api.friend.getOtherUserProfile.useQuery({
     userId: userIdFetched,
   });
