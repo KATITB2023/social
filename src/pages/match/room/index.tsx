@@ -14,9 +14,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   ModalCloseButton,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
@@ -28,6 +28,7 @@ import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
 
 const Room: NextPage = () => {
   const router = useRouter();
+  const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
 
@@ -146,24 +147,35 @@ const Room: NextPage = () => {
 
   const askReveal = useEmit("askReveal");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [reveal, setReveal] = useState<boolean>(false);
 
   useSubscription(
     "askReveal",
-    (data, message) => {
-      if (message !== "") {
-        // TODO : handle if revealed
-        alert(message);
-      } else if (match) {
-        onOpen();
-
-        useEffect(() => {
-          askReveal.mutate({ agree: reveal });
-        }, [reveal]);
+    (data, askReveal) => {
+      if (match) {
+        if (askReveal) {
+          if (data.isRevealed) {
+            toast({
+              title: "Yay temenmu uda reveal profil nih!",
+            });
+          } else {
+            onOpen();
+          }
+        } else {
+          toast({
+            title: "Temanmu menolak reveal profil :(",
+          });
+        }
       }
     },
     [match, messageQuery]
   );
+
+  const handleAskReveal = (choice: boolean) => {
+    onClose();
+    if (match) {
+      askReveal.mutate({ agree: choice });
+    }
+  };
 
   const messageEmit = useEmit("anonymousMessage");
 
@@ -175,21 +187,29 @@ const Room: NextPage = () => {
         ) : (
           <>
             {/* Ask for Reveal Modal. TODO: replace with appropriate modal */}
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal
+              closeOnOverlayClick={false}
+              isOpen={isOpen}
+              onClose={onClose}
+            >
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Mau reveal gak cuy?</ModalHeader>
+                <ModalHeader color="black">
+                  Kamu direquest untuk reveal profil nih!
+                </ModalHeader>
                 <ModalCloseButton />
-                <ModalBody>Mau ga bos?</ModalBody>
                 <ModalFooter>
                   <Button
                     colorScheme="blue"
                     mr={3}
-                    onClick={() => setReveal(true)}
+                    onClick={() => handleAskReveal(true)}
                   >
                     Yes
                   </Button>
-                  <Button variant="ghost" onClick={() => setReveal(false)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleAskReveal(false)}
+                  >
                     No
                   </Button>
                 </ModalFooter>
