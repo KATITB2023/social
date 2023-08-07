@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { compareHash, generateHash, generateResetToken } from "~/utils/auth";
 import { TRPCError } from "@trpc/server";
 
@@ -118,4 +118,40 @@ export const authRouter = createTRPCRouter({
         }
       }
     }),
+  editPassword : protectedProcedure
+    .input(
+      z.object({
+        oldPassword : z.string(),
+        newPassword : z.string(),
+      })
+    )
+    .query(async({ctx,input}) =>{
+      const user = await ctx.prisma.user.findFirst({
+        where :{
+          id : ctx.session.user.id
+        }
+      })
+      if(!user){
+        throw new TRPCError({
+          code : "BAD_REQUEST",
+          message : "User not found!"
+        })
+      }
+      if(!(await compareHash(input.oldPassword,user.passwordHash))){
+        throw new TRPCError({
+          code : "BAD_REQUEST",
+          message : "Password not right"
+        })
+      }
+
+      await ctx.prisma.user.update({
+        where:{
+          id : ctx.session.user.id
+        },
+        data:{
+          passwordHash : await generateHash(input.newPassword)
+        }
+      })
+      return "Password has been updated succesfully!"
+    })
 });
