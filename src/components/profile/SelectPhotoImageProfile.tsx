@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import WebcamComponent from "./WebcamComponent";
 import {
   Box,
   Image,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { sanitizeURL, uploadFile } from "~/utils/file";
 import { api } from "~/utils/api";
+import { TRPCClientError } from "@trpc/client";
 
 export const SelectPhotoImageProfile = ({
   open,
@@ -19,24 +19,27 @@ export const SelectPhotoImageProfile = ({
   nim,
 }: {
   open: boolean;
-  setOpen: any;
-  changeImage: any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  changeImage: React.Dispatch<React.SetStateAction<string | undefined>>;
   nim: string;
 }) => {
-  const [pictureSelected, setPictureSelected] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  const [pictureSelected, setPictureSelected] = useState(false);
+  const [imageSelected, setImageSelected] = useState<File | undefined>(
+    undefined
+  );
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [imageFile, setImageFile] = useState<File | undefined>(undefined);
-
-  const profileMutaion = api.profile.editProfile.useMutation();
+  const utils = api.useContext();
   const toast = useToast();
+  const profileMutaion = api.profile.editProfile.useMutation({
+    onSuccess(): void {
+      void utils.profile.getUserProfile.invalidate();
+    },
+  });
 
   function onImageChange(file: FileList) {
     if (file[0]) {
       setPictureSelected(true);
-      setImageFile(file[0]);
-
-      // console.log(image)
+      setImageSelected(file[0]);
     }
   }
 
@@ -60,14 +63,18 @@ export const SelectPhotoImageProfile = ({
         isClosable: true,
         position: "top",
       });
-      console.log(res);
-      console.log("File upload successful");
-    } catch (error) {
-      console.error("File upload failed:", error);
+    } catch (e: unknown) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
-
-    setImage(url);
   }
 
   return (
@@ -123,10 +130,12 @@ export const SelectPhotoImageProfile = ({
                     setOpen(false);
                   }}
                   src="/components/trashbin.svg"
+                  alt="trash icon"
                 />
                 <Image
                   onClick={() => setOpen(false)}
                   src="/components/closeButton.svg"
+                  alt="close icon"
                 />
               </Box>
             </Box>
@@ -144,7 +153,7 @@ export const SelectPhotoImageProfile = ({
               alignItems={"center"}
               gap={"10px"}
             >
-              <Image src="/components/addFile.svg" />
+              <Image src="/components/addFile.svg" alt="add file" />
 
               <Box display={"flex"} flexDirection={"column"} gap={"6px"}>
                 <Button
@@ -166,7 +175,12 @@ export const SelectPhotoImageProfile = ({
                   type="file"
                   id="img"
                   accept="image/*"
-                  onChange={(e) => onImageChange(e.target.files!)}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      onImageChange(files);
+                    }
+                  }}
                 />
 
                 {pictureSelected ? (
@@ -189,10 +203,9 @@ export const SelectPhotoImageProfile = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && changeImage(image);
                 setOpen(false);
+                pictureSelected && updateImage(imageSelected);
                 setPictureSelected(false);
-                updateImage(imageFile);
               }}
             >
               {isUpdating ? (

@@ -1,23 +1,23 @@
-import { Box, Flex, Heading, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Image } from "@chakra-ui/react";
 import React from "react";
 
 interface CardProps {
-  Name: string;
-  Nim: number;
+  name: string;
+  nim: number;
   image: string;
   ranking: number;
   points: string;
 }
 
 const CardLeaderboardTop3 = ({
-  Name,
-  Nim,
+  name,
+  nim,
   image,
   ranking,
   points,
 }: CardProps) => {
   const isOverflowing = (Name: string) => {
-    let tes: string = "";
+    let tes = "";
     for (let i = 0; i < Name.length; i++) {
       if (i > 12) {
         tes += "...";
@@ -77,7 +77,8 @@ const CardLeaderboardTop3 = ({
             objectFit="cover"
             top="0"
             src={image}
-          ></Image>
+            alt={`Image ${name}`}
+          />
           <Flex
             position="absolute"
             top="6px"
@@ -103,10 +104,10 @@ const CardLeaderboardTop3 = ({
           overflow="hidden"
         >
           <Text fontWeight="600" size="B3">
-            {isOverflowing(Name)}
+            {isOverflowing(name)}
           </Text>
           <Text size="B5" textAlign="center" marginTop="-5px">
-            {Nim}
+            {nim}
           </Text>
         </Box>
         <Flex

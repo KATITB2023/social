@@ -1,36 +1,14 @@
 import {
   Box,
-  Button,
   Center,
   Flex,
   Heading,
   HStack,
   Image,
   Text,
-  useDisclosure,
-  Drawer,
-  DrawerBody,
-  DrawerOverlay,
-  DrawerContent,
-  Link,
-  Icon,
   Spacer,
-  VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import {
-  MdHome,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdPerson,
-  MdLogout,
-  MdOutlineAssignmentInd,
-  MdOutlineAssignment,
-  MdNewspaper,
-  MdMenu,
-} from "react-icons/md";
-import { type IconType } from "react-icons";
-import { useRouter } from "next/router";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 
@@ -57,8 +35,8 @@ const inputSubmissionData: submission = {
 };
 
 // Main Function
-export default function showSubmissionPage() {
-  const [isSubmitOpen, setSubmitOpen] = useState(false);
+export default function ShowSubmissionPage() {
+  const [isSubmitOpen, setSubmitOpen] = useState<boolean>(false);
 
   return (
     <Flex minHeight="100vh" minWidth="100vw">
@@ -222,7 +200,7 @@ function FileUpload(param: submission) {
       flexDirection="column"
       py="10px"
     >
-      <Image src="/komethello.svg" />
+      <Image src="/komethello.svg" alt={"background"} />
       <Box
         borderColor={"yellow.4"}
         px="10px"
@@ -238,4 +216,4 @@ function FileUpload(param: submission) {
   );
 }
 
-export { showSubmissionPage };
+export { ShowSubmissionPage };

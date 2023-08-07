@@ -8,12 +8,13 @@ import {
   ModalCloseButton,
   Box,
   Spinner,
+  Flex,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function ProfilePicture({
   src = "/defaultprofpict.svg",
-  size = "164px",
+  size = "100%",
   br = "full",
 }: {
   src?: string;
@@ -32,12 +33,18 @@ export default function ProfilePicture({
         onClick={onOpen}
         overflow="hidden"
       >
-        {isImageLoading && <Spinner />}
-        <Image
-          onLoad={() => setIsImageLoading(false)}
-          src={src}
-          alt="Profile Picture"
-        />
+        <Flex justifyContent="center" alignItems="center">
+          {isImageLoading && <Spinner />}
+
+          <Image
+            onLoad={() => setIsImageLoading(false)}
+            src={src}
+            alt="Profile Picture"
+            width="100%"
+            hidden={isImageLoading}
+            height="100&"
+          />
+        </Flex>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} size="full">
