@@ -78,7 +78,7 @@ export type ServerToClientEvents = {
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
-  askReveal: (match: UserMatch, message: string) => void;
+  askReveal: (match: UserMatch, askReveal: boolean) => void;
 };
 
 interface InterServerEvents {
