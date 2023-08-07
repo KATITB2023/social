@@ -12,7 +12,6 @@ import {
 
 import { type Dispatch, useState, type SetStateAction } from "react";
 import { type SelfProfile } from "~/server/types/user-profile";
-import { type EditableProps } from "~/pages/profile";
 import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
 
@@ -55,6 +54,7 @@ export default function EditingProfile({
         isClosable: true,
         position: "top",
       });
+      setIsEditMode(false);
     } catch (e: unknown) {
       if (!(e instanceof TRPCClientError)) throw e;
       toast({
@@ -67,7 +67,6 @@ export default function EditingProfile({
       });
     }
     setIsUpdating(false);
-    setIsEditMode(false);
   }
 
   function handleCancel() {
