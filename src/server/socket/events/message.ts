@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
-import { currentlyTyping } from "../state";
+import { currentlyTyping, askingReveal } from "../state";
 
 export const messageEvent = createEvent(
   {
@@ -106,5 +106,63 @@ export const anonTypingEvent = createEvent(
     modifyCurrentlyTyping(input.typing, user.id);
 
     ctx.io.to([receiverId]).emit("anonIsTyping", Object.keys(currentlyTyping));
+  }
+);
+
+export const askRevealEvent = createEvent(
+  {
+    name: "askReveal",
+    input: z.object({ agree: z.boolean() }),
+    authRequired: true,
+  },
+  async ({ ctx, input }) => {
+    const user = ctx.client.data.session.user;
+    const userId = user.id;
+    const currentMatch = ctx.client.data.match;
+
+    if (currentMatch === null) return;
+
+    const receiverId =
+      currentMatch.firstUserId === userId
+        ? currentMatch.secondUserId
+        : currentMatch.firstUserId;
+
+    if (askingReveal.has(receiverId)) {
+      if (input.agree) {
+        const match = await ctx.prisma.userMatch.update({
+          where: {
+            id: currentMatch.id,
+          },
+          data: {
+            isRevealed: true,
+          },
+        });
+
+        ctx.io
+          .to([userId, receiverId])
+          .emit("askReveal", match, "Revealed wow!");
+      } else {
+        ctx.io
+          .to([userId])
+          .emit("askReveal", currentMatch, "Yowes kalo gamau reveal");
+        ctx.io
+          .to([receiverId])
+          .emit("askReveal", currentMatch, "Si doi gamau reveal nih, NT bos!");
+      }
+
+      askingReveal.delete(receiverId);
+    } else {
+      // masukin ke set
+      askingReveal.add(userId);
+      // ask lawan to reveal
+      ctx.io
+        .to([userId])
+        .emit(
+          "askReveal",
+          currentMatch,
+          "Berhasil request teman untuk reveal profil!"
+        );
+      ctx.io.to([receiverId]).emit("askReveal", currentMatch, "");
+    }
   }
 );
