@@ -2,7 +2,7 @@ import { type Message } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
@@ -21,6 +21,7 @@ const Chat: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
   const userPair = api.friend.getOtherUserProfile.useQuery({ userId: pairId }).data;
+  const bottomRef = useRef<HTMLDivElement>(null);
 
 
   const messageQuery = api.message.infinite.useInfiniteQuery(
@@ -55,7 +56,7 @@ const Chat: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
-    // --------
+    setTimeout(() => bottomRef.current?.scrollIntoView(),75);
   }, []);
 
   useEffect(() => {
@@ -146,6 +147,7 @@ const Chat: NextPage = () => {
             hasPreviousPage={hasPreviousPage}
             fetchPreviousPage={() => void fetchPreviousPage()}
             isFetchingPreviousPage={isFetchingPreviousPage}
+            bottomRef={bottomRef}
           />
 
           <Divider />

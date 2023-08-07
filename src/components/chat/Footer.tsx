@@ -13,6 +13,7 @@ interface FooterProps {
 const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
+  console.log(text)
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
   const isTyping = useEmit(clientEvent);
   const [anonMenuOpen, setAnonMenuOpen] = useState(false);
@@ -30,6 +31,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
     if (event.key === "Shift") setEnterToPostMessage(false);
 
     if (event.key === "Enter" && enterToPostMessage) {
+      event.preventDefault();
       handleSubmit(text);
     }
 
@@ -90,7 +92,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         </Flex>
       )}
       <Textarea
-        w={"95%"}
+        w={"full"}
         as={ResizeTextarea}
         resize={"none"}
         minH={"39px"}
