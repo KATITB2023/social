@@ -26,6 +26,7 @@ export const SelectPhotoImageProfile = ({
   const [pictureSelected, setPictureSelected] = useState<boolean>(false);
   const [image, setImage] = useState<string>("");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | undefined>(undefined);
 
   const profileMutaion = api.profile.editProfile.useMutation();
   const toast = useToast();
@@ -33,16 +34,18 @@ export const SelectPhotoImageProfile = ({
   function onImageChange(file: FileList) {
     if (file[0]) {
       setPictureSelected(true);
+      setImageFile(file[0]);
+
       // console.log(image)
     }
   }
 
-  async function updateImage(file: FileList) {
-    if (!file[0]) return;
+  async function updateImage(file: File) {
+    if (!file) return;
     try {
-      const url = sanitizeURL(`cdn.oskmitb.con/${nim}`);
+      const url = sanitizeURL(`http://www.cdn.oskmitb.com/${nim}`);
       setIsUpdating(true);
-      await uploadFile(url, file[0], (progressEvent) => {
+      await uploadFile(url, file, (progressEvent) => {
         if (progressEvent.loaded == progressEvent.progress) {
         }
       });
@@ -187,7 +190,7 @@ export const SelectPhotoImageProfile = ({
                 pictureSelected && changeImage(image);
                 setOpen(false);
                 setPictureSelected(false);
-                updateImage();
+                updateImage(imageFile);
               }}
             >
               {isUpdating ? (
