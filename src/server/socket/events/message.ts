@@ -174,31 +174,16 @@ export const askRevealEvent = createEvent(
           },
         });
 
-        ctx.io
-          .to([userId, receiverId])
-          .emit("askReveal", match, "Revealed wow!");
+        ctx.io.to([userId, receiverId]).emit("askReveal", match, true);
       } else {
-        ctx.io
-          .to([userId])
-          .emit("askReveal", currentMatch, "Yowes kalo gamau reveal");
-        ctx.io
-          .to([receiverId])
-          .emit("askReveal", currentMatch, "Si doi gamau reveal nih, NT bos!");
+        ctx.io.to([receiverId]).emit("askReveal", currentMatch, false);
       }
 
       askingReveal.delete(receiverId);
     } else {
-      // masukin ke set
       askingReveal.add(userId);
-      // ask lawan to reveal
-      ctx.io
-        .to([userId])
-        .emit(
-          "askReveal",
-          currentMatch,
-          "Berhasil request teman untuk reveal profil!"
-        );
-      ctx.io.to([receiverId]).emit("askReveal", currentMatch, "");
+
+      ctx.io.to([receiverId]).emit("askReveal", currentMatch, true);
     }
   }
 );
