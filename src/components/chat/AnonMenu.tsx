@@ -80,6 +80,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
+          onClick={() => {}}
         >
           <Text> &#128680; &nbsp; Laporkan Teman </Text>
         </Flex>
@@ -90,6 +91,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
+          onClick={() => {}}
         >
           <Text> &#128064; &nbsp; Minta Reveal Profile </Text>
         </Flex>
@@ -100,6 +102,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
+          onClick={() => {}}
         >
           <Text> &#128220; &nbsp; Peraturan </Text>
         </Flex>
