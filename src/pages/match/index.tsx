@@ -77,7 +77,7 @@ const Match: NextPage = () => {
   return (
     <Box position={"relative"} minH={"100vh"} height="100%" width="100%">
       <Image
-        src="newchatvbg.svg"
+        src="/components/new-chat/background-new-chat.png"
         alt="vbg chat"
         position={"absolute"}
         height="100%"
@@ -86,7 +86,7 @@ const Match: NextPage = () => {
         zIndex={-2}
       />
       <Image
-        src="bulanmatch.svg"
+        src="/components/new-chat/bulan-new-chat.png"
         alt="Pink Decor"
         position={"absolute"}
         bottom={8}
@@ -94,7 +94,7 @@ const Match: NextPage = () => {
         zIndex={0}
       />
       <Image
-        src="smol1Match.svg"
+        src="/components/new-chat/smol1.png"
         alt="Komet match"
         position={"absolute"}
         bottom={10}
@@ -102,7 +102,7 @@ const Match: NextPage = () => {
         zIndex={-1}
       />
       <Image
-        src="kometMatch.svg"
+        src="/components/new-chat/komet.png"
         alt="Spark design"
         position={"absolute"}
         top={"10%"}
@@ -110,7 +110,7 @@ const Match: NextPage = () => {
         zIndex={1}
       />
       <Image
-        src="sparkMatch.svg"
+        src="/components/new-chat/spark-kicik.png"
         alt="Spark Match"
         position={"absolute"}
         top={0}
@@ -118,7 +118,7 @@ const Match: NextPage = () => {
         zIndex={-1}
       />
       <Image
-        src="komet2Match.svg"
+        src="/components/new-chat/komet2.png"
         alt="Komet 2"
         position={"absolute"}
         top={"30%"}
