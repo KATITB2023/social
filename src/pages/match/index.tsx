@@ -37,9 +37,10 @@ const Match: NextPage = () => {
   const [foundMatch, setFoundMatch] = useState<boolean>(false);
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
+      console.log(data)
       if (data.match !== null) {
         void router.push(`/match/room`);
-      } else if (data.queue !== null) {
+      } else if (data.queue !== null) {        
         queued.current = true;
         setNeedQueue(false);
       } else {
@@ -50,8 +51,10 @@ const Match: NextPage = () => {
   const queueEmit = useEmit("findMatch");
   const cancelEmit = useEmit("cancelMatch");
   useEffect(() => {
+    console.log("Masuk use effect");
     checkEmit.mutate({});
-
+    console.log(queued,needQueue,foundMatch, " di use effect");
+    
     return () => {
       if (queued.current) {
         console.log("cancelling emit");
@@ -60,8 +63,9 @@ const Match: NextPage = () => {
     };
   }, [checkEmit.mutate, cancelEmit.mutate]);
 
-  const findMatch = () => {
-    if (!queued && needQueue && !foundMatch) {
+  const findMatch = () => {    
+    console.log(queued,needQueue,foundMatch)
+    if (!queued.current && needQueue && !foundMatch) {
       console.log("request queue");
       queueEmit.mutate({
         isAnonymous: true,
@@ -71,7 +75,10 @@ const Match: NextPage = () => {
       queued.current = true;
     }
   };
+  
   useSubscription("match", (match) => {
+    console.log("Masuk use subs");
+    
     queued.current = false;
     setFoundMatch(true);
     void router.push(`/match/room`);
@@ -80,7 +87,7 @@ const Match: NextPage = () => {
     setQuestionPage(page);
   };
   return (
-    <Box position={"relative"} minH={"100vh"} height="100%">
+    <Box position={"relative"} minH={"100vh"} height="100%" width="100%">
       <Image
         src="newchatvbg.svg"
         alt="vbg chat"
@@ -129,8 +136,8 @@ const Match: NextPage = () => {
         top={"30%"}
         left={0}
       />
-      <VStack height="95vh" width="100%" justifyContent={"center"} zIndex={4}>
-        <Navbar />
+      <Navbar />
+      <VStack minH="80vh" width="100%" marginTop={"0px"} justifyContent={"center"} zIndex={4}>
         {questionPage === 1 && (
           <FirstQuestion handlePageChange={handlePageChange} />
         )}
