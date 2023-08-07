@@ -72,9 +72,7 @@ export default function EditingProfile({
     setIsUpdating(false);
     onProfileEdit({ bio, instagram, email });
     // setIsEditMode((isEditMode) => !isEditMode);
-    setTimeout(() => {
-      router.reload();
-    }, 1400);
+    setIsEditMode(false);
   }
 
   function handleCancel() {

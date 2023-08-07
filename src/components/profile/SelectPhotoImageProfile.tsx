@@ -42,8 +42,8 @@ export const SelectPhotoImageProfile = ({
 
   async function updateImage(file: File) {
     if (!file) return;
+    const url = sanitizeURL(`https://cdn.oskmitb.com/${nim}`);
     try {
-      const url = sanitizeURL(`http://www.cdn.oskmitb.com/${nim}`);
       setIsUpdating(true);
       await uploadFile(url, file, (progressEvent) => {
         if (progressEvent.loaded == progressEvent.progress) {
@@ -66,6 +66,8 @@ export const SelectPhotoImageProfile = ({
       console.error("File upload failed:", error);
       return;
     }
+
+    setImage(url);
   }
 
   return (
