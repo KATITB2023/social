@@ -52,12 +52,6 @@ export default function ProfilePage() {
   const [profileImage, setProfileImage] = useState<string>("");
 
   if (!selfProfile) return null;
-
-  function handleProfileEdit({
-    bio = "",
-    instagram = "",
-    email = "",
-  }: EditableProps) {}
   return (
     <BackgroundAndNavigationBar>
       <Flex
@@ -85,7 +79,7 @@ export default function ProfilePage() {
           <MdPersonPin style={{ fontSize: "20px" }} />
           <Text size="B3"> PIN : {selfProfile.pin}</Text>
         </Flex>
-        <ProfileInfo info={selfProfile} onProfileEdit={handleProfileEdit} />
+        <ProfileInfo info={selfProfile} />
         <SelectPhotoImageProfile
           open={openSelectImage}
           setOpen={setOpenSelectImage}
@@ -105,11 +99,10 @@ function UserProfilePicture({
   setOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
 }) {
   return (
-    <Box position="relative" alignSelf="center">
+    <Box position="relative" alignSelf="center" width="164px" height="164px">
       <ProfilePicture src={src} />
       <IconButton
         onClick={() => {
-          console.log("working...");
           setOpen(true);
         }}
         backgroundColor="purple.1"

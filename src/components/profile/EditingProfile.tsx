@@ -10,21 +10,18 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
-import { type Dispatch, useReducer, useState, SetStateAction } from "react";
+import { type Dispatch, useState, type SetStateAction } from "react";
 import { type SelfProfile } from "~/server/types/user-profile";
 import { type EditableProps } from "~/pages/profile";
 import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
-import { useRouter } from "next/router";
 
 export default function EditingProfile({
   initialState,
   setIsEditMode,
-  onProfileEdit,
 }: {
   initialState: SelfProfile;
   setIsEditMode: Dispatch<SetStateAction<boolean>>;
-  onProfileEdit: ({ bio, instagram, email }: EditableProps) => void;
 }) {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [bio, setBio] = useState<string>(initialState.bio ?? "");
@@ -32,12 +29,13 @@ export default function EditingProfile({
     initialState.instagram ?? ""
   );
   const [email, setEmail] = useState<string>(initialState.email ?? "");
-  const [profilePic, setProfilePic] = useState<File | null>(null);
-
-  const profileMutaion = api.profile.editProfile.useMutation();
+  const utils = api.useContext();
+  const profileMutaion = api.profile.editProfile.useMutation({
+    onSuccess(): void {
+      void utils.profile.getUserProfile.invalidate();
+    },
+  });
   const toast = useToast();
-
-  const router = useRouter();
 
   async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -57,7 +55,6 @@ export default function EditingProfile({
         isClosable: true,
         position: "top",
       });
-      console.log(res);
     } catch (e: unknown) {
       if (!(e instanceof TRPCClientError)) throw e;
       toast({
@@ -70,8 +67,6 @@ export default function EditingProfile({
       });
     }
     setIsUpdating(false);
-    onProfileEdit({ bio, instagram, email });
-    // setIsEditMode((isEditMode) => !isEditMode);
     setIsEditMode(false);
   }
 
@@ -83,7 +78,7 @@ export default function EditingProfile({
   }
 
   return (
-    <form onSubmit={handleSave}>
+    <form onSubmit={(e) => void handleSave(e)}>
       <FormControl>
         <Box display="flex" flexDirection="column" gap="8px" mb="25px">
           <Box>
