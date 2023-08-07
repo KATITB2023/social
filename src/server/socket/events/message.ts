@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
 import { currentlyTyping, askingReveal } from "../state";
+import { type RoomChat } from "@prisma/client";
 
 export const messageEvent = createEvent(
   {
@@ -12,11 +13,46 @@ export const messageEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
+    let roomChat: RoomChat;
+
+    const roomChatFromSession = ctx.client.data.roomChat.get(input.receiverId);
+
+    if (!roomChatFromSession) {
+      const roomFromDb = await ctx.prisma.roomChat.findFirst({
+        where: {
+          OR: [
+            {
+              firstUserId: input.receiverId,
+              secondUserId: ctx.client.data.session.user.id,
+            },
+            {
+              secondUserId: input.receiverId,
+              firstUserId: ctx.client.data.session.user.id,
+            },
+          ],
+        },
+      });
+
+      if (roomFromDb !== null) {
+        roomChat = roomFromDb;
+      } else {
+        roomChat = await ctx.prisma.roomChat.create({
+          data: {
+            secondUserId: input.receiverId,
+            firstUserId: ctx.client.data.session.user.id,
+          },
+        });
+      }
+    } else {
+      roomChat = roomChatFromSession;
+    }
+
     const message = await ctx.prisma.message.create({
       data: {
         senderId: ctx.client.data.session.user.id,
         receiverId: input.receiverId,
         message: input.message,
+        roomChatId: roomChat.id,
       },
     });
 

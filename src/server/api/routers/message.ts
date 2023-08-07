@@ -96,17 +96,19 @@ export const messageRouter = createTRPCRouter({
           createdAt: "desc",
         },
         where: {
-          OR: [
-            {
-              receiverId: ctx.session.user.id,
-            },
-            {
-              senderId: ctx.session.user.id,
-            },
-          ],
           userMatchId: null,
+          roomChat: {
+            OR: [
+              {
+                firstUserId: ctx.session.user.id,
+              },
+              {
+                secondUserId: ctx.session.user.id,
+              },
+            ],
+          },
         },
-        distinct: ["senderId", "receiverId"],
+        distinct: ["roomChatId"],
         include: {
           sender: {
             select: {
@@ -135,42 +137,64 @@ export const messageRouter = createTRPCRouter({
         take: input.limit,
       });
 
-      const data: NonAnonChatHeader[] = await Promise.all(
-        chatHeaders.map(async (chatHeader) => {
-          const otherUser =
-            chatHeader.sender.id === ctx.session.user.id
-              ? chatHeader.receiver
-              : chatHeader.sender;
+      const data: NonAnonChatHeader[] = chatHeaders.map((chatHeader) => {
+        const otherUser =
+          chatHeader.sender.id === ctx.session.user.id
+            ? chatHeader.receiver
+            : chatHeader.sender;
 
-          if (!otherUser.profile) {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: "Other user profile not found",
-            });
-          }
-
-          const unreadCount = await ctx.prisma.message.aggregate({
-            _count: {
-              id: true,
-            },
-            where: {
-              receiverId: ctx.session.user.id,
-              senderId: otherUser.id,
-              isRead: false,
-            },
+        if (!otherUser.profile) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Other user profile not found",
           });
+        }
 
-          return {
-            user: {
-              id: otherUser.id,
-              name: otherUser.profile.name,
-              profileImage: otherUser.profile.image,
-            },
-            lastMessage: chatHeader,
-            unreadMessageCount: unreadCount._count.id,
-          };
-        })
-      );
+        return {
+          user: {
+            id: otherUser.id,
+            name: otherUser.profile.name,
+            profileImage: otherUser.profile.image,
+          },
+          lastMessage: chatHeader,
+          unreadMessageCount: 0,
+        };
+      });
+
+      const toCheckIds = chatHeaders
+        .filter(
+          (e) => e.isRead === false && e.receiverId === ctx.session.user.id
+        )
+        .map((e) => e.senderId);
+
+      const unreadCount = await ctx.prisma.message.groupBy({
+        by: ["senderId"],
+        _count: {
+          id: true,
+        },
+        where: {
+          receiverId: ctx.session.user.id,
+          senderId: {
+            in: toCheckIds,
+          },
+          isRead: false,
+        },
+      });
+
+      data.forEach((e) => {
+        if (
+          !e.lastMessage.isRead &&
+          e.lastMessage.receiverId === ctx.session.user.id
+        ) {
+          const unreadTarget = unreadCount.filter(
+            (u) => u.senderId === e.lastMessage.senderId
+          )[0];
+
+          if (unreadTarget) {
+            e.unreadMessageCount = unreadTarget._count.id;
+          }
+        }
+      });
 
       return {
         data,
