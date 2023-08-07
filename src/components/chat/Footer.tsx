@@ -90,7 +90,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         </Flex>
       )}
       <Textarea
-        w={"full"}
+        w={"95%"}
         as={ResizeTextarea}
         resize={"none"}
         minH={"39px"}
@@ -109,6 +109,23 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         onKeyDown={onKeyDownCustom}
         onKeyUp={onKeyUpCustom}
         onBlur={onBlurCustom}
+        sx={{
+          "::-webkit-scrollbar": {
+            width: "11px",
+            position : "absolute",
+            right : "5px"
+          },
+          "::-webkit-scrollbar-track": {
+            background: "#2F2E2E",
+            borderRadius: "5px",
+            marginY : "10px",
+            marginRight : "10px"
+          },
+          "::-webkit-scrollbar-thumb": {
+            background: "purple.2",
+            borderRadius: "5px",
+          },
+        }}
       />
 
       <Image
@@ -125,9 +142,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         }}
       />
 
-      {isAnon && anonMenuOpen && (
-        <AnonMenu setOpen={setAnonMenuOpen} />
-      )}
+      {isAnon && anonMenuOpen && <AnonMenu setOpen={setAnonMenuOpen} />}
     </Flex>
   );
 };

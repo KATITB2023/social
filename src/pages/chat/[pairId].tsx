@@ -55,6 +55,7 @@ const Chat: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
+    // --------
   }, []);
 
   useEffect(() => {

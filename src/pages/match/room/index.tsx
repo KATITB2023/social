@@ -71,6 +71,7 @@ const Room: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
+    // -------------------------------
   }, []);
 
   useEffect(() => {

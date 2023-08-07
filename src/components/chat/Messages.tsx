@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Image } from "@chakra-ui/react";
 import { type Message } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useInView } from "framer-motion";
@@ -22,11 +22,12 @@ const Messages = ({
   const timezone = require("dayjs/plugin/timezone");
   const utc = require("dayjs/plugin/utc");
   dayjs.extend(timezone);
-  dayjs.extend(utc)
+  dayjs.extend(utc);
   const infinityRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inView = useInView(infinityRef);
   const [shouldScroll, setShouldScroll] = useState<boolean>(true);
+
 
   useEffect(() => {
     if (!shouldScroll && hasPreviousPage && inView && !isFetchingPreviousPage) {
@@ -56,7 +57,7 @@ const Messages = ({
       p="3"
       sx={{
         "::-webkit-scrollbar": {
-          width: "3px",
+          width: "11px",
         },
         "::-webkit-scrollbar-track": {
           display: "none",
@@ -64,6 +65,7 @@ const Messages = ({
         },
         "::-webkit-scrollbar-thumb": {
           background: "rgba(217,217,227,.8)",
+          borderRadius: "full",
         },
       }}
     >
@@ -76,39 +78,52 @@ const Messages = ({
           var DD = date.date();
           var MM = date.month() + 1;
           var local = dayjs().tz("Asia/Jakarta");
-          var messageArr = item.message.split('\n');
-          console.log(messageArr)
-          console.log(local.month(), date.month())
+          var messageArr = item.message.split("\n");
           return (
             <Flex key={item.id} w="100%" justify="flex-end">
               <Flex
                 bg="green.5"
+                position={"relative"}
                 color="#2D3648"
                 minW="100px"
                 maxW="268px"
                 my="1"
+                mr="3"
                 py="1"
                 px="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
                 boxShadow={"0px 4px 20px 0px #00000080"}
               >
-                {
-                  messageArr.map((m) => {
-                    return (
-                      <>
-                      <Text  fontWeight={400} fontSize={"16px"}> {m} </Text>
-                      </>
-                    )
-                  })
-                }
-                <Flex flexDir={"row"} justify={"end"} gap={2} >
-                  {
-                    DD === local.date() && MM === local.month() + 1 
-                    ? <Text fontSize={"12px"}> Today </Text>
-                    : <Text fontSize={"12px"}> {("0" + DD ).slice(-2)}/{("0" + MM).slice(-2)} </Text>
-                  }
-                  <Text fontSize={"12px"}> {("0" + hh ).slice(-2)}.{("0" + mm).slice(-2)} </Text>
+                <Image
+                  pos={"absolute"}
+                  top={1.5}
+                  right={-2}
+                  src="/components/chat_page/chat_self_ornament.svg"
+                />
+                {messageArr.map((m) => {
+                  return (
+                    <>
+                      <Text fontWeight={400} fontSize={"16px"}>
+                        {" "}
+                        {m}{" "}
+                      </Text>
+                    </>
+                  );
+                })}
+                <Flex flexDir={"row"} justify={"end"} gap={2}>
+                  {DD === local.date() && MM === local.month() + 1 ? (
+                    <Text fontSize={"12px"}> Today </Text>
+                  ) : (
+                    <Text fontSize={"12px"}>
+                      {" "}
+                      {("0" + DD).slice(-2)}/{("0" + MM).slice(-2)}{" "}
+                    </Text>
+                  )}
+                  <Text fontSize={"12px"}>
+                    {" "}
+                    {("0" + hh).slice(-2)}.{("0" + mm).slice(-2)}{" "}
+                  </Text>
                 </Flex>
               </Flex>
             </Flex>
@@ -120,43 +135,59 @@ const Messages = ({
           var DD = date.date();
           var MM = date.month() + 1;
           var local = dayjs().tz("Asia/Jakarta");
-          var messageArr = item.message.split('\n');
+          var messageArr = item.message.split("\n");
           return (
             <Flex key={item.id} w="100%">
               <Flex
                 bg="yellow.5"
+                pos={"relative"}
                 color="#2D3648"
                 minW="100px"
                 maxW="268px"
                 my="1"
-                p="3"
+                ml="3"
+                py="1"
+                px="3"
                 borderRadius={"6px"}
                 flexDir={"column"}
                 boxShadow={"0px 4px 20px 0px #00000080"}
               >
-                {
-                  messageArr.map((m) => {
-                    return (
-                      <>
-                      <Text  fontWeight={400} fontSize={"16px"}> {m} </Text>
-                      </>
-                    )
-                  })
-                }
-                <Flex flexDir={"row"} gap={2} >
-                  {
-                    DD === local.date() && MM === local.month() + 1
-                    ? <Text fontSize={"12px"}> Today </Text>
-                    : <Text fontSize={"12px"}> {("0" + DD ).slice(-2)}/{("0" + MM).slice(-2)} </Text>
-                  }
-                  <Text fontSize={"12px"}> {("0" + hh ).slice(-2)}.{("0" + mm).slice(-2)} </Text>
+                <Image
+                  pos={"absolute"}
+                  top={1.5}
+                  left={-2}
+                  src="/components/chat_page/chat_partner_ornament.svg"
+                />
+                {messageArr.map((m) => {
+                  return (
+                    <>
+                      <Text fontWeight={400} fontSize={"16px"}>
+                        {" "}
+                        {m}{" "}
+                      </Text>
+                    </>
+                  );
+                })}
+                <Flex flexDir={"row"} gap={2}>
+                  {DD === local.date() && MM === local.month() + 1 ? (
+                    <Text fontSize={"12px"}> Today </Text>
+                  ) : (
+                    <Text fontSize={"12px"}>
+                      {" "}
+                      {("0" + DD).slice(-2)}/{("0" + MM).slice(-2)}{" "}
+                    </Text>
+                  )}
+                  <Text fontSize={"12px"}>
+                    {" "}
+                    {("0" + hh).slice(-2)}.{("0" + mm).slice(-2)}{" "}
+                  </Text>
                 </Flex>
               </Flex>
             </Flex>
           );
         }
       })}
-      <div  ref={bottomRef} />
+      <div ref={bottomRef} />
     </Flex>
   );
 };
