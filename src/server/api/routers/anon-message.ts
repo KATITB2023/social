@@ -75,6 +75,9 @@ export const anonymousMessageRouter = createTRPCRouter({
           });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { firstUser, secondUser, ...rest } = chatHeader;
+
         return {
           user: {
             id: otherUser.id,
@@ -83,6 +86,7 @@ export const anonymousMessageRouter = createTRPCRouter({
               ? null
               : otherUser.profile.image,
           },
+          userMatch: rest,
         };
       });
 
@@ -91,7 +95,6 @@ export const anonymousMessageRouter = createTRPCRouter({
         nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
       };
     }),
-
   infinite: protectedProcedure
     .input(
       z.object({
