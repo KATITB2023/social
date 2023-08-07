@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Layout from "~/layout";
@@ -6,11 +5,6 @@ import {
   Container,
   Heading,
   theme,
-=======
-import { type NextPage } from "next";
-import Layout from "~/layout";
-import {
->>>>>>> a1c4afb62ad9588eaa30c3efebf3ecf7aee633df
   Text,
   Center,
   Box,
@@ -22,10 +16,7 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-<<<<<<< HEAD
   Spacer,
-=======
->>>>>>> a1c4afb62ad9588eaa30c3efebf3ecf7aee633df
 } from "@chakra-ui/react";
 import {
   MdPersonAddAlt,
@@ -40,7 +31,6 @@ import {
 } from "react-icons/md";
 
 const Navbar: NextPage = () => {
-<<<<<<< HEAD
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -144,72 +134,6 @@ const Navbar: NextPage = () => {
         </Flex>
       </Flex>
 
-=======
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  return (
-    <Layout title="Navbar">
-      <Center>
-        <Flex
-          background="url('/navbarbg.svg')"
-          w="90%"
-          minHeight="60px"
-          borderRadius="50px"
-          position="relative"
-          top="20px"
-          flexDir="row"
-          alignItems="center"
-          paddingY="2%"
-          boxShadow="0px 0px 10px #FFFC83"
-          paddingX="22px"
-        >
-          <Box
-            backgroundColor="#0B0A0A"
-            opacity="0.6"
-            borderRadius="50px"
-            position="absolute"
-            top="0"
-            left="0"
-            bottom="0"
-            right="0"
-          ></Box>
-          <Image
-            src="/ekor.svg"
-            position="absolute"
-            left="0"
-            height="full"
-            objectFit="cover"
-            objectPosition="center"
-            borderRadius="50px"
-            alt="ekor"
-          ></Image>
-          <Image
-            objectFit="cover"
-            objectPosition="center"
-            src="/Vector.svg"
-            alt="OSKM ITB"
-            zIndex="2"
-          />
-          <Box w="20%"></Box>
-          <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
-            <Icon
-              color="white"
-              as={MdPersonAddAlt}
-              height="30px"
-              width="30px"
-              marginRight="10px"
-            />
-            <Image
-              src="/hamburgermenu.svg"
-              height="30px"
-              width="30px"
-              onClick={onOpen}
-              alt="menu"
-            />
-          </Flex>
-        </Flex>
-      </Center>
->>>>>>> a1c4afb62ad9588eaa30c3efebf3ecf7aee633df
       <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
@@ -329,8 +253,4 @@ const Navbar: NextPage = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Navbar;
-=======
-export default Navbar;
->>>>>>> a1c4afb62ad9588eaa30c3efebf3ecf7aee633df
