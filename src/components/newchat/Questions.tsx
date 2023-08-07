@@ -1,27 +1,30 @@
 import QuestionBox from "./Box";
 import Eclipse from "./Eclipse";
 import MatchButton from "./Button";
-import {
-  Text,
-  Box,
-  ButtonGroup,
-  HStack,
-  Button,
-  Image,
-} from "@chakra-ui/react";
+import { Text, Box, ButtonGroup, Image } from "@chakra-ui/react";
 import React from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { ChatTopic } from "~/server/types/message";
 
-const dummy = ["Jepang", "Korea", "ITB", "Film", "Makanan", "Film", "Olahraga"];
-type QuestionProps = {
+type FirstQuestionProps = {
   handlePageChange: (page: number) => void;
+  setIsAnonymous: Dispatch<SetStateAction<boolean>>;
+};
+type SecondQuestionProps = {
+  handlePageChange: (page: number) => void;
+  setTopic: Dispatch<SetStateAction<ChatTopic>>;
+  topic: string;
 };
 type ThirdQuestionProps = {
   handlePageChange: (page: number) => void;
-  findMatch :() =>void;
+  findMatch: () => void;
+  isFindingFriend : boolean;
+  setIsFindingFriend: Dispatch<SetStateAction<boolean>>;
 };
 
-export const FirstQuestion: React.FC<QuestionProps> = ({
+export const FirstQuestion: React.FC<FirstQuestionProps> = ({
   handlePageChange,
+  setIsAnonymous,
 }) => {
   return (
     <QuestionBox>
@@ -37,7 +40,11 @@ export const FirstQuestion: React.FC<QuestionProps> = ({
       <Box display="flex" flexDirection="row">
         {/* Set anonim atau tidak */}
         <ButtonGroup onClick={() => handlePageChange(2)}>
-          <MatchButton borderColor="yellow.5" backgroundColor="gray.600">
+          <MatchButton
+            borderColor="yellow.5"
+            backgroundColor="gray.600"
+            onClick={() => setIsAnonymous(true)}
+          >
             <Text
               fontFamily="SomarRounded-Bold"
               color="yellow.5"
@@ -47,7 +54,10 @@ export const FirstQuestion: React.FC<QuestionProps> = ({
               Boleh
             </Text>
           </MatchButton>
-          <MatchButton backgroundColor="yellow.5">
+          <MatchButton
+            backgroundColor="yellow.5"
+            onClick={() => setIsAnonymous(false)}
+          >
             <Text
               fontFamily="SomarRounded-Bold"
               color="purple.2"
@@ -62,9 +72,12 @@ export const FirstQuestion: React.FC<QuestionProps> = ({
     </QuestionBox>
   );
 };
-export const SecondQuestion: React.FC<QuestionProps> = ({
+export const SecondQuestion: React.FC<SecondQuestionProps> = ({
   handlePageChange,
+  setTopic,
+  topic,
 }) => {
+  const chatTopics = Object.values(ChatTopic);
   return (
     <Box
       width="370px"
@@ -129,7 +142,7 @@ export const SecondQuestion: React.FC<QuestionProps> = ({
             },
           }}
         >
-          {dummy.map((item) => {
+          {chatTopics.map((item) => {
             return (
               <Box
                 width={"154px"}
@@ -138,19 +151,21 @@ export const SecondQuestion: React.FC<QuestionProps> = ({
                 paddingY={"10px"}
                 gap={"12px"}
                 key={item}
-                backgroundColor="gray.600"
+                backgroundColor={topic === item ? "yellow.5" : "gray.600"}
                 borderStyle={"solid"}
                 borderWidth={"2px"}
-                borderColor={"yellow.5"}
+                borderColor={topic === item ? "gray.600" : "yellow.5"}
                 borderRadius={"12px"}
                 alignContent={"center"}
                 display={"flex"}
                 justifyContent={"center"}
+                onClick={() => setTopic(item)}
+                cursor={"pointer"}
               >
                 <Text
                   alignSelf={"center"}
                   fontFamily={"SomarRounded-Bold"}
-                  color={"yellow.5"}
+                  color={topic === item ? "gray.600" : "yellow.5"}
                 >
                   {item}
                 </Text>
@@ -188,7 +203,9 @@ export const SecondQuestion: React.FC<QuestionProps> = ({
 
 export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
   handlePageChange,
-  findMatch
+  findMatch,
+  isFindingFriend,
+  setIsFindingFriend
 }) => {
   return (
     <Box
@@ -243,6 +260,9 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               w="282px"
               maxW="100%"
               alignSelf={"center"}
+              cursor={"pointer"}
+              onClick={()=>setIsFindingFriend(false)}
+              opacity={!isFindingFriend ? 1 : 0.7} 
             >
               <Text
                 fontSize={"16px"}
@@ -262,6 +282,9 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               w="282px"
               maxW="100%"
               alignSelf={"center"}
+              onClick={()=>setIsFindingFriend(true)}
+              opacity={isFindingFriend ? 1 : 0.7}
+              cursor={"pointer"}
             >
               <Text
                 fontSize="16px"
@@ -281,9 +304,9 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
         backgroundColor={"#E8553E"}
         borderRadius={"12px"}
         paddingY="10px"
-        paddingX={"24px"}
+        paddingX={"28px"}
         cursor="pointer"
-        onClick={()=>findMatch()}
+        onClick={() => findMatch()}
       >
         <Text
           fontSize={"28px"}
