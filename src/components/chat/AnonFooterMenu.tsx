@@ -1,8 +1,10 @@
 import React from "react";
 import useEmit from "~/hooks/useEmit";
-import { Button } from "@chakra-ui/react";
+import { Button, Flex, useToast } from "@chakra-ui/react";
 
 const AnonFooterMenu = () => {
+  const toast = useToast();
+
   const endMatch = useEmit("endMatch");
   const askReveal = useEmit("askReveal");
 
@@ -12,16 +14,21 @@ const AnonFooterMenu = () => {
 
   const handleAskReveal = () => {
     askReveal.mutate({ agree: true });
+    toast({
+      title: "Berhasil request teman untuk reveal profil!",
+    });
   };
 
   return (
     <>
-      <Button colorScheme="teal" size="sm" onClick={handleEndMatch}>
-        End Match
-      </Button>
-      <Button colorScheme="teal" size="sm" onClick={handleAskReveal}>
-        Ask Reveal
-      </Button>
+      <Flex direction="column">
+        <Button colorScheme="teal" size="sm" onClick={handleEndMatch}>
+          End Match
+        </Button>
+        <Button colorScheme="teal" size="sm" onClick={handleAskReveal}>
+          Ask Reveal
+        </Button>
+      </Flex>
     </>
   );
 };
