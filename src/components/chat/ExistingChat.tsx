@@ -12,7 +12,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { data, isLoading, isError, isSuccess, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
     api.message.chatHeader.useInfiniteQuery(
       {
         limit: 10,
@@ -71,7 +71,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       spacing={5}
       w="100%"
       pt="3vh"
-      pb="13vh"
+      pb="18vh"
       mt="7rem"
       maxH="70%"
       overflowY="auto"
@@ -106,7 +106,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
           );
         });
       })}
-      {isLoading && (
+      {isFetching && hasNextPage && (
         <Box>
           <Spinner
             thickness="4px"

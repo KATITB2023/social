@@ -12,7 +12,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { data, isLoading, isError, isSuccess, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
     api.friend.friendList.useInfiniteQuery(
       {
         status: "FRIEND",
@@ -70,7 +70,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
       mt="9rem"
       maxH="80%"
       overflowY="auto"
-      pb="15vh"
+      pb="18vh"
       pt="3vh"
       hidden={hidden}
       css={{
@@ -99,7 +99,7 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
         });
       })}
 
-      {isLoading && (
+      {isFetching && (
         <Box>
           <Spinner
             thickness="4px"
