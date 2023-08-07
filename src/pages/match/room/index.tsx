@@ -5,7 +5,19 @@ import { useCallback, useEffect, useState } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
-import { Container, Flex } from "@chakra-ui/react";
+import {
+  Container,
+  Flex,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
@@ -132,6 +144,27 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
+  const askReveal = useEmit("askReveal");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [reveal, setReveal] = useState<boolean>(false);
+
+  useSubscription(
+    "askReveal",
+    (data, message) => {
+      if (message !== "") {
+        // TODO : handle if revealed
+        alert(message);
+      } else if (match) {
+        onOpen();
+
+        useEffect(() => {
+          askReveal.mutate({ agree: reveal });
+        }, [reveal]);
+      }
+    },
+    [match, messageQuery]
+  );
+
   const messageEmit = useEmit("anonymousMessage");
 
   return (
@@ -141,6 +174,27 @@ const Room: NextPage = () => {
           "Loading"
         ) : (
           <>
+            {/* Ask for Reveal Modal. TODO: replace with appropriate modal */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Mau reveal gak cuy?</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>Mau ga bos?</ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={() => setReveal(true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button variant="ghost" onClick={() => setReveal(false)}>
+                    No
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
             <Flex
               w="100%"
               h="100vh"
