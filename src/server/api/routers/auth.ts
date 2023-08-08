@@ -1,7 +1,12 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { compareHash, generateHash, generateResetToken } from "~/utils/auth";
 import { TRPCError } from "@trpc/server";
+import { compare, compareSync } from "bcrypt";
 
 export const authRouter = createTRPCRouter({
   requestResetPassword: publicProcedure
@@ -118,40 +123,47 @@ export const authRouter = createTRPCRouter({
         }
       }
     }),
-  editPassword : protectedProcedure
+    editPassword: protectedProcedure
     .input(
       z.object({
-        oldPassword : z.string(),
-        newPassword : z.string(),
+        oldPassword: z.string(),
+        newPassword: z.string(),
       })
     )
-    .query(async({ctx,input}) =>{
-      const user = await ctx.prisma.user.findFirst({
-        where :{
-          id : ctx.session.user.id
-        }
-      })
-      if(!user){
-        throw new TRPCError({
-          code : "BAD_REQUEST",
-          message : "User not found!"
-        })
-      }
-      if(!(await compareHash(input.oldPassword,user.passwordHash))){
-        throw new TRPCError({
-          code : "BAD_REQUEST",
-          message : "Password not right"
-        })
-      }
-
-      await ctx.prisma.user.update({
-        where:{
-          id : ctx.session.user.id
+    .query(({ ctx, input }) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
         },
-        data:{
-          passwordHash : await generateHash(input.newPassword)
+      }).then(user => {
+        if (!user) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "User not found",
+          });
         }
-      })
-      return "Password has been updated succesfully!"
-    })
+  
+        return compareHash(input.oldPassword, user.passwordHash).then(isValid => {
+          if (!isValid) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Password not right",
+            });
+          } else {  
+            return generateHash(input.newPassword).then(newPasswordHashed => {
+              return ctx.prisma.user.update({
+                where: {
+                  id: ctx.session.user.id,
+                },
+                data: {
+                  passwordHash: newPasswordHashed,
+                },
+              }).then(() => {
+                return "Password has been updated!";
+              });
+            });
+          }
+        });
+      });
+    }),
 });
