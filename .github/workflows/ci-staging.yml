@@ -59,6 +59,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/html
-            docker compose pull oskm-web
+            docker compose pull social
             docker compose up -d --remove-orphans
             docker image prune -f
