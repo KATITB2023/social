@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "~/components/profile/cropimage";
 import {
@@ -10,12 +10,12 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  useDisclosure,
 } from "@chakra-ui/react";
 import ProfilePicture from "./ProfilePicture";
+import { uploadFile } from "~/utils/file";
 
 interface ImageCropProps {
-  image: File;
+  imageFile: File;
   onCancel: () => void;
 }
 
@@ -36,7 +36,7 @@ interface useDisclosureType {
 }
 
 export default function ImageCropDrawer({
-  image,
+  imageFile,
   onCancel,
   isOpen,
   onOpen,
@@ -45,6 +45,7 @@ export default function ImageCropDrawer({
 }: ImageCropProps &
   useDisclosureType & {
     setCroppedImage: React.Dispatch<React.SetStateAction<string>>;
+    nim: string;
   }) {
   const [zoom, setZoom] = useState<number>(1);
   const [crop, setCrop] = useState<CropPosition>({ x: 0, y: 0 });
@@ -54,17 +55,6 @@ export default function ImageCropDrawer({
   >({ x: 0, y: 0, width: 0, height: 0 });
 
   const [currPreview, setCurrPreview] = useState<string>("");
-  const [ready, setReady] = useState<boolean>(false);
-
-  let imageURL: string;
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    imageURL = reader.result as string;
-    reader.readAsDataURL(file);
-    setReady(true);
-  };
-
-  if (!ready) return;
 
   const onCropChange = (crop: CropPosition) => {
     setCrop(crop);

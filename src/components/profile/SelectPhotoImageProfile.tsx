@@ -44,11 +44,14 @@ export const SelectPhotoImageProfile = ({
     if (file[0]) {
       setPictureSelected(true);
       setImageSelected(file[0]);
+      onOpen();
     }
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  function onCancel() {}
+  function onCancel() {
+    onClose();
+  }
 
   async function updateImage(file: File) {
     if (!file) return;
@@ -212,7 +215,7 @@ export const SelectPhotoImageProfile = ({
                 background={pictureSelected ? "yellow.1" : "gray.400"}
                 onClick={() => {
                   setOpen(false);
-                  pictureSelected && updateImage(imageSelected);
+                  pictureSelected && void updateImage(croppedImageFile as File);
                   setPictureSelected(false);
                 }}
               >
@@ -230,10 +233,13 @@ export const SelectPhotoImageProfile = ({
         </Collapse>
       </Box>
       <ImageCropDrawer
-        image={imageSelected}
+        imageFile={imageSelected as File}
         onCancel={onCancel}
         isOpen={isOpen}
         onOpen={onOpen}
+        onClose={onClose}
+        setCroppedImage={setCroppedImage}
+        nim={nim}
       />
     </>
   );
