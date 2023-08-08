@@ -1,21 +1,18 @@
 import {
     Box,
-    Button,
     Flex,
-    Heading,
     Image,
     Text,
-    Center,
-    Container,
     Spacer
 } from "@chakra-ui/react";
-import React, { useState, useLayoutEffect, useRef } from "react";
+import React from "react";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useSession } from "next-auth/react";
+import ReactionButton from "~/components/feeds/ReactionButton";
 
 type childrenOnlyProps = {
     children: string | JSX.Element | JSX.Element[];
@@ -168,9 +165,7 @@ export default function FeedsPage() {
                             >
                                 {getFeedPostedMessage(feed.createdAt)}
                             </Text>
-                            <Box>
 
-                            </Box>
                         </Flex>
 
 
@@ -193,6 +188,8 @@ export default function FeedsPage() {
                         ) : null
                         }
 
+                        
+                        
                         {/* Feeds Content */}
                         <Flex
                             flexDirection={"column"}
@@ -201,6 +198,8 @@ export default function FeedsPage() {
                             my={"25px"}
                             px={"50px"}
                         >
+                            {/* Feeds Reaction */}
+                            <ReactionButton/>
                             <Text
                                 textAlign="justify"
                                 color="white"
