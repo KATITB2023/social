@@ -15,6 +15,7 @@ import { api } from "~/utils/api";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useSession } from "next-auth/react";
 
 type childrenOnlyProps = {
     children: string | JSX.Element | JSX.Element[];
@@ -41,9 +42,9 @@ const getFeedPostedMessage = (feedDate: any) => {
 
     if (diffInMinutes < 60) {
         return 'Baru diunggah';
-    } else if (diffInHours < 24) { 
+    } else if (diffInHours < 24) {
         return `Diunggah ${diffInHours} jam yang lalu`;
-    } else{
+    } else {
         return `Diunggah ${diffInDays} hari yang lalu`;
     }
 };
@@ -69,13 +70,29 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
     );
 }
 
+type InfiniteFeeds = {
+    data: {
+        reactions: {
+            [k: string]: {
+                count: number;
+                reacted: boolean;
+            };
+        };
+        read: boolean;
+        id: number;
+        text: string;
+        attachmentUrl: string | null;
+        createdAt: Date;
+    };
+    nextCursor: number | undefined;
+}
 export default function FeedsPage() {
+    useSession({ required: true })
     const isVideoLink = (link: string) => /^https:\/\/www\.youtube\.com\/embed\/[\w-]+$/.test(link);
     const isImageLink = (link: string) => /\.(jpeg|jpg|png|gif)$/i.test(link);
 
-    const feedsApi = api.feed.getFeeds.useInfiniteQuery(
+    const feedsApi= api.feed.getFeeds.useInfiniteQuery(
         {
-            limit: 10,
         },
         {
             getNextPageParam: (d) => d.nextCursor,
@@ -83,22 +100,21 @@ export default function FeedsPage() {
             refetchOnWindowFocus: false,
         }
     )
-    // const tes = feedsApi.data;
-    // console.log(tes);
-    const feeds = [
-        {
-            id: '1',
-            date: '2023-08-08T00:50:56Z',
-            caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
-            link: 'https://cdn.oskmitb.com/foto-ganteng-gagas.jpg'
-        },
-        {
-            id: '2',
-            date: '2023-08-01T08:15:00Z',
-            caption: 'Feeds Caption 2 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
-            link: 'https://www.youtube.com/embed/TQ8WlA2GXbk'
-        },
-    ];
+
+    // const feeds = [
+    //     {
+    //         id: '1',
+    //         date: '2023-08-08T00:50:56Z',
+    //         caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+    //         link: 'https://cdn.oskmitb.com/foto-ganteng-gagas.jpg'
+    //     },
+    //     {
+    //         id: '2',
+    //         date: '2023-08-01T08:15:00Z',
+    //         caption: 'Feeds Caption 2 （πーπ）.',
+    //         link: 'https://www.youtube.com/embed/TQ8WlA2GXbk'
+    //     },
+    // ];
     return (
         <BackgroundAndNavbar>
             <Flex
@@ -106,7 +122,7 @@ export default function FeedsPage() {
                 justifyContent={"center"}
                 mt={10}
             >
-                {feeds.map((feed) => (
+                {feedsApi?.data?.pages.flatMap(page => page.data).map((feed)=> (
                     <Flex
                         key={feed.id}
                         flexDirection={"column"}
@@ -150,24 +166,26 @@ export default function FeedsPage() {
                                 fontWeight="400"
                                 lineHeight="13px"
                             >
-                                {getFeedPostedMessage(feed.date)}
+                                {getFeedPostedMessage(feed.createdAt)}
                             </Text>
                             <Box>
 
                             </Box>
                         </Flex>
 
+
                         {/* Feeds Image or Video */}
-                        {isImageLink(feed.link) ? (
+                        {feed.attachmentUrl==null? null:
+                        isImageLink(feed.attachmentUrl) ? (
                             <Image
                                 crossOrigin="anonymous"
-                                src={feed.link}
+                                src={feed.attachmentUrl}
                                 alt="feeds"
                                 alignSelf="center"
                             ></Image>
-                        ) : isVideoLink(feed.link) ? (
+                        ) : isVideoLink(feed.attachmentUrl) ? (
                             <iframe
-                                src={feed.link}
+                                src={feed.attachmentUrl}
                                 title='YouTube video player'
                                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                                 allowFullScreen
@@ -192,7 +210,7 @@ export default function FeedsPage() {
                                 lineHeight="12px"
                                 word-wrap="break-word"
                             >
-                                {feed.caption}
+                                {feed.text}
                             </Text>
 
                             {/* Post yang belom dilihat */}
