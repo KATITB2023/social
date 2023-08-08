@@ -12,14 +12,12 @@ const History: NextPage = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
-  api.messageAnonymous.chatHeader.useInfiniteQuery(
-    {
-      limit: 10,
-    },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-  
-  const today = new Date(2023,5,23);
+    api.messageAnonymous.chatHeader.useInfiniteQuery(
+      {
+        limit: 10,
+      },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    );
 
   useEffect(() => {
     const vStackElement = vStackRef.current;
@@ -94,15 +92,23 @@ const History: NextPage = () => {
         >
           {data?.pages.map((page, idx1) => {
             return page.data.map((item, idx2) => {
-              return (
-                <CardHistoryChat
-                  key={`${idx1}-${idx2}`}
-                  name={item.user.name}
-                  src={item.user.profileImage == null ? "" : item.user.profileImage}
-                  path={`match/history/asdasd`}
-                  time={today}
-                />
-              );
+              const toPath = `match/history/${item.userMatch.id}`;
+              const endDate = item.userMatch.endedAt;
+              if (endDate && toPath) {
+                return (
+                  <CardHistoryChat
+                    key={`${idx1}-${idx2}`}
+                    name={item.user.name}
+                    src={
+                      item.user.profileImage == null
+                        ? ""
+                        : item.user.profileImage
+                    }
+                    path={toPath}
+                    time={endDate}
+                  />
+                );
+              }
             });
           })}
 

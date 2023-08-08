@@ -7,7 +7,7 @@ interface ChatPageHeaderProps {
 const ChatPageHeader : React.FC<ChatPageHeaderProps> = ({ hidden }) => {
   return (
     <>
-      <Spacer />
+      <Spacer hidden={hidden} />
       <Image alt="maskot oskm" src="maskotglow.svg" w="80%" hidden={hidden} />
       <Heading
         as="h3"
@@ -20,8 +20,8 @@ const ChatPageHeader : React.FC<ChatPageHeaderProps> = ({ hidden }) => {
       >
         TAMBAHIN PERCAKAPAN DULU YUK!
       </Heading>
-      <Spacer />
-      <Spacer />
+      <Spacer hidden={hidden} />
+      <Spacer hidden={hidden} />
     </>
   );
 };
