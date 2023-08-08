@@ -96,7 +96,46 @@ export const feedRouter = createTRPCRouter({
         nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
       };
     }),
-  react: protectedProcedure.mutation(() => "hello"),
+  react: protectedProcedure
+    .input(
+      z.object({
+        feedId: z.number().int(),
+        reaction: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Mencari apakah user pernah memberikan reaction yang sama di sebuah feed
+      const reaction = await ctx.prisma.feedReaction.findFirst({
+        where: {
+          feedId: input.feedId,
+          userId: ctx.session.user.id,
+          reaction: input.reaction,
+        },
+      });
+      // Kalau belum pernah ada reaction, tambahkan reaction baru
+      if (!reaction) {
+        await ctx.prisma.feedReaction.create({
+          data: {
+            reaction: input.reaction,
+            feedId: input.feedId,
+            userId: ctx.session.user.id,
+          },
+        });
+        return "New reaction has been added";
+      } else {
+        // Kalau sudah pernah ada reaction yang sama
+        await ctx.prisma.feedReaction.delete({
+          where: {
+            feedId_userId_reaction: {
+              feedId: input.feedId,
+              userId: ctx.session.user.id,
+              reaction: input.reaction,
+            },
+          },
+        });
+        return "Reaction has been deleted";
+      }
+    }),
   readFeed: protectedProcedure
     .input(z.object({ feedId: z.number().int() }))
     .mutation(async ({ ctx, input }) => {
