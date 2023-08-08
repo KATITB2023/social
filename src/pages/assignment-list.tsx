@@ -374,7 +374,7 @@ export default function AssignmentListPage() {
         my="70px"
       >
         <Heading color="#ffe655" size="H4" alignSelf="center" >
-          Assignment List
+          Mission Hub
         </Heading>
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
           {boxContent === "Daily Quest" ? (
