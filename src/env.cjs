@@ -53,6 +53,7 @@ exports.env = createEnv({
     ),
     // IF REDIS_URL is not set, will not using redis (memory cache)
     REDIS_URL: z.string().url(),
+    WS_PORT: z.coerce.number().int().positive().default(3001)
   },
 
   /**
@@ -84,6 +85,7 @@ exports.env = createEnv({
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
     NEXT_PUBLIC_BUCKET_API_KEY: process.env.NEXT_PUBLIC_BUCKET_API_KEY,
     REDIS_URL: process.env.REDIS_URL,
+    WS_PORT: process.env.WS_PORT
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
