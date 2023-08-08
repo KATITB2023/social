@@ -20,7 +20,7 @@ const updatePaging = (
   image: string | null,
   sender: boolean
 ): NonAnonChatHeader[] => {
-  let unread = sender ? 0 : 1;
+  let unread = 0;
   for (let i = 0; i < pagingArray.length; i++) {
     if (
       (pagingArray[i]?.lastMessage.senderId === message.senderId   && pagingArray[i]?.lastMessage.receiverId === message.receiverId) ||
@@ -43,6 +43,8 @@ const updatePaging = (
     },
     unreadMessageCount: unread,
   };
+  // console.log('test')
+  // console.log(unread)
   pagingArray.unshift(newItem);
   return pagingArray;
 };
@@ -60,9 +62,11 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       },
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
-  const [userIdFetched, setUserIdFetched] = useState<string>(session?.user.id ?? "");
+  const [userIdFetched, setUserIdFetched] = useState<string>("");
   const getUserProfile = api.friend.getOtherUserProfile.useQuery({
     userId: userIdFetched,
+  }, {
+    enabled: userIdFetched !== "",
   });
 
   const [newMessage, setNewMessage] = useState<Message>();
@@ -141,7 +145,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
         return updatedPage;
       });
     }
-  }, [getUserProfile.data, newMessage]);
+  }, [newMessage, getUserProfile.data]);
 
   useSubscription(
     "add",
