@@ -7,6 +7,7 @@ import {
   Collapse,
   useToast,
   Spinner,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { sanitizeURL, uploadFile } from "~/utils/file";
 import { api } from "~/utils/api";
@@ -45,6 +46,9 @@ export const SelectPhotoImageProfile = ({
       setImageSelected(file[0]);
     }
   }
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  function onCancel() {}
 
   async function updateImage(file: File) {
     if (!file) return;
@@ -225,7 +229,12 @@ export const SelectPhotoImageProfile = ({
           </Box>
         </Collapse>
       </Box>
-      <ImageCropDrawer />
+      <ImageCropDrawer
+        image={imageSelected}
+        onCancel={onCancel}
+        isOpen={isOpen}
+        onOpen={onOpen}
+      />
     </>
   );
 };

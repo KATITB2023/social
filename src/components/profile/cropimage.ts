@@ -19,20 +19,14 @@ type HTMLImageElementLoadable = HTMLImageElement & {
   ) => void;
 };
 
-const createImage = (file: File) =>
+const createImage = (url: string) =>
   new Promise<HTMLImageElementLoadable>((resolve, reject) => {
     const image = new Image() as HTMLImageElementLoadable;
     image.addEventListener("load", () => resolve(image));
     image.addEventListener("error", (error) => reject(error));
     image.setAttribute("crossOrigin", "anonymous"); // needed to avoid cross-origin issues on CodeSandbox
 
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        image.src = reader.result as string;
-      };
-    }
+    image.src = url;
   });
 
 function getRadianAngle(degreeValue: number) {
@@ -46,11 +40,11 @@ function getRadianAngle(degreeValue: number) {
  * @param {number} rotation - optional rotation parameter
  */
 export default async function getCroppedImg(
-  imageFile: File,
+  imageURL: string,
   pixelCrop: PixelCrop,
   rotation = 0
 ) {
-  const image = await createImage(imageFile);
+  const image = await createImage(imageURL);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Unable to create canvas context.");
