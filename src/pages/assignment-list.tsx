@@ -7,10 +7,18 @@ import {
   Text,
   Center,
 } from "@chakra-ui/react";
-import React, { type PropsWithChildren, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "~/components/Navbar";
+import { useRouter } from 'next/router';
+import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
 
-function BackgroundAndNavbar({ children }: PropsWithChildren) {
+type childrenOnlyProps = {
+  children: string | JSX.Element | JSX.Element[];
+};
+
+// Fungsi Background & Navbar
+function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
@@ -24,16 +32,16 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar />
+        <Navbar 
+        />
         {children}
       </Flex>
     </Box>
   );
 }
 
-const DailySideQuest: React.FC<{
-  handleBoxContentChange: (content: string) => void;
-}> = ({ handleBoxContentChange }) => {
+// Fungsi Toggle untuk switch Dailiy Quest & Side Quest
+const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => void }> = ({ handleBoxContentChange }) => {
   const [isToggled, setIsToggled] = useState(false);
 
   const handleToggle = () => {
@@ -119,22 +127,15 @@ const DailySideQuest: React.FC<{
   );
 };
 
-interface TugasDailyQuestProps {
-  statusTugas: "terkumpul" | "belum terkumpul" | "terlambat";
-  deadline: string;
-}
+// Chips untuk submission status (Terkumpul, Belum Terkumpul, dan Terlambat)
 
 interface ChipsProps {
   property1: "donei" | "no" | "maybe";
-  className: string;
+  className: any;
   text: string;
 }
 
-const Chips: React.FC<ChipsProps> = ({
-  property1,
-  className,
-  text = "hadir",
-}) => {
+const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) => {
   let chipsBg: string;
   let chipsBorderColor: string;
   let chipsLabelColor: string;
@@ -191,17 +192,14 @@ const Chips: React.FC<ChipsProps> = ({
   );
 };
 
-export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
-  statusTugas,
-  deadline,
-}) => {
+function getChipsData(statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE") {
   let chipsText: string;
   let chipsColor: "donei" | "no" | "maybe";
 
-  if (statusTugas === "terkumpul") {
+  if (statusTugas === "SUBMITTED") {
     chipsText = "Terkumpul";
     chipsColor = "donei"; // Warna hijau
-  } else if (statusTugas === "belum terkumpul") {
+  } else if (statusTugas === "NOT_SUBMITTED") {
     chipsText = "Belum Terkumpul";
     chipsColor = "no"; // Warna merah
   } else {
@@ -209,11 +207,31 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
     chipsColor = "maybe"; // Warna kuning
   }
 
+  return { chipsText, chipsColor };
+}
+
+// Fungsi untuk menampilkan seluruh tugas Daily Quest
+
+interface TugasDailyQuestProps {
+  id: string;
+  title: string;
+  statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE";
+  deadline: Date;
+}
+
+export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ 
+  id,
+  title,
+  statusTugas,
+  deadline }) => {
+  const { chipsText, chipsColor } = getChipsData(statusTugas);
+  const router = useRouter();
+
   return (
     <Center>
       <Box
         width="350px"
-        height="113px"
+        height="relative"
         padding={{ base: "16px", sm: "16px" }}
         justifyContent="space-between"
         alignItems="center"
@@ -228,10 +246,13 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
           fontSize="16px"
           marginBottom="8px"
         >
-          Lorem Ipsum Dolor Sit Amet
+          {title}
         </Text>
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex flexDirection="row" gap="2px">
+          <Flex
+            flexDirection="row"
+            gap="2px"
+          >
             <Text
               color="#ffffff"
               fontFamily="subheading"
@@ -240,8 +261,12 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             >
               Deadline
             </Text>
-            <Text color="#ffffff" fontFamily="body" fontSize="12px">
-              : {deadline}
+            <Text
+              color="#ffffff"
+              fontFamily="body"
+              fontSize="12px"
+            >
+              : {deadline.toLocaleDateString()}
             </Text>
           </Flex>
           <Button
@@ -255,38 +280,28 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             width="58px"
             height="23px"
             color="#4909b3"
+            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
           >
             open
           </Button>
         </Flex>
-        <Chips
-          className="chips-instance"
-          property1={chipsColor}
-          text={chipsText}
-        />
+        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
       </Box>
     </Center>
   );
-};
-
-interface TugasSideQuestProps {
-  statusTugas: "terkumpul" | "belum terkumpul" | "terlambat";
 }
 
-const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ statusTugas }) => {
-  let chipsText: string;
-  let chipsColor: "donei" | "no" | "maybe";
+// Fungsi untuk menampilkan seluruh tugas Side Quest
 
-  if (statusTugas === "terkumpul") {
-    chipsText = "Terkumpul";
-    chipsColor = "donei"; // Warna hijau
-  } else if (statusTugas === "belum terkumpul") {
-    chipsText = "Belum Terkumpul";
-    chipsColor = "no"; // Warna merah
-  } else {
-    chipsText = "Terlambat";
-    chipsColor = "maybe"; // Warna kuning
-  }
+interface TugasSideQuestProps {
+  id: string;
+  title: string;
+  statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE";
+}
+
+const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas }) => {
+  const { chipsText, chipsColor } = getChipsData(statusTugas);
+  const router = useRouter();
 
   return (
     <Center>
@@ -307,13 +322,9 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ statusTugas }) => {
           fontSize="16px"
           marginBottom="8px"
         >
-          Lorem Ipsum Dolor Sit Amet
+          {title}
         </Text>
-        <Chips
-          className="chips-instance"
-          property1={chipsColor}
-          text={chipsText}
-        />
+        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
         <Flex
           justifyContent="flex-end"
           alignItems="center"
@@ -332,6 +343,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ statusTugas }) => {
             width="58px"
             height="23px"
             color="#4909b3"
+            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
           >
             open
           </Button>
@@ -341,8 +353,12 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ statusTugas }) => {
   );
 };
 
+// Main function
 export default function AssignmentListPage() {
   const [boxContent, setBoxContent] = useState("Daily Quest");
+  const { data: session } = useSession({ required: true });
+  const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
+  const tasks = assignmentQuery.data || []; 
 
   const handleBoxContentChange = (content: string) => {
     setBoxContent(content);
@@ -355,33 +371,38 @@ export default function AssignmentListPage() {
         justifyContent="space-between"
         gap="40px"
         mx="24px"
-        my="140px"
+        my="70px"
       >
-        <Heading color="#ffe655" size="H4" alignSelf="center">
+        <Heading color="#ffe655" size="H4" alignSelf="center" >
           Assignment List
         </Heading>
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
-        {boxContent === "Daily Quest" ? (
-          <>
-            <TugasDailyQuest
-              statusTugas="terkumpul"
-              deadline="00/00/00 00.00"
-            />
-            <TugasDailyQuest
-              statusTugas="terlambat"
-              deadline="00/00/00 00.00"
-            />
-            <TugasDailyQuest
-              statusTugas="belum terkumpul"
-              deadline="00/00/00 00.00"
-            />
-          </>
-        ) : boxContent === "Side Quest" ? (
-          <>
-            <TugasSideQuest statusTugas="terkumpul" />
-            <TugasSideQuest statusTugas="belum terkumpul" />
-          </>
-        ) : null}
+          {boxContent === "Daily Quest" ? (
+            <>
+              {tasks
+                .filter((task) => task.type === "DAILY_QUEST")
+                .map((task) => (
+                  <TugasDailyQuest
+                    id={ task.id }
+                    title={ task.title }
+                    statusTugas={ task.submissionStatus }
+                    deadline={ task.endTime }
+                  />
+                ))}
+            </>
+          ) : boxContent === "Side Quest" ? (
+            <>
+              {tasks
+                .filter((task) => task.type === "SIDE_QUEST")
+                .map((task) => (
+                  <TugasSideQuest
+                    id={ task.id }
+                    title={ task.title }
+                    statusTugas={ task.submissionStatus }
+                  />
+                ))}
+            </>
+          ) : null}
       </Flex>
     </BackgroundAndNavbar>
   );
