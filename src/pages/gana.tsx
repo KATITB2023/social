@@ -31,8 +31,6 @@ interface CropDimension {
 }
 
 export default function Gana() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  function onCancel() {}
   return (
     <>
       <ImageCropDrawer

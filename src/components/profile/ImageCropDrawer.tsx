@@ -15,7 +15,7 @@ import {
 import ProfilePicture from "./ProfilePicture";
 
 interface ImageCropProps {
-  image: string | File;
+  image: File;
   onCancel: () => void;
 }
 
@@ -54,8 +54,17 @@ export default function ImageCropDrawer({
   >({ x: 0, y: 0, width: 0, height: 0 });
 
   const [currPreview, setCurrPreview] = useState<string>("");
+  const [ready, setReady] = useState<boolean>(false);
 
-  const imageURL = 
+  let imageURL: string;
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    imageURL = reader.result as string;
+    reader.readAsDataURL(file);
+    setReady(true);
+  };
+
+  if (!ready) return;
 
   const onCropChange = (crop: CropPosition) => {
     setCrop(crop);
@@ -73,10 +82,7 @@ export default function ImageCropDrawer({
   };
 
   async function updateCurrPreview() {
-    const currPreviewURL = await getCroppedImg(
-      image as File,
-      croppedAreaPixels
-    );
+    const currPreviewURL = await getCroppedImg(imageURL, croppedAreaPixels);
     setCurrPreview(currPreviewURL as string);
   }
   return (
