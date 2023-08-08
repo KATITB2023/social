@@ -73,8 +73,9 @@ export const SelectPhotoImageProfile = ({
         isClosable: true,
         position: "top",
       });
-      return;
     }
+    setIsUpdating(false);
+    return;
   }
 
   return (
@@ -204,7 +205,9 @@ export const SelectPhotoImageProfile = ({
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
                 setOpen(false);
-                pictureSelected && updateImage(imageSelected);
+                if (pictureSelected) {
+                  void updateImage(imageSelected as File);
+                }
                 setPictureSelected(false);
               }}
             >

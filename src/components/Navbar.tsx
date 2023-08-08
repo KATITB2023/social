@@ -113,12 +113,12 @@ const Navbar: NextPage = () => {
             objectFit="cover"
             objectPosition="center"
             borderRadius="50px"
-          ></Image>
-          top="0"
-          left="0"
-          bottom="0"
-          right="0"
-        />
+            top="0"
+            bottom="0"
+            right="0"
+            alt=""
+          />
+        </Box>
 
         <Image
           src="/ekor.svg"
