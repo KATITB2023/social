@@ -10,7 +10,7 @@ export default function BackgroundAndNavigationBar({
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="\background.png"
         alt="wheew wheew *pretend as if the background is in outer space*"
         height="100%"
         zIndex="-1"
