@@ -130,40 +130,35 @@ export const authRouter = createTRPCRouter({
         newPassword: z.string(),
       })
     )
-    .query(({ ctx, input }) => {
-      return ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
-      }).then(user => {
-        if (!user) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "User not found",
-          });
+    .mutation(async ({ ctx, input }) =>{
+      const user = await ctx.prisma.user.findUnique({
+        where : {
+          id : ctx.session.user.id
         }
-  
-        return compareHash(input.oldPassword, user.passwordHash).then(isValid => {
-          if (!isValid) {
-            throw new TRPCError({
-              code: "BAD_REQUEST",
-              message: "Password not right",
-            });
-          } else {  
-            return generateHash(input.newPassword).then(newPasswordHashed => {
-              return ctx.prisma.user.update({
-                where: {
-                  id: ctx.session.user.id,
-                },
-                data: {
-                  passwordHash: newPasswordHashed,
-                },
-              }).then(() => {
-                return "Password has been updated!";
-              });
-            });
+      })
+      if(!user){
+        throw new TRPCError({
+          code : "BAD_REQUEST",
+          message : "User not found"
+        })
+      }
+      const isValid = await compareHash(input.oldPassword,user.passwordHash);
+      if(isValid){
+        await ctx.prisma.user.update({
+          where : {
+            id : user.id
+          },
+          data:{
+            passwordHash : await generateHash(input.newPassword)
           }
-        });
-      });
-    }),
+        })
+        return "Password has been updated!"
+      }else{
+        throw new TRPCError({
+          code : "BAD_REQUEST",
+          message : "Password not right"
+        })
+      }
+
+    })
 });
