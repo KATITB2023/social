@@ -8,6 +8,7 @@ import { anonymousMessageRouter } from "~/server/api/routers/anon-message";
 import { assignmentRouter } from "~/server/api/routers/assignment";
 import { feedRouter } from "~/server/api/routers/feeds";
 import { leaderboardRouter } from "~/server/api/routers/leaderboard";
+import { emailRouter } from "~/server/api/routers/email";
 
 /**
  * This is the primary router for your server.
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   assignment: assignmentRouter,
   feed: feedRouter,
   leaderboard: leaderboardRouter,
+  email: emailRouter,
 });
 
 // export type definition of API

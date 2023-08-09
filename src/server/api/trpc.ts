@@ -15,6 +15,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { prisma } from "~/server/db";
 import { tracer } from "~/server/tracer";
+import { transporter } from "~/server/mail";
 import { getServerAuthSession } from "~/server/auth";
 
 /**
@@ -44,6 +45,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     session: opts.session,
     prisma,
     tracer,
+    transporter,
   };
 };
 
