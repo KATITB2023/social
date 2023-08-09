@@ -53,6 +53,15 @@ exports.env = createEnv({
     ),
     // IF REDIS_URL is not set, will not using redis (memory cache)
     REDIS_URL: z.string().url(),
+    SMTP_HOST: z.string().min(1),
+    SMTP_PORT: z.preprocess(
+      // If SMTP_PORTL is not set, set it to 587
+      (str) => (str ? +str : 587),
+      // SMTP_PORTL must be a positive integer
+      z.number().int().positive().min(1)
+    ),
+    SMTP_USER: z.string().min(1),
+    SMTP_PASS: z.string().min(1),
   },
 
   /**
@@ -84,6 +93,10 @@ exports.env = createEnv({
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
     NEXT_PUBLIC_BUCKET_API_KEY: process.env.NEXT_PUBLIC_BUCKET_API_KEY,
     REDIS_URL: process.env.REDIS_URL,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
