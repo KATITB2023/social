@@ -11,7 +11,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { api } from "~/utils/api";
-import ReactButton from "./Button";
+import { OtherReactionButton, TopReactionButton } from "./Button";
 
 enum ReactionOption {
   Excited = "(๑˃ᴗ˂)ﻭ",
@@ -34,8 +34,9 @@ type ReactionButtonProps = {
   reactions: {
     [k: string]: Reaction;
   };
+  id: number;
 };
-const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions }) => {
+const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
   const sortedReactionNames = Object.keys(reactions).sort((a, b) => {
     const reactionA = reactions[a];
     const reactionB = reactions[b];
@@ -58,8 +59,17 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions }) => {
       gap={2}
     >
       {topReactionNames.map((name) => {
-        const reactionCount: number | undefined = reactions[name]?.count;
-        return <ReactButton name={name} reactionCount={reactionCount} />;
+        const reactionCount: number | undefined = reactions[name]?.count
+          ? reactions[name]?.count
+          : 0;
+        return (
+          <TopReactionButton
+            key={name}
+            feedId={id}
+            name={name}
+            reactionCount={reactionCount ? reactionCount : 0}
+          />
+        );
       })}
       <Popover isLazy>
         <PopoverTrigger>
@@ -107,33 +117,19 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions }) => {
               alignItems={"center"}
               gap={2}
             >
-              {unusedReactions.map((name) => (
-                <Button
-                  // py={1}
-                  size={"sm"}
-                  px={2}
-                  justifyContent="center"
-                  bg="transparent"
-                  color={"#FFFC83"}
-                  _hover={{
-                    bg: "#FFFC83",
-                    color: "#4909B3",
-                  }}
-                  border="0.50px #FFFC83 solid"
-                  borderRadius={7}
-                  gap={2}
-                  key={name}
-                  // onClick={() => handleVote(feedId, name)}
-                >
-                  <Text
-                    fontSize={"10px"}
-                    fontFamily="SomarRounded-Bold"
-                    fontWeight="700"
-                  >
-                    {name}
-                  </Text>
-                </Button>
-              ))}
+              {unusedReactions.map((name) => {
+                const reactionCount: number | undefined = reactions[name]?.count
+                  ? reactions[name]?.count
+                  : 0;
+                return (
+                  <OtherReactionButton
+                    key={name}
+                    name={name}
+                    reactionCount={reactionCount ? reactionCount : 0}
+                    feedId={id}
+                  />
+                );
+              })}
             </Flex>
           </PopoverBody>
         </PopoverContent>

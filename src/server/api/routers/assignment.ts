@@ -107,7 +107,7 @@ export const assignmentRouter = createTRPCRouter({
         filePath: z.string(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const assignment = await ctx.prisma.assignment.findFirst({
         where: {
           id: input.assignmentId,
