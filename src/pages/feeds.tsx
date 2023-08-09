@@ -1,9 +1,8 @@
-import { Box, Flex, Image, Text, Spacer } from "@chakra-ui/react";
+import { Box, Flex, Image} from "@chakra-ui/react";
 import React, { useEffect, useRef } from "react";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
-import ReactionButton from "~/components/feeds/ReactionButton";
 import Feed from "~/components/feeds/Feed";
 import { useInView } from "framer-motion";
 
