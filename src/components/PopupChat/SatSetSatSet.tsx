@@ -30,7 +30,8 @@ const SatSetSatSet = () => {
         fontWeight= "700"
         lineHeight= "100%" /* 32px */
         letterSpacing= "-0.32px"
-      >Satsetsatset
+      >
+        Satsetsatset
         <br />
         Laporanmu
         <br />
