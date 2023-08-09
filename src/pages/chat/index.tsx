@@ -70,6 +70,7 @@ const ChatHome: NextPage = () => {
           p="0"
           _hover={{ color: "yellow.4" }}
           _active={{ color: "yellow.2" }}
+          hidden={openAddChat}
         />
         <Footer />
       </Flex>

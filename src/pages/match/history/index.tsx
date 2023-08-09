@@ -75,8 +75,8 @@ const History: NextPage = () => {
           // mt="9rem"
           maxH="80%"
           overflowY="auto"
-          pb="18vh"
-          pt="3vh"
+          pb="12vh"
+          // pt="3vh"
           css={{
             "&::-webkit-scrollbar": {
               width: "4px", // Set the width of the scrollbar
