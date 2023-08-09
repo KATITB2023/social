@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { } from "react";
 import {
   Image,
   Popover,
@@ -37,6 +37,13 @@ type ReactionButtonProps = {
   id: number;
 };
 const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
+  const reactMutation = api.feed.react.useMutation();
+  const handleReact = (reaction: string) => {
+    const result = reactMutation.mutate({
+      feedId: id,
+      reaction: reaction,
+    });
+  };
   const sortedReactionNames = Object.keys(reactions).sort((a, b) => {
     const reactionA = reactions[a];
     const reactionB = reactions[b];
@@ -62,12 +69,17 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
         const reactionCount: number | undefined = reactions[name]?.count
           ? reactions[name]?.count
           : 0;
+        const reacted: boolean | undefined = reactions[name]?.reacted
+          ? reactions[name]?.reacted
+          : false;
         return (
           <TopReactionButton
             key={name}
             feedId={id}
             name={name}
+            reacted={reacted ? reacted : false}
             reactionCount={reactionCount ? reactionCount : 0}
+            handleReact={handleReact}
           />
         );
       })}
@@ -121,12 +133,17 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
                 const reactionCount: number | undefined = reactions[name]?.count
                   ? reactions[name]?.count
                   : 0;
+                const reacted: boolean | undefined = reactions[name]?.reacted
+                  ? reactions[name]?.reacted
+                  : false;
                 return (
                   <OtherReactionButton
                     key={name}
                     name={name}
+                    reacted={reacted ? reacted : false}
                     reactionCount={reactionCount ? reactionCount : 0}
                     feedId={id}
+                    handleReact={handleReact}
                   />
                 );
               })}
