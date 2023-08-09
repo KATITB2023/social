@@ -3,6 +3,7 @@ import { loadEnvConfig } from "@next/env";
 // Load environment variables from .env before doing anything else
 loadEnvConfig(process.cwd());
 
+import { env } from "~/env.cjs";
 import http from "http";
 import next from "next";
 import { Server } from "socket.io";
@@ -43,13 +44,15 @@ void app.prepare().then(() => {
     void handle(req, res, parsedUrl);
   });
 
-  const io: SocketServer = new Server(server, {
+  const io: SocketServer = new Server({
     parser,
     adapter: getAdapter(),
     transports: ["websocket"],
   });
 
   setupSocket(io);
+
+  io.listen(env.WS_PORT);
 
   // Start Schedule
   currentlyTypingSchedule.start();
