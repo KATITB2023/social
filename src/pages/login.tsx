@@ -84,10 +84,7 @@ const LoginForm = ({
   };
 
   const handleRedirect = () => {
-    const role = session?.user.role;
-    role === UserRole.MENTOR
-      ? void router.push('/attendance')
-      : void router.push('/live');
+    router.push('/profile')
   };
 
   const handleError = (message: string) => {
@@ -118,7 +115,6 @@ const login: SubmitHandler<FormValues> = async (data: FormValues, event) => {
   }
 
   handleLoggedIn();
-  console.log(session);
   reset();
 };
 
@@ -234,7 +230,7 @@ return (
           alignItems="center"
           gap="12px"
           borderRadius="12px"
-          bg="#FFFC83"
+          bg="yellow.5"
           isLoading={isSubmitting}
           loadingText='Loading'
           isDisabled={!isDirty || !isValid}
@@ -245,7 +241,7 @@ return (
           height="24px"
           size="B3"
           lineHeight="150%"
-          color="#4909B3"
+          color="purple.2"
           fontWeight={700}
         >
           Login
