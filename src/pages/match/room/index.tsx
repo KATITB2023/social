@@ -5,10 +5,7 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
-import { Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import {
-  Container,
-  Flex,
   Button,
   Modal,
   ModalOverlay,
@@ -18,6 +15,9 @@ import {
   ModalCloseButton,
   useDisclosure,
   useToast,
+  Flex,
+  Heading,
+  Image,
 } from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
@@ -213,11 +213,7 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-          <Modal
-              closeOnOverlayClick={false}
-              isOpen={isOpen}
-              onClose={onClose}
-          >
+          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader color="black">
@@ -226,16 +222,13 @@ const Room: NextPage = () => {
               <ModalCloseButton />
               <ModalFooter>
                 <Button
-                    colorScheme="blue"
-                    mr={3}
-                    onClick={() => handleAskReveal(true)}
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={() => handleAskReveal(true)}
                 >
                   Yes
                 </Button>
-                <Button
-                    variant="ghost"
-                    onClick={() => handleAskReveal(false)}
-                >
+                <Button variant="ghost" onClick={() => handleAskReveal(false)}>
                   No
                 </Button>
               </ModalFooter>
