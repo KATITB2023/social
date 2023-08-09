@@ -75,7 +75,7 @@ const Match: NextPage = () => {
     setQuestionPage(page);
   };
   return (
-    <Box position={"relative"} minH={"100vh"} height="100%" width="100%">
+    <Box display={"flex"} position={"relative"} height="100vh" width="100%">
       <Image
         src="/components/new-chat/background-new-chat.png"
         alt="vbg chat"
@@ -125,6 +125,7 @@ const Match: NextPage = () => {
         left={0}
       />
       <Navbar />
+      
       <VStack
         minH="80vh"
         width="100%"
