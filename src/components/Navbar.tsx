@@ -1,10 +1,9 @@
+
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
+
 import Layout from "~/layout";
 import {
-  Container,
-  Heading,
-  theme,
   Text,
   Center,
   Box,
