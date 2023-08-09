@@ -1,6 +1,6 @@
 import { hash } from "bcrypt";
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Status } from "@prisma/client";
 
 void (async () => {
   let nim = 0;
@@ -93,5 +93,47 @@ void (async () => {
         endTime: deadline,
       },
     });
+  }
+
+  // ATTENDANCE SEEDER
+  for (let i = 0; i < 3; i++) {
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + i);
+    const day = await prisma.attendanceDay.create({
+      data: {
+        name: `Day ${i + 1}`,
+        time: currentDate,
+      },
+    });
+    let startTime = currentDate;
+    for (let j = 0; j < 3; j++) {
+      const endTime = new Date(startTime);
+      endTime.setHours(startTime.getHours() + 3);
+
+      const event = await prisma.attendanceEvent.create({
+        data: {
+          title: `Event ${j + 1}`,
+          startTime: startTime,
+          endTime: endTime,
+          dayId: day.id,
+        },
+      });
+      const students = await prisma.user.findMany({
+        where: {
+          role: "STUDENT",
+        },
+      });
+      for (const student of students) {
+        await prisma.attendanceRecord.create({
+          data: {
+            date: startTime,
+            status: Object.values(Status)[Math.floor(Math.random() * 5)],
+            studentId: student.id,
+            eventId: event.id,
+          },
+        });
+      }
+      startTime = new Date(endTime);
+    }
   }
 })();
