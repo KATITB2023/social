@@ -1,15 +1,15 @@
 import { Flex, Text, Heading, Button, Box } from "@chakra-ui/react";
-import ProfilePage, {
-  DefaultBackgroundAndNavigationBar,
-  LabelValueContainer,
-  ProfilePicture,
-} from "../profile"
 import { MdPersonPin, MdChatBubbleOutline } from "react-icons/md";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import NotFound from "../404";
 import { useRouter } from "next/router";
+import ProfilePage, {
+  BackgroundAndNavigationBar,
+  ProfilePicture,
+} from "../profile";
+import LabelValueContainer from "~/components/profile/LabelValueContainer";
 
 export default function FriendProfilePage() {
   const router = useRouter();
@@ -21,19 +21,19 @@ export default function FriendProfilePage() {
 
   const removeFriend = api.friend.removeFriend.useMutation();
   const removeFriendExecutor = () => {
-   removeFriend
-     .mutateAsync({
-       userId: pairId,
-     })
-     .then(() => {
-        <ProfilePage />
-        console.log("Teman berhasil dihapus")
-     })
-     .catch((error) => {
-       console.error("Error while removing friend:", error);
-     });
- };
-  
+    removeFriend
+      .mutateAsync({
+        userId: pairId,
+      })
+      .then(() => {
+        <ProfilePage />;
+        console.log("Teman berhasil dihapus");
+      })
+      .catch((error) => {
+        console.error("Error while removing friend:", error);
+      });
+  };
+
   const student = profileQuery.data;
 
   if (!student) {
@@ -44,12 +44,11 @@ export default function FriendProfilePage() {
     return <NotFound />;
   }
 
-  if (student.image === null || "" || undefined)
-  {
-    student.image="/defaultprofpict.svg"
+  if (student.image === null || "" || undefined) {
+    student.image = "/defaultprofpict.svg";
   }
   return (
-    <DefaultBackgroundAndNavigationBar>
+    <BackgroundAndNavigationBar>
       <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
         <Box>
           <Flex gap="14px">
@@ -110,8 +109,6 @@ export default function FriendProfilePage() {
           <Text size="B3">delete</Text>
         </Button>
       </Flex>
-    </DefaultBackgroundAndNavigationBar>
+    </BackgroundAndNavigationBar>
   );
 }
-
- 
