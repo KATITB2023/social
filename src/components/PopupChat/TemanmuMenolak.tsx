@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import Popup from "~/components/PopupChat/PopUp"
 
-const BerhasilRequest: React.FC = () => {
+const TemanmuMenolak: React.FC = () => {
   return (
     <div>
       <Popup content1="Temanmu" content2='menolak' content3='reveal profil' content4=':('/>
@@ -9,4 +9,4 @@ const BerhasilRequest: React.FC = () => {
   )
 }
 
-export default BerhasilRequest
+export default TemanmuMenolak
