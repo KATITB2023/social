@@ -1,30 +1,30 @@
 import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 
-import Layout from "~/layout";
 import {
-  Text,
   Box,
-  Flex,
-  Image,
-  Icon,
-  useDisclosure,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Flex,
+  Icon,
+  Image,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  MdPersonAddAlt,
-  MdOutlineHome,
+  MdChatBubbleOutline,
+  MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdOutlinePersonOutline,
-  MdLogout,
   MdOutlineAssignmentInd,
+  MdOutlineHome,
+  MdOutlinePersonOutline,
+  MdPersonAddAlt,
+  MdStarOutline,
 } from "react-icons/md";
+import Layout from "~/layout";
 
 const Navbar: NextPage = () => {
   const [navbarPos, setNavbarPos] = useState(0);
@@ -113,12 +113,8 @@ const Navbar: NextPage = () => {
             objectFit="cover"
             objectPosition="center"
             borderRadius="50px"
-          ></Image>
-          top="0"
-          left="0"
-          bottom="0"
-          right="0"
-        />
+          />
+        </Box>
 
         <Image
           src="/ekor.svg"
