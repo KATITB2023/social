@@ -5,7 +5,20 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
-import { Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalCloseButton,
+  useDisclosure,
+  useToast,
+  Flex,
+  Heading,
+  Image,
+} from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
@@ -16,6 +29,7 @@ import Navbar from "~/components/Navbar";
 
 const Room: NextPage = () => {
   const router = useRouter();
+  const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -91,7 +105,6 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-        // addMessages([post]);
         setMessages((prev) => [...prev, post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
@@ -135,6 +148,38 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
+  const askReveal = useEmit("askReveal");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useSubscription(
+    "askReveal",
+    (data, askReveal) => {
+      if (match) {
+        if (askReveal) {
+          if (data.isRevealed) {
+            toast({
+              title: "Yay temenmu uda reveal profil nih!",
+            });
+          } else {
+            onOpen();
+          }
+        } else {
+          toast({
+            title: "Temanmu menolak reveal profil :(",
+          });
+        }
+      }
+    },
+    [match, messageQuery]
+  );
+
+  const handleAskReveal = (choice: boolean) => {
+    onClose();
+    if (match) {
+      askReveal.mutate({ agree: choice });
+    }
+  };
+
   const messageEmit = useEmit("anonymousMessage");
 
   return (
@@ -168,6 +213,27 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
+          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader color="black">
+                Kamu direquest untuk reveal profil nih!
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalFooter>
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={() => handleAskReveal(true)}
+                >
+                  Yes
+                </Button>
+                <Button variant="ghost" onClick={() => handleAskReveal(false)}>
+                  No
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           <Flex
             w="100%"
             h="100vh"
