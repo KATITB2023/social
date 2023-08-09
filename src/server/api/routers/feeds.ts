@@ -96,6 +96,15 @@ export const feedRouter = createTRPCRouter({
         nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
       };
     }),
+  getReactions : protectedProcedure
+    .input(z.object({feedId : z.number().int()}))
+    .query(async({ctx,input}) =>{
+      const reactions = await ctx.prisma.feed.findMany({
+        where:{
+          
+        }
+      }) 
+    }),
   react: protectedProcedure.mutation(() => "hello"),
   readFeed: protectedProcedure
     .input(z.object({ feedId: z.number().int() }))
