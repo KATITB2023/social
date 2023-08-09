@@ -1,10 +1,11 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
+import { Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import {
   Container,
   Flex,
@@ -24,13 +25,14 @@ import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
 import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
-import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
+import Navbar from "~/components/Navbar";
 
 const Room: NextPage = () => {
   const router = useRouter();
   const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const checkMatch = useEmit("checkMatch", {
     onSuccess: (data) => {
@@ -86,6 +88,7 @@ const Room: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
+    setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
   }, []);
 
   useEffect(() => {
@@ -181,70 +184,106 @@ const Room: NextPage = () => {
 
   return (
     <Layout title="Chat">
-      <Container>
-        {match === null ? (
-          "Loading"
-        ) : (
-          <>
-            {/* Ask for Reveal Modal. TODO: replace with appropriate modal */}
-            <Modal
+      {match === null ? (
+        <Flex
+          w={"full"}
+          h={"100vh"}
+          justifyContent={"center"}
+          position={"relative"}
+          flexDir={"column"}
+          alignItems={"center"}
+          bgImage={"/components/anon_chat_page/anon_match_bg.png"}
+          backgroundPosition={"center"}
+          backgroundSize={"cover"}
+          backgroundRepeat={"no-repeat"}
+          overflowY={"hidden"}
+        >
+          <Flex position={"absolute"} top={0}>
+            <Navbar />
+          </Flex>
+          <Image
+            src="/components/anon_chat_page/anon_comet.png"
+            w={"254px"}
+            h={"254px"}
+          />
+          <Heading size={"H3"} fontWeight={400} color={"yellow.5"}>
+            {" "}
+            MATCHING UP{" "}
+          </Heading>
+        </Flex>
+      ) : (
+        <>
+          <Modal
               closeOnOverlayClick={false}
               isOpen={isOpen}
               onClose={onClose}
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader color="black">
-                  Kamu direquest untuk reveal profil nih!
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalFooter>
-                  <Button
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader color="black">
+                Kamu direquest untuk reveal profil nih!
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalFooter>
+                <Button
                     colorScheme="blue"
                     mr={3}
                     onClick={() => handleAskReveal(true)}
-                  >
-                    Yes
-                  </Button>
-                  <Button
+                >
+                  Yes
+                </Button>
+                <Button
                     variant="ghost"
                     onClick={() => handleAskReveal(false)}
-                  >
-                    No
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+                >
+                  No
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Flex
+            w="100%"
+            h="100vh"
+            pos={"relative"}
+            backgroundImage="/components/chat_page/chat_bg.png"
+            backgroundSize={"cover"}
+            backgroundRepeat={"no-repeat"}
+            overflowY={"hidden"}
+          >
             <Flex
-              w="100%"
-              h="100vh"
-              justify="center"
-              align="center"
-              backgroundColor={"blue"}
+              w={"100%"}
+              h="100%"
+              flexDir="column"
+              justifyContent={"space-between"}
             >
-              <Flex w={"100%"} h="90%" flexDir="column">
-                <Header name="Anonymous" isTyping={currentlyTyping} />
-                <Divider />
-                <Messages
-                  messages={messages ?? []}
-                  hasPreviousPage={hasPreviousPage}
-                  fetchPreviousPage={() => void fetchPreviousPage()}
-                  isFetchingPreviousPage={isFetchingPreviousPage}
+              <Header
+                name="Anonymous"
+                image={undefined}
+                isTyping={currentlyTyping}
+                isAnon={true}
+              />
+              <Divider />
+
+              <Messages
+                messages={messages ?? []}
+                hasPreviousPage={hasPreviousPage}
+                fetchPreviousPage={() => void fetchPreviousPage()}
+                isFetchingPreviousPage={isFetchingPreviousPage}
+                bottomRef={bottomRef}
+              />
+
+              <Divider />
+              <Flex>
+                <Footer
+                  onSubmit={(text) => messageEmit.mutate({ message: text })}
+                  receiverId={match.id}
+                  isAnon={true}
                 />
-                <Divider />
-                <Flex>
-                  <AnonFooterMenu />
-                  <Footer
-                    onSubmit={(text) => messageEmit.mutate({ message: text })}
-                    receiverId={match.id}
-                    isAnon={true}
-                  />
-                </Flex>
               </Flex>
             </Flex>
-          </>
-        )}
-      </Container>
+          </Flex>
+        </>
+      )}
     </Layout>
   );
 };
