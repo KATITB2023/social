@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { api } from "~/utils/api"; 
+import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
@@ -25,7 +25,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="background.png"
         alt="background"
         height="100%"
         zIndex="-1"
@@ -50,14 +50,14 @@ interface submission {
 }
 
 // Main Function
-export default function showSubmissionPage() {
+export default function ShowSubmissionPage() {
   const { data: session } = useSession({ required: true });
   const router = useRouter();
   const taskId = router.query.taskId as string;
   const inputAssignmentData = api.assignment.viewAssignment.useQuery({
-    assignmentId: taskId
+    assignmentId: taskId,
   });
-  const assignmentData = inputAssignmentData.data   
+  const assignmentData = inputAssignmentData.data;
 
   if (!assignmentData) {
     return <NotFound />;
@@ -68,52 +68,40 @@ export default function showSubmissionPage() {
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
     filePath: assignmentData.filePath,
   };
-  
+
   return (
     <BackgroundAndNavbar>
-    <Flex 
-      flexDirection="column"
-      justifyContent="space-between"
-      mx="24px"
-      my="70px"
-    >
-      <HStack mb="3px">
+      <Flex
+        flexDirection="column"
+        justifyContent="space-between"
+        mx="24px"
+        my="70px"
+      >
+        <HStack mb="3px">
+          <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
+            Deadline
+          </Text>
+          <Text> : </Text>
+          <Text color="#ffffff" fontFamily="body" fontSize="12px">
+            {assignmentData.endTime.toLocaleDateString()}
+          </Text>
+        </HStack>
+        <Heading color="yellow.4" alignSelf="left">
+          {assignmentData.title}
+        </Heading>
+        <SubmissionStatus {...inputSubmissionData} />
         <Text
-          color="#ffffff"
+          color="white"
           fontFamily="subheading"
-          fontSize="12px"
+          fontSize="20px"
+          alignSelf="left"
+          mt="30px"
+          mb="3px"
         >
-          Deadline
+          Soal 01
         </Text>
-        <Text> : </Text>
-        <Text
-          color="#ffffff"
-          fontFamily="body"
-          fontSize="12px"
-        >
-          {assignmentData.endTime.toLocaleDateString()}
-        </Text>
-      </HStack>
-      <Heading color="yellow.4" alignSelf="left">
-        {assignmentData.title}
-      </Heading>
-      <SubmissionStatus {...inputSubmissionData} />
-      <Text
-        color="white"
-        fontFamily="subheading"
-        fontSize="20px"
-        alignSelf="left"
-        mt="30px"
-        mb="3px"
-      >
-        Soal 01
-      </Text>
-      <Text 
-        textAlign={"justify"}
-      >
-        {assignmentData.description}
-      </Text>
-      <FileUpload {...inputSubmissionData} />
+        <Text textAlign={"justify"}>{assignmentData.description}</Text>
+        <FileUpload {...inputSubmissionData} />
       </Flex>
     </BackgroundAndNavbar>
   );
@@ -133,15 +121,12 @@ function SubmissionStatus(param: submission) {
         verticalAlign={"center"}
         mt="5px"
       >
-        <Text 
-          fontFamily="subheading"
-          fontSize="10px"
-        > 
+        <Text fontFamily="subheading" fontSize="10px">
           Terkumpul
         </Text>
       </Box>
       <Spacer />
-{/*
+      {/*
       <Text
         color="#ffffff"
         fontFamily="body"
@@ -150,48 +135,40 @@ function SubmissionStatus(param: submission) {
         Submitted at {param.submissionDate}</Text>
   */}
     </Center>
+  ) : param.isDeadlinePassed ? (
+    <Flex>
+      <Box
+        backgroundColor={"#fffcbf"}
+        textColor={"#ffbe3b"}
+        borderColor={"#ffbe3b"}
+        border="0.92px solid"
+        borderRadius="12px"
+        padding="4px 16px"
+        verticalAlign={"center"}
+        mt="5px"
+      >
+        <Text fontFamily="subheading" fontSize="10px">
+          Terlambat
+        </Text>
+      </Box>
+    </Flex>
   ) : (
-    param.isDeadlinePassed? (
-      <Flex>
-        <Box
-          backgroundColor={"#fffcbf"}
-          textColor={"#ffbe3b"}
-          borderColor={"#ffbe3b"}
-          border="0.92px solid"
-          borderRadius="12px"
-          padding="4px 16px"
-          verticalAlign={"center"}
-          mt="5px"
-        >
-          <Text 
-            fontFamily="subheading"
-            fontSize="10px"
-          > 
-            Terlambat
-          </Text>
-        </Box>
-      </Flex>
-    ) : (
-      <Flex>
-        <Box
-          backgroundColor={"#f2a89d"}
-          textColor={"#e8553e"}
-          borderColor={"#e8553e"}
-          border="0.92px solid"
-          borderRadius="12px"
-          padding="4px 16px"
-          verticalAlign={"center"}
-          mt="5px"
-        >
-          <Text 
-            fontFamily="subheading"
-            fontSize="10px"
-          > 
-            Belum Terkumpul
-          </Text>
-        </Box>
-      </Flex>
-    )
+    <Flex>
+      <Box
+        backgroundColor={"#f2a89d"}
+        textColor={"#e8553e"}
+        borderColor={"#e8553e"}
+        border="0.92px solid"
+        borderRadius="12px"
+        padding="4px 16px"
+        verticalAlign={"center"}
+        mt="5px"
+      >
+        <Text fontFamily="subheading" fontSize="10px">
+          Belum Terkumpul
+        </Text>
+      </Box>
+    </Flex>
   );
 }
 
@@ -236,29 +213,28 @@ function FileUpload(param: submission) {
     >
       {param.filePath}
     </Box>
+  ) : param.isDeadlinePassed ? (
+    <Box
+      borderColor={"white"}
+      height="184px"
+      width="325px"
+      justifyContent={"center"}
+      alignItems="center"
+      borderWidth="1px"
+      display="flex"
+      verticalAlign={"center"}
+      mt={5}
+      borderRadius="20px"
+      background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
+      flexDirection="column"
+      fontFamily="subheading"
+      fontSize="16px"
+      color="yellow.4"
+    >
+      Tidak mengumpulkan tugas
+    </Box>
   ) : (
-    param.isDeadlinePassed? (
-      <Box
-        borderColor={"white"}
-        height="184px"
-        width="325px"
-        justifyContent={"center"}
-        alignItems="center"
-        borderWidth="1px"
-        display="flex"
-        verticalAlign={"center"}
-        mt={5}
-        borderRadius="20px"
-        background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
-        flexDirection="column"
-        fontFamily="subheading"
-        fontSize="16px"
-        color="yellow.4"
-      >
-        Tidak mengumpulkan tugas
-      </Box>
-    ):(
-      <>
+    <>
       <Box
         borderColor={"white"}
         height="184px"
@@ -274,50 +250,47 @@ function FileUpload(param: submission) {
         flexDirection="column"
       >
         {fileSelected ? (
-          <Text 
+          <Text
             fontFamily="subheading"
             fontSize="16px"
             textDecorationLine="underline"
             color="yellow.4"
           >
-            {file ? file.name : ""} 
+            {file ? file.name : ""}
           </Text>
         ) : (
           <>
-          <Image mt={-10} position="absolute" src="/komethello.svg" />
-          <Button
-            bg={"transparent"}
-            borderColor={"yellow.4"}
-            padding="4px 16px"
-            borderWidth="1px"
-            borderRadius="12px"
-            textColor={"yellow.4"}
-            fontFamily="subheading"
-            fontSize="16px"
-            mt={110}
-            cursor="pointer"
-            height="32px"
-            width="116px"
-          >
-            <label htmlFor="fileInput">
-              <Text>
-                {" "}
-                upload file{" "}
-              </Text>
-            </label>
-          </Button>
-          <input
-            hidden
-            type="file"
-            id="fileInput"
-            onChange={(e) => {
-              const files = e.target.files;
-              if (files) {
-                handleFileChange(files);
-              }
-            }}
-          />
-        </>
+            <Image mt={-10} position="absolute" src="/komethello.png" />
+            <Button
+              bg={"transparent"}
+              borderColor={"yellow.4"}
+              padding="4px 16px"
+              borderWidth="1px"
+              borderRadius="12px"
+              textColor={"yellow.4"}
+              fontFamily="subheading"
+              fontSize="16px"
+              mt={110}
+              cursor="pointer"
+              height="32px"
+              width="116px"
+            >
+              <label htmlFor="fileInput">
+                <Text> upload file </Text>
+              </label>
+            </Button>
+            <input
+              hidden
+              type="file"
+              id="fileInput"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files) {
+                  handleFileChange(files);
+                }
+              }}
+            />
+          </>
         )}
       </Box>
       <HStack gap="20px" position="absolute" bottom="30px">
@@ -334,11 +307,7 @@ function FileUpload(param: submission) {
           borderRadius="10px"
           onClick={handleCancelClick}
         >
-          <Text 
-            fontFamily="subheading"
-            size="SH5"
-            color="yellow.5"
-          >
+          <Text fontFamily="subheading" size="SH5" color="yellow.5">
             Cancel
           </Text>
         </Button>
@@ -355,11 +324,7 @@ function FileUpload(param: submission) {
           borderRadius="10px"
           onClick={() => setSubmitOpen(true)}
         >
-          <Text 
-            fontFamily="subheading"
-            size="SH5"
-            color="purple.2"
-          >
+          <Text fontFamily="subheading" size="SH5" color="purple.2">
             Submit
           </Text>
         </Button>
@@ -370,9 +335,8 @@ function FileUpload(param: submission) {
         fileToSend={file}
         taskId={taskId}
       />
-      </>
-    )
+    </>
   );
 }
 
-export { showSubmissionPage };
+export { ShowSubmissionPage };
