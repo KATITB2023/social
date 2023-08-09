@@ -16,7 +16,6 @@ import { useSession } from "next-auth/react";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 import NotFound from "./404";
-import { fileURLToPath } from "url";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -213,7 +212,7 @@ function FileUpload(param: submission) {
       color="yellow.4"
     >
       <a
-        href={param.fileSubmitted as string} // Ubah URL sesuai kebutuhan
+        href={param.fileSubmitted as string}
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -229,7 +228,7 @@ function FileUpload(param: submission) {
     <Box
       borderColor={"white"}
       height="184px"
-      width="325px"
+      width="100%"
       justifyContent={"center"}
       alignItems="center"
       borderWidth="1px"
