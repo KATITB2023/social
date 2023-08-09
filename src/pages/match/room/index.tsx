@@ -1,31 +1,31 @@
+import {
+  Button,
+  Flex,
+  Heading,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import { type Message, type UserMatch } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState, useRef } from "react";
-import { type Message, type UserMatch } from "@prisma/client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "~/components/Image";
+import Navbar from "~/components/Navbar";
+import Divider from "~/components/chat/Divider";
+import Footer from "~/components/chat/Footer";
+import Header from "~/components/chat/Header";
+import Messages from "~/components/chat/Messages";
+import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
-import {
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalCloseButton,
-  useDisclosure,
-  useToast,
-  Flex,
-  Heading,
-  Image,
-} from "@chakra-ui/react";
-import Header from "~/components/chat/Header";
-import Divider from "~/components/chat/Divider";
-import Messages from "~/components/chat/Messages";
-import Footer from "~/components/chat/Footer";
-import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
-import Navbar from "~/components/Navbar";
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -203,8 +203,9 @@ const Room: NextPage = () => {
           </Flex>
           <Image
             src="/components/anon_chat_page/anon_comet.png"
-            w={"254px"}
-            h={"254px"}
+            width={254}
+            height={254}
+            alt="comet"
           />
           <Heading size={"H3"} fontWeight={400} color={"yellow.5"}>
             {" "}
