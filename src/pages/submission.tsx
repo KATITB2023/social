@@ -25,7 +25,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="background.png"
         alt="background"
         height="100%"
         zIndex="-1"
@@ -284,7 +284,7 @@ function FileUpload(param: submission) {
           </Text>
         ) : (
           <>
-          <Image mt={-10} position="absolute" src="/komethello.svg" />
+          <Image mt={-10} position="absolute" src="/komethello.png" />
           <Button
             bg={"transparent"}
             borderColor={"yellow.4"}
