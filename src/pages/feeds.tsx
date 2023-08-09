@@ -1,10 +1,11 @@
 import { Box, Flex, Image, Text, Spacer } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import ReactionButton from "~/components/feeds/ReactionButton";
 import Feed from "~/components/feeds/Feed";
+import { useInView } from "framer-motion";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -42,19 +43,29 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
 }
 export default function FeedsPage() {
   useSession({ required: true });
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomView = useInView(bottomRef);
 
-  const feedsApi = api.feed.getFeeds.useInfiniteQuery(
-    {},
-    {
-      getNextPageParam: (d) => d.nextCursor,
-      refetchInterval: false,
-      refetchOnWindowFocus: false,
+  const { data, hasNextPage, fetchNextPage } =
+    api.feed.getFeeds.useInfiniteQuery(
+      {},
+      {
+        getNextPageParam: (d) => d.nextCursor,
+        refetchInterval: false,
+        refetchOnWindowFocus: false,
+      }
+    );
+
+  useEffect(() => {
+    if (bottomView && hasNextPage) {
+      fetchNextPage().catch((e) => console.log(e));
     }
-  );
+  }, [bottomView, hasNextPage, fetchNextPage]);
+
   return (
     <BackgroundAndNavbar>
       <Flex flexDirection={"column"} justifyContent={"center"}>
-        {feedsApi?.data?.pages
+        {data?.pages
           .flatMap((page) => page.data)
           .map((feed) => {
             return (
@@ -64,10 +75,11 @@ export default function FeedsPage() {
                 attachmentUrl={feed.attachmentUrl}
                 createdAt={feed.createdAt}
                 text={feed.text}
-                id = {feed.id}
+                id={feed.id}
               />
             );
           })}
+        <div ref={bottomRef}></div>
       </Flex>
     </BackgroundAndNavbar>
   );
