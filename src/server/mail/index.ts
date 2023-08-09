@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
+import { createTransport, type Transporter } from "nodemailer";
 import type SMTPPool from "nodemailer/lib/smtp-pool";
 import { env } from "~/env.cjs";
 
 const instantiateTransporter = () => {
-  return nodemailer.createTransport({
+  return createTransport({
     host: env.SMTP_HOST,
     port: env.SMTP_PORT,
     pool: true,
@@ -15,7 +15,7 @@ const instantiateTransporter = () => {
 };
 
 const globalForTransporter = globalThis as unknown as {
-  transporter?: nodemailer.Transporter<SMTPPool.SentMessageInfo>;
+  transporter?: Transporter<SMTPPool.SentMessageInfo>;
 };
 
 export const transporter =

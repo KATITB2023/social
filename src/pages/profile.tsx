@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  IconButton,
-  Input,
-  Text,
-  Center,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 
 import React, { useState } from "react";
 
@@ -29,27 +20,26 @@ export interface EditableProps {
   image?: string;
 }
 
-const defautProfile: SelfProfile = {
-  bio: "something",
-  campus: "GANESHA",
-  email: "Vicenta_Ryan@hotmail.coui",
-  faculty: "Sekolah Teknik Elektro dan Informatika",
-  friendCount: 0,
-  gender: "MALE",
-  id: "5d42b047-2fff-45d0-9e07-567f3e6265a4",
-  image: null,
-  instagram: "@gana.dipaa",
-  name: "Rufus Wiza",
-  nim: "13521003",
-  pin: "842081",
-  point: 0,
-  visitedCount: 0,
-};
+// const defautProfile: SelfProfile = {
+//   bio: "something",
+//   campus: "GANESHA",
+//   email: "Vicenta_Ryan@hotmail.coui",
+//   faculty: "Sekolah Teknik Elektro dan Informatika",
+//   friendCount: 0,
+//   gender: "MALE",
+//   id: "5d42b047-2fff-45d0-9e07-567f3e6265a4",
+//   image: null,
+//   instagram: "@gana.dipaa",
+//   name: "Rufus Wiza",
+//   nim: "13521003",
+//   pin: "842081",
+//   point: 0,
+//   visitedCount: 0,
+// };
 
 export default function ProfilePage() {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [openSelectImage, setOpenSelectImage] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>("");
 
   if (!selfProfile) return null;
   return (
@@ -65,7 +55,7 @@ export default function ProfilePage() {
           Profile
         </Heading>
         <UserProfilePicture
-          src={profileImage ? profileImage : selfProfile?.image ?? undefined}
+          src={selfProfile?.image ?? undefined}
           setOpen={setOpenSelectImage}
         />
         <Flex
@@ -83,7 +73,6 @@ export default function ProfilePage() {
         <SelectPhotoImageProfile
           open={openSelectImage}
           setOpen={setOpenSelectImage}
-          changeImage={setProfileImage}
           nim={selfProfile.nim}
         />
       </Flex>
@@ -119,23 +108,11 @@ function UserProfilePicture({
   );
 }
 
-function ProfileInfo({
-  info,
-  onProfileEdit,
-}: { info: SelfProfile } & {
-  onProfileEdit: ({ bio, instagram, email }: EditableProps) => void;
-}) {
+function ProfileInfo({ info }: { info: SelfProfile }) {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [bio, setBio] = useState(info.bio || "");
-  const [instagram, setInstagram] = useState(info.instagram || "");
-  const [email, setEmail] = useState(info.email || "");
 
   return isEditMode ? (
-    <EditingProfile
-      initialState={info}
-      setIsEditMode={setIsEditMode}
-      onProfileEdit={onProfileEdit}
-    />
+    <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
     <>
       <Flex
@@ -157,7 +134,7 @@ function ProfileInfo({
           <LabelValueContainer
             label={key}
             key={key}
-            value={info[value] || "-"}
+            value={info[value as keyof SelfProfile]?.toString() || "-"}
           />
         ))}
       </Flex>
