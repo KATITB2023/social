@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -7,11 +8,11 @@ import {
   Text,
   Center,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
-import Navbar from "~/components/Navbar";
 import { useRouter } from "next/router";
+import { match } from "ts-pattern";
+import { AssignmentType } from "@prisma/client";
+import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -26,10 +27,10 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         alt="background"
         height="100%"
         zIndex="-1"
-        position="absolute"
+        position="fixed"
         objectFit="cover"
-        minWidth="100%"
         width="100%"
+        maxWidth={"375px"}
       />
       <Flex flexDirection="column">
         <Navbar />
@@ -141,23 +142,23 @@ const Chips: React.FC<ChipsProps> = ({
   className,
   text = "hadir",
 }) => {
-  let chipsBg: string;
-  let chipsBorderColor: string;
-  let chipsLabelColor: string;
-
-  if (property1 === "donei") {
-    chipsBg = "#b8eadc"; // Hijau, Terkumpul
-    chipsBorderColor = "#1c939a";
-    chipsLabelColor = "#1c939a";
-  } else if (property1 === "no") {
-    chipsBg = "#f2a89d"; // Merah, Belum Terkumpul
-    chipsBorderColor = "#e8553e";
-    chipsLabelColor = "#e8553e";
-  } else {
-    chipsBg = "#fffcbf"; // Kuning, Terlambat
-    chipsBorderColor = "#ffbe3b";
-    chipsLabelColor = "#ffbe3b";
-  }
+  const { chipsBg, chipsBorderColor, chipsLabelColor } = match(property1)
+    .with("donei", () => ({
+      chipsBg: "#b8eadc", // Hijau, Terkumpul
+      chipsBorderColor: "#1c939a",
+      chipsLabelColor: "#1c939a",
+    }))
+    .with("no", () => ({
+      chipsBg: "#f2a89d", // Merah, Belum Terkumpul
+      chipsBorderColor: "#e8553e",
+      chipsLabelColor: "#e8553e",
+    }))
+    .with("maybe", () => ({
+      chipsBg: "#fffcbf", // Kuning, Terlambat
+      chipsBorderColor: "#ffbe3b",
+      chipsLabelColor: "#ffbe3b",
+    }))
+    .exhaustive();
 
   return (
     <div
@@ -197,25 +198,29 @@ const Chips: React.FC<ChipsProps> = ({
   );
 };
 
-function getChipsData(
+const getChipsData = (
   statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE"
-) {
-  let chipsText: string;
-  let chipsColor: "donei" | "no" | "maybe";
-
-  if (statusTugas === "SUBMITTED") {
-    chipsText = "Terkumpul";
-    chipsColor = "donei"; // Warna hijau
-  } else if (statusTugas === "NOT_SUBMITTED") {
-    chipsText = "Belum Terkumpul";
-    chipsColor = "no"; // Warna merah
-  } else {
-    chipsText = "Terlambat";
-    chipsColor = "maybe"; // Warna kuning
-  }
-
-  return { chipsText, chipsColor };
-}
+) =>
+  match<
+    "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE",
+    {
+      chipsText: string;
+      chipsColor: "donei" | "no" | "maybe";
+    }
+  >(statusTugas)
+    .with("SUBMITTED", () => ({
+      chipsText: "Terkumpul",
+      chipsColor: "donei",
+    }))
+    .with("NOT_SUBMITTED", () => ({
+      chipsText: "Belum Terkumpul",
+      chipsColor: "no",
+    }))
+    .with("PASSED_DEADLINE", () => ({
+      chipsText: "Terlambat",
+      chipsColor: "maybe",
+    }))
+    .exhaustive();
 
 // Fungsi untuk menampilkan seluruh tugas Daily Quest
 
@@ -379,7 +384,6 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
 // Main function
 export default function AssignmentListPage() {
   const [boxContent, setBoxContent] = useState("Daily Quest");
-  const { data: session } = useSession({ required: true });
   const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
   const tasks = assignmentQuery.data || [];
 
@@ -403,7 +407,7 @@ export default function AssignmentListPage() {
         {boxContent === "Daily Quest" ? (
           <>
             {tasks
-              .filter((task) => task.type === "DAILY_QUEST")
+              .filter((task) => task.type === AssignmentType.DAILY_QUEST)
               .map((task) => (
                 <TugasDailyQuest
                   key={task.id}
@@ -417,7 +421,7 @@ export default function AssignmentListPage() {
         ) : boxContent === "Side Quest" ? (
           <>
             {tasks
-              .filter((task) => task.type === "SIDE_QUEST")
+              .filter((task) => task.type === AssignmentType.SIDE_QUEST)
               .map((task) => (
                 <TugasSideQuest
                   key={task.id}

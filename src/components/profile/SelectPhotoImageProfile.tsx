@@ -8,7 +8,7 @@ export const SelectPhotoImageProfile = ({
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  changeImage: React.Dispatch<React.SetStateAction<string | undefined>>;
+  changeImage : React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
   const [image, setImage] = useState<string | undefined>(undefined);
