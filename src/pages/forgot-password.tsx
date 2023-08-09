@@ -12,6 +12,9 @@ import {
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import Navbar from '~/components/Navbar';
 import LoginBackground from '~/components/login/login-background';
+import Login from '~/pages/login'
+import { useRouter } from 'next/router';
+
   
   type childrenOnlyProps = {
     children: string | JSX.Element | JSX.Element[];
@@ -53,6 +56,8 @@ import LoginBackground from '~/components/login/login-background';
         isClosable: true,
         position: 'top'
       });
+      const router = useRouter();
+      router.push('/login');
     };
   
     const handleError = (error: string) => {
@@ -120,8 +125,8 @@ import LoginBackground from '~/components/login/login-background';
                 alignItems="center"
                 textAlign="center"
                 textTransform="uppercase"
-                color="#FFFC83"
-                textShadow="0px 0px 10px #FFFC83"
+                color="yellow.5"
+                textShadow="0px 0px 10px yellow.5"
               >
                 LUPA PASSWORD?
               </Text>
@@ -166,7 +171,7 @@ import LoginBackground from '~/components/login/login-background';
                   width="108px"
                   height="48px"
                   borderRadius="12px"
-                  background="#FFFC83"
+                  background="yellow.5"
                   isDisabled={!isDirty || !isValid}
                   isLoading={isSubmitting}
                   loadingText='Loading'
@@ -174,7 +179,7 @@ import LoginBackground from '~/components/login/login-background';
                   <Text
                     size="SH5"
                     lineHeight="24px"
-                    color="#4909B3"
+                    color="purple.2"
                   >
                     Kirim
                   </Text>
