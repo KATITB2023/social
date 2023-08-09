@@ -1,30 +1,32 @@
-import { type NextPage } from "next";
+
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
-import Layout from "~/layout";
 import {
-  Text,
   Box,
-  Flex,
-  Image,
-  Icon,
-  useDisclosure,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Spacer,
+  Flex,
+  Icon,
+  Image,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  MdPersonAddAlt,
-  MdOutlineHome,
+  MdChatBubbleOutline,
+  MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdOutlinePersonOutline,
-  MdLogout,
   MdOutlineAssignmentInd,
+  MdOutlineHome,
+  MdOutlinePersonOutline,
+  MdPersonAddAlt,
+  MdStarOutline,
 } from "react-icons/md";
+import Layout from "~/layout";
 
 const Navbar: NextPage = () => {
   const [navbarPos, setNavbarPos] = useState(0);
@@ -32,16 +34,15 @@ const Navbar: NextPage = () => {
 
   //   Scroll mechanism algorithm
   useEffect(() => {
-    let prevScrollPosY = window.pageYOffset;
+    let prevScrollPosY = window.scrollY;
 
     const detectScrollY = () => {
-      const temp = window.scrollY;
-      if (temp < prevScrollPosY) {
+      if (window.scrollY < prevScrollPosY) {
         setNavbarPos(0);
       } else {
         setNavbarPos(-100);
       }
-      prevScrollPosY = temp;
+      prevScrollPosY = window.scrollY;
     };
 
     window.addEventListener("scroll", detectScrollY);
