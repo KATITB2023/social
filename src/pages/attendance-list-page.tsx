@@ -7,6 +7,9 @@ import {
   Button,
   Text,
   Spacer,
+  useToast,
+  Spinner,
+  position,
 } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 
@@ -17,6 +20,7 @@ import {
   Status,
 } from "@prisma/client";
 import { useState } from "react";
+import { TRPCClientError } from "@trpc/client";
 
 // const eventList = {
 //   "Day 1": {
@@ -145,105 +149,36 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
   );
 };
 
-const StatusButton = ({ status }: { status: Status }) => {
-  const [loading, setLoading] = useState(false);
-  const absenMutation = api.absensi.submitAbsensi.useMutation();
-  
-  const handleAttend = async (eventId) => {
-    setLoading(true);
-    try {
-      const result = await absenMutation.mutateAsync({
-        eventId
-      });
-    }
-    setLoading(false);
-  }
-
-  if (status === Status.TIDAK_HADIR) {
-    return (
-      <Button
-        border="1px"
-        borderColor="#E8553E"
-        bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
-        borderRadius="12px"
-        py="4px"
-        px="16px"
-        size="xs"
-      >
-        <Text color="#E8553E" size="A">
-          tidak hadir
-        </Text>
-      </Button>
-    );
-  } else if (status === Status.HADIR) {
-    return (
-      <Button
-        border="1px"
-        borderColor="green.2"
-        bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-        borderRadius="12px"
-        py="4px"
-        px="16px"
-        size="xs"
-      >
-        <Text color="green.2" size="A">
-          hadir
-        </Text>
-      </Button>
-    );
-  } else if (status === Status.IZIN_DITERIMA) {
-    return (
-      <Button
-        border="1px"
-        borderColor="green.2"
-        bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-        borderRadius="12px"
-        py="4px"
-        px="16px"
-        size="xs"
-      >
-        <Text color="green.2" size="A">
-          izin diterima
-        </Text>
-      </Button>
-    )
-  } else if (status === Status.IZIN_PENDING) {
+const StatusButton = ({
+  onClick,
+  isDisabled = true,
+  bg,
+  borderColor,
+  text,
+}: {
+  onClick?: () => void;
+  isDisabled?: boolean;
+  bg:string;
+  borderColor?: string;
+  text: string;
+}) => {
+  return (
     <Button
-      border="1px"
-      borderColor="green.2"
-      bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-      borderRadius="12px"
-      py="4px"
-      px="16px"
-      size="xs"
-    >
-      <Text color="green.2" size="A">
-        izin pending
-      </Text>
-    </Button>
-  } else if (status === Status.IZIN_DITOLAK) {
-    <Button
-      border="1px"
-      borderColor="green.2"
-      bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-      borderRadius="12px"
-      py="4px"
-      px="16px"
-      size="xs"
-    >
-      <Text color="green.2" size="A">
-        izin ditolak
-      </Text>
-    </Button>
-  } else {
-    return (
-      <Button bg="yellow.5" borderRadius="12px" py="4px" px="16px" size="xs" onClick={handleAttend}>
-        <Text color="purple.2" size="A">
-          tandai hadir
-        </Text>
-      </Button>
-    );
-  }
+    border="1px"
+    borderColor={borderColor}
+    bg={bg}
+    borderRadius="12px"
+    py="4px"
+    px="16px"
+    size="xs"
+    _hover={isDisabled ? { opacity: 1 } : { opacity: 0.8 }}
+    onClick={isDisabled ? undefined : onClick}
+  >
+    <Text color={borderColor} size="A">
+      {text}
+    </Text>
+  </Button>
+  )
 };
 
 const getTwoTime = (startDate: Date, endDate: Date) => {
@@ -259,13 +194,79 @@ const getTwoTime = (startDate: Date, endDate: Date) => {
   return `${startTime} - ${endTime}`;
 };
 
+const validTime = (startTime: Date, endTime: Date) => {
+  const currentTime = new Date(Date.now());
+
+  return currentTime >= startTime && currentTime <= endTime;
+};
+
+// const SuccessToast = ({ children }) => {
+//   const toast = useToast();
+
+//   return (
+//     <Box
+//       position="fixed"
+//       top="50%"
+//       left="50%"
+//       transform="translate(-50%, -50%)"
+//       zIndex="9999"
+//       borderRadius="24px"
+//       bg="var(--purple-purple-1, #340C8F)"
+//       shadow="0px 4px 25px 0px rgba(255, 255, 255, 0.50)"
+//     >
+//       <Image src="hadir.svg" alt="icon"/>
+//       <Heading size="SH4">HADIR!</Heading>
+//       {children}
+//     </Box>
+//   );
+// };
+
 const EventCard = ({
   event,
   status,
 }: {
   event: AttendanceEvent;
-  status: Status;
+  status: Status | null;
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [alreadyAbsen, setAlreadyAbsen] = useState(
+    status !== null || status !== Status.TIDAK_HADIR
+  );
+  const toast = useToast();
+  const absenMutation = api.absensi.submitAbsensi.useMutation();
+  const canAbsen = validTime(event.startTime, event.endTime);
+
+  const handleAttend = async (eventId: string) => {
+    setLoading(true);
+    try {
+      const result = await absenMutation.mutateAsync(eventId);
+
+      toast({
+        title: "Success",
+        status: "success",
+        description: result?.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+
+      setAlreadyAbsen(true);
+    } catch (err: unknown) {
+      if (!(err instanceof TRPCClientError)) throw err;
+
+      toast({
+        title: "Failed",
+        status: "error",
+        description: err.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    setLoading(false);
+  };
+
   return (
     <Flex
       flexDir="row"
@@ -288,7 +289,30 @@ const EventCard = ({
         </Flex>
       </Flex>
       <Spacer />
-      <StatusButton status={status} />
+      {alreadyAbsen ? (
+        status===Status.HADIR ? (
+          <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="hadir"/>
+          ) : (
+            status===Status.IZIN_DITERIMA ? (
+              <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="izin diterima"/>
+              ) : (
+                status===Status.IZIN_PENDING ? (
+                <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="izin pending"/>
+                ) : (
+                  // izin ditolak
+                  <StatusButton bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderColor="#E8553E" text="izin ditolak"/>
+                )
+            )
+        ) 
+      ) : canAbsen ? (
+        loading ? (
+          <Spinner color="#1C939A" />
+        ) : (
+          <StatusButton bg="yellow.5" text="tandai hadir" onClick={() => void handleAttend(event.id)}/>
+        )
+      ) : (
+        <StatusButton bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderColor="#E8553E" text="tidak hadir"/>
+      )}
     </Flex>
   );
 };
@@ -304,45 +328,49 @@ interface EventsDay {
   events: AbsenStatus[];
 }
 
-const isThere = ({eventsDay, dayId} : {eventsDay: EventsDay[]; dayId:string;}) => {
-  eventsDay.forEach(({day, events}) => {
+const isThere = ({
+  eventsDay,
+  dayId,
+}: {
+  eventsDay: EventsDay[];
+  dayId: string;
+}) => {
+  eventsDay.forEach(({ day, events }) => {
     if (dayId === day) {
       return true;
-    } 
-  }) 
+    }
+  });
   return false;
-}
+};
 
 const AttendListPage = () => {
   const eventQuery = api.absensi.viewAbsensi.useQuery();
   const eventList = eventQuery?.data;
 
-  const eventsByDay: EventsDay[]= []
+  const eventsByDay: EventsDay[] = [];
 
+  // if (eventList) {
+  //   eventList.forEach(({ event, record, status }) => {
+  //     const dayId = event.dayId;
 
-  if (eventList) {
-    eventList.forEach(({ event, record, status }) => {
-      const dayId = event.dayId;
+  //     // Create a new AbsenStatus object
+  //     const absenStatus: AbsenStatus = {
+  //       event,
+  //       record,
+  //       status,
+  //     };
 
-      // Create a new AbsenStatus object
-      const absenStatus: AbsenStatus = {
-        event,
-        record,
-        status,
-      };
-
-      // If the day is not already in the eventsByDay array, add it
-      if (isThere(eventsByDay)) {
-        eventsByDay.push({
-          day: dayId,
-          events: [absenStatus],
-        });
-      } else {
-        // If the day is already in the eventsByDay array, push the AbsenStatus to its events
-        eventsByDay[dayIndex].events.push(absenStatus);
-      }
-    });
-  }
+  //     if (isThere(eventsDay={eventsByDay} dayId={dayId})) {
+  //       eventsByDay.push({
+  //         day: dayId,
+  //         events: [absenStatus],
+  //       });
+  //     } else {
+  //       // If the day is already in the eventsByDay array, push the AbsenStatus to its events
+  //       eventsByDay[dayIndex].events.push(absenStatus);
+  //     }
+  //   });
+  // }
 
   return (
     <BackgroundAndNavbar>
@@ -352,28 +380,21 @@ const AttendListPage = () => {
             ATTENDANCE LIST
           </Heading>
           <Flex flexDir="column">
-            {eventListt?.map((item) => (
+            {/* {eventListt?.map((item) => (
               <Flex key={item.event.id} flexDir="column" gap="20px" mt="44px">
                 <Heading size="SH4">{item.event.dayId}</Heading>
-                {Object.entries(events).map(([id, event]) => (
+                {events.map(([id, event]) => (
                   <EventCard key={id} eventData={event} />
                 ))}
               </Flex>
-              // <Flex key={item.event.id} justifyContent="space-between" alignItems="center" p={2} border="1px solid gray">
-              //   <Text>{item.event.title}</Text>
-              //   <Text>Status: {item.status}</Text>
-              //   {/* You can add more information here */}
-              // </Flex>
-            ))}
-          </Flex>
-          {Object.entries(eventList).map(([day, events]) => (
-            <Flex key={day} flexDir="column" gap="20px" mt="44px">
-              <Heading size="SH4">{day}</Heading>
-              {Object.entries(events).map(([id, event]) => (
-                <EventCard key={id} eventData={event} />
+            ))} */}
+            <Flex flexDir="column" gap="20px" mt="44px">
+              <Heading size="SH4">DAY 1</Heading>
+              {eventList?.map((item) => (
+                <EventCard key={item.event.id} event={item.event} status={item.status}/>
               ))}
             </Flex>
-          ))}
+          </Flex>
         </Flex>
       </Container>
     </BackgroundAndNavbar>
