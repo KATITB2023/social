@@ -17,7 +17,7 @@ type FeedProps = {
   attachmentUrl: string | null;
   createdAt: Date;
   text: string;
-  id : number;
+  id: number;
 };
 
 type Reactions = {
@@ -29,9 +29,8 @@ const Feed: React.FC<FeedProps> = ({
   attachmentUrl,
   createdAt,
   text,
-  id
+  id,
 }) => {
-
   const getFeedPostedMessage = (feedDate: Date) => {
     dayjs.extend(utc);
     dayjs.extend(relativeTime);
