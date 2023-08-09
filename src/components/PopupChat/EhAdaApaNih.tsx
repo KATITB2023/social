@@ -68,7 +68,7 @@ function EhAdaApaNih() {
             onChange={handleInputChange}
             style={{
               height: "auto",
-              overflowY: "auto",
+              overflowY: "hidden",
               width: "198px",
               maxHeight: "120px",
               border: "none",
@@ -82,6 +82,7 @@ function EhAdaApaNih() {
               lineHeight: "150%" /* 24px */,
               resize: "none",
             }}
+            
           />
         </Flex>
         <Button
