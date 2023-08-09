@@ -22,7 +22,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="background.png"
         alt="background"
         height="100%"
         zIndex="-1"
@@ -84,7 +84,7 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
             width="300px"
             height="200px"
             position="absolute"
-            bg={`url('komet.svg') no-repeat center center / contain`}
+            bg={`url('komet.png') no-repeat center center / contain`}
             bgPosition="83px 0px"
             bgSize="76px"
             transform=""
@@ -93,7 +93,7 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
             width="200px"
             height="200px"
             position="absolute"
-            background={`url('bintang.svg') no-repeat center center / contain`}
+            background={`url('bintang.png') no-repeat center center / contain`}
             bgPosition="30px -2px"
             bgSize="45px"
           />
