@@ -4,8 +4,8 @@ import { api } from "~/utils/api";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import useSubscription from "~/hooks/useSubscription";
-import { NonAnonChatHeader } from "~/server/types/message";
-import { Message, Profile } from "@prisma/client";
+import type { NonAnonChatHeader } from "~/server/types/message";
+import type { Message, Profile } from "@prisma/client";
 
 interface existingChatProps {
   hidden: boolean;
@@ -23,8 +23,10 @@ const updatePaging = (
   let unread = 0;
   for (let i = 0; i < pagingArray.length; i++) {
     if (
-      (pagingArray[i]?.lastMessage.senderId === message.senderId   && pagingArray[i]?.lastMessage.receiverId === message.receiverId) ||
-      (pagingArray[i]?.lastMessage.senderId === message.receiverId && pagingArray[i]?.lastMessage.receiverId === message.senderId)
+      (pagingArray[i]?.lastMessage.senderId === message.senderId &&
+        pagingArray[i]?.lastMessage.receiverId === message.receiverId) ||
+      (pagingArray[i]?.lastMessage.senderId === message.receiverId &&
+        pagingArray[i]?.lastMessage.receiverId === message.senderId)
     ) {
       if (!sender) {
         unread = pagingArray[i]?.unreadMessageCount ?? 0;
@@ -51,9 +53,11 @@ const updatePaging = (
 
 const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   const { data: session } = useSession({ required: true });
+  // const utils = createTRPCContext();
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [hardData, setHardData] = useState<NonAnonChatHeader[]>([]);
+  
 
   const { data, isFetching, isError, fetchNextPage, hasNextPage, refetch } =
     api.message.chatHeader.useInfiniteQuery(
@@ -63,11 +67,14 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
   const [userIdFetched, setUserIdFetched] = useState<string>("");
-  const getUserProfile = api.friend.getOtherUserProfile.useQuery({
-    userId: userIdFetched,
-  }, {
-    enabled: userIdFetched !== "",
-  });
+  const getUserProfile = api.friend.getOtherUserProfile.useQuery(
+    {
+      userId: userIdFetched,
+    },
+    {
+      enabled: userIdFetched !== "",
+    }
+  );
 
   const [newMessage, setNewMessage] = useState<Message>();
 
@@ -76,6 +83,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
     today.setHours(0, 0, 0, 0);
     onNoChat(data?.pages[0]?.data.length === 0);
     void refetch();
+    // console.log('refetch when moundted again')
   }, []);
 
   useEffect(() => {
@@ -88,6 +96,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       }
     }
     setHardData(newHardData);
+    // console.log('refetch when data changed')
   }, [data]);
 
   useEffect(() => {
@@ -130,8 +139,9 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   }, [hasNextPage]);
 
   useEffect(() => {
-    if (getUserProfile.data && newMessage) {
+    // let ignore = false;
 
+    if (getUserProfile.data && newMessage ) {
       setHardData((prevData) => {
         const updatedPage = updatePaging(
           prevData,
@@ -141,10 +151,11 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
           getUserProfile.data?.image ?? null,
           newMessage.senderId === session?.user.id
         );
-        console.log("masuk")
+        console.log("masuk");
         return updatedPage;
       });
     }
+    // return () => {ignore = true};
   }, [newMessage, getUserProfile.data]);
 
   useSubscription(
@@ -170,7 +181,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       w="100%"
       pt="3vh"
       pb="18vh"
-      mt="7rem"
+      // mt="7rem"
       maxH="70%"
       overflowY="auto"
       hidden={hidden}

@@ -43,6 +43,7 @@ const Navbar: NextPage = () => {
           paddingY="2%"
           boxShadow="0px 0px 10px #FFFC83"
           paddingX="22px"
+          zIndex={999}
         >
           <Box
             backgroundColor="#0B0A0A"

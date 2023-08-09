@@ -72,7 +72,7 @@ const History: NextPage = () => {
           ref={vStackRef}
           spacing={5}
           w="100%"
-          mt="9rem"
+          // mt="9rem"
           maxH="80%"
           overflowY="auto"
           pb="18vh"

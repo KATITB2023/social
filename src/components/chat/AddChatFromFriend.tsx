@@ -65,7 +65,8 @@ const AddChatFromFriend: React.FC<AddChatFromFriendProps> = ({ hidden }) => {
       ref={vStackRef}
       spacing={5}
       w="100%"
-      mt="9rem"
+      // mt="9rem"
+      // boxShadow={"0px 14px 5px 0px rgba(0,0,0,0.75) inset"} 
       maxH="80%"
       overflowY="auto"
       pb="18vh"
