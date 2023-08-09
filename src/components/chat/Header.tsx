@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 
 interface HeaderProps {
   name: string | undefined;
+  image : string | null | undefined ;
   isTyping: boolean;
+  isAnon: boolean;
 }
 
-const Header = ({ name, isTyping }: HeaderProps) => {
+const Header = ({ name, image, isTyping, isAnon }: HeaderProps) => {
   const router = useRouter();
   return (
     <Flex
@@ -43,12 +45,20 @@ const Header = ({ name, isTyping }: HeaderProps) => {
         />
         {name ? (
           <Flex>
-            <Avatar
-              w={"35px"}
-              h={"35px"}
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-            />
+            {isAnon || !image ? (
+              <Avatar
+                w={"35px"}
+                h={"35px"}
+                src="/components/anon_chat_page/anon_profile.svg"
+              />
+            ) : (
+              <Avatar
+                w={"35px"}
+                h={"35px"}
+                src={image}
+              />
+            )}
+
             <Flex flexDirection="column" mx="5" justify="center">
               <Text
                 color={"yellow.4"}
@@ -79,4 +89,3 @@ const Header = ({ name, isTyping }: HeaderProps) => {
 };
 
 export default Header;
-

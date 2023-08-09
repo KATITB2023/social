@@ -13,7 +13,6 @@ interface FooterProps {
 const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
-  console.log(text)
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
   const isTyping = useEmit(clientEvent);
   const [anonMenuOpen, setAnonMenuOpen] = useState(false);
@@ -84,7 +83,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
             setAnonMenuOpen(!anonMenuOpen);
           }}
         >
-          <Image src="/components/anon_chat_page/anon_menu.svg" />
+          <Image src="/components/anon_chat_page/anon_menu.png" />
           <Text color={"black"} size={"B4"} fontWeight={400}>
             {" "}
             Menu{" "}
