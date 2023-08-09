@@ -1,5 +1,5 @@
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Text } from "@chakra-ui/react";
 import useEmit from "~/hooks/useEmit";
 
 export const AnonMenu = ({
@@ -7,10 +7,18 @@ export const AnonMenu = ({
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-
   const endMatch = useEmit("endMatch");
+  const askReveal = useEmit("askReveal");
+  const toast = useToast();
   const handleEndMatch = () => {
     endMatch.mutate(undefined);
+  };
+
+  const handleAskReveal = () => {
+    askReveal.mutate({ agree: true });
+    toast({
+      title: "Berhasil request teman untuk reveal profil!",
+    });
   };
 
   return (
@@ -80,7 +88,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
-          onClick={() => {}}
+          // onClick={() => {}}
         >
           <Text> &#128680; &nbsp; Laporkan Teman </Text>
         </Flex>
@@ -91,7 +99,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
-          onClick={() => {}}
+          onClick={handleAskReveal}
         >
           <Text> &#128064; &nbsp; Minta Reveal Profile </Text>
         </Flex>
@@ -102,7 +110,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
-          onClick={() => {}}
+          // onClick={() => {}}
         >
           <Text> &#128220; &nbsp; Peraturan </Text>
         </Flex>

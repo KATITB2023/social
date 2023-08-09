@@ -3,13 +3,14 @@ import { Flex, Text, Image } from "@chakra-ui/react";
 import { type Message } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useInView } from "framer-motion";
+import dayjs from "dayjs";
 
 interface MessagesProps {
   messages: Message[];
   hasPreviousPage?: boolean;
   isFetchingPreviousPage: boolean;
   fetchPreviousPage: () => void;
-  bottomRef : React.RefObject<HTMLDivElement>;
+  bottomRef: React.RefObject<HTMLDivElement>;
 }
 
 const Messages = ({
@@ -17,19 +18,12 @@ const Messages = ({
   hasPreviousPage,
   isFetchingPreviousPage,
   fetchPreviousPage,
-  bottomRef
+  bottomRef,
 }: MessagesProps) => {
   const { data: session } = useSession({ required: true });
-  const dayjs = require("dayjs");
-  const timezone = require("dayjs/plugin/timezone");
-  const utc = require("dayjs/plugin/utc");
-  dayjs.extend(timezone);
-  dayjs.extend(utc);
   const infinityRef = useRef<HTMLDivElement>(null);
-  // const bottomRef = useRef<HTMLDivElement>(null);
   const inView = useInView(infinityRef);
   const [shouldScroll, setShouldScroll] = useState<boolean>(true);
-
 
   useEffect(() => {
     if (!shouldScroll && hasPreviousPage && inView && !isFetchingPreviousPage) {
@@ -74,13 +68,9 @@ const Messages = ({
       <div ref={infinityRef} />
       {messages.map((item) => {
         if (item.senderId === session?.user.id) {
-          var date = dayjs(item.createdAt).tz("Asia/Jakarta");
-          var hh = date.hour();
-          var mm = date.minute();
-          var DD = date.date();
-          var MM = date.month() + 1;
-          var local = dayjs().tz("Asia/Jakarta");
-          var messageArr = item.message.split("\n");
+          const date = dayjs(item.createdAt).tz("Asia/Jakarta");
+          const local = dayjs().tz("Asia/Jakarta");
+          const messageArr = item.message.split("\n");
           return (
             <Flex key={item.id} w="100%" justify="flex-end">
               <Flex
@@ -114,30 +104,20 @@ const Messages = ({
                   );
                 })}
                 <Flex flexDir={"row"} justify={"end"} gap={2}>
-                  {DD === local.date() && MM === local.month() + 1 ? (
+                  {date.isSame(local, "day") ? (
                     <Text fontSize={"12px"}> Today </Text>
                   ) : (
-                    <Text fontSize={"12px"}>
-                      {" "}
-                      {("0" + DD).slice(-2)}/{("0" + MM).slice(-2)}{" "}
-                    </Text>
+                    <Text fontSize={"12px"}>{` ${date.format("DD/MM")} `}</Text>
                   )}
-                  <Text fontSize={"12px"}>
-                    {" "}
-                    {("0" + hh).slice(-2)}.{("0" + mm).slice(-2)}{" "}
-                  </Text>
+                  <Text fontSize={"12px"}>{` ${date.format("HH/mm")} `}</Text>
                 </Flex>
               </Flex>
             </Flex>
           );
         } else {
-          var date = dayjs(item.createdAt).tz("Asia/Jakarta");
-          var hh = date.hour();
-          var mm = date.minute();
-          var DD = date.date();
-          var MM = date.month() + 1;
-          var local = dayjs().tz("Asia/Jakarta");
-          var messageArr = item.message.split("\n");
+          const date = dayjs(item.createdAt).tz("Asia/Jakarta");
+          const local = dayjs().tz("Asia/Jakarta");
+          const messageArr = item.message.split("\n");
           return (
             <Flex key={item.id} w="100%">
               <Flex
@@ -171,18 +151,12 @@ const Messages = ({
                   );
                 })}
                 <Flex flexDir={"row"} gap={2}>
-                  {DD === local.date() && MM === local.month() + 1 ? (
+                  {date.isSame(local, "day") ? (
                     <Text fontSize={"12px"}> Today </Text>
                   ) : (
-                    <Text fontSize={"12px"}>
-                      {" "}
-                      {("0" + DD).slice(-2)}/{("0" + MM).slice(-2)}{" "}
-                    </Text>
+                    <Text fontSize={"12px"}>{` ${date.format("DD/MM")} `}</Text>
                   )}
-                  <Text fontSize={"12px"}>
-                    {" "}
-                    {("0" + hh).slice(-2)}.{("0" + mm).slice(-2)}{" "}
-                  </Text>
+                  <Text fontSize={"12px"}>{` ${date.format("HH/mm")} `}</Text>
                 </Flex>
               </Flex>
             </Flex>

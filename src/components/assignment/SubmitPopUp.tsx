@@ -107,8 +107,9 @@ const SubmitPopUp = ({
           mb="20px"
           alignSelf={"right"}
           onClick={() => submittingFile(false)}
+          alt={"close"}
         />
-        <Image src="qmark.png" mb="20px" alignSelf={"center"} />
+        <Image src="qmark.png" mb="20px" alignSelf={"center"} alt={"qmark"} />
         <Heading mb="10px">SUBMIT</Heading>
         <Text alignSelf={"center"} textAlign={"center"} mb="20px" opacity={0.6}>
           Apakah kamu yakin ingin melakukan submisi tugas? Tugas yang telah
