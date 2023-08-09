@@ -2,22 +2,26 @@ import { type Message } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
-import { Container, Flex } from "@chakra-ui/react";
+import { Container, Flex, Image, Box } from "@chakra-ui/react";
 import Header from "~/components/chat/Header";
 import Divider from "~/components/chat/Divider";
 import Messages from "~/components/chat/Messages";
 import Footer from "~/components/chat/Footer";
 import useEmit from "~/hooks/useEmit";
+import Navbar from "~/components/Navbar";
+
+// const userPair = api.message.getUser.useQuery({ pairId }).data;
 
 const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
-  const userPair = api.message.getUser.useQuery({ pairId }).data;
+  const userPair = api.friend.getOtherUserProfile.useQuery({ userId: pairId }).data;
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const messageQuery = api.message.infinite.useInfiniteQuery(
     { pairId },
@@ -27,6 +31,9 @@ const Chat: NextPage = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  const updateMessageIsRead = api.message.updateIsRead.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
     messageQuery;
@@ -48,6 +55,18 @@ const Chat: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
+    setTimeout(() => bottomRef.current?.scrollIntoView(), 75);
+  }, []);
+
+  useEffect(() => {
+    if (session) {
+      try {
+        updateMessageIsRead.mutate({
+          receiverId: session.user.id,
+          senderId: pairId,
+        });
+      } catch (err) {}
+    }
   }, []);
 
   // When new data from `useInfiniteQuery`, merge with current state
@@ -66,6 +85,17 @@ const Chat: NextPage = () => {
         post.userMatchId === null
       ) {
         addMessages([post]);
+        if (
+          session &&
+          post.receiverId === session.user.id &&
+          post.senderId === pairId
+        ) {
+          try {
+            updateOneMessageIsRead.mutate({
+              messageId: post.id,
+            });
+          } catch (err) {}
+        }
       }
     },
     [session, messageQuery]
@@ -87,37 +117,50 @@ const Chat: NextPage = () => {
 
   return (
     <Layout title="Chat">
-      <Container>
+      <Flex
+        w="100%"
+        h="100vh"
+        pos={"relative"}
+        backgroundImage="/components/chat_page/chat_bg.png"
+        backgroundSize={"cover"}
+        backgroundRepeat={"no-repeat"}
+        overflowY={"hidden"}
+      >
+
+        {/* Room chat */}
         <Flex
-          w="100%"
-          h="100vh"
-          justify="center"
-          align="center"
-          backgroundColor={"gray.50"}
+          w={"100%"}
+          h="100%"
+          flexDir="column"
+          justifyContent={"space-between"}
+          zIndex={1}
         >
-          <Flex w={"100%"} h="90%" flexDir="column">
-            <Header
-              name={userPair ? userPair.nim : ""}
-              isTyping={currentlyTyping}
-            />
-            <Divider />
-            <Messages
-              messages={messages ?? []}
-              hasPreviousPage={hasPreviousPage}
-              fetchPreviousPage={() => void fetchPreviousPage()}
-              isFetchingPreviousPage={isFetchingPreviousPage}
-            />
-            <Divider />
-            <Footer
-              onSubmit={(text) => {
-                messageEmit.mutate({ message: text, receiverId: pairId });
-              }}
-              receiverId={pairId}
-              isAnon={false}
-            />
-          </Flex>
+          <Header
+            name={userPair ? userPair.name : ""}
+            image={userPair?.image}
+            isTyping={currentlyTyping}
+            isAnon={false}
+          />
+          <Divider />
+
+          <Messages
+            messages={messages ?? []}
+            hasPreviousPage={hasPreviousPage}
+            fetchPreviousPage={() => void fetchPreviousPage()}
+            isFetchingPreviousPage={isFetchingPreviousPage}
+            bottomRef={bottomRef}
+          />
+
+          <Divider />
+          <Footer
+            onSubmit={(text) => {
+              messageEmit.mutate({ message: text, receiverId: pairId });
+            }}
+            receiverId={pairId}
+            isAnon={false}
+          />
         </Flex>
-      </Container>
+      </Flex>
     </Layout>
   );
 };
