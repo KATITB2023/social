@@ -23,7 +23,6 @@ const Chat: NextPage = () => {
   const userPair = api.friend.getOtherUserProfile.useQuery({ userId: pairId }).data;
   const bottomRef = useRef<HTMLDivElement>(null);
 
-
   const messageQuery = api.message.infinite.useInfiniteQuery(
     { pairId },
     {
@@ -56,7 +55,7 @@ const Chat: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
-    setTimeout(() => bottomRef.current?.scrollIntoView(),75);
+    setTimeout(() => bottomRef.current?.scrollIntoView(), 75);
   }, []);
 
   useEffect(() => {
@@ -138,7 +137,9 @@ const Chat: NextPage = () => {
         >
           <Header
             name={userPair ? userPair.name : ""}
+            image={userPair?.image}
             isTyping={currentlyTyping}
+            isAnon={false}
           />
           <Divider />
 

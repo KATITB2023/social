@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState, useRef} from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { type Message, type UserMatch } from "@prisma/client";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
@@ -72,7 +72,7 @@ const Room: NextPage = () => {
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
       );
     });
-    setTimeout(() => bottomRef.current?.scrollIntoView(),75);
+    setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
   }, []);
 
   useEffect(() => {
@@ -89,6 +89,7 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
+        // addMessages([post]);
         setMessages((prev) => [...prev, post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
@@ -180,7 +181,12 @@ const Room: NextPage = () => {
               flexDir="column"
               justifyContent={"space-between"}
             >
-              <Header name="Anonymous" isTyping={currentlyTyping} />
+              <Header
+                name="Anonymous"
+                image={undefined}
+                isTyping={currentlyTyping}
+                isAnon={true}
+              />
               <Divider />
 
               <Messages
