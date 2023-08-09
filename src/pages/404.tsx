@@ -6,7 +6,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="/background.png"
         alt="background"
         height="100%"
         zIndex="-1"

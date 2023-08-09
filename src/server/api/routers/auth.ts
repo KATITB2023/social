@@ -6,7 +6,6 @@ import {
 } from "~/server/api/trpc";
 import { compareHash, generateHash, generateResetToken } from "~/utils/auth";
 import { TRPCError } from "@trpc/server";
-import { compare, compareSync } from "bcrypt";
 
 export const authRouter = createTRPCRouter({
   requestResetPassword: publicProcedure
@@ -123,42 +122,41 @@ export const authRouter = createTRPCRouter({
         }
       }
     }),
-    editPassword: protectedProcedure
+  editPassword: protectedProcedure
     .input(
       z.object({
         oldPassword: z.string(),
         newPassword: z.string(),
       })
     )
-    .mutation(async ({ ctx, input }) =>{
+    .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
-        where : {
-          id : ctx.session.user.id
-        }
-      })
-      if(!user){
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      if (!user) {
         throw new TRPCError({
-          code : "BAD_REQUEST",
-          message : "User not found"
-        })
+          code: "BAD_REQUEST",
+          message: "User not found",
+        });
       }
-      const isValid = await compareHash(input.oldPassword,user.passwordHash);
-      if(isValid){
+      const isValid = await compareHash(input.oldPassword, user.passwordHash);
+      if (isValid) {
         await ctx.prisma.user.update({
-          where : {
-            id : user.id
+          where: {
+            id: user.id,
           },
-          data:{
-            passwordHash : await generateHash(input.newPassword)
-          }
-        })
-        return "Password has been updated!"
-      }else{
+          data: {
+            passwordHash: await generateHash(input.newPassword),
+          },
+        });
+        return "Password has been updated!";
+      } else {
         throw new TRPCError({
-          code : "BAD_REQUEST",
-          message : "Password not right"
-        })
+          code: "BAD_REQUEST",
+          message: "Password not right",
+        });
       }
-
-    })
+    }),
 });

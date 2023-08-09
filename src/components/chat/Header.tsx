@@ -7,9 +7,10 @@ interface HeaderProps {
   image : string | null | undefined ;
   isTyping: boolean;
   isAnon: boolean;
+  handleClick: () => void;
 }
 
-const Header = ({ name, image, isTyping, isAnon }: HeaderProps) => {
+const Header = ({ name, image, isTyping, isAnon, handleClick }: HeaderProps) => {
   const router = useRouter();
   return (
     <Flex
@@ -39,7 +40,8 @@ const Header = ({ name, image, isTyping, isAnon }: HeaderProps) => {
         <Image
           cursor={"pointer"}
           onClick={() => {
-            router.back();
+            // router.back();
+            handleClick();
           }}
           src="/components/chat_page/chat_backArrow.svg"
         />
