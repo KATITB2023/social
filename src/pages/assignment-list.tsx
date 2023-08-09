@@ -27,10 +27,10 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         alt="background"
         height="100%"
         zIndex="-1"
-        position="absolute"
+        position="fixed"
         objectFit="cover"
-        minWidth="100%"
         width="100%"
+        maxWidth={"375px"}
       />
       <Flex flexDirection="column">
         <Navbar />
