@@ -38,7 +38,6 @@ const SubmitPopUp = ({
     }
 
     const sanitizedFileName = sanitizeURL("https://cdn.oskmitb.com/"+fileToSend.name);
-    console.log(sanitizedFileName)
     await uploadFile(sanitizedFileName, fileToSend, (event) => {
       if (!event.total) return;
     });
@@ -48,15 +47,27 @@ const SubmitPopUp = ({
         assignmentId: taskId,
         filePath: sanitizedFileName
       });
-      toast({
-        title: "Tugas berhasil dikirim.",
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-        position: "top"
-      });
 
-      submittingFile(false);
+      if (result === "Tugas berhasil dikumpulkan") {
+        toast({
+          title: "Tugas berhasil dikumpulkan.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          position: "top",
+        });
+        submittingFile(false);
+
+      } else {
+        toast({
+          title: "Gagal mengirim tugas",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+          position: "top",
+        });
+        submittingFile(false);
+      }
 
     } catch (error) {
       toast({
