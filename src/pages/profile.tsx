@@ -71,9 +71,7 @@ const defaultUserProfile: { [key: string]: string | undefined } = {
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
   const [openSelectImage, setOpenSelectImage] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | undefined>(
-    undefined
-  );
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
 
   function handleProfileEdit({
     bio: Bio,
@@ -245,6 +243,7 @@ function LabelValueContainer({ label, value = "-" }: LabelValueType) {
     </Flex>
   );
 }
+
 
 function UserProfilePicture({
   src,
