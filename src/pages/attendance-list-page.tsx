@@ -9,7 +9,7 @@ import {
   Spacer,
   useToast,
   Spinner,
-  position,
+  position
 } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 
@@ -230,7 +230,7 @@ const EventCard = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [alreadyAbsen, setAlreadyAbsen] = useState(
-    status !== null || status !== Status.TIDAK_HADIR
+    status !== null && status !== Status.TIDAK_HADIR
   );
   const toast = useToast();
   const absenMutation = api.absensi.submitAbsensi.useMutation();
@@ -308,7 +308,7 @@ const EventCard = ({
         loading ? (
           <Spinner color="#1C939A" />
         ) : (
-          <StatusButton bg="yellow.5" text="tandai hadir" onClick={() => void handleAttend(event.id)}/>
+          <StatusButton bg="yellow.5" text="tandai hadir" onClick={() => void handleAttend(event.id)} isDisabled={false}/>
         )
       ) : (
         <StatusButton bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderColor="#E8553E" text="tidak hadir"/>
@@ -343,35 +343,36 @@ const isThere = ({
   return false;
 };
 
+
+
 const AttendListPage = () => {
   const eventQuery = api.absensi.viewAbsensi.useQuery();
   const eventList = eventQuery?.data;
 
   const eventsByDay: EventsDay[] = [];
 
-  // if (eventList) {
-  //   eventList.forEach(({ event, record, status }) => {
-  //     const dayId = event.dayId;
+  if (eventList) {
+    eventList.forEach(({ event, record, status }) => {
+      const dayId = event.dayId;
 
-  //     // Create a new AbsenStatus object
-  //     const absenStatus: AbsenStatus = {
-  //       event,
-  //       record,
-  //       status,
-  //     };
+      const absenStatus: AbsenStatus = {
+        event,
+        record,
+        status,
+      };
 
-  //     if (isThere(eventsDay={eventsByDay} dayId={dayId})) {
-  //       eventsByDay.push({
-  //         day: dayId,
-  //         events: [absenStatus],
-  //       });
-  //     } else {
-  //       // If the day is already in the eventsByDay array, push the AbsenStatus to its events
-  //       eventsByDay[dayIndex].events.push(absenStatus);
-  //     }
-  //   });
-  // }
+      const dayIndex = eventsByDay.findIndex(({ day }) => dayId === day);
 
+      if (dayIndex === -1) {
+        eventsByDay.push({
+          day: dayId,
+          events: [absenStatus],
+        });
+      } else {
+        eventsByDay[dayId].events.push(absenStatus);
+      }
+    });
+  }
   return (
     <BackgroundAndNavbar>
       <Container bgImage="url('attendancelist_background.svg')">
@@ -380,20 +381,20 @@ const AttendListPage = () => {
             ATTENDANCE LIST
           </Heading>
           <Flex flexDir="column">
-            {/* {eventListt?.map((item) => (
-              <Flex key={item.event.id} flexDir="column" gap="20px" mt="44px">
-                <Heading size="SH4">{item.event.dayId}</Heading>
-                {events.map(([id, event]) => (
-                  <EventCard key={id} eventData={event} />
+            {eventsByDay?.map((item) => (
+              <Flex key={item.day} flexDir="column" gap="20px" mt="44px">
+                <Heading size="SH4">{item.day}</Heading>
+                {item.events.map((eventsInDay, index) => (
+                  <EventCard key={index} event={eventsInDay.event} status={eventsInDay.status} />
                 ))}
               </Flex>
-            ))} */}
-            <Flex flexDir="column" gap="20px" mt="44px">
+            ))}
+            {/* <Flex flexDir="column" gap="20px" mt="44px">
               <Heading size="SH4">DAY 1</Heading>
               {eventList?.map((item) => (
                 <EventCard key={item.event.id} event={item.event} status={item.status}/>
               ))}
-            </Flex>
+            </Flex> */}
           </Flex>
         </Flex>
       </Container>
