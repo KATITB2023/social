@@ -15,12 +15,10 @@ import { TRPCClientError } from "@trpc/client";
 export const SelectPhotoImageProfile = ({
   open,
   setOpen,
-  changeImage,
   nim,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  changeImage: React.Dispatch<React.SetStateAction<string | undefined>>;
   nim: string;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
@@ -127,7 +125,6 @@ export const SelectPhotoImageProfile = ({
               <Box display={"flex"} gap={"15px"}>
                 <Image
                   onClick={() => {
-                    changeImage(undefined);
                     setOpen(false);
                   }}
                   src="/components/trashbin.svg"
