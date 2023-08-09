@@ -1,4 +1,4 @@
-import { Flex, Icon, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Icon, IconButton } from "@chakra-ui/react";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -33,8 +33,19 @@ const ChatHome: NextPage = () => {
         bg={openAddChat ? "url(./addchatbg.png)" : "url(./homechatbg.png)"}
         alignItems="center"
       >
-        <Navbar />
-        {/* <Header name="saddan" isTyping={false} /> */}
+        {/* <Box position="absolute"> */}
+          {!openAddChat && <Navbar />}
+          {openAddChat && (
+            <Header
+              name={undefined}
+              image={undefined}
+              isTyping={false}
+              isAnon={false}
+              handleClick={() => setOpenAddChat(!openAddChat)}
+            />
+          )}
+        {/* </Box> */}
+
         <ChatPageHeader hidden={openAddChat || !isNoChat} />
         <AddChatFromFriend hidden={!openAddChat} />
         <ExistingChat

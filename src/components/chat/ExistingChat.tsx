@@ -179,10 +179,8 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
     <VStack
       spacing={5}
       w="100%"
-      pt="3vh"
-      pb="18vh"
-      // mt="7rem"
-      maxH="70%"
+      pb="6rem"
+      maxH="80%"
       overflowY="auto"
       hidden={hidden}
       ref={vStackRef}
