@@ -12,10 +12,11 @@ import {
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api"; 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 import NotFound from "./404";
+import { fileURLToPath } from "url";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -46,7 +47,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
 interface submission {
   isSubmitted: boolean;
   isDeadlinePassed: boolean;
-  filePath: string | null;
+  fileSubmitted: string | null ;
 }
 
 // Main Function
@@ -66,7 +67,7 @@ export default function showSubmissionPage() {
   const inputSubmissionData: submission = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
-    filePath: assignmentData.filePath,
+    fileSubmitted: assignmentData.submission?.filePath!,
   };
   
   return (
@@ -141,14 +142,14 @@ function SubmissionStatus(param: submission) {
         </Text>
       </Box>
       <Spacer />
-{/*
+      {/*
       <Text
         color="#ffffff"
         fontFamily="body"
         fontSize="12px"
       >
         Submitted at {param.submissionDate}</Text>
-  */}
+      */}
     </Center>
   ) : (
     param.isDeadlinePassed? (
@@ -219,7 +220,7 @@ function FileUpload(param: submission) {
     <Box
       borderColor={"white"}
       height="184px"
-      width="325px"
+      width="100%"
       justifyContent={"center"}
       alignItems="center"
       borderWidth="1px"
@@ -234,14 +235,25 @@ function FileUpload(param: submission) {
       textDecorationLine="underline"
       color="yellow.4"
     >
-      {param.filePath}
+      <a
+        href={param.fileSubmitted as string} // Ubah URL sesuai kebutuhan
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          textDecoration: "underline",
+          color: "yellow.4",
+          cursor: "pointer",
+        }}
+      >
+        Download submitted file
+      </a>
     </Box>
   ) : (
     param.isDeadlinePassed? (
       <Box
         borderColor={"white"}
         height="184px"
-        width="325px"
+        width="100%"
         justifyContent={"center"}
         alignItems="center"
         borderWidth="1px"
@@ -262,7 +274,7 @@ function FileUpload(param: submission) {
       <Box
         borderColor={"white"}
         height="184px"
-        width="325px"
+        width="100%"
         justifyContent={"center"}
         alignItems="center"
         borderWidth="1px"
@@ -374,5 +386,3 @@ function FileUpload(param: submission) {
     )
   );
 }
-
-export { showSubmissionPage };

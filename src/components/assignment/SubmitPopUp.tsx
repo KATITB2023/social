@@ -52,11 +52,16 @@ const SubmitPopUp = ({
         toast({
           title: "Tugas berhasil dikumpulkan.",
           status: "success",
-          duration: 2000,
+          duration: 1000,
           isClosable: true,
           position: "top",
         });
         submittingFile(false);
+
+        // Refresh halaman
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
 
       } else {
         toast({
