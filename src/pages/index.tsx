@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Layout from "~/layout";
 import { Container, Heading, theme, Text, Box, Button, Image } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
+import EhAdaApaNih from "~/components/PopupChat/EhAdaApaNih";
 
 const Home: NextPage = () => {
   return (
@@ -22,6 +23,7 @@ const Home: NextPage = () => {
       <Text size="B1">B1</Text>
       <Text size="B5">B5</Text>
       <Text size="A">Additional</Text>
+      <EhAdaApaNih />
     </Layout>
   );
 };

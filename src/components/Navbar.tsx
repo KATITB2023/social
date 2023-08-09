@@ -34,16 +34,15 @@ const Navbar: NextPage = () => {
 
   //   Scroll mechanism algorithm
   useEffect(() => {
-    var prevScrollPosY = window.pageYOffset;
+    let prevScrollPosY = window.scrollY;
 
     const detectScrollY = () => {
-      var temp = window.scrollY;
-      if (temp < prevScrollPosY) {
+      if (window.scrollY < prevScrollPosY) {
         setNavbarPos(0);
       } else {
         setNavbarPos(-100);
       }
-      prevScrollPosY = temp;
+      prevScrollPosY = window.scrollY;
     };
 
     window.addEventListener("scroll", detectScrollY);

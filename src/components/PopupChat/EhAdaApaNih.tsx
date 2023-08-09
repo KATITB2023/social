@@ -3,9 +3,9 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 
 function EhAdaApaNih() {
   const [text, setText] = useState("");
-  const textAreaRef = useRef(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event : React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
     adjustTextAreaHeight();
   };
@@ -65,7 +65,7 @@ function EhAdaApaNih() {
             rows={1}
             placeholder="| Ketik Laporanmu di sini."
             value={text}
-            onChange={handleInputChange}
+            onChange={(e) => {handleInputChange(e)}}
             style={{
               height: "auto",
               overflowY: "hidden",
