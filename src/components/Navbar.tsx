@@ -29,17 +29,20 @@ import Layout from "~/layout";
 import { IconType } from "react-icons";
 import { useRouter } from "next/router";
 
-const DrawerButton = ({
-  icon,
-  text,
-  type,
-  onClick,
-}: {
+type PairDrawerButton = {
   icon: IconType;
   text: string;
+  route: string;
+};
+
+const DrawerButton = ({
+  data,
+  type,
+}: {
+  data: PairDrawerButton;
   type: number;
-  onClick: () => void;
 }) => {
+  const router = useRouter();
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
@@ -54,24 +57,17 @@ const DrawerButton = ({
       cursor={"pointer"}
       borderLeft={type == 1 ? "2px" : "0"}
       _hover={{ bg: "#3D2283" }}
-      onClick={onClick}
+      onClick={() => void router.push(data.route)}
     >
-      <Icon as={icon} height="20px" width="20px" marginLeft="10px"></Icon>
+      <Icon as={data.icon} height="20px" width="20px" marginLeft="10px"></Icon>
       <Text marginTop="3px" size="B4" marginLeft="10px">
-        {text}
+        {data.text}
       </Text>
     </Flex>
   );
 };
 
-type PairDrawerButton = {
-  icon: IconType;
-  text: string;
-  route: string;
-};
-
 const Navbar = ({ currentPage }: { currentPage: string }) => {
-  const router = useRouter();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -104,6 +100,13 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       route: "/profile",
     },
   ];
+
+  const LogoutButtonData : PairDrawerButton = {
+      icon: MdLogout,
+      text: "Logout",
+      route: "/",
+  }
+
   //   Scroll mechanism algorithm
   useEffect(() => {
     let prevScrollPosY = window.scrollY;
@@ -219,21 +222,18 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               flexDir="column"
               zIndex="3"
             >
-              {DrawerArray.map((tuple: PairDrawerButton) => {
+              {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
                 return (
                   <DrawerButton
-                    icon={tuple.icon}
-                    text={tuple.text}
+                    key={idx}
+                    data={tuple}
                     type={tuple.text === currentPage ? 1 : 0}
-                    onClick={() => router.push(tuple.route)}
                   />
                 );
               })}
               <DrawerButton
-                icon={MdLogout}
-                text="Logout"
+                data={LogoutButtonData}
                 type={2}
-                onClick={() => {}}
               />
             </Flex>
           </DrawerBody>
