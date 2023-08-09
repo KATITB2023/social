@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useSession } from "next-auth/react";
 import { socket } from "~/utils/socket";
 import { useEffect } from "react";
+import React from "react";
 
 interface Props {
   title: string;

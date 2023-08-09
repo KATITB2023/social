@@ -23,7 +23,7 @@ import {
   ModalContent,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { type PropsWithChildren, useState } from "react";
 import {
   MdHome,
   MdStarOutline,
@@ -40,6 +40,7 @@ import {
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
+import Navbar from "~/components/Navbar";
 
 interface LabelValueType {
   label: string;
@@ -67,14 +68,10 @@ const defaultUserProfile: { [key: string]: string | undefined } = {
   PIN: "13pkI7Fr",
 };
 
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
-
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
   const [openSelectImage, setOpenSelectImage] = useState(false);
-  const [profileImage, setProfileImage] = useState<any>(undefined);
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
 
   function handleProfileEdit({
     bio: Bio,
@@ -247,7 +244,14 @@ function LabelValueContainer({ label, value = "-" }: LabelValueType) {
   );
 }
 
-function UserProfilePicture({ src, setOpen }: { src?: string; setOpen: any }) {
+
+function UserProfilePicture({
+  src,
+  setOpen,
+}: {
+  src?: string;
+  setOpen: (value: boolean) => void;
+}) {
   return (
     <Box position="relative" alignSelf="center">
       <ProfilePicture src={src} />
@@ -411,11 +415,11 @@ function ProfileInfo({ info, onProfileEdit }: ProfileInfoComponentType) {
   );
 }
 
-function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
+function DefaultBackgroundAndNavigationBar({ children }: PropsWithChildren) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="/background.svg"
         alt="wheew wheew *pretend as if the background is in outer space*"
         height="100%"
         zIndex="-1"
@@ -425,7 +429,7 @@ function DefaultBackgroundAndNavigationBar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <NavigationBarAndMenu />
+        <Navbar />
         {children}
       </Flex>
     </Box>

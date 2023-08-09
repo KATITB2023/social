@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import WebcamComponent from "./WebcamComponent";
-import { Box, Image, Text, Button, Collapse} from "@chakra-ui/react";
+import { Box, Image, Text, Button, Collapse } from "@chakra-ui/react";
 
 export const SelectPhotoImageProfile = ({
   open,
   setOpen,
-  changeImage
+  changeImage,
 }: {
   open: boolean;
-  setOpen: any;
-  changeImage : any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  changeImage : React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
-  const [image, setImage] = useState<any>(undefined);
+  const [image, setImage] = useState<string | undefined>(undefined);
 
   function onImageChange(file: FileList) {
-    if (file[0]){
-        setPictureSelected(true);
-        setImage(URL.createObjectURL(file[0]!));
-        // console.log(image)
+    const firstFile = file[0];
+    if (firstFile) {
+      setPictureSelected(true);
+      setImage(URL.createObjectURL(firstFile));
     }
   }
 
@@ -70,12 +69,17 @@ export const SelectPhotoImageProfile = ({
               </Text>
               <Box display={"flex"} gap={"15px"}>
                 <Image
-                  onClick={() => {changeImage(undefined); setOpen(false)}}
+                  onClick={() => {
+                    changeImage(undefined);
+                    setOpen(false);
+                  }}
                   src="/components/trashbin.svg"
+                  alt="trash icon"
                 />
                 <Image
                   onClick={() => setOpen(false)}
                   src="/components/closeButton.svg"
+                  alt="close icon"
                 />
               </Box>
             </Box>
@@ -93,7 +97,7 @@ export const SelectPhotoImageProfile = ({
               alignItems={"center"}
               gap={"10px"}
             >
-              <Image src="/components/addFile.svg" />
+              <Image src="/components/addFile.svg" alt="add file" />
 
               <Box display={"flex"} flexDirection={"column"} gap={"6px"}>
                 <Button
@@ -111,11 +115,16 @@ export const SelectPhotoImageProfile = ({
                 </Button>
 
                 <input
-                    hidden
+                  hidden
                   type="file"
                   id="img"
                   accept="image/*"
-                  onChange={(e) => onImageChange(e.target.files!)}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      onImageChange(files);
+                    }
+                  }}
                 />
 
                 {pictureSelected ? (
@@ -138,7 +147,9 @@ export const SelectPhotoImageProfile = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && changeImage(image); setOpen(false); setPictureSelected(false); 
+                pictureSelected && changeImage(image);
+                setOpen(false);
+                setPictureSelected(false);
               }}
             >
               <Text fontWeight={700} color={"white"} size={"SH5"}>
