@@ -65,5 +65,7 @@ COPY --from=builder /app/.next .next
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
+EXPOSE 3001
+ENV WS_PORT 3001
 
 CMD ["node", "dist/server/prod-server.js"]
