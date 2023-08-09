@@ -33,6 +33,7 @@ const Room: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const client = api.useContext();
 
   const checkMatch = useEmit("checkMatch", {
     onSuccess: (data) => {
@@ -138,6 +139,7 @@ const Room: NextPage = () => {
   useSubscription(
     "endMatch",
     (data) => {
+      void client.messageAnonymous.chatHeader.invalidate();
       if (match) {
         if (data.endedAt !== null) {
           setMatch(null);
