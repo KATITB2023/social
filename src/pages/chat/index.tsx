@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import ChatPageHeader from "~/components/chat/ChatPageHeader";
 import ExistingChat from "~/components/chat/ExistingChat";
 import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
+import Header from "~/components/chat/Header";
 
 const ChatHome: NextPage = () => {
   const { data: session } = useSession({ required: true });
@@ -33,6 +34,7 @@ const ChatHome: NextPage = () => {
         alignItems="center"
       >
         <Navbar />
+        {/* <Header name="saddan" isTyping={false} /> */}
         <ChatPageHeader hidden={openAddChat || !isNoChat} />
         <AddChatFromFriend hidden={!openAddChat} />
         <ExistingChat
