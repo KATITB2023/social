@@ -1,33 +1,30 @@
-
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 
-import Layout from "~/layout";
 import {
-  Text,
-  Center,
   Box,
-  Flex,
-  Image,
-  Icon,
-  useDisclosure,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
+  Flex,
+  Icon,
+  Image,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  MdPersonAddAlt,
-  MdOutlineHome,
+  MdChatBubbleOutline,
+  MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdOutlinePersonOutline,
-  MdLogout,
   MdOutlineAssignmentInd,
+  MdOutlineHome,
+  MdOutlinePersonOutline,
+  MdPersonAddAlt,
+  MdStarOutline,
 } from "react-icons/md";
+import Layout from "~/layout";
 
 const Navbar: NextPage = () => {
   const [navbarPos, setNavbarPos] = useState(0);
@@ -35,10 +32,10 @@ const Navbar: NextPage = () => {
 
   //   Scroll mechanism algorithm
   useEffect(() => {
-    var prevScrollPosY = window.pageYOffset;
+    let prevScrollPosY = window.pageYOffset;
 
     const detectScrollY = () => {
-      var temp = window.scrollY;
+      const temp = window.scrollY;
       if (temp < prevScrollPosY) {
         setNavbarPos(0);
       } else {
@@ -90,11 +87,34 @@ const Navbar: NextPage = () => {
           opacity="0.6"
           borderRadius="50px"
           position="absolute"
-          top="0"
-          left="0"
-          bottom="0"
-          right="0"
-        />
+          top="20px"
+          flexDir="row"
+          alignItems="center"
+          paddingY="2%"
+          boxShadow="0px 0px 10px #FFFC83"
+          paddingX="22px"
+          zIndex="1"
+        >
+          <Box
+            backgroundColor="#0B0A0A"
+            opacity="0.6"
+            borderRadius="50px"
+            position="absolute"
+            top="0"
+            left="0"
+            bottom="0"
+            right="0"
+          ></Box>
+          <Image
+            src="ekor.svg"
+            position="absolute"
+            left="0"
+            height="full"
+            objectFit="cover"
+            objectPosition="center"
+            borderRadius="50px"
+          />
+        </Box>
 
         <Image
           src="/ekor.svg"

@@ -140,6 +140,7 @@ const Chat: NextPage = () => {
             image={userPair?.image}
             isTyping={currentlyTyping}
             isAnon={false}
+            handleClick={() => router.back()}
           />
           <Divider />
 
