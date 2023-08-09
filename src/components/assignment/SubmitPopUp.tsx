@@ -8,7 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React from "react";
-import { api } from "~/utils/api"; 
+import { api } from "~/utils/api";
 import { uploadFile, sanitizeURL } from "~/utils/file";
 
 const SubmitPopUp = ({
@@ -19,8 +19,8 @@ const SubmitPopUp = ({
 }: {
   isSubmitting: boolean;
   submittingFile: React.Dispatch<React.SetStateAction<boolean>>;
-  fileToSend?: File; 
-  taskId: string
+  fileToSend?: File;
+  taskId: string;
 }) => {
   const toast = useToast();
   const uploadMutation = api.assignment.submitAssignment.useMutation();
@@ -31,13 +31,16 @@ const SubmitPopUp = ({
         status: "error",
         duration: 2000,
         isClosable: true,
-        position: "top"
+        position: "top",
       });
       submittingFile(false);
       return;
     }
 
-    const sanitizedFileName = sanitizeURL("https://cdn.oskmitb.com/"+fileToSend.name);
+    const sanitizedFileName = sanitizeURL(
+      `https://cdn.oskmitb.com/${fileToSend.name}`
+    );
+
     await uploadFile(sanitizedFileName, fileToSend, (event) => {
       if (!event.total) return;
     });
@@ -45,7 +48,7 @@ const SubmitPopUp = ({
     try {
       const result = await uploadMutation.mutateAsync({
         assignmentId: taskId,
-        filePath: sanitizedFileName
+        filePath: sanitizedFileName,
       });
 
       if (result === "Tugas berhasil dikumpulkan") {
@@ -73,14 +76,13 @@ const SubmitPopUp = ({
         });
         submittingFile(false);
       }
-
     } catch (error) {
       toast({
         title: "Gagal mengirim tugas",
         status: "error",
         duration: 2000,
         isClosable: true,
-        position: "top"
+        position: "top",
       });
       submittingFile(false);
     }
@@ -111,8 +113,9 @@ const SubmitPopUp = ({
           mb="20px"
           alignSelf={"right"}
           onClick={() => submittingFile(false)}
+          alt={"close"}
         />
-        <Image src="qmark.png" mb="20px" alignSelf={"center"} />
+        <Image src="qmark.png" mb="20px" alignSelf={"center"} alt={"qmark"} />
         <Heading mb="10px">SUBMIT</Heading>
         <Text alignSelf={"center"} textAlign={"center"} mb="20px" opacity={0.6}>
           Apakah kamu yakin ingin melakukan submisi tugas? Tugas yang telah
@@ -133,11 +136,7 @@ const SubmitPopUp = ({
             borderRadius="10px"
             onClick={() => submittingFile(false)}
           >
-            <Text
-              fontFamily="subheading"
-              size="SH5"
-              color="yellow.5"
-            >
+            <Text fontFamily="subheading" size="SH5" color="yellow.5">
               Cancel
             </Text>
           </Button>
@@ -153,13 +152,9 @@ const SubmitPopUp = ({
             width="98px"
             height="48px"
             borderRadius="10px"
-            onClick={handleFileSubmit}
+            onClick={() => void handleFileSubmit()}
           >
-            <Text
-              fontFamily="subheading"
-              size="SH5"
-              color="purple.2"
-            >
+            <Text fontFamily="subheading" size="SH5" color="purple.2">
               Submit
             </Text>
           </Button>

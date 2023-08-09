@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -7,11 +8,11 @@ import {
   Text,
   Center,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { match } from "ts-pattern";
+import { AssignmentType } from "@prisma/client";
 import Navbar from "~/components/Navbar";
-import { useRouter } from 'next/router';
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -26,14 +27,13 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         alt="background"
         height="100%"
         zIndex="-1"
-        position="absolute"
+        position="fixed"
         objectFit="cover"
-        minWidth="100%"
         width="100%"
+        maxWidth={"375px"}
       />
       <Flex flexDirection="column">
-        <Navbar 
-        />
+        <Navbar />
         {children}
       </Flex>
     </Box>
@@ -41,7 +41,9 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
 }
 
 // Fungsi Toggle untuk switch Dailiy Quest & Side Quest
-const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => void }> = ({ handleBoxContentChange }) => {
+const DailySideQuest: React.FC<{
+  handleBoxContentChange: (content: string) => void;
+}> = ({ handleBoxContentChange }) => {
   const [isToggled, setIsToggled] = useState(false);
 
   const handleToggle = () => {
@@ -131,28 +133,32 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
 
 interface ChipsProps {
   property1: "donei" | "no" | "maybe";
-  className: any;
+  className: string;
   text: string;
 }
 
-const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) => {
-  let chipsBg: string;
-  let chipsBorderColor: string;
-  let chipsLabelColor: string;
-
-  if (property1 === "donei") {
-    chipsBg = "#b8eadc"; // Hijau, Terkumpul
-    chipsBorderColor = "#1c939a";
-    chipsLabelColor = "#1c939a";
-  } else if (property1 === "no") {
-    chipsBg = "#f2a89d"; // Merah, Belum Terkumpul
-    chipsBorderColor = "#e8553e";
-    chipsLabelColor = "#e8553e";
-  } else {
-    chipsBg = "#fffcbf"; // Kuning, Terlambat
-    chipsBorderColor = "#ffbe3b";
-    chipsLabelColor = "#ffbe3b";
-  }
+const Chips: React.FC<ChipsProps> = ({
+  property1,
+  className,
+  text = "hadir",
+}) => {
+  const { chipsBg, chipsBorderColor, chipsLabelColor } = match(property1)
+    .with("donei", () => ({
+      chipsBg: "#b8eadc", // Hijau, Terkumpul
+      chipsBorderColor: "#1c939a",
+      chipsLabelColor: "#1c939a",
+    }))
+    .with("no", () => ({
+      chipsBg: "#f2a89d", // Merah, Belum Terkumpul
+      chipsBorderColor: "#e8553e",
+      chipsLabelColor: "#e8553e",
+    }))
+    .with("maybe", () => ({
+      chipsBg: "#fffcbf", // Kuning, Terlambat
+      chipsBorderColor: "#ffbe3b",
+      chipsLabelColor: "#ffbe3b",
+    }))
+    .exhaustive();
 
   return (
     <div
@@ -192,23 +198,29 @@ const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) =
   );
 };
 
-function getChipsData(statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE") {
-  let chipsText: string;
-  let chipsColor: "donei" | "no" | "maybe";
-
-  if (statusTugas === "SUBMITTED") {
-    chipsText = "Terkumpul";
-    chipsColor = "donei"; // Warna hijau
-  } else if (statusTugas === "NOT_SUBMITTED") {
-    chipsText = "Belum Terkumpul";
-    chipsColor = "no"; // Warna merah
-  } else {
-    chipsText = "Terlambat";
-    chipsColor = "maybe"; // Warna kuning
-  }
-
-  return { chipsText, chipsColor };
-}
+const getChipsData = (
+  statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE"
+) =>
+  match<
+    "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE",
+    {
+      chipsText: string;
+      chipsColor: "donei" | "no" | "maybe";
+    }
+  >(statusTugas)
+    .with("SUBMITTED", () => ({
+      chipsText: "Terkumpul",
+      chipsColor: "donei",
+    }))
+    .with("NOT_SUBMITTED", () => ({
+      chipsText: "Belum Terkumpul",
+      chipsColor: "no",
+    }))
+    .with("PASSED_DEADLINE", () => ({
+      chipsText: "Terlambat",
+      chipsColor: "maybe",
+    }))
+    .exhaustive();
 
 // Fungsi untuk menampilkan seluruh tugas Daily Quest
 
@@ -219,11 +231,12 @@ interface TugasDailyQuestProps {
   deadline: Date;
 }
 
-export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ 
+export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
   id,
   title,
   statusTugas,
-  deadline }) => {
+  deadline,
+}) => {
   const { chipsText, chipsColor } = getChipsData(statusTugas);
   const router = useRouter();
 
@@ -249,10 +262,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
           {title}
         </Text>
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex
-            flexDirection="row"
-            gap="2px"
-          >
+          <Flex flexDirection="row" gap="2px">
             <Text
               color="#ffffff"
               fontFamily="subheading"
@@ -261,11 +271,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             >
               Deadline
             </Text>
-            <Text
-              color="#ffffff"
-              fontFamily="body"
-              fontSize="12px"
-            >
+            <Text color="#ffffff" fontFamily="body" fontSize="12px">
               : {deadline.toLocaleDateString()}
             </Text>
           </Flex>
@@ -280,16 +286,25 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             width="58px"
             height="23px"
             color="#4909b3"
-            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
+            onClick={() =>
+              void router.push({
+                pathname: "/submission",
+                query: { taskId: id },
+              })
+            }
           >
             open
           </Button>
         </Flex>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
       </Box>
     </Center>
   );
-}
+};
 
 // Fungsi untuk menampilkan seluruh tugas Side Quest
 
@@ -299,7 +314,11 @@ interface TugasSideQuestProps {
   statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE";
 }
 
-const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas }) => {
+const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
+  id,
+  title,
+  statusTugas,
+}) => {
   const { chipsText, chipsColor } = getChipsData(statusTugas);
   const router = useRouter();
 
@@ -324,7 +343,11 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas 
         >
           {title}
         </Text>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
         <Flex
           justifyContent="flex-end"
           alignItems="center"
@@ -343,7 +366,12 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas 
             width="58px"
             height="23px"
             color="#4909b3"
-            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
+            onClick={() =>
+              void router.push({
+                pathname: "/submission",
+                query: { taskId: id },
+              })
+            }
           >
             open
           </Button>
@@ -356,9 +384,8 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas 
 // Main function
 export default function AssignmentListPage() {
   const [boxContent, setBoxContent] = useState("Daily Quest");
-  const { data: session } = useSession({ required: true });
   const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
-  const tasks = assignmentQuery.data || []; 
+  const tasks = assignmentQuery.data || [];
 
   const handleBoxContentChange = (content: string) => {
     setBoxContent(content);
@@ -373,36 +400,38 @@ export default function AssignmentListPage() {
         mx="24px"
         my="70px"
       >
-        <Heading color="#ffe655" size="H4" alignSelf="center" >
+        <Heading color="#ffe655" size="H4" alignSelf="center">
           Mission Hub
         </Heading>
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
-          {boxContent === "Daily Quest" ? (
-            <>
-              {tasks
-                .filter((task) => task.type === "DAILY_QUEST")
-                .map((task) => (
-                  <TugasDailyQuest
-                    id={ task.id }
-                    title={ task.title }
-                    statusTugas={ task.submissionStatus }
-                    deadline={ task.endTime }
-                  />
-                ))}
-            </>
-          ) : boxContent === "Side Quest" ? (
-            <>
-              {tasks
-                .filter((task) => task.type === "SIDE_QUEST")
-                .map((task) => (
-                  <TugasSideQuest
-                    id={ task.id }
-                    title={ task.title }
-                    statusTugas={ task.submissionStatus }
-                  />
-                ))}
-            </>
-          ) : null}
+        {boxContent === "Daily Quest" ? (
+          <>
+            {tasks
+              .filter((task) => task.type === AssignmentType.DAILY_QUEST)
+              .map((task) => (
+                <TugasDailyQuest
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  statusTugas={task.submissionStatus}
+                  deadline={task.endTime}
+                />
+              ))}
+          </>
+        ) : boxContent === "Side Quest" ? (
+          <>
+            {tasks
+              .filter((task) => task.type === AssignmentType.SIDE_QUEST)
+              .map((task) => (
+                <TugasSideQuest
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  statusTugas={task.submissionStatus}
+                />
+              ))}
+          </>
+        ) : null}
       </Flex>
     </BackgroundAndNavbar>
   );
