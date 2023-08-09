@@ -1,11 +1,9 @@
-
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import Layout from "~/layout";
 import {
   Text,
-  Center,
   Box,
   Flex,
   Image,
@@ -15,7 +13,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
 } from "@chakra-ui/react";
 import {
   MdPersonAddAlt,
@@ -35,10 +32,10 @@ const Navbar: NextPage = () => {
 
   //   Scroll mechanism algorithm
   useEffect(() => {
-    var prevScrollPosY = window.pageYOffset;
+    let prevScrollPosY = window.pageYOffset;
 
     const detectScrollY = () => {
-      var temp = window.scrollY;
+      const temp = window.scrollY;
       if (temp < prevScrollPosY) {
         setNavbarPos(0);
       } else {
