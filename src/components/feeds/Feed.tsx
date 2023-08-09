@@ -17,6 +17,7 @@ type FeedProps = {
   attachmentUrl: string | null;
   createdAt: Date;
   text: string;
+  id : number;
 };
 
 type Reactions = {
@@ -28,6 +29,7 @@ const Feed: React.FC<FeedProps> = ({
   attachmentUrl,
   createdAt,
   text,
+  id
 }) => {
 
   const getFeedPostedMessage = (feedDate: Date) => {
@@ -121,7 +123,7 @@ const Feed: React.FC<FeedProps> = ({
         px={"50px"}
       >
         {/* Feeds Reaction */}
-        <ReactionButton reactions={reactions} />
+        <ReactionButton reactions={reactions} id={id} />
         <Text
           textAlign="justify"
           color="white"
