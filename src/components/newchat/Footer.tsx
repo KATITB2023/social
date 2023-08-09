@@ -49,7 +49,7 @@ const Footer = () => {
         >
           <Image
             src={
-              selected === "chat" ? "VectorChatYellow.svg" : "VectorChat.svg"
+              selected === "chat" ? "/VectorChatYellow.svg" : "/VectorChat.svg"
             }
             alt="Vector Chat"
             height="25px"
@@ -80,8 +80,8 @@ const Footer = () => {
           <Image
             src={
               selected === "match"
-                ? "VectorFindMatchYellow.svg"
-                : "VectorFindMatch.svg"
+                ? "/VectorFindMatchYellow.svg"
+                : "/VectorFindMatch.svg"
             }
             alt="Vector Chat"
             height="25px"
@@ -103,17 +103,17 @@ const Footer = () => {
           justifyContent="center"
           alignItems="center"
           gap="11px"
-          onClick={() => handleClicked("history")}
+          onClick={() => handleClicked("match/history")}
           style={{
-            borderBottom: selected === "history" ? "2px solid #FFFC83" : "",
+            borderBottom: selected === "match/history" ? "2px solid #FFFC83" : "",
           }}
           cursor={"pointer"}
         >
           <Image
             src={
-              selected === "history"
-                ? "VectorHistoryYellow.svg"
-                : "VectorHistory.svg"
+              selected === "match/history"
+                ? "/VectorHistoryYellow.svg"
+                : "/VectorHistory.svg"
             }
             alt="Vector History"
             height="25px"
@@ -123,7 +123,7 @@ const Footer = () => {
             fontWeight={500}
             lineHeight="12px"
             alignSelf="center"
-            color={selected === "history" ? "yellow.5" : "gray.300"}
+            color={selected === "match/history" ? "yellow.5" : "gray.300"}
           >
             History
           </Text>
