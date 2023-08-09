@@ -12,7 +12,6 @@ import {
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 import NotFound from "./404";
@@ -51,7 +50,6 @@ interface submission {
 
 // Main Function
 export default function ShowSubmissionPage() {
-  const { data: session } = useSession({ required: true });
   const router = useRouter();
   const taskId = router.query.taskId as string;
   const inputAssignmentData = api.assignment.viewAssignment.useQuery({
@@ -66,7 +64,7 @@ export default function ShowSubmissionPage() {
   const inputSubmissionData: submission = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
-    fileSubmitted: assignmentData.submission?.filePath!,
+    fileSubmitted: assignmentData.submission?.filePath as string,
   };
 
   return (
@@ -271,7 +269,7 @@ function FileUpload(param: submission) {
           </Text>
         ) : (
           <>
-            <Image mt={-10} position="absolute" src="/komethello.png" />
+            <Image mt={-10} position="absolute" src="/komethello.png" alt="komethello"/>
             <Button
               bg={"transparent"}
               borderColor={"yellow.4"}
