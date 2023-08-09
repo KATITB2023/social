@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import Navbar from "~/components/Navbar";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 
@@ -22,7 +22,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="background.png"
         alt="background"
         height="100%"
         zIndex="-1"
@@ -32,8 +32,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar 
-        />
+        <Navbar />
         {children}
       </Flex>
     </Box>
@@ -41,7 +40,9 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
 }
 
 // Fungsi Toggle untuk switch Dailiy Quest & Side Quest
-const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => void }> = ({ handleBoxContentChange }) => {
+const DailySideQuest: React.FC<{
+  handleBoxContentChange: (content: string) => void;
+}> = ({ handleBoxContentChange }) => {
   const [isToggled, setIsToggled] = useState(false);
 
   const handleToggle = () => {
@@ -84,7 +85,7 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
             width="300px"
             height="200px"
             position="absolute"
-            bg={`url('komet.svg') no-repeat center center / contain`}
+            bg={`url('komet.png') no-repeat center center / contain`}
             bgPosition="83px 0px"
             bgSize="76px"
             transform=""
@@ -93,7 +94,7 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
             width="200px"
             height="200px"
             position="absolute"
-            background={`url('bintang.svg') no-repeat center center / contain`}
+            background={`url('bintang.png') no-repeat center center / contain`}
             bgPosition="30px -2px"
             bgSize="45px"
           />
@@ -131,11 +132,15 @@ const DailySideQuest: React.FC<{ handleBoxContentChange: (content: string) => vo
 
 interface ChipsProps {
   property1: "donei" | "no" | "maybe";
-  className: any;
+  className: string;
   text: string;
 }
 
-const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) => {
+const Chips: React.FC<ChipsProps> = ({
+  property1,
+  className,
+  text = "hadir",
+}) => {
   let chipsBg: string;
   let chipsBorderColor: string;
   let chipsLabelColor: string;
@@ -192,7 +197,9 @@ const Chips: React.FC<ChipsProps> = ({ property1, className, text = "hadir" }) =
   );
 };
 
-function getChipsData(statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE") {
+function getChipsData(
+  statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE"
+) {
   let chipsText: string;
   let chipsColor: "donei" | "no" | "maybe";
 
@@ -219,11 +226,12 @@ interface TugasDailyQuestProps {
   deadline: Date;
 }
 
-export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({ 
+export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
   id,
   title,
   statusTugas,
-  deadline }) => {
+  deadline,
+}) => {
   const { chipsText, chipsColor } = getChipsData(statusTugas);
   const router = useRouter();
 
@@ -249,10 +257,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
           {title}
         </Text>
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex
-            flexDirection="row"
-            gap="2px"
-          >
+          <Flex flexDirection="row" gap="2px">
             <Text
               color="#ffffff"
               fontFamily="subheading"
@@ -261,11 +266,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             >
               Deadline
             </Text>
-            <Text
-              color="#ffffff"
-              fontFamily="body"
-              fontSize="12px"
-            >
+            <Text color="#ffffff" fontFamily="body" fontSize="12px">
               : {deadline.toLocaleDateString()}
             </Text>
           </Flex>
@@ -280,16 +281,25 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             width="58px"
             height="23px"
             color="#4909b3"
-            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
+            onClick={() =>
+              void router.push({
+                pathname: "/submission",
+                query: { taskId: id },
+              })
+            }
           >
             open
           </Button>
         </Flex>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
       </Box>
     </Center>
   );
-}
+};
 
 // Fungsi untuk menampilkan seluruh tugas Side Quest
 
@@ -299,7 +309,11 @@ interface TugasSideQuestProps {
   statusTugas: "SUBMITTED" | "NOT_SUBMITTED" | "PASSED_DEADLINE";
 }
 
-const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas }) => {
+const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
+  id,
+  title,
+  statusTugas,
+}) => {
   const { chipsText, chipsColor } = getChipsData(statusTugas);
   const router = useRouter();
 
@@ -324,7 +338,11 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas 
         >
           {title}
         </Text>
-        <Chips className="chips-instance" property1={chipsColor} text={chipsText} />
+        <Chips
+          className="chips-instance"
+          property1={chipsColor}
+          text={chipsText}
+        />
         <Flex
           justifyContent="flex-end"
           alignItems="center"
@@ -343,7 +361,12 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({ id, title, statusTugas 
             width="58px"
             height="23px"
             color="#4909b3"
-            onClick={() => router.push({pathname:'/submission', query:{taskId:id}})}
+            onClick={() =>
+              void router.push({
+                pathname: "/submission",
+                query: { taskId: id },
+              })
+            }
           >
             open
           </Button>
@@ -358,7 +381,7 @@ export default function AssignmentListPage() {
   const [boxContent, setBoxContent] = useState("Daily Quest");
   const { data: session } = useSession({ required: true });
   const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
-  const tasks = assignmentQuery.data || []; 
+  const tasks = assignmentQuery.data || [];
 
   const handleBoxContentChange = (content: string) => {
     setBoxContent(content);
@@ -373,36 +396,38 @@ export default function AssignmentListPage() {
         mx="24px"
         my="70px"
       >
-        <Heading color="#ffe655" size="H4" alignSelf="center" >
+        <Heading color="#ffe655" size="H4" alignSelf="center">
           Mission Hub
         </Heading>
         <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
-          {boxContent === "Daily Quest" ? (
-            <>
-              {tasks
-                .filter((task) => task.type === "DAILY_QUEST")
-                .map((task) => (
-                  <TugasDailyQuest
-                    id={ task.id }
-                    title={ task.title }
-                    statusTugas={ task.submissionStatus }
-                    deadline={ task.endTime }
-                  />
-                ))}
-            </>
-          ) : boxContent === "Side Quest" ? (
-            <>
-              {tasks
-                .filter((task) => task.type === "SIDE_QUEST")
-                .map((task) => (
-                  <TugasSideQuest
-                    id={ task.id }
-                    title={ task.title }
-                    statusTugas={ task.submissionStatus }
-                  />
-                ))}
-            </>
-          ) : null}
+        {boxContent === "Daily Quest" ? (
+          <>
+            {tasks
+              .filter((task) => task.type === "DAILY_QUEST")
+              .map((task) => (
+                <TugasDailyQuest
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  statusTugas={task.submissionStatus}
+                  deadline={task.endTime}
+                />
+              ))}
+          </>
+        ) : boxContent === "Side Quest" ? (
+          <>
+            {tasks
+              .filter((task) => task.type === "SIDE_QUEST")
+              .map((task) => (
+                <TugasSideQuest
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  statusTugas={task.submissionStatus}
+                />
+              ))}
+          </>
+        ) : null}
       </Flex>
     </BackgroundAndNavbar>
   );
