@@ -1,4 +1,5 @@
-import { type NextPage } from "next";
+
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
@@ -7,6 +8,7 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Spacer,
   Flex,
   Icon,
   Image,
@@ -32,16 +34,15 @@ const Navbar: NextPage = () => {
 
   //   Scroll mechanism algorithm
   useEffect(() => {
-    let prevScrollPosY = window.pageYOffset;
+    let prevScrollPosY = window.scrollY;
 
     const detectScrollY = () => {
-      const temp = window.scrollY;
-      if (temp < prevScrollPosY) {
+      if (window.scrollY < prevScrollPosY) {
         setNavbarPos(0);
       } else {
         setNavbarPos(-100);
       }
-      prevScrollPosY = temp;
+      prevScrollPosY = window.scrollY;
     };
 
     window.addEventListener("scroll", detectScrollY);
@@ -87,34 +88,11 @@ const Navbar: NextPage = () => {
           opacity="0.6"
           borderRadius="50px"
           position="absolute"
-          top="20px"
-          flexDir="row"
-          alignItems="center"
-          paddingY="2%"
-          boxShadow="0px 0px 10px #FFFC83"
-          paddingX="22px"
-          zIndex="1"
-        >
-          <Box
-            backgroundColor="#0B0A0A"
-            opacity="0.6"
-            borderRadius="50px"
-            position="absolute"
-            top="0"
-            left="0"
-            bottom="0"
-            right="0"
-          ></Box>
-          <Image
-            src="ekor.svg"
-            position="absolute"
-            left="0"
-            height="full"
-            objectFit="cover"
-            objectPosition="center"
-            borderRadius="50px"
-          />
-        </Box>
+          top="0"
+          left="0"
+          bottom="0"
+          right="0"
+        />
 
         <Image
           src="/ekor.svg"
