@@ -188,6 +188,7 @@ const Room: NextPage = () => {
                 image={undefined}
                 isTyping={currentlyTyping}
                 isAnon={true}
+                handleClick={() => router.back()}
               />
               <Divider />
 
