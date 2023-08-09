@@ -31,6 +31,9 @@ const ChatHome: NextPage = () => {
         direction="column"
         position="relative"
         bg={openAddChat ? "url(./addchatbg.png)" : "url(./homechatbg.png)"}
+        backgroundPosition={"center"}
+        backgroundSize={"cover"}
+        backgroundRepeat={"no-repeat"}
         alignItems="center"
       >
         {/* <Box position="absolute"> */}
