@@ -105,7 +105,8 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-        setMessages((prev) => [...prev, post]);
+
+        addMessages([post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
             updateOneMessageIsRead.mutate({ messageId: post.id });
