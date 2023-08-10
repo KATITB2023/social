@@ -1,4 +1,3 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
@@ -7,7 +6,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
   Flex,
   Icon,
   Image,
@@ -16,21 +14,21 @@ import {
 } from "@chakra-ui/react";
 import {
   MdChatBubbleOutline,
+  MdErrorOutline,
+  MdLeaderboard,
   MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
   MdOutlinePersonOutline,
-  MdLeaderboard,
-  MdShoppingBasket,
   MdPersonAddAlt,
-  MdOutlineErrorOutline,
+  MdShoppingBasket,
   MdStarOutline,
-  MdErrorOutline,
 } from "react-icons/md";
-import Layout from "~/layout";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
+import { api } from "~/utils/api";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -49,7 +47,30 @@ const DrawerButton = ({
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
-
+  if (type === 2) {
+    return (
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color="#E8553E"
+        py={3}
+        borderRadius={2}
+        cursor={"pointer"}
+        _hover={{ bg: "#3D2283" }}
+        onClick={() => void signOut({ callbackUrl: "/login" })}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    );
+  }
   return (
     <Flex
       flexDir="row"
@@ -71,6 +92,7 @@ const DrawerButton = ({
 };
 
 const Navbar = ({ currentPage }: { currentPage: string }) => {
+  const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -84,7 +106,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdOutlineAssignment,
       text: "Assignment",
-      route: "/assignment-list",
+      route: "/assignment",
     },
     {
       icon: MdLeaderboard,
@@ -136,8 +158,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   });
 
   return (
-    <Layout title="Navbar">
-      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+    <>
       <Flex
         position={"relative"}
         display={"block"}
@@ -178,6 +199,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
         />
 
         <Image
+          alt="Ekor"
           src="/ekor.svg"
           position="absolute"
           left="0"
@@ -205,6 +227,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
             marginRight="10px"
           />
           <Image
+            alt="Hamburger menu"
             cursor={"pointer"}
             src="/hamburgermenu.svg"
             height="30px"
@@ -231,6 +254,34 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               flexDir="column"
               zIndex="3"
             >
+              {selfProfile && (
+                <Flex
+                  flexDir={"row"}
+                  gap={3}
+                  alignItems={"center"}
+                  mb={5}
+                  w={"full"}
+                >
+                  <Box
+                    minW={"60px"}
+                    minH={"60px"}
+                    backgroundImage={selfProfile.image!}
+                    backgroundPosition={"center"}
+                    backgroundSize={"cover"}
+                    borderRadius={"full"}
+                    border={"2px white solid"}
+                  />
+                  <Text
+                    fontSize={"20px"}
+                    fontWeight={"bold"}
+                    color={"yellow.5"}
+                    noOfLines={2}
+                  >
+                    {selfProfile.name}
+                  </Text>
+                </Flex>
+              )}
+
               {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
                 return (
                   <DrawerButton
@@ -240,12 +291,12 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton data={LogoutButtonData} type={2} />
+              {selfProfile && <DrawerButton data={LogoutButtonData} type={2} />}
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Layout>
+    </>
   );
 };
 

@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Heading,
+  IconButton,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import React, { useState } from "react";
 
@@ -8,6 +17,7 @@ import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImagePr
 import ProfilePicture from "~/components/profile/ProfilePicture";
 import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import EditPasswordModal from "~/components/profile/EditPasswordModal";
 
 import { api } from "~/utils/api";
 import { type SelfProfile } from "~/server/types/user-profile";
@@ -27,8 +37,8 @@ export default function ProfilePage() {
   const [openSelectImage, setOpenSelectImage] = useState<boolean>(false);
   const sessionStatus = useSession();
   const router = useRouter();
-  if(sessionStatus.status === "unauthenticated"){
-    void router.push("/login")
+  if (sessionStatus.status === "unauthenticated") {
+    void router.push("/login");
   }
   if (!selfProfile) return null;
   return (
@@ -99,6 +109,7 @@ function UserProfilePicture({
 
 function ProfileInfo({ info }: { info: SelfProfile }) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return isEditMode ? (
     <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
@@ -127,15 +138,27 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           />
         ))}
       </Flex>
-      <Button
-        paddingX="1.5em"
-        paddingY="0.5em"
-        backgroundColor="yellow.5"
-        alignSelf="center"
-        onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
-      >
-        <Text size="B5"> edit profile</Text>
-      </Button>
+      <HStack justifyContent="center" spacing={5}>
+        <Button
+          paddingX="1.5em"
+          paddingY="0.5em"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={onOpen}
+        >
+          <Text size="B5">Edit Password</Text>
+        </Button>
+        <EditPasswordModal isOpen={isOpen} onClose={onClose} />
+        <Button
+          paddingX="1.5em"
+          paddingY="0.5em"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
+        >
+          <Text size="B5">Edit Profile</Text>
+        </Button>
+      </HStack>
     </>
   );
 }

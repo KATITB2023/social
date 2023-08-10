@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Heading, Image } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ title }: { title?: string }) => {
   return (
     <Flex
       w={"full"}
@@ -25,8 +25,7 @@ const LoadingScreen = () => {
         h={"254px"}
       />
       <Heading size={"H3"} fontWeight={400} color={"yellow.5"}>
-        {" "}
-        MATCHING UP{" "}
+        {title ?? "Loading..."}
       </Heading>
     </Flex>
   );

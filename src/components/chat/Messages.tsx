@@ -110,7 +110,7 @@ const Messages = ({
                   ) : (
                     <Text fontSize={"12px"}>{` ${date.format("DD/MM")} `}</Text>
                   )}
-                  <Text fontSize={"12px"}>{` ${date.format("HH/mm")} `}</Text>
+                  <Text fontSize={"12px"}>{` ${date.format("HH:mm")} `}</Text>
                 </Flex>
               </Flex>
             </Flex>
@@ -158,7 +158,7 @@ const Messages = ({
                   ) : (
                     <Text fontSize={"12px"}>{` ${date.format("DD/MM")} `}</Text>
                   )}
-                  <Text fontSize={"12px"}>{` ${date.format("HH/mm")} `}</Text>
+                  <Text fontSize={"12px"}>{` ${date.format("HH:mm")} `}</Text>
                 </Flex>
               </Flex>
             </Flex>
