@@ -8,9 +8,10 @@ interface FooterProps {
   onSubmit: (text: string) => void;
   receiverId: string;
   isAnon: boolean;
+  setSender : React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
-const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
+const Footer = ({ onSubmit, receiverId, isAnon, setSender }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
@@ -143,7 +144,7 @@ const Footer = ({ onSubmit, receiverId, isAnon }: FooterProps) => {
         }}
       />
 
-      {isAnon && anonMenuOpen && <AnonMenu setOpen={setAnonMenuOpen} />}
+      {isAnon && anonMenuOpen && <AnonMenu setOpen={setAnonMenuOpen} setSender={setSender!}/>}
     </Flex>
   );
 };

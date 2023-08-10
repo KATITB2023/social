@@ -1,17 +1,26 @@
 import { Flex, Text, useToast } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import useEmit from "~/hooks/useEmit";
+import KamuYakin from "../PopupChat/KamuYakin";
 
 export const AnonMenu = ({
   setOpen,
+  setSender
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSender: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const endMatch = useEmit("endMatch");
   const askReveal = useEmit("askReveal");
+  const [popUpOpen, setPopUpOpen] = useState(false);
+  const [isKamuYakin, setKamuYakin] = useState(false);
   const toast = useToast();
+
+  // End Match Handling
   const handleEndMatch = () => {
-    endMatch.mutate(undefined);
+    setPopUpOpen(true);
+    setKamuYakin(true);
+    setSender(true);
   };
 
   const handleAskReveal = () => {
@@ -33,6 +42,7 @@ export const AnonMenu = ({
         top={0}
         left={0}
         zIndex={1}
+        onClick={() => setOpen(false)}
       />
 
       <Flex
@@ -113,6 +123,41 @@ export const AnonMenu = ({
           // onClick={() => {}}
         >
           <Text> &#128220; &nbsp; Peraturan </Text>
+        </Flex>
+      </Flex>
+
+      {/* For Popup */}
+      <Flex
+        position={"fixed"}
+        display={popUpOpen ? "block" : "none"}
+        w={"100vw"}
+        h={"100vh"}
+        top={0}
+        left={0}
+        zIndex={3}
+      >
+        <Flex
+          position={"relative"}
+          w={"full"}
+          h={"full"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          {/* Black overlay */}
+          <Flex
+            position={"absolute"}
+            w={"100vw"}
+            h={"100vh"}
+            bg={"black"}
+            opacity={0.7}
+            onClick={() => setPopUpOpen(false)}
+          />
+
+          <Flex zIndex={4}>
+          {
+            isKamuYakin && <KamuYakin setOpen={setPopUpOpen} setSender={setSender}/>
+          }
+          </Flex>
         </Flex>
       </Flex>
     </>

@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "~/components/Image";
 import Navbar from "~/components/Navbar";
+import YahTemanmu from "~/components/PopupChat/YahTemanmu";
 import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
@@ -34,6 +35,10 @@ const Room: NextPage = () => {
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const client = api.useContext();
+
+  const [popUpOpen, setPopUpOpen] = useState(false);
+  const [isSender, setSender] = useState(false);
+  const [yahTemanmu, setYahTemanmu] = useState(false);
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
@@ -163,8 +168,14 @@ const Room: NextPage = () => {
       void client.messageAnonymous.chatHeader.invalidate();
       if (match) {
         if (data.endedAt !== null) {
-          setMatch(null);
-          void router.push("/chat");
+          if (!isSender) {
+            setPopUpOpen(true);
+            setYahTemanmu(true);
+          } else {
+            setMatch(null);
+            void router.push("/chat");
+          }
+          setSender(false);
         }
       }
     },
@@ -259,6 +270,7 @@ const Room: NextPage = () => {
               </ModalFooter>
             </ModalContent>
           </Modal>
+
           <Flex
             w="100%"
             h="100vh"
@@ -305,8 +317,40 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
+                  setSender={setSender}
                 />
               </Flex>
+            </Flex>
+          </Flex>
+
+          {/* For Popup */}
+          <Flex
+            position={"fixed"}
+            display={popUpOpen ? "block" : "none"}
+            w={"100vw"}
+            h={"100vh"}
+            top={0}
+            left={0}
+            zIndex={3}
+          >
+            <Flex
+              position={"relative"}
+              w={"full"}
+              h={"full"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              {/* Black overlay */}
+              <Flex
+                position={"absolute"}
+                w={"100vw"}
+                h={"100vh"}
+                bg={"black"}
+                opacity={0.7}
+                onClick={() => setPopUpOpen(false)}
+              />
+
+              <Flex zIndex={4}>{yahTemanmu && <YahTemanmu setMatch={setMatch} />}</Flex>
             </Flex>
           </Flex>
         </>
