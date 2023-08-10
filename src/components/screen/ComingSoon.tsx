@@ -1,8 +1,27 @@
 import React, { type PropsWithChildren } from "react";
 import { Box, Flex, Heading, Image, Text, Link } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
-import BackgroundAndNavbar from "../BackgroundAndNavbar";
 
+function BackgroundAndNavbar({ children }: PropsWithChildren) {
+  return (
+    <Box position="relative" minHeight="100vh" height="100%">
+      <Image
+        src="/background.png"
+        alt="background"
+        height="100%"
+        zIndex="-1"
+        position="absolute"
+        objectFit="cover"
+        minWidth="100%"
+        width="100%"
+      />
+      <Flex flexDirection="column">
+        <Navbar currentPage={"Error"} />
+        {children}
+      </Flex>
+    </Box>
+  );
+}
 const ComingSoon = () => {
   return (
     <BackgroundAndNavbar>
@@ -14,26 +33,18 @@ const ComingSoon = () => {
         my="140px"
       >
         <Image
-          src="maintenance.svg"
+          src="coming_soon.png"
           alt="404"
           height="100%"
-          zIndex="0"
+          zIndex="-1"
           position="relative"
           objectFit="cover"
           minWidth="100%"
           width="100%"
         />
-        <Heading size="H3" alignSelf="center">
-            UNDER MAINTENANCE
+        <Heading marginTop="5%" size="SH5" textAlign="center" alignSelf="center">
+          Roket kami sedang mencari tujuan selanjutnya...
         </Heading>
-        <Text
-          fontFamily="body"
-          fontSize="14px"
-          marginBottom="8px"
-          align="center"
-        >
-          Bersiaplah Spacefarers! Sesuatu yang menakjubkan sedang dipersiapkan!
-        </Text>
       </Flex>
     </BackgroundAndNavbar>
   );

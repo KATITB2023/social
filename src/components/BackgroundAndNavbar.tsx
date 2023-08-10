@@ -8,7 +8,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
     <>
       <Box
         position="relative"
-        height="100%"
+        height="100vh"
         overflow={"hidden"}
         backgroundImage={"/background.png"}
         backgroundSize={"cover"}
@@ -16,11 +16,11 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         backgroundRepeat={"no-repeat"}
       >
         <Flex flexDirection="column">
-          <Navbar/>
+          <Navbar currentPage={"Error"} />
           {children}
         </Flex>
       </Box>
-      <Footer />  
+      <Footer />
     </>
   );
 }
