@@ -14,16 +14,16 @@ import {
 } from "@chakra-ui/react";
 import {
   MdChatBubbleOutline,
+  MdErrorOutline,
+  MdLeaderboard,
   MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
   MdOutlinePersonOutline,
-  MdLeaderboard,
-  MdShoppingBasket,
   MdPersonAddAlt,
+  MdShoppingBasket,
   MdStarOutline,
-  MdErrorOutline,
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
@@ -106,7 +106,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdOutlineAssignment,
       text: "Assignment",
-      route: "/assignment-list",
+      route: "/assignment",
     },
     {
       icon: MdLeaderboard,
