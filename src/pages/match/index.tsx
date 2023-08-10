@@ -9,16 +9,17 @@ import { ChatTopic } from "~/server/types/message";
 import Navbar from "~/components/Navbar";
 import { Box, Image, VStack } from "@chakra-ui/react";
 import Footer from "~/components/newchat/Footer";
-
 import {
   FirstQuestion,
   SecondQuestion,
   ThirdQuestion,
 } from "~/components/newchat/Questions";
+import LoadingScreen from "~/components/LoadingScreen";
 
 const Match: NextPage = () => {
   const [questionPage, setQuestionPage] = useState(1);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [topic, setTopic] = useState<ChatTopic>(ChatTopic.ITB);
   const [isFindingFriend, setIsFindingFriend] = useState(false);
   const [needQueue, setNeedQueue] = useState<boolean>(false);
@@ -29,7 +30,6 @@ const Match: NextPage = () => {
 
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
-      console.log(data);
       if (data.match !== null) {
         void router.push(`/match/room`);
       } else if (data.queue !== null) {
@@ -54,6 +54,7 @@ const Match: NextPage = () => {
 
   const findMatch = () => {
     if (!queued.current && needQueue && !foundMatch) {
+      setIsLoading(true);
       console.log("request queue");
       queueEmit.mutate({
         isAnonymous: isAnonymous,
@@ -65,15 +66,17 @@ const Match: NextPage = () => {
   };
 
   useSubscription("match", (_) => {
-    console.log("Masuk use subs");
-
     queued.current = false;
     setFoundMatch(true);
+    setIsLoading(false);
     void router.push(`/match/room`);
   });
   const handlePageChange = (page: number) => {
     setQuestionPage(page);
   };
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
   return (
     <Box
       display={"flex"}
