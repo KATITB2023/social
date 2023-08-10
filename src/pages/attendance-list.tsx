@@ -19,10 +19,8 @@ import {
   Spinner,
   // position
 } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
 
 import Navbar from "~/components/Navbar";
-import { map } from "@trpc/server/observable";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -274,28 +272,19 @@ interface AbsenStatus {
   status: Status | null;
 }
 
-interface EventsDay {
-  day: string;
-  events: AbsenStatus[];
-}
-
-
 const AttendListPage = () => {
-  const { data: session } = useSession({ required: true });
   const hasil = api.absensi.viewAbsensi.useQuery();
   const eventList = hasil.data;
   const eventsByDay: Map<string, AbsenStatus[]> = new Map();
   if (eventList) {
     eventList.forEach(({ event, record, status, day }) => {
-      const dayId = event.dayId;
-
       const absenStatus: AbsenStatus = {
         event,
         record,
         status,
       };
       if(eventsByDay.has(day)) {
-        let temp = eventsByDay.get(day)!;
+        const temp = eventsByDay.get(day)!;
         eventsByDay.delete(day);
         eventsByDay.set(day, temp.concat([absenStatus]));
       } else {
@@ -313,7 +302,7 @@ const AttendListPage = () => {
           </Heading>
           <Flex flexDir="column">
             {Array.from(eventsByDay.keys()).map((item) => (
-              <Flex  flexDir="column" gap="20px" mt="44px">
+              <Flex key={item} flexDir="column" gap="20px" mt="44px">
                 <Heading size="SH4">{item}</Heading>
                  {eventsByDay.get(item)!.map((eventsInDay, index) => (
                   <EventCard key={index} event={eventsInDay.event} status={eventsInDay.status} />
