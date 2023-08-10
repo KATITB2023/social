@@ -53,6 +53,36 @@ export const SelectPhotoImageProfile = ({
     onClose();
   }
 
+  async function deleteProfile() {
+    try {
+      setIsUpdating(true);
+      const res = await profileMutaion.mutateAsync({
+        image: undefined,
+      });
+      toast({
+        title: "Success",
+        status: "success",
+        description: res.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (e: unknown) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    setIsUpdating(false);
+    setOpen(false);
+  }
+
   async function updateImage(file: File) {
     if (!file) return;
     const url = sanitizeURL(`https://cdn.oskmitb.com/${nim}`);
@@ -83,8 +113,10 @@ export const SelectPhotoImageProfile = ({
         isClosable: true,
         position: "top",
       });
-      return;
     }
+
+    setIsUpdating(false);
+    setOpen(false);
   }
 
   return (
@@ -113,16 +145,17 @@ export const SelectPhotoImageProfile = ({
             <Box
               display={"flex"}
               flexDirection={"column"}
-              justifyContent={"center"}
+              justifyContent={"space-evenly"}
               alignItems={"center"}
               position={"fixed"}
               bottom={0}
               background={"purple.1"}
-              height={"274px"}
+              height={"230px"}
               w={"full"}
               maxW={"375px"}
               padding={"10px"}
               gap={"30px"}
+              pb={"30px"}
             >
               <Box
                 display={"flex"}
@@ -137,8 +170,7 @@ export const SelectPhotoImageProfile = ({
                 <Box display={"flex"} gap={"15px"}>
                   <Image
                     onClick={() => {
-                      changeImage(undefined);
-                      setOpen(false);
+                      void deleteProfile();
                     }}
                     src="/components/trashbin.svg"
                     alt="trash icon"
@@ -208,27 +240,6 @@ export const SelectPhotoImageProfile = ({
                   ) : null}
                 </Box>
               </Box>
-
-              <Button
-                borderRadius={"12px"}
-                w={"123px"}
-                h={"48px"}
-                background={pictureSelected ? "yellow.1" : "gray.400"}
-                onClick={() => {
-                  setOpen(false);
-                  pictureSelected && void updateImage(croppedImageFile as File);
-                  setPictureSelected(false);
-                }}
-              >
-                {isUpdating ? (
-                  <Spinner />
-                ) : (
-                  <Text fontWeight={700} color={"white"} size={"SH5"}>
-                    {" "}
-                    Submit{" "}
-                  </Text>
-                )}
-              </Button>
             </Box>
           </Box>
         </Collapse>
