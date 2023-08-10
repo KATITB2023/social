@@ -4,7 +4,7 @@ import { TRPCClientError } from "@trpc/client";
 import {
   type AttendanceEvent,
   type AttendanceRecord,
-  Status,
+  type Status,
 } from "@prisma/client";
 import {
   Box,
@@ -14,13 +14,13 @@ import {
   Heading,
   Image,
   Spacer,
-  Spinner,
   Text,
   useToast,
 } from "@chakra-ui/react";
 
 import Navbar from "~/components/Navbar";
 import Layout from "~/layout";
+import dayjs from "dayjs";
 
 interface BgAssetProps {
   name: string;
@@ -36,7 +36,7 @@ const BackgroundAsset = (props: BgAssetProps) => {
   const { name, left, top, height, width, objPos, objFit } = props;
   return (
     <Image
-      src={`${name}.svg`}
+      src={`/${name}.svg`}
       alt="asset"
       zIndex="-1"
       position="absolute"
@@ -112,7 +112,7 @@ const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
       <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
-        <Navbar currentPage={"Attendance"} />
+        <Navbar />
         {children}
       </Flex>
     </Box>
@@ -153,41 +153,32 @@ const StatusButton = ({
 
 // UTILS FUNCTION
 const getTwoTime = (startDate: Date, endDate: Date) => {
-  const startTime = startDate.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const endTime = endDate.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
+  const startTime = dayjs(startDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
+  const endTime = dayjs(endDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
   return `${startTime} - ${endTime}`;
 };
 
 const validTime = (startTime: Date, endTime: Date) => {
-  const currentTime = new Date(Date.now());
-
-  return currentTime >= startTime && currentTime <= endTime;
+  const now = dayjs();
+  return dayjs(startTime).isBefore(now) && dayjs(endTime).isAfter(now);
 };
 
 const EventCard = ({
   event,
-  status,
+  status: initialStatus,
 }: {
   event: AttendanceEvent;
   status: Status | null;
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [alreadyAbsen, setAlreadyAbsen] = useState(
-    status !== null && status !== Status.TIDAK_HADIR
+  const [currentStatus, setCurrentStatus] = useState<Status>(() =>
+    initialStatus === null ? "TIDAK_HADIR" : initialStatus
   );
+
   const toast = useToast();
   const absenMutation = api.absensi.submitAbsensi.useMutation();
   const canAttend = validTime(event.startTime, event.endTime);
 
   const handleAttend = async (eventId: string) => {
-    setLoading(true);
     try {
       const result = await absenMutation.mutateAsync({ eventId });
 
@@ -200,7 +191,7 @@ const EventCard = ({
         position: "top",
       });
 
-      setAlreadyAbsen(true);
+      setCurrentStatus("HADIR");
     } catch (err: unknown) {
       if (!(err instanceof TRPCClientError)) throw err;
 
@@ -213,8 +204,6 @@ const EventCard = ({
         position: "top",
       });
     }
-
-    setLoading(false);
   };
 
   return (
@@ -239,51 +228,47 @@ const EventCard = ({
         </Flex>
       </Flex>
       <Spacer />
-      {alreadyAbsen ? (
-        status === Status.HADIR ? (
-          <StatusButton
-            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-            borderColor="green.2"
-            text="hadir"
-          />
-        ) : status === Status.IZIN_DITERIMA ? (
-          <StatusButton
-            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-            borderColor="green.2"
-            text="izin diterima"
-          />
-        ) : status === Status.IZIN_PENDING ? (
-          <StatusButton
-            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
-            borderColor="green.2"
-            text="izin pending"
-          />
-        ) : (
-          // izin ditolak
-          <StatusButton
-            bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
-            borderColor="#E8553E"
-            text="izin ditolak"
-          />
-        )
-      ) : canAttend ? (
-        loading ? (
-          <Spinner color="#1C939A" />
-        ) : (
-          <StatusButton
-            bg="yellow.5"
-            text="tandai hadir"
-            onClick={() => void handleAttend(event.id)}
-            isDisabled={false}
-          />
-        )
-      ) : (
+      {currentStatus === "HADIR" ? (
+        <StatusButton
+          bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+          borderColor="green.2"
+          text="Hadir"
+          isDisabled={true}
+        />
+      ) : currentStatus === "IZIN_PENDING" ? (
+        <StatusButton
+          bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+          borderColor="green.2"
+          text="Izin Pending"
+          isDisabled={true}
+        />
+      ) : currentStatus === "IZIN_DITERIMA" ? (
+        <StatusButton
+          bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+          borderColor="green.2"
+          text="Izin Diterima"
+          isDisabled={true}
+        />
+      ) : currentStatus === "IZIN_DITOLAK" ? (
         <StatusButton
           bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
           borderColor="#E8553E"
-          text="tidak hadir"
+          text="izin ditolak"
+        />
+      ) : canAttend ? (
+        <StatusButton
+          bg="yellow.5"
+          text="Tandai Hadir"
           onClick={() => void handleAttend(event.id)}
-          isDisabled={false}
+          isDisabled={absenMutation.isLoading}
+        />
+      ) : dayjs().isBefore(event.startTime) ? (
+        <StatusButton bg="yellow.5" text="Belum Dibuka" isDisabled={true} />
+      ) : (
+        <StatusButton
+          bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
+          text="Tidak Hadir"
+          isDisabled={true}
         />
       )}
     </Flex>
@@ -321,7 +306,7 @@ const AttendListPage = () => {
   return (
     <Layout title={"Attendance"}>
       <BackgroundAndNavbar>
-        <Container bgImage="url('attendancelist_background.svg')">
+        <Container bgImage="url('attendancelist_background.svg')" pb={"10"}>
           <Flex flexDir="column">
             <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
               ATTENDANCE LIST

@@ -113,7 +113,26 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
   return isEditMode ? (
     <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
-    <>
+    <Box
+      maxHeight="40vh"
+      overflowY="scroll"
+      sx={{
+        "::-webkit-scrollbar": {
+          width: "11px",
+          position: "absolute",
+          right: "5px",
+        },
+        "::-webkit-scrollbar-track": {
+          background: "#2F2E2E",
+          borderRadius: "5px",
+          marginY: "10px",
+        },
+        "::-webkit-scrollbar-thumb": {
+          background: "white",
+          borderRadius: "5px",
+        },
+      }}
+    >
       <Flex
         flexDirection="column"
         justifyContent="space-between"
@@ -137,7 +156,7 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           />
         ))}
       </Flex>
-      <HStack justifyContent="center" spacing={5}>
+      <HStack justifyContent="center" spacing={5} marginTop="5%">
         <Button
           paddingX="24px"
           paddingY="8px"
@@ -166,7 +185,7 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           <Text size="B5">Edit Profile</Text>
         </Button>
       </HStack>
-    </>
+    </Box>
   );
 }
 

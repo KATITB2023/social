@@ -74,19 +74,19 @@ const Room: NextPage = () => {
   }, []);
 
   const messageQuery = api.messageAnonymous.infinite.useInfiniteQuery(
-    { userMatchId: match !== null ? match.id : "" }, // to fix
+    { userMatchId: match?.id ?? "" }, // to fix
     {
-      getPreviousPageParam: (d) => d.prevCursor,
+      getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
+      enabled: !!match?.id,
     }
   );
 
-  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-    messageQuery;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
   useEffect(() => {
-    if (match && session) {
+    if (match && session?.user?.id) {
       try {
         updateMessageIsRead.mutate({
           userMatchId: match.id,
@@ -94,7 +94,7 @@ const Room: NextPage = () => {
         });
       } catch (err) {}
     }
-  }, []);
+  }, [session?.user?.id, match, updateMessageIsRead.mutate]);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -107,7 +107,7 @@ const Room: NextPage = () => {
       for (const msg of incoming ?? []) map[msg.id] = msg;
 
       return Object.values(map).sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
       );
     });
     setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
@@ -127,7 +127,6 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-
         addMessages([post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
@@ -224,7 +223,7 @@ const Room: NextPage = () => {
           overflowY={"hidden"}
         >
           <Flex position={"absolute"} top={0}>
-            <Navbar currentPage={"Chat"} />
+            <Navbar />
           </Flex>
           <Image
             src="/components/anon_chat_page/anon_comet.png"
@@ -277,10 +276,14 @@ const Room: NextPage = () => {
             >
               <Header
                 name={
-                  profileData !== undefined ? profileData.name : "Anonymous"
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.name
+                    : "Anonymous"
                 }
                 image={
-                  profileData !== undefined ? profileData.image : undefined
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.image
+                    : undefined
                 }
                 isTyping={currentlyTyping}
                 isAnon={true}
@@ -290,10 +293,10 @@ const Room: NextPage = () => {
 
               <Messages
                 messages={messages ?? []}
-                hasPreviousPage={hasPreviousPage}
-                fetchPreviousPage={() => void fetchPreviousPage()}
-                isFetchingPreviousPage={isFetchingPreviousPage}
-                bottomRef={bottomRef}
+                hasNextPage={hasNextPage}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                fetchNextPage={fetchNextPage}
+                isFetchingNextPage={isFetchingNextPage}
               />
 
               <Divider />

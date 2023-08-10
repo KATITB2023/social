@@ -1,15 +1,16 @@
-import React from "react";
 import {
-  Image,
-  Popover,
-  PopoverHeader,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Text,
   Button,
   Flex,
+  Image,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Text,
 } from "@chakra-ui/react";
+import React from "react";
+import { useRerender } from "~/hooks/useRerender";
 import { api } from "~/utils/api";
 import { OtherReactionButton, TopReactionButton } from "./Button";
 
@@ -37,9 +38,42 @@ type ReactionButtonProps = {
   id: number;
 };
 const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
-  const reactMutation = api.feed.react.useMutation();
+  const client = api.useContext();
+  const rerender = useRerender();
+  const reactMutation = api.feed.react.useMutation({
+    onSuccess(data, variables) {
+      const oldData = client.feed.getFeeds.getInfiniteData({});
+      let found = false;
+      oldData?.pages.forEach((page) => {
+        if (found) return;
+        page.data.forEach((feed) => {
+          if (found) return;
+          if (feed.id === variables.feedId) {
+            const reaction = feed.reactions[variables.reaction];
+            if (reaction) {
+              if (data) {
+                reaction.count++;
+              } else {
+                reaction.count--;
+              }
+              if (reaction.count === 0) {
+                delete feed.reactions[variables.reaction];
+              }
+            } else {
+              feed.reactions[variables.reaction] = {
+                count: 1,
+                reacted: true,
+              };
+            }
+            found = true;
+            rerender();
+          }
+        });
+      });
+    },
+  });
   const handleReact = (reaction: string) => {
-    const result = reactMutation.mutate({
+    reactMutation.mutate({
       feedId: id,
       reaction: reaction,
     });
@@ -55,10 +89,23 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
     }
   });
   const defaultReactionNames = Object.values(ReactionOption).splice(0, 3);
-  const topReactionNames = sortedReactionNames.length !== 0 ? sortedReactionNames.splice(0, 3) : defaultReactionNames;
+  const topReactionNames =
+    sortedReactionNames.length !== 0
+      ? sortedReactionNames.splice(0, 3)
+      : defaultReactionNames;
+  let i = 0;
+  while (topReactionNames.length < 3) {
+    const reaction = defaultReactionNames[i];
+    if (!reaction) break;
+    i++;
+    if (topReactionNames.includes(reaction)) {
+      continue;
+    }
+    topReactionNames.push(reaction);
+  }
   const unusedReactions = Object.values(ReactionOption).filter(
     (reaction) => !topReactionNames.includes(reaction)
-  );  
+  );
   return (
     <Flex
       flexDirection="row"

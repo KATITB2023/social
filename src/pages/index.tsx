@@ -1,18 +1,18 @@
-import { Flex } from "@chakra-ui/react";
-import React, { useEffect, useRef } from "react";
-import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
-import Feed from "~/components/feeds/Feed";
+import { Box, Flex } from "@chakra-ui/react";
 import { useInView } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { useEffect, useRef } from "react";
+import BackgroundAndNavbar from "~/components/feeds/BackgroundAndNavbar";
+import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
-import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import { api } from "~/utils/api";
 
 export default function FeedsPage() {
   useSession({ required: true });
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const bottomView = useInView(bottomRef);
 
-  const { data, hasNextPage, fetchNextPage } =
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     api.feed.getFeeds.useInfiniteQuery(
       {},
       {
@@ -23,32 +23,34 @@ export default function FeedsPage() {
     );
 
   useEffect(() => {
-    if (bottomView && hasNextPage) {
+    if (bottomView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage().catch((e) => console.log(e));
     }
-  }, [bottomView, hasNextPage, fetchNextPage]);
+  }, [bottomView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   return (
     <Layout title={"Beranda"}>
       <BackgroundAndNavbar>
-        <Flex flexDirection={"column"} justifyContent={"center"}>
-          {data?.pages
-            .flatMap((page) => page.data)
-            .map((feed) => {
-              return (
-                <Feed
-                  key={feed.id}
-                  reactions={feed.reactions}
-                  attachmentUrl={feed.attachmentUrl}
-                  createdAt={feed.createdAt}
-                  text={feed.text}
-                  id={feed.id}
-                  read={feed.read}
-                />
-              );
-            })}
-          <div ref={bottomRef}></div>
-        </Flex>
+        <Box>
+          <Flex flexDirection={"column"} justifyContent={"center"}>
+            {data?.pages
+              .flatMap((page) => page.data)
+              .map((feed) => {
+                return (
+                  <Feed
+                    key={feed.id}
+                    reactions={feed.reactions}
+                    attachmentUrl={feed.attachmentUrl}
+                    createdAt={feed.createdAt}
+                    text={feed.text}
+                    id={feed.id}
+                    read={feed.read}
+                  />
+                );
+              })}
+            <div ref={bottomRef}></div>
+          </Flex>
+        </Box>
       </BackgroundAndNavbar>
     </Layout>
   );

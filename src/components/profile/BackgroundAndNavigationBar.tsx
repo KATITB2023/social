@@ -19,7 +19,7 @@ export default function BackgroundAndNavigationBar({
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar currentPage="Profile"/>
+        <Navbar/>
         {children}
       </Flex>
     </Box>
