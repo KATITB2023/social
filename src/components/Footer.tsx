@@ -78,34 +78,34 @@ const Footer = () => {
         <Divider my="20px" />
 
         <Flex gap={"13px"} justifyContent={"start"} w={"full"}>
-          <Link href="/" color="white">
+          <Link href="https://twitter.com/oskmitb" color="white">
             <Image
               src="/footer/foot-twitter.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          <Link href="https://www.instagram.com/oskm.itb/" color="white">
             <Image
               src="/footer/foot-instagram.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          <Link href="https://www.youtube.com/channel/UCmkkBEqwMZ1SEZN937pdpgA" color="white">
             <Image
               src="/footer/foot-youtube.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          {/* <Link href="/" color="white">
             <Image
               src="/footer/foot-linkedin.png"
               draggable="false"
               loading="lazy"
             />
-          </Link>
+          </Link> */}
         </Flex>
 
         <Box marginTop="22px" alignItems="left">

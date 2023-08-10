@@ -1,6 +1,6 @@
-import { hash } from "bcrypt";
 import { faker } from "@faker-js/faker";
 import { PrismaClient, Status } from "@prisma/client";
+import { hash } from "bcrypt";
 
 void (async () => {
   let nim = 0;
