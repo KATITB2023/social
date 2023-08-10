@@ -91,104 +91,114 @@ const SubmitPopUp = ({
   return (
     <Flex
       position={"fixed"}
-      w={"full"}
-      h={"full"}
+      w={"100vw"}
+      h={"100vh"}
       top={0}
       left={0}
       display={isSubmitting ? "block" : "none"}
       zIndex={3}
     >
-      {/* Black overlay */}
       <Flex
-        bg={"black"}
+        position={"relative"}
         w={"full"}
         h={"full"}
-        top={0}
-        left={0}
-        opacity={0.7}
-        onClick={() => submittingFile(false)}
-      />
-
-      <Flex
-        mx={"auto"}
-        alignSelf={"center"}
-        backgroundColor={"purple.1"}
-        alignItems={"center"}
         justifyContent={"center"}
-        height="397px"
-        width="272px"
-        borderRadius="24px"
-        zIndex={3}
+        alignItems={"center"}
       >
-        <Center
-          flexDirection="column"
-          justifyContent="center"
-          alignItems={"center"}
-        >
-          <Image
-            src="/close.png"
-            mt="40px"
-            mb="20px"
-            alignSelf={"right"}
-            onClick={() => submittingFile(false)}
-            alt={"close"}
-          />
-          <Image
-            src="/qmark.png"
-            mb="20px"
-            alignSelf={"center"}
-            alt={"qmark"}
-          />
-          <Heading mb="10px">SUBMIT</Heading>
-          <Text
-            alignSelf={"center"}
-            textAlign={"center"}
-            mb="20px"
-            opacity={0.6}
-          >
-            Apakah kamu yakin ingin melakukan submisi tugas? Tugas yang telah
-            tersubmit tidak bisa diedit kembali
-          </Text>
+        {/* Black overlay */}
+        <Flex
+          position={"absolute"}
+          bg={"black"}
+          w={"100vw"}
+          h={"100vh"}
+          top={0}
+          left={0}
+          opacity={0.7}
+          onClick={() => submittingFile(false)}
+          zIndex={2}
+        />
 
-          <HStack>
-            <Button
-              backgroundColor={"gray.600"}
-              display="flex"
-              justifyContent="center"
-              verticalAlign="center"
-              alignItems="center"
-              textColor={"yellow.5"}
-              borderColor={"yellow.5"}
-              borderWidth="2px"
-              width="98px"
-              height="48px"
-              borderRadius="10px"
+        <Flex
+          mx={"auto"}
+          alignSelf={"center"}
+          backgroundColor={"purple.1"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          height="397px"
+          width="272px"
+          borderRadius="24px"
+          zIndex={10}
+        >
+          <Center
+            flexDirection="column"
+            justifyContent="center"
+            alignItems={"center"}
+          >
+            <Image
+              src="/close.png"
+              mt="40px"
+              mb="20px"
+              alignSelf={"right"}
               onClick={() => submittingFile(false)}
+              alt={"close"}
+            />
+            <Image
+              src="/qmark.png"
+              mb="20px"
+              alignSelf={"center"}
+              alt={"qmark"}
+            />
+            <Heading mb="10px">SUBMIT</Heading>
+            <Text
+              alignSelf={"center"}
+              textAlign={"center"}
+              mb="20px"
+              opacity={0.6}
             >
-              <Text fontFamily="subheading" size="SH5" color="yellow.5">
-                Cancel
-              </Text>
-            </Button>
-            <Button
-              backgroundColor={"yellow.5"}
-              display="flex"
-              justifyContent="center"
-              verticalAlign="center"
-              alignItems="center"
-              textColor={"gray.600"}
-              borderColor={"yellow.5"}
-              borderWidth="2px"
-              width="98px"
-              height="48px"
-              borderRadius="10px"
-              onClick={() => void handleFileSubmit()}
-            >
-              <Text fontFamily="subheading" size="SH5" color="purple.2">
-                Submit
-              </Text>
-            </Button>
-          </HStack>
-        </Center>
+              Apakah kamu yakin ingin melakukan submisi tugas? Tugas yang telah
+              tersubmit tidak bisa diedit kembali
+            </Text>
+
+            <HStack>
+              <Button
+                backgroundColor={"gray.600"}
+                display="flex"
+                justifyContent="center"
+                verticalAlign="center"
+                alignItems="center"
+                textColor={"yellow.5"}
+                borderColor={"yellow.5"}
+                borderWidth="2px"
+                width="98px"
+                height="48px"
+                borderRadius="10px"
+                onClick={() => submittingFile(false)}
+              >
+                <Text fontFamily="subheading" size="SH5" color="yellow.5">
+                  Cancel
+                </Text>
+              </Button>
+              <Button
+                backgroundColor={"yellow.5"}
+                display="flex"
+                justifyContent="center"
+                verticalAlign="center"
+                alignItems="center"
+                textColor={"gray.600"}
+                borderColor={"yellow.5"}
+                borderWidth="2px"
+                width="98px"
+                height="48px"
+                borderRadius="10px"
+                onClick={() => void handleFileSubmit()}
+              >
+                <Text fontFamily="subheading" size="SH5" color="purple.2">
+                  Submit
+                </Text>
+              </Button>
+            </HStack>
+          </Center>
+        </Flex>
       </Flex>
     </Flex>
   );
