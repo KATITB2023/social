@@ -1,8 +1,13 @@
-import authMiddleware from "next-auth/middleware";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequestWithAuth, withAuth } from "next-auth/middleware";
+import {
+  NextResponse,
+  type NextFetchEvent,
+} from "next/server";
 
-export async function middleware(...args: unknown[]) {
-  const request = args[0] as NextRequest;
+export async function middleware(
+  request: NextRequestWithAuth,
+  event: NextFetchEvent
+) {
   const url = new URL(request.url);
   if (
     !["/login", "/forgot-password", "/reset-password", "/api"].find((path) =>
@@ -12,8 +17,11 @@ export async function middleware(...args: unknown[]) {
       url.pathname.endsWith(ctype)
     )
   ) {
-    // @ts-expect-error args
-    return authMiddleware(...args);
+    return withAuth({
+      pages: {
+        signIn: "/login",
+      },
+    })(request, event);
   }
   return NextResponse.next();
 }
