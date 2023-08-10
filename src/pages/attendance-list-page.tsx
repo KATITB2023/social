@@ -19,8 +19,10 @@ import {
   Spinner,
   // position
 } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 
 import Navbar from "~/components/Navbar";
+import { map } from "@trpc/server/observable";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -58,7 +60,7 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Image
-        src="background.svg"
+        src="background.png"
         alt="background"
         height="100%"
         zIndex="-2"
@@ -170,27 +172,6 @@ const validTime = (startTime: Date, endTime: Date) => {
   return currentTime >= startTime && currentTime <= endTime;
 };
 
-// const SuccessToast = ({ children }) => {
-//   const toast = useToast();
-
-//   return (
-//     <Box
-//       position="fixed"
-//       top="50%"
-//       left="50%"
-//       transform="translate(-50%, -50%)"
-//       zIndex="9999"
-//       borderRadius="24px"
-//       bg="var(--purple-purple-1, #340C8F)"
-//       shadow="0px 4px 25px 0px rgba(255, 255, 255, 0.50)"
-//     >
-//       <Image src="hadir.svg" alt="icon"/>
-//       <Heading size="SH4">HADIR!</Heading>
-//       {children}
-//     </Box>
-//   );
-// };
-
 const EventCard = ({
   event,
   status,
@@ -300,13 +281,12 @@ interface EventsDay {
 
 
 const AttendListPage = () => {
-  const eventQuery = api.absensi.viewAbsensi.useQuery();
-  const eventList = eventQuery?.data;
-
-  const eventsByDay: EventsDay[] = [];
-
+  const { data: session } = useSession({ required: true });
+  const hasil = api.absensi.viewAbsensi.useQuery();
+  const eventList = hasil.data;
+  const eventsByDay: Map<string, AbsenStatus[]> = new Map();
   if (eventList) {
-    eventList.forEach(({ event, record, status }) => {
+    eventList.forEach(({ event, record, status, day }) => {
       const dayId = event.dayId;
 
       const absenStatus: AbsenStatus = {
@@ -314,16 +294,12 @@ const AttendListPage = () => {
         record,
         status,
       };
-
-      const dayIndex = eventsByDay.findIndex(({ day }) => dayId === day);
-
-      if (dayIndex === -1) {
-        eventsByDay.push({
-          day: dayId,
-          events: [absenStatus],
-        });
-      } else if (eventsByDay[dayIndex]){
-        eventsByDay[dayIndex]?.events.push(absenStatus);
+      if(eventsByDay.has(day)) {
+        let temp = eventsByDay.get(day)!;
+        eventsByDay.delete(day);
+        eventsByDay.set(day, temp.concat([absenStatus]));
+      } else {
+        eventsByDay.set(day, [absenStatus]);
       }
     });
   }
@@ -332,24 +308,18 @@ const AttendListPage = () => {
     <BackgroundAndNavbar>
       <Container bgImage="url('attendancelist_background.svg')">
         <Flex flexDir="column">
-          <Heading size="H4" color="yellow.400" mx="auto" mt="128px">
+          <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
             ATTENDANCE LIST
           </Heading>
           <Flex flexDir="column">
-            {eventsByDay?.map((item) => (
-              <Flex key={item.day} flexDir="column" gap="20px" mt="44px">
-                <Heading size="SH4">{item.day}</Heading>
-                {item.events.map((eventsInDay, index) => (
+            {Array.from(eventsByDay.keys()).map((item) => (
+              <Flex  flexDir="column" gap="20px" mt="44px">
+                <Heading size="SH4">{item}</Heading>
+                 {eventsByDay.get(item)!.map((eventsInDay, index) => (
                   <EventCard key={index} event={eventsInDay.event} status={eventsInDay.status} />
-                ))}
+                ))} 
               </Flex>
             ))}
-            {/* <Flex flexDir="column" gap="20px" mt="44px">
-              <Heading size="SH4">DAY 1</Heading>
-              {eventList?.map((item) => (
-                <EventCard key={item.event.id} event={item.event} status={item.status}/>
-              ))}
-            </Flex> */}
           </Flex>
         </Flex>
       </Container>
