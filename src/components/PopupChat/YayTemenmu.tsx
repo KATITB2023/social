@@ -1,7 +1,11 @@
 import React, { FC } from "react";
 import Popup from "~/components/PopupChat/PopUp";
 
-const YayTemanmu: React.FC = () => {
+const YayTemanmu = ({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <div>
       <Popup
@@ -9,6 +13,7 @@ const YayTemanmu: React.FC = () => {
         content2="temenmu"
         content3="udah reveal"
         content4="profil nih!"
+        setOpen={setOpen}
       />
     </div>
   );
