@@ -1,97 +1,210 @@
 import { NextPage } from "next";
-import { useState } from "react";
-import Layout from "~/layout";
+import { useEffect, useState } from "react";
+
 import {
-  Container,
-  Heading,
-  theme,
-  Text,
-  Center,
   Box,
-  Flex,
-  Image,
-  Icon,
-  useDisclosure,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Spacer,
+  Flex,
+  Icon,
+  Image,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  MdPersonAddAlt,
-  MdOutlineHome,
+  MdChatBubbleOutline,
+  MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
-  MdStarOutline,
-  MdChatBubbleOutline,
-  MdOutlinePersonOutline,
-  MdLogout,
   MdOutlineAssignmentInd,
+  MdOutlineHome,
+  MdOutlinePersonOutline,
+  MdPersonAddAlt,
+  MdStarOutline,
 } from "react-icons/md";
+import Layout from "~/layout";
+import { IconType } from "react-icons";
+import { useRouter } from "next/router";
 
-const Navbar: NextPage = () => {
+type PairDrawerButton = {
+  icon: IconType;
+  text: string;
+  route: string;
+};
+
+const DrawerButton = ({
+  data,
+  type,
+}: {
+  data: PairDrawerButton;
+  type: number;
+}) => {
+  const router = useRouter();
+  // Type 0 = default
+  // Type 1 = current
+  // Type 2 = special for logout
+
+  return (
+    <Flex
+      flexDir="row"
+      alignItems="center"
+      color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
+      py={3}
+      borderRadius={2}
+      cursor={"pointer"}
+      borderLeft={type == 1 ? "2px" : "0"}
+      _hover={{ bg: "#3D2283" }}
+      onClick={() => void router.push(data.route)}
+    >
+      <Icon as={data.icon} height="20px" width="20px" marginLeft="10px"></Icon>
+      <Text marginTop="3px" size="B4" marginLeft="10px">
+        {data.text}
+      </Text>
+    </Flex>
+  );
+};
+
+const Navbar = ({ currentPage }: { currentPage: string }) => {
+  const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const DrawerArray: PairDrawerButton[] = [
+    {
+      icon: MdOutlineHome,
+      text: "Back to Home",
+      route: "/",
+    },
+    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    {
+      icon: MdOutlineAssignmentInd,
+      text: "Attendance",
+      route: "/",
+    },
+    {
+      icon: MdOutlineAssignment,
+      text: "Assignment",
+      route: "/assignment-list",
+    },
+    { icon: MdStarOutline, text: "Showcase", route: "/" },
+    {
+      icon: MdChatBubbleOutline,
+      text: "Chat",
+      route: "/chat",
+    },
+    {
+      icon: MdOutlinePersonOutline,
+      text: "Profile",
+      route: "/profile",
+    },
+  ];
+
+  const LogoutButtonData : PairDrawerButton = {
+      icon: MdLogout,
+      text: "Logout",
+      route: "/",
+  }
+
+  //   Scroll mechanism algorithm
+  useEffect(() => {
+    let prevScrollPosY = window.scrollY;
+
+    const detectScrollY = () => {
+      if (window.scrollY <= prevScrollPosY) {
+        setNavbarPos(0);
+      } else {
+        setNavbarPos(-100);
+      }
+      prevScrollPosY = window.scrollY;
+    };
+
+    window.addEventListener("scroll", detectScrollY);
+    return () => {
+      window.removeEventListener("scroll", detectScrollY);
+    };
+  });
 
   return (
     <Layout title="Navbar">
-      <Center>
-        <Flex
-          background="url('/navbarbg.svg')"
-          w="90%"
-          minHeight="60px"
+      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+      <Flex
+        position={"relative"}
+        display={"block"}
+        backgroundColor={"transparent"}
+        h={"60px"}
+        my={"20px"}
+      />
+
+      <Flex
+        my={"20px"}
+        mx={"auto"}
+        top={navbarPos}
+        position={"fixed"}
+        insetX={0}
+        zIndex={1}
+        background="url('/navbarbg.svg')"
+        maxWidth={"343px"}
+        w={"full"}
+        h="60px"
+        borderRadius="50px"
+        flexDir="row"
+        alignItems="center"
+        paddingY="2%"
+        paddingX="22px"
+        boxShadow="0px 0px 20px 0px #FFFC8366"
+        transitionDuration={"0.3s"}
+        transitionTimingFunction={"ease-in-out"}
+      >
+        <Box
+          backgroundColor="#0B0A0A"
+          opacity="0.6"
           borderRadius="50px"
           position="absolute"
-          top="20px"
-          flexDir="row"
-          alignItems="center"
-          paddingY="2%"
-          boxShadow="0px 0px 10px #FFFC83"
-          paddingX="22px"
-        >
-          <Box
-            backgroundColor="#0B0A0A"
-            opacity="0.6"
-            borderRadius="50px"
-            position="absolute"
-            top="0"
-            left="0"
-            bottom="0"
-            right="0"
-          ></Box>
-          <Image
-            src="ekor.svg"
-            position="absolute"
-            left="0"
-            height="full"
-            objectFit="cover"
-            objectPosition="center"
-            borderRadius="50px"
-          ></Image>
-          <Image
-            objectFit="cover"
-            objectPosition="center"
-            src="/Vector.svg"
-            alt="OSKM ITB"
-            zIndex="2"
+          top="0"
+          left="0"
+          bottom="0"
+          right="0"
+        />
+
+        <Image
+          src="/ekor.svg"
+          position="absolute"
+          left="0"
+          height="full"
+          objectFit="cover"
+          objectPosition="center"
+          borderRadius="50px"
+        />
+
+        <Image
+          objectFit="cover"
+          objectPosition="center"
+          src="/Vector.svg"
+          alt="OSKM ITB"
+          zIndex="2"
+        />
+
+        <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
+          <Icon
+            cursor={"pointer"}
+            color="white"
+            as={MdPersonAddAlt}
+            height="30px"
+            width="30px"
+            marginRight="10px"
           />
-          <Box w="20%"></Box>
-          <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
-            <Icon
-              color="white"
-              as={MdPersonAddAlt}
-              height="30px"
-              width="30px"
-              marginRight="10px"
-            />
-            <Image
-              src="/hamburgermenu.svg"
-              height="30px"
-              width="30px"
-              onClick={onOpen}
-            ></Image>
-          </Flex>
+          <Image
+            cursor={"pointer"}
+            src="/hamburgermenu.svg"
+            height="30px"
+            width="30px"
+            onClick={onOpen}
+          />
         </Flex>
-      </Center>
+      </Flex>
+
       <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
@@ -99,7 +212,7 @@ const Navbar: NextPage = () => {
             <Flex
               height="100%"
               width="100%"
-              backgroundColor="#1D0263"
+              backgroundColor="navy.1"
               position="absolute"
               top="0"
               justifyContent="space-evenly"
@@ -108,101 +221,20 @@ const Navbar: NextPage = () => {
               paddingX="20px"
               flexDir="column"
               zIndex="3"
-              opacity="1"
             >
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineHome}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Back to Home
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdNewspaper}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Feeds
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineAssignmentInd}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="10px">
-                  Attendance
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineAssignment}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="10px">
-                  Assignment
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdStarOutline}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Showcase
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdChatBubbleOutline}
-                  height="20px"
-                  width="20px"
-                  marginLeft="11px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="9px">
-                  Chat
-                </Text>
-              </Flex>
-              <Flex
-                flexDir="row"
-                alignItems="center"
-                color="yellow"
-                borderLeft="2px"
-              >
-                <Icon
-                  as={MdOutlinePersonOutline}
-                  height="22px"
-                  width="22px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="2px" size="B4" marginLeft="10px">
-                  Profile
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="#E8553E">
-                <Icon
-                  as={MdLogout}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Logout
-                </Text>
-              </Flex>
+              {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
+                return (
+                  <DrawerButton
+                    key={idx}
+                    data={tuple}
+                    type={tuple.text === currentPage ? 1 : 0}
+                  />
+                );
+              })}
+              <DrawerButton
+                data={LogoutButtonData}
+                type={2}
+              />
             </Flex>
           </DrawerBody>
         </DrawerContent>

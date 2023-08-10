@@ -4,4 +4,5 @@ export interface Leaderboard {
   profileImage: string | null;
   point: number;
   rank: number;
+  nim: string;
 }

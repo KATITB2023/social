@@ -1,11 +1,19 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { Status } from "@prisma/client";
+import {
+  type AttendanceEvent,
+  type AttendanceRecord,
+  Status,
+} from "@prisma/client";
 
 export const absensiRouter = createTRPCRouter({
   viewAbsensi: protectedProcedure.query(async ({ ctx }) => {
-    const absenStatus = [];
+    const absenStatus: {
+      event: AttendanceEvent;
+      record: AttendanceRecord | null;
+      status: Status | null;
+    }[] = [];
     const student = ctx.session.user;
 
     const getEventData = await ctx.prisma.attendanceEvent.findMany({
@@ -39,6 +47,7 @@ export const absensiRouter = createTRPCRouter({
         record = eventData.record[0];
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { record: r, ...rest } = eventData;
 
       absenStatus.push({ event: rest, record, status: status });

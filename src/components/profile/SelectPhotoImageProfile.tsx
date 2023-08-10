@@ -1,25 +1,79 @@
 import React, { useState } from "react";
-import WebcamComponent from "./WebcamComponent";
-import { Box, Image, Text, Button, Collapse} from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Button,
+  Collapse,
+  useToast,
+  Spinner,
+} from "@chakra-ui/react";
+import { sanitizeURL, uploadFile } from "~/utils/file";
+import { api } from "~/utils/api";
+import { TRPCClientError } from "@trpc/client";
 
 export const SelectPhotoImageProfile = ({
   open,
   setOpen,
-  changeImage
+  nim,
 }: {
   open: boolean;
-  setOpen: any;
-  changeImage : any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  nim: string;
 }) => {
   const [pictureSelected, setPictureSelected] = useState(false);
-  const [image, setImage] = useState<any>(undefined);
+  const [imageSelected, setImageSelected] = useState<File | undefined>(
+    undefined
+  );
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const utils = api.useContext();
+  const toast = useToast();
+  const profileMutaion = api.profile.editProfile.useMutation({
+    onSuccess(): void {
+      void utils.profile.getUserProfile.invalidate();
+    },
+  });
 
   function onImageChange(file: FileList) {
-    if (file[0]){
-        setPictureSelected(true);
-        setImage(URL.createObjectURL(file[0]!));
-        // console.log(image)
+    if (file[0]) {
+      setPictureSelected(true);
+      setImageSelected(file[0]);
     }
+  }
+
+  async function updateImage(file: File) {
+    if (!file) return;
+    const url = sanitizeURL(`https://cdn.oskmitb.com/${nim}`);
+    try {
+      setIsUpdating(true);
+      await uploadFile(url, file, (progressEvent) => {
+        if (progressEvent.loaded == progressEvent.progress) {
+        }
+      });
+      const res = await profileMutaion.mutateAsync({
+        image: url,
+      });
+      toast({
+        title: "Success",
+        status: "success",
+        description: res.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (e: unknown) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    setIsUpdating(false);
+    return;
   }
 
   return (
@@ -70,12 +124,16 @@ export const SelectPhotoImageProfile = ({
               </Text>
               <Box display={"flex"} gap={"15px"}>
                 <Image
-                  onClick={() => {changeImage(undefined); setOpen(false)}}
+                  onClick={() => {
+                    setOpen(false);
+                  }}
                   src="/components/trashbin.svg"
+                  alt="trash icon"
                 />
                 <Image
                   onClick={() => setOpen(false)}
                   src="/components/closeButton.svg"
+                  alt="close icon"
                 />
               </Box>
             </Box>
@@ -93,7 +151,7 @@ export const SelectPhotoImageProfile = ({
               alignItems={"center"}
               gap={"10px"}
             >
-              <Image src="/components/addFile.svg" />
+              <Image src="/components/addFile.svg" alt="add file" />
 
               <Box display={"flex"} flexDirection={"column"} gap={"6px"}>
                 <Button
@@ -111,11 +169,16 @@ export const SelectPhotoImageProfile = ({
                 </Button>
 
                 <input
-                    hidden
+                  hidden
                   type="file"
                   id="img"
                   accept="image/*"
-                  onChange={(e) => onImageChange(e.target.files!)}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      onImageChange(files);
+                    }
+                  }}
                 />
 
                 {pictureSelected ? (
@@ -138,13 +201,21 @@ export const SelectPhotoImageProfile = ({
               h={"48px"}
               background={pictureSelected ? "yellow.1" : "gray.400"}
               onClick={() => {
-                pictureSelected && changeImage(image); setOpen(false); setPictureSelected(false); 
+                setOpen(false);
+                if (pictureSelected) {
+                  void updateImage(imageSelected as File);
+                }
+                setPictureSelected(false);
               }}
             >
-              <Text fontWeight={700} color={"white"} size={"SH5"}>
-                {" "}
-                Submit{" "}
-              </Text>
+              {isUpdating ? (
+                <Spinner />
+              ) : (
+                <Text fontWeight={700} color={"white"} size={"SH5"}>
+                  {" "}
+                  Submit{" "}
+                </Text>
+              )}
             </Button>
           </Box>
         </Box>
