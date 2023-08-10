@@ -10,9 +10,12 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
 import ProfilePicture from "./ProfilePicture";
 import { uploadFile } from "~/utils/file";
+import Header from "../chat/Header";
 
 interface ImageCropProps {
   imageFile: File;
@@ -41,8 +44,6 @@ export default function ImageCropDrawer({
   isOpen,
   onOpen,
   onClose,
-  setCroppedImage,
-  nim,
   updateImage,
 }: ImageCropProps &
   useDisclosureType & {
@@ -59,7 +60,6 @@ export default function ImageCropDrawer({
 
   const [currPreview, setCurrPreview] = useState<File | undefined>();
   const [imageURL, setImageURL] = useState<string>("");
-  const cdnURL = `https://cdn.oskmitb.com/${nim}`;
 
   useEffect(() => {
     if (imageFile) {
@@ -97,10 +97,23 @@ export default function ImageCropDrawer({
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="full">
       <DrawerOverlay />
       <DrawerContent bgColor="navy.1">
-        <DrawerHeader>Crop Image</DrawerHeader>
+        <DrawerHeader>
+          <Heading size="H4" color="yellow.5">
+            Crop Image
+          </Heading>
+        </DrawerHeader>
         <DrawerBody>
-          <Flex flexDir="column">
-            <Button onClick={onClose}> Cancel </Button>
+          <Flex flexDir="column" gap="30px" alignItems={"center"}>
+            <Button
+              onClick={onCancel}
+              alignSelf="flex-end"
+              backgroundColor="pink.3"
+            >
+              {" "}
+              <Text size="B3" color="white">
+                Cancel{" "}
+              </Text>
+            </Button>
             <Box aspectRatio="1 / 1" width="100%" position="relative">
               <Cropper
                 image={imageURL}
@@ -111,12 +124,20 @@ export default function ImageCropDrawer({
                 onZoomChange={onZoomChange}
                 onCropComplete={onCropComplete}
                 style={{
-                  containerStyle: { width: "100%", aspectRatio: "100%" },
-                  mediaStyle: { width: "100%", aspectRatio: "100%" },
+                  containerStyle: {
+                    height: "100%",
+                    width: "100%",
+                    overflow: "hidden",
+                    background: "#000",
+                  },
+                  cropAreaStyle: { minHeight: "100%", minWidth: "100%" },
                 }}
               />
             </Box>
-            <Button onClick={updateCurrPreview}> Preview Profile </Button>
+            <Button onClick={updateCurrPreview} alignSelf="center">
+              {" "}
+              Preview Profile{" "}
+            </Button>
             <Box width="164px" aspectRatio={"1/1"}>
               {currPreview && (
                 <ProfilePicture
@@ -126,16 +147,22 @@ export default function ImageCropDrawer({
                 />
               )}
             </Box>
-            <Button
-              onClick={() => {
-                onClose();
-                setCroppedImage(currPreview);
-                void updateImage(currPreview as File);
-              }}
-            >
-              {" "}
-              Submit!
-            </Button>
+
+            {currPreview ? (
+              <Button
+                onClick={() => {
+                  onClose();
+                  void updateImage(currPreview);
+                  setZoom(1);
+                  setCrop({ x: 0, y: 0 });
+                  setCurrPreview(undefined);
+                }}
+                backgroundColor={"yellow.5"}
+              >
+                {" "}
+                Set Profile!
+              </Button>
+            ) : null}
           </Flex>
         </DrawerBody>
       </DrawerContent>
