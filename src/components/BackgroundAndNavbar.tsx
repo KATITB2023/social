@@ -16,11 +16,11 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         backgroundRepeat={"no-repeat"}
       >
         <Flex flexDirection="column">
-          <Navbar/>
+          <Navbar />
           {children}
         </Flex>
       </Box>
-      <Footer />  
+      <Footer />
     </>
   );
 }

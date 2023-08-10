@@ -99,7 +99,7 @@ const SubmitPopUp = ({
       zIndex={3}
     >
       {/* Black overlay */}
-      {/* <Flex
+      <Flex
         bg={"black"}
         w={"full"}
         h={"full"}
@@ -107,7 +107,7 @@ const SubmitPopUp = ({
         left={0}
         opacity={0.7}
         onClick={() => submittingFile(false)}
-      /> */}
+      />
 
       <Flex
         mx={"auto"}
