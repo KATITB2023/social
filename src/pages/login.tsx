@@ -248,7 +248,13 @@ const LoginForm = ({
               Login
             </Text>
           </Button>
-          <Link href="/forgot-password" size="B5" zIndex="5" lineHeight="18px" cursor={"pointer"} >
+          <Link
+            href="/forgot-password"
+            size="B5"
+            zIndex="5"
+            lineHeight="18px"
+            cursor={"pointer"}
+          >
             Lupa Password?
           </Link>
         </Flex>
@@ -270,14 +276,14 @@ const Login = ({
         position="absolute"
         width="100%"
         backgroundColor="gray.600"
-        zIndex={-1}
+        zIndex={0}
         minHeight="100vh"
       >
         <Flex
+          justifyContent={{ base: "center"}}
           alignItems="center"
           width="100%"
-          direction={"column"}
-          justifyContent={"center"}
+          flexDirection={"column"}
         >
           <LoginBackground />
           <LoginForm csrfToken={csrfToken} />
