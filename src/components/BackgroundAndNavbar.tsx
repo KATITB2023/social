@@ -8,7 +8,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
     <>
       <Box
         position="relative"
-        height="100vh"
+        height="100%"
         overflow={"hidden"}
         backgroundImage={"/background.png"}
         backgroundSize={"cover"}
