@@ -41,6 +41,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { userId, updatedAt, ...profileDetails } = currProfile;
       return {
         id: currProfile.user.id,
@@ -49,4 +50,5 @@ export const profileRouter = createTRPCRouter({
       };
     }
   ),
+  
 });

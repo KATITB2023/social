@@ -8,10 +8,10 @@ export const anonymousMessageRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
-        page: z.number().min(1).default(1),
+        cursor: z.number().min(1).default(1),
       })
     )
-    .query(async ({ ctx, input }): Promise<AnonChatHeader[]> => {
+    .query(async ({ ctx, input }) => {
       const chatHeaders = await ctx.prisma.userMatch.findMany({
         where: {
           AND: [
@@ -59,11 +59,11 @@ export const anonymousMessageRouter = createTRPCRouter({
         orderBy: {
           endedAt: "desc",
         },
-        skip: input.limit * (input.page - 1),
+        skip: input.limit * (input.cursor - 1),
         take: input.limit,
       });
 
-      return chatHeaders.map((chatHeader) => {
+      const data: AnonChatHeader[] = chatHeaders.map((chatHeader) => {
         const otherUser =
           chatHeader.firstUserId === ctx.session.user.id
             ? chatHeader.secondUser
@@ -75,6 +75,9 @@ export const anonymousMessageRouter = createTRPCRouter({
           });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { firstUser, secondUser, ...rest } = chatHeader;
+
         return {
           user: {
             id: otherUser.id,
@@ -83,10 +86,15 @@ export const anonymousMessageRouter = createTRPCRouter({
               ? null
               : otherUser.profile.image,
           },
+          userMatch: rest,
         };
       });
-    }),
 
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
+    }),
   infinite: protectedProcedure
     .input(
       z.object({

@@ -26,6 +26,10 @@ const generateKey = (queue: UserQueue, toFind = false) => {
   return key;
 };
 
+export const generateQueueKey = (userId: string) => {
+  return `USERQUEUE:${userId}`;
+};
+
 export const findMatch = async (queue: UserQueue) => {
   const key = generateKey(queue, true);
   const redis = Redis.getClient();
@@ -46,6 +50,13 @@ export const findMatch = async (queue: UserQueue) => {
     const queueLength = await redis.llen(key);
 
     if (queueLength === 0) {
+      const queueKey = generateQueueKey(queue.userId);
+      const queueExist = await redis.exists(queueKey);
+
+      if (queueExist !== 0) {
+        throw new Error("Queue already exist");
+      }
+
       if (!queue.isFindingFriend) {
         await lock.release();
         const insertKey = generateKey(queue, false);
@@ -54,6 +65,8 @@ export const findMatch = async (queue: UserQueue) => {
       } else {
         await redis.rpush(key, serializeUserQueue(queue));
       }
+
+      await redis.set(queueKey, JSON.stringify(queue));
       result = null;
     } else {
       const match = await redis.lpop(key);
@@ -67,6 +80,7 @@ export const findMatch = async (queue: UserQueue) => {
       }
 
       const matchQueue = deserializeUserQueue(match);
+      await redis.del(generateQueueKey(matchQueue.userId));
 
       result = {
         firstPair: matchQueue,
@@ -74,10 +88,6 @@ export const findMatch = async (queue: UserQueue) => {
           userId: queue.userId,
         },
       };
-    }
-  } catch (e) {
-    if (e instanceof Error) {
-      console.log(e.stack);
     }
   } finally {
     await lock.release();
@@ -96,6 +106,7 @@ export const cancelQueue = async (queue: UserQueue) => {
 
   try {
     await redis.lrem(key, 0, serializeUserQueue(queue));
+    await redis.del(queue.userId);
   } finally {
     await lock.release();
   }

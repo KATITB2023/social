@@ -1,7 +1,7 @@
 ##### DEPENDENCIES
 
 FROM --platform=linux/amd64 node:18-alpine3.17 AS deps
-RUN apk add --no-cache libc6-compat openssl1.1-compat
+RUN apk add --no-cache libc6-compat openssl1.1-compat git
 WORKDIR /app
 
 # Install Prisma Client - remove if not using Prisma
@@ -25,6 +25,11 @@ FROM --platform=linux/amd64 node:18-alpine3.17 AS builder
 ARG DATABASE_URL
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_WS_URL
+ARG NEXT_PUBLIC_BUCKET_API_KEY
+ENV DATABASE_URL=$DATABASE_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+ENV NEXT_PUBLIC_BUCKET_API_KEY=$NEXT_PUBLIC_BUCKET_API_KEY
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -53,12 +58,14 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/node_modules node_modules
+COPY --from=builder /app/dist dist
+COPY --from=builder /app/.next .next
 
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
+EXPOSE 3001
+ENV WS_PORT 3001
 
 CMD ["node", "dist/server/prod-server.js"]

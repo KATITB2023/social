@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
-import { currentlyTyping } from "../state";
+import { currentlyTyping, askingReveal } from "../state";
+import { type RoomChat } from "@prisma/client";
 
 export const messageEvent = createEvent(
   {
@@ -12,11 +13,46 @@ export const messageEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
+    let roomChat: RoomChat;
+
+    const roomChatFromSession = ctx.client.data.roomChat.get(input.receiverId);
+
+    if (!roomChatFromSession) {
+      const roomFromDb = await ctx.prisma.roomChat.findFirst({
+        where: {
+          OR: [
+            {
+              firstUserId: input.receiverId,
+              secondUserId: ctx.client.data.session.user.id,
+            },
+            {
+              secondUserId: input.receiverId,
+              firstUserId: ctx.client.data.session.user.id,
+            },
+          ],
+        },
+      });
+
+      if (roomFromDb !== null) {
+        roomChat = roomFromDb;
+      } else {
+        roomChat = await ctx.prisma.roomChat.create({
+          data: {
+            secondUserId: input.receiverId,
+            firstUserId: ctx.client.data.session.user.id,
+          },
+        });
+      }
+    } else {
+      roomChat = roomChatFromSession;
+    }
+
     const message = await ctx.prisma.message.create({
       data: {
         senderId: ctx.client.data.session.user.id,
         receiverId: input.receiverId,
         message: input.message,
+        roomChatId: roomChat.id,
       },
     });
 
@@ -106,5 +142,48 @@ export const anonTypingEvent = createEvent(
     modifyCurrentlyTyping(input.typing, user.id);
 
     ctx.io.to([receiverId]).emit("anonIsTyping", Object.keys(currentlyTyping));
+  }
+);
+
+export const askRevealEvent = createEvent(
+  {
+    name: "askReveal",
+    input: z.object({ agree: z.boolean() }),
+    authRequired: true,
+  },
+  async ({ ctx, input }) => {
+    const user = ctx.client.data.session.user;
+    const userId = user.id;
+    const currentMatch = ctx.client.data.match;
+
+    if (currentMatch === null) return;
+
+    const receiverId =
+      currentMatch.firstUserId === userId
+        ? currentMatch.secondUserId
+        : currentMatch.firstUserId;
+
+    if (askingReveal.has(receiverId)) {
+      if (input.agree) {
+        const match = await ctx.prisma.userMatch.update({
+          where: {
+            id: currentMatch.id,
+          },
+          data: {
+            isRevealed: true,
+          },
+        });
+
+        ctx.io.to([userId, receiverId]).emit("askReveal", match, true);
+      } else {
+        ctx.io.to([receiverId]).emit("askReveal", currentMatch, false);
+      }
+
+      askingReveal.delete(receiverId);
+    } else {
+      askingReveal.add(userId);
+
+      ctx.io.to([receiverId]).emit("askReveal", currentMatch, true);
+    }
   }
 );

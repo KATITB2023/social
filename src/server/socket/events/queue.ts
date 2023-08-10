@@ -1,8 +1,15 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createEvent } from "~/server/socket/helper";
-import { cancelQueue, findMatch } from "~/server/socket/messaging/queue";
+import {
+  cancelQueue,
+  findMatch,
+  generateQueueKey,
+} from "~/server/socket/messaging/queue";
 import { ChatTopic, type UserQueue } from "~/server/types/message";
+import { Redis } from "~/server/redis";
+import { type UserMatch } from "@prisma/client";
+import { askingReveal } from "../state";
 
 export const findMatchEvent = createEvent(
   {
@@ -56,6 +63,7 @@ export const findMatchEvent = createEvent(
       data: {
         firstUserId: matchResult.firstPair.userId,
         secondUserId: matchResult.secondPair.userId,
+        topic: userQueue.topic,
       },
     });
 
@@ -94,6 +102,16 @@ export const endMatchEvent = createEvent(
       otherSocket.data.match = null;
     }
 
+    if (match.endedAt !== null) {
+      if (askingReveal.has(match.firstUserId)) {
+        askingReveal.delete(match.firstUserId);
+      }
+
+      if (askingReveal.has(match.secondUserId)) {
+        askingReveal.delete(match.secondUserId);
+      }
+    }
+
     ctx.io.to([match.firstUserId, match.secondUserId]).emit("endMatch", match);
   }
 );
@@ -128,6 +146,23 @@ export const checkMatchEvent = createEvent(
     input: undefined,
   },
   async ({ ctx }) => {
+    const userRawQueue = await Redis.getClient().get(
+      generateQueueKey(ctx.client.data.session.user.id)
+    );
+
+    const result: {
+      queue: null | UserQueue;
+      match: null | UserMatch;
+    } = {
+      queue: null,
+      match: null,
+    };
+
+    if (userRawQueue) {
+      result.queue = JSON.parse(userRawQueue) as UserQueue;
+      return result;
+    }
+
     if (!ctx.client.data.match) {
       const userId = ctx.client.data.session.user.id;
       ctx.client.data.match = await ctx.prisma.userMatch.findFirst({
@@ -139,6 +174,7 @@ export const checkMatchEvent = createEvent(
     }
 
     ctx.client.data.matchQueue = null;
-    return ctx.client.data.match;
+    result.match = ctx.client.data.match;
+    return result;
   }
 );
