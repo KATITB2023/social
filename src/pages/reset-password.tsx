@@ -12,7 +12,6 @@ import {
 import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
@@ -21,52 +20,45 @@ type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
 };
 
+interface FormValues {
+  newPassword: string;
+  confirmPassword: string;
+}
+
 function Navbar2({ children }: childrenOnlyProps) {
   return (
-    <>
-      <Box position="relative" height="100vh">
-        <Flex
-          backgroundColor="gray.600"
-          position={"absolute"}
-          h={"100%"}
-          w={"100%"}
-          zIndex={0}
-        >
-          <LoginBackground />
-        </Flex>
-        <Flex flexDirection="column" h={"full"} w={"full"}>
-          <Navbar currentPage={"Forgot Password"} />
-          {children}
-        </Flex>
-      </Box>
-      <Footer/>
-    </>
+    <Box position="relative" minHeight="100vh" height="100%">
+      <Flex flexDirection="column">
+        <Navbar currentPage="Reset Password" />
+        {children}
+      </Flex>
+    </Box>
   );
 }
 
-const ForgotPasswordForm = () => {
+const ResetPasswordForm = () => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting, isDirty, isValid },
     reset,
-  } = useForm<{ email: string }>({
+  } = useForm<FormValues>({
     mode: "onSubmit",
     defaultValues: {
-      email: "",
+      newPassword: "",
+      confirmPassword: "",
     },
   });
 
   const router = useRouter();
   const toast = useToast();
 
-  const requestResetPasswordMutation =
-    api.auth.requestResetPassword.useMutation();
+  const resetPasswordMutation = api.auth.resetPassword.useMutation();
 
   const handleSuccess = () => {
     toast({
       title: "Success",
-      description: "Berhasil mengirim email!",
+      description: "Berhasil mengubah password!",
       status: "success",
       duration: 2000,
       isClosable: true,
@@ -86,12 +78,44 @@ const ForgotPasswordForm = () => {
     });
   };
 
-  const onSubmit: SubmitHandler<{ email: string }> = async (data, event) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
     try {
       event?.preventDefault();
 
+      if (data.newPassword !== data.confirmPassword) {
+        handleError("Password tidak sama!");
+        reset({}, { keepErrors: true, keepValues: true });
+        return;
+      }
+
+      const userId =
+        router.query.userId instanceof Array
+          ? router.query.userId[0]
+          : router.query.userId;
+
+      if (!userId) {
+        handleError("User ID tidak ditemukan!");
+        reset({}, { keepErrors: true, keepValues: true });
+        return;
+      }
+
+      const token =
+        router.query.token instanceof Array
+          ? router.query.token[0]
+          : router.query.token;
+
+      if (!token) {
+        handleError("Token tidak ditemukan!");
+        reset({}, { keepErrors: true, keepValues: true });
+        return;
+      }
+
       // Call procedure to send email
-      await requestResetPasswordMutation.mutateAsync(data);
+      await resetPasswordMutation.mutateAsync({
+        userId,
+        token,
+        newPassword: data.newPassword,
+      });
 
       handleSuccess();
       reset();
@@ -106,17 +130,27 @@ const ForgotPasswordForm = () => {
   return (
     <Navbar2>
       <Flex
+        position="absolute"
         width="100%"
+        backgroundColor="gray.600"
         zIndex={0}
-        justifyContent={"center"}
+        minHeight="100vh"
+        justifyContent={{ base: "center", md: "end" }}
         alignItems="center"
-        height="80vh"
+        paddingInline={{ base: "0", md: "15vw" }}
       >
+        <LoginBackground />
         <Flex
-          flexDir="column"
+          width="300px"
+          height="250px"
+          direction="column"
           justifyContent="center"
           alignItems="center"
+          position="absolute"
           gap="25px"
+          left="50%"
+          top="50%"
+          transform="translate(-50%, -50%)"
         >
           <Flex
             direction="column"
@@ -138,23 +172,17 @@ const ForgotPasswordForm = () => {
               color="yellow.5"
               textShadow="0px 0px 10px yellow.5"
             >
-              LUPA PASSWORD?
-            </Text>
-            <Text color="#FFF" textAlign="center" size="B5">
-              Tenang saja, Spacefarers!
+              RESET PASSWORDMU!
             </Text>
           </Flex>
-
           <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
             <VStack spacing={7}>
-              <FormControl isInvalid={!!errors.email}>
+              <FormControl isInvalid={!!errors.newPassword}>
                 <Input
-                  type="email"
-                  placeholder="Email"
-                  {...register("email", {
-                    required: "Email tidak boleh kosong",
-                    validate: (value) =>
-                      value.includes("@") || "Email tidak valid",
+                  type="password"
+                  placeholder="Password Baru"
+                  {...register("newPassword", {
+                    required: "Password baru tidak boleh kosong",
                   })}
                   display="flex"
                   width="300px"
@@ -166,7 +194,30 @@ const ForgotPasswordForm = () => {
                   border="2px solid #989B9B"
                   background="#2F2E2E"
                 />
-                <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.newPassword?.message}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!errors.confirmPassword}>
+                <Input
+                  type="password"
+                  placeholder="Konfirmasi Password Baru"
+                  {...register("confirmPassword", {
+                    required: "Konfirmasi Password baru tidak boleh kosong",
+                  })}
+                  display="flex"
+                  width="300px"
+                  height="48pz"
+                  padding="12px 32px"
+                  gap="8px"
+                  alignItems="center"
+                  borderRadius="12px"
+                  border="2px solid #989B9B"
+                  background="#2F2E2E"
+                />
+                <FormErrorMessage>
+                  {errors.confirmPassword?.message}
+                </FormErrorMessage>
               </FormControl>
               <Button
                 type="submit"
@@ -195,4 +246,4 @@ const ForgotPasswordForm = () => {
   );
 };
 
-export default ForgotPasswordForm;
+export default ResetPasswordForm;
