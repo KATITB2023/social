@@ -94,36 +94,38 @@ import {
         margin='auto'
         overflow='hidden'
         zIndex='-10'
+        top={0}
+        left={0}
       >
         <Image
           src='moon-bg.png'
-          height={{ base: 'auto', md: '110%' }}
-          width={{ base: '110%', md: 'auto' }}
+          height={{ base: 'auto' }}
+          width={{ base: '110%'}}
           maxWidth='110%'
           alt=''
-          top={{ base: '100%', md: '50%' }}
-          left={{ base: '50%', md: '0' }}
+          top={{ base: '100%'}}
+          left={{ base: '50%'}}
           brightness='0.6'
           animation={`${rotating} infinite 90s linear`}
         />
         <Image
           src='stars-bg.png'
-          height={{ base: 'auto', md: '165%' }}
-          width={{ base: '165%', md: 'auto' }}
+          height={{ base: 'auto'}}
+          width={{ base: '165%'}}
           maxWidth='165%'
           alt=''
-          top={{ base: '100%', md: '50%' }}
-          left={{ base: '50%', md: '0' }}
+          top={{ base: '100%'}}
+          left={{ base: '50%'}}
           animation={`${rotating} infinite 120s linear`}
         />
         <Image
           src='asteroids-bg.png'
-          height={{ base: 'auto', md: '165%' }}
-          width={{ base: '165%', md: 'auto' }}
+          height={{ base: 'auto'}}
+          width={{ base: '165%' }}
           maxWidth='165%'
           alt=''
-          top={{ base: '100%', md: '50%' }}
-          left={{ base: '50%', md: '0' }}
+          top={{ base: '100%'}}
+          left={{ base: '50%'}}
           animation={`${rotating} infinite 140s linear`}
         />
         <Image

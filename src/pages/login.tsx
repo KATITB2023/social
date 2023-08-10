@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
 import LoginBackground from "~/components/login/login-background";
 
@@ -33,12 +34,26 @@ type childrenOnlyProps = {
 
 function Navbar2({ children }: childrenOnlyProps) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
-      <Flex flexDirection="column">
-        <Navbar currentPage=""/>
-        {children}
-      </Flex>
-    </Box>
+    <>
+      <Box position="relative" minHeight="100vh" height="auto">
+        {/* Grey layer */}
+        <Flex
+          position="absolute"
+          width="100%"
+          backgroundColor="gray.600"
+          zIndex={0}
+          minHeight="100%"
+        >
+          <LoginBackground />{" "}
+        </Flex>
+
+        <Flex flexDirection="column" h={"full"} w={"full"}>
+          <Navbar currentPage="" />
+          {children}
+        </Flex>
+      </Box>
+      <Footer/>
+    </>
   );
 }
 
@@ -82,7 +97,7 @@ const LoginForm = ({
   };
 
   const handleRedirect = () => {
-    void router.push("/profile");
+    void router.push("/");
   };
 
   const handleError = (message: string) => {
@@ -120,35 +135,28 @@ const LoginForm = ({
 
   return (
     <Flex
-      width="300px"
-      height="359.31px"
-      direction="column"
-      justifyContent={{ base: "center", md: "end" }}
+      flexDir={"column"}
+      justifyContent={"center"}
       alignItems="center"
-      position="absolute"
+      h={"full"}
       gap="25px"
     >
       <Flex
-        width="114px"
-        height="128.31px"
         gap="20px"
-        direction="column"
+        flexDir={"column"}
         justifyContent="center"
         alignItems="center"
+        zIndex={0}
       >
         <Image
-          src="logoOSKM.svg"
+          src="/logoOSKM.svg"
+          alt="logo OSKM"
           width="60px"
-          height="70.306px"
           style={{
             filter: "drop-shadow(0px 4px 11px rgba(255, 255, 255, 0.25))",
           }}
         />
-        <Heading
-          size={{ base: "xl", md: "3xl" }}
-          color="yellow.5"
-          textShadow={`0px 0px 10px `}
-        >
+        <Heading size={"H3"} color="yellow.5" textShadow={`0px 0px 10px `}>
           LOGIN
         </Heading>
       </Flex>
@@ -234,7 +242,6 @@ const LoginForm = ({
             isLoading={isSubmitting}
             loadingText="Loading"
             isDisabled={!isDirty || !isValid}
-            zIndex="5"
           >
             <Text
               width="45px"
@@ -247,7 +254,13 @@ const LoginForm = ({
               Login
             </Text>
           </Button>
-          <Link href="/forgot-password" size="B5" zIndex="5" lineHeight="18px">
+          <Link
+            href="/forgot-password"
+            size="B5"
+            zIndex={0}
+            lineHeight="18px"
+            cursor={"pointer"}
+          >
             Lupa Password?
           </Link>
         </Flex>
@@ -261,26 +274,13 @@ const Login = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <Navbar2>
-      <Head>
-        <title>Login - KAT ITB 2023</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Flex
-        position="absolute"
+        justifyContent={"center"}
+        alignItems="center"
         width="100%"
-        backgroundColor="gray.600"
-        zIndex={0}
-        minHeight="100vh"
+        flexDirection={"column"}
       >
-        <Flex
-          justifyContent={{ base: "center", md: "end" }}
-          alignItems="center"
-          paddingInline={{ base: "0", md: "15vw" }}
-          width="100%"
-        >
-          <LoginBackground />
-          <LoginForm csrfToken={csrfToken} />
-        </Flex>
+        <LoginForm csrfToken={csrfToken} />
       </Flex>
     </Navbar2>
   );

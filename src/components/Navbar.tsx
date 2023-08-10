@@ -29,7 +29,7 @@ import {
   MdErrorOutline,
 } from "react-icons/md";
 import Layout from "~/layout";
-import { IconType } from "react-icons";
+import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 
 type PairDrawerButton = {
@@ -75,11 +75,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const DrawerArray: PairDrawerButton[] = [
-    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/",
+      route: "/attendance-list",
     },
     {
       icon: MdOutlineAssignment,
@@ -91,8 +91,8 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Leaderboard",
       route: "/leaderboard",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/" },
-    { icon: MdShoppingBasket, text: "Merchandise", route: "/" },
+    { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
@@ -110,11 +110,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     },
   ];
 
-  const LogoutButtonData : PairDrawerButton = {
-      icon: MdLogout,
-      text: "Logout",
-      route: "/",
-  }
+  const LogoutButtonData: PairDrawerButton = {
+    icon: MdLogout,
+    text: "Logout",
+    route: "/",
+  };
 
   //   Scroll mechanism algorithm
   useEffect(() => {
@@ -240,10 +240,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton
-                data={LogoutButtonData}
-                type={2}
-              />
+              <DrawerButton data={LogoutButtonData} type={2} />
             </Flex>
           </DrawerBody>
         </DrawerContent>
