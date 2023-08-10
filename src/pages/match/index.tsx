@@ -131,7 +131,7 @@ const Match: NextPage = () => {
         top={"30%"}
         left={0}
       />
-      <Navbar currentPage="Chat" />
+      <Navbar/>
 
       <VStack
         minH="60vh"

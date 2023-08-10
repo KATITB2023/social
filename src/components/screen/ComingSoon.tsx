@@ -1,27 +1,8 @@
 import React, { type PropsWithChildren } from "react";
 import { Box, Flex, Heading, Image, Text, Link } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
+import BackgroundAndNavbar from "../BackgroundAndNavbar";
 
-function BackgroundAndNavbar({ children }: PropsWithChildren) {
-  return (
-    <Box position="relative" minHeight="100vh" height="100%">
-      <Image
-        src="/background.png"
-        alt="background"
-        height="100%"
-        zIndex="-1"
-        position="absolute"
-        objectFit="cover"
-        minWidth="100%"
-        width="100%"
-      />
-      <Flex flexDirection="column">
-        <Navbar currentPage={"Error"} />
-        {children}
-      </Flex>
-    </Box>
-  );
-}
 const ComingSoon = () => {
   return (
     <BackgroundAndNavbar>
@@ -36,7 +17,7 @@ const ComingSoon = () => {
           src="maintenance.svg"
           alt="404"
           height="100%"
-          zIndex="-1"
+          zIndex="0"
           position="relative"
           objectFit="cover"
           minWidth="100%"

@@ -224,7 +224,7 @@ const Room: NextPage = () => {
           overflowY={"hidden"}
         >
           <Flex position={"absolute"} top={0}>
-            <Navbar currentPage={"Chat"} />
+            <Navbar />
           </Flex>
           <Image
             src="/components/anon_chat_page/anon_comet.png"

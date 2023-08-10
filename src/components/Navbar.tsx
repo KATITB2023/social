@@ -91,17 +91,20 @@ const DrawerButton = ({
   );
 };
 
-const Navbar = ({ currentPage }: { currentPage: string }) => {
+const Navbar = () => {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { pathname, push } = useRouter();
+  const currentPage = pathname.split("/")[1];
+  console.log(currentPage);
 
   const DrawerArray: PairDrawerButton[] = [
     { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/attendance-list",
+      route: "/attendance",
     },
     {
       icon: MdOutlineAssignment,
@@ -128,7 +131,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdErrorOutline,
       text: "Rules",
-      route: "/",
+      route: "/rules",
     },
   ];
 
@@ -265,7 +268,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   <Box
                     minW={"60px"}
                     minH={"60px"}
-                    backgroundImage={selfProfile.image!}
+                    backgroundImage={
+                      selfProfile.image
+                        ? selfProfile.image
+                        : "/defaultprofpict.svg"
+                    }
                     backgroundPosition={"center"}
                     backgroundSize={"cover"}
                     borderRadius={"full"}
@@ -287,7 +294,14 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   <DrawerButton
                     key={idx}
                     data={tuple}
-                    type={tuple.text === currentPage ? 1 : 0}
+                    type={
+                      currentPage?.length === 0 && tuple.text === "Feeds"
+                        ? 1
+                        : tuple.text.toUpperCase() ===
+                          currentPage?.toUpperCase()
+                        ? 1
+                        : 0
+                    }
                   />
                 );
               })}
