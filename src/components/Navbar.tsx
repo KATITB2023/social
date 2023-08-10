@@ -75,7 +75,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const DrawerArray: PairDrawerButton[] = [
-    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
