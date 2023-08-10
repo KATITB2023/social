@@ -43,7 +43,7 @@ const getFeedPostedMessage = (feedDate: Date) => {
 
 function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%" maxW={375}>
+    <Box display={"flex"} position="relative" minHeight="100vh" height="100%" maxW={375}>
       <Image
         src="background-feeds.svg"
         alt="background"
@@ -55,7 +55,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar />
+        <Navbar currentPage="Feeds"/>
         {children}
       </Flex>
     </Box>
