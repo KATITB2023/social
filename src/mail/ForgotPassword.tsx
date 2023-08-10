@@ -1,10 +1,9 @@
-import { Html, Text, Img } from "@react-email/components";
+import { Html, Button } from "@react-email/components";
 
-export const ForgotPassword = () => {
+export const ForgotPassword = ({ resetURL }: { resetURL: string }) => {
   return (
     <Html>
-      <Text>Mau liat foto nat gak?</Text>
-      <Img src="https://storage.googleapis.com/oskm-web/test_pentol_nat.jpg" />
+      <Button href={resetURL}>Reset Password</Button>
     </Html>
   );
 };

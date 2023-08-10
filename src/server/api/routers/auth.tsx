@@ -6,6 +6,9 @@ import {
 } from "~/server/api/trpc";
 import { compareHash, generateHash, generateResetToken } from "~/utils/auth";
 import { TRPCError } from "@trpc/server";
+import { env } from "~/env.cjs";
+import { render } from "@react-email/components";
+import ForgotPassword from "~/mail/ForgotPassword";
 
 export const authRouter = createTRPCRouter({
   requestResetPassword: publicProcedure
@@ -14,7 +17,7 @@ export const authRouter = createTRPCRouter({
         email: z.string().email(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const profile = await ctx.prisma.profile.findUnique({
         where: {
           email: input.email,
@@ -26,7 +29,7 @@ export const authRouter = createTRPCRouter({
 
       if (!profile) {
         throw new TRPCError({
-          message: "User not found",
+          message: "Email anda tidak terdaftar di sistem!",
           code: "BAD_REQUEST",
         });
       }
@@ -46,8 +49,20 @@ export const authRouter = createTRPCRouter({
         },
       });
 
-      return `https://BASE_URL/reset-password/${profile.userId}/${resetToken}`;
+      await ctx.transporter.sendMail({
+        from: env.SMTP_USER,
+        to: input.email,
+        subject: "Reset your OSKM password",
+        html: render(
+          <ForgotPassword
+            resetURL={encodeURI(
+              `${env.NEXT_PUBLIC_API_URL}/reset-password?userId=${profile.userId}&token=${resetToken}`
+            )}
+          />
+        ),
+      });
     }),
+
   resetPassword: publicProcedure
     .input(
       z.object({
@@ -56,7 +71,7 @@ export const authRouter = createTRPCRouter({
         newPassword: z.string(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       // Ambil token dari userId
       const getToken = await ctx.prisma.resetToken.findFirst({
         select: {
@@ -73,55 +88,54 @@ export const authRouter = createTRPCRouter({
       if (!getToken) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User Tidak Ditemukan!",
+          message: "User tidak ditemukan!",
         });
-      } else {
-        // User ditemukan
-
-        const createdAt = getToken.createdAt;
-        const expiredTime = createdAt.getTime() / 1000 + getToken.expireTime;
-        const currentTime = new Date().getTime() / 1000;
-
-        // Error Message (Token Expired)
-        if (expiredTime < currentTime) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Token Expired!",
-          });
-        }
-
-        // Cek Token Valid atau Tidak Valid
-        if (!(await compareHash(input.token, getToken.token))) {
-          // Error Message (Token Tidak Valid)
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Token Tidak Valid!",
-          });
-        } else {
-          // Token Valid
-
-          // Change Password
-          await ctx.prisma.user.update({
-            where: {
-              id: input.userId,
-            },
-            data: {
-              passwordHash: await generateHash(input.newPassword),
-            },
-          });
-
-          // Hapus Token dari table "Reset Token"
-          await ctx.prisma.resetToken.delete({
-            where: {
-              userId: input.userId,
-            },
-          });
-
-          // Message Berhasil Ubah Password
-          return "Password telah diubah!";
-        }
       }
+
+      // User ditemukan
+      const createdAt = getToken.createdAt;
+      const expiredTime = createdAt.getTime() / 1000 + getToken.expireTime;
+      const currentTime = new Date().getTime() / 1000;
+
+      // Error Message (Token Expired)
+      if (expiredTime < currentTime) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Token sudah expired!",
+        });
+      }
+
+      // Cek Token Valid atau Tidak Valid
+      if (!(await compareHash(input.token, getToken.token))) {
+        // Error Message (Token Tidak Valid)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Token tidak valid!",
+        });
+      }
+
+      // Token Valid
+      // Change Password
+      await ctx.prisma.user.update({
+        where: {
+          id: input.userId,
+        },
+        data: {
+          passwordHash: await generateHash(input.newPassword),
+        },
+      });
+
+      // Hapus Token dari table "Reset Token"
+      await ctx.prisma.resetToken.delete({
+        where: {
+          userId: input.userId,
+        },
+      });
+
+      // Message Berhasil Ubah Password
+      return "Password telah diubah!";
     }),
+
   editPassword: protectedProcedure
     .input(
       z.object({
@@ -135,12 +149,14 @@ export const authRouter = createTRPCRouter({
           id: ctx.session.user.id,
         },
       });
+
       if (!user) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User not found",
+          message: "User tidak ditemukan!",
         });
       }
+
       const isValid = await compareHash(input.oldPassword, user.passwordHash);
       if (isValid) {
         await ctx.prisma.user.update({
@@ -151,12 +167,13 @@ export const authRouter = createTRPCRouter({
             passwordHash: await generateHash(input.newPassword),
           },
         });
-        return "Password has been updated!";
-      } else {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Password not right",
-        });
+
+        return "Password berhasil diupdate!";
       }
+
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Password not right",
+      });
     }),
 });
