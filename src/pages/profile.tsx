@@ -114,7 +114,7 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
   return isEditMode ? (
     <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
-    <>
+    <Box maxHeight="40vh" overflowY="scroll">
       <Flex
         flexDirection="column"
         justifyContent="space-between"
@@ -138,9 +138,9 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           />
         ))}
       </Flex>
-      <HStack justifyContent="center" spacing={5}>
+      <HStack justifyContent="center" spacing={5} marginTop="5%">
         <Button
-          paddingX="1.5em"
+          width="40%"
           paddingY="0.5em"
           backgroundColor="yellow.5"
           alignSelf="center"
@@ -150,6 +150,7 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
         </Button>
         <EditPasswordModal isOpen={isOpen} onClose={onClose} />
         <Button
+          width="40%"
           paddingX="1.5em"
           paddingY="0.5em"
           backgroundColor="yellow.5"
@@ -159,7 +160,7 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           <Text size="B5">Edit Profile</Text>
         </Button>
       </HStack>
-    </>
+    </Box>
   );
 }
 
