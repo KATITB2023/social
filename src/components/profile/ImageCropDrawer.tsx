@@ -132,9 +132,8 @@ export default function ImageCropDrawer({
               alignSelf="flex-end"
               backgroundColor="pink.3"
             >
-              {" "}
               <Text size="B3" color="white">
-                Cancel{" "}
+                Cancel
               </Text>
             </Button>
             <Box aspectRatio="1 / 1" width="100%" position="relative">
