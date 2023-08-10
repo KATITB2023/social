@@ -42,14 +42,19 @@ const Footer = () => {
         loading="lazy"
       />
 
-      <Flex flexDir={"column"} zIndex={1}>
+      <Flex
+        flexDir={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        zIndex={1}
+      >
         <Image
           src="/footer/foot-oskm.svg"
           width={"80%"}
           draggable="false"
           loading="lazy"
         />
-        <Box>
+        <Box w={"full"}>
           <HStack marginTop="33px" spacing={{ base: "51px", lg: "45px" }}>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
               <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
@@ -69,8 +74,10 @@ const Footer = () => {
             </VStack>
           </HStack>
         </Box>
+
         <Divider my="20px" />
-        <HStack spacing={{ base: "13px", lg: "13px" }}>
+
+        <Flex gap={"13px"} justifyContent={"start"} w={"full"}>
           <Link href="/" color="white">
             <Image
               src="/footer/foot-twitter.png"
@@ -99,7 +106,8 @@ const Footer = () => {
               loading="lazy"
             />
           </Link>
-        </HStack>
+        </Flex>
+
         <Box marginTop="22px" alignItems="left">
           <HStack>
             <Image
