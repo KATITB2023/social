@@ -16,8 +16,13 @@ import {
 } from "~/components/newchat/Questions";
 import LoadingScreen from "~/components/LoadingScreen";
 import Layout from "~/layout";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 const Match: NextPage = () => {
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
   const [questionPage, setQuestionPage] = useState(1);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

@@ -12,12 +12,18 @@ import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 // const userPair = api.message.getUser.useQuery({ pairId }).data;
 
 const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
+
   const pairId = router.query.pairId as string;
   const userPair = api.friend.getOtherUserProfile.useQuery(
     {

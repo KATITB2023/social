@@ -26,8 +26,13 @@ import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 const Room: NextPage = () => {
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
   const router = useRouter();
   const toast = useToast();
   const { data: session } = useSession({ required: true });

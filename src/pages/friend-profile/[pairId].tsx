@@ -10,9 +10,14 @@ import ProfilePage, {
   ProfilePicture,
 } from "../profile";
 import LabelValueContainer from "~/components/profile/LabelValueContainer";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 export default function FriendProfilePage() {
   const router = useRouter();
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
   const profileQuery = api.friend.getOtherUserProfile.useQuery({

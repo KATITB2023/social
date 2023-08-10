@@ -6,10 +6,16 @@ import Layout from "~/layout";
 import { api } from "~/utils/api";
 import { useEffect, useRef } from "react";
 import CardHistoryChat from "~/components/history/CardHistoryChat";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 const History: NextPage = () => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
 
   const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
     api.messageAnonymous.chatHeader.useInfiniteQuery(
