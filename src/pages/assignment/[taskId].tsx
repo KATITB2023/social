@@ -27,7 +27,7 @@ interface id {
 // Main Function
 export default function SubmissionPage() {
   const router = useRouter();
-  const taskId = router.query.id as string;
+  const taskId = router.query.taskId as string;
   const inputAssignmentData = api.assignment.viewAssignment.useQuery({
     assignmentId: taskId,
   });
