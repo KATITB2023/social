@@ -123,7 +123,7 @@ export const feedRouter = createTRPCRouter({
             userId: ctx.session.user.id,
           },
         });
-        return "New reaction has been added";
+        return true;
       } else {
         // Kalau sudah pernah ada reaction yang sama
         await ctx.prisma.feedReaction.delete({
@@ -135,7 +135,7 @@ export const feedRouter = createTRPCRouter({
             },
           },
         });
-        return "Reaction has been deleted";
+        return false;
       }
     }),
   readFeed: protectedProcedure
