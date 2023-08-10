@@ -21,7 +21,7 @@ type childrenOnlyProps = {
 // Fungsi Background & Navbar
 function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
+    <Box  display={"flex"} position="relative" minHeight="100vh" height="100%" w={"full"}>
       <Image
         src="background.png"
         alt="background"
@@ -32,8 +32,8 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
         maxWidth={"375px"}
       />
-      <Flex flexDirection="column">
-        <Navbar />
+      <Flex flexDirection="column" gap={"28px"} w="full">
+        <Navbar currentPage="Assignment" />
         {children}
       </Flex>
     </Box>
@@ -395,10 +395,10 @@ export default function AssignmentListPage() {
     <BackgroundAndNavbar>
       <Flex
         flexDirection="column"
+        alignItems={"center"}
         justifyContent="space-between"
         gap="40px"
         mx="24px"
-        my="70px"
       >
         <Heading color="#ffe655" size="H4" alignSelf="center">
           Mission Hub
