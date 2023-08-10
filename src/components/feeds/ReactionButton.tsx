@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React from "react";
 import {
   Image,
   Popover,
@@ -54,10 +54,11 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
       return 0; // Nilai default jika salah satu reaction tidak ada
     }
   });
-  const topReactionNames = sortedReactionNames.splice(0, 3);
+  const defaultReactionNames = Object.values(ReactionOption).splice(0, 3);
+  const topReactionNames = sortedReactionNames.length !== 0 ? sortedReactionNames.splice(0, 3) : defaultReactionNames;
   const unusedReactions = Object.values(ReactionOption).filter(
     (reaction) => !topReactionNames.includes(reaction)
-  );
+  );  
   return (
     <Flex
       flexDirection="row"
