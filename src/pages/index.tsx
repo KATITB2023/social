@@ -1,29 +1,91 @@
-import { type NextPage } from "next";
-import Layout from "~/layout";
-import { Container, Heading,Text} from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
+import React, { useEffect, useRef } from "react";
 import Navbar from "~/components/Navbar";
+import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
+import Feed from "~/components/feeds/Feed";
+import { useInView } from "framer-motion";
 
-const Home: NextPage = () => {
-  return (
-    <Layout title="Home">
-      <Navbar currentPage="Back to Home"/>
-      <Container>Hello world </Container>
-      <Heading size="SH1">SH1</Heading>
-      <Heading size="H3">h3</Heading>
-      <Heading size="H1">h1</Heading>
-      <Heading size="H1">h1</Heading> 
-      <Heading size="H1">h1</Heading>
-      <Heading size="H1">h1</Heading>
-      <Heading size="H1">h1</Heading>
-      <Heading size="H1">h1</Heading>
-      <Heading size="H4">h2</Heading>
-      <Heading>Default Heading</Heading>
-      <Text>Default Text</Text>
-      <Text size="B1">B1</Text>
-      <Text size="B5">B5</Text>
-      <Text size="A">Additional</Text>
-    </Layout>
-  );
+type childrenOnlyProps = {
+  children: string | JSX.Element | JSX.Element[];
 };
 
-export default Home;
+interface Feed {
+  date: string;
+  caption: string;
+  link: string;
+}
+
+interface FeedsPageProps {
+  feeds: Feed[];
+}
+
+function BackgroundAndNavbar({ children }: childrenOnlyProps) {
+  return (
+    <Box
+      display={"flex"}
+      position="relative"
+      minHeight="100vh"
+      height="100%"
+      maxW={375}
+    >
+      <Image
+        src="background-feeds.svg"
+        alt="background"
+        height="100%"
+        zIndex="-1"
+        position="absolute"
+        objectFit="cover"
+        minWidth="100%"
+        width="100%"
+      />
+      <Flex flexDirection="column">
+        <Navbar currentPage="Feeds" />
+        {children}
+      </Flex>
+    </Box>
+  );
+}
+export default function FeedsPage() {
+  useSession({ required: true });
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomView = useInView(bottomRef);
+
+  const { data, hasNextPage, fetchNextPage } =
+    api.feed.getFeeds.useInfiniteQuery(
+      {},
+      {
+        getNextPageParam: (d) => d.nextCursor,
+        refetchInterval: false,
+        refetchOnWindowFocus: false,
+      }
+    );
+
+  useEffect(() => {
+    if (bottomView && hasNextPage) {
+      fetchNextPage().catch((e) => console.log(e));
+    }
+  }, [bottomView, hasNextPage, fetchNextPage]);
+
+  return (
+    <BackgroundAndNavbar>
+      <Flex flexDirection={"column"} justifyContent={"center"}>
+        {data?.pages
+          .flatMap((page) => page.data)
+          .map((feed) => {
+            return (
+              <Feed
+                key={feed.id}
+                reactions={feed.reactions}
+                attachmentUrl={feed.attachmentUrl}
+                createdAt={feed.createdAt}
+                text={feed.text}
+                id={feed.id}
+              />
+            );
+          })}
+        <div ref={bottomRef}></div>
+      </Flex>
+    </BackgroundAndNavbar>
+  );
+}

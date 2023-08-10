@@ -82,7 +82,7 @@ const LoginForm = ({
   };
 
   const handleRedirect = () => {
-    void router.push("/profile");
+    void router.push("/");
   };
 
   const handleError = (message: string) => {
@@ -123,7 +123,7 @@ const LoginForm = ({
       width="300px"
       height="359.31px"
       direction="column"
-      justifyContent={{ base: "center", md: "end" }}
+      flexDir={"column"}
       alignItems="center"
       position="absolute"
       gap="25px"
@@ -138,6 +138,7 @@ const LoginForm = ({
       >
         <Image
           src="logoOSKM.svg"
+          alt="logo OSKM"
           width="60px"
           height="70.306px"
           style={{
@@ -247,7 +248,13 @@ const LoginForm = ({
               Login
             </Text>
           </Button>
-          <Link href="/forgot-password" size="B5" zIndex="5" lineHeight="18px">
+          <Link
+            href="/forgot-password"
+            size="B5"
+            zIndex="5"
+            lineHeight="18px"
+            cursor={"pointer"}
+          >
             Lupa Password?
           </Link>
         </Flex>
@@ -273,10 +280,10 @@ const Login = ({
         minHeight="100vh"
       >
         <Flex
-          justifyContent={{ base: "center", md: "end" }}
+          justifyContent={{ base: "center"}}
           alignItems="center"
-          paddingInline={{ base: "0", md: "15vw" }}
           width="100%"
+          flexDirection={"column"}
         >
           <LoginBackground />
           <LoginForm csrfToken={csrfToken} />
