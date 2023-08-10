@@ -47,11 +47,13 @@ const SubmitPopUp = ({
     });
 
     try {
+      console.log(taskId);
+      console.log(sanitizedFileName);
       const result = await uploadMutation.mutateAsync({
         assignmentId: taskId,
         filePath: sanitizedFileName,
       });
-
+      
       if (result === "Tugas berhasil dikumpulkan") {
         toast({
           title: "Tugas berhasil dikumpulkan.",
