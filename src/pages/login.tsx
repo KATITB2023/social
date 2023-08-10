@@ -5,6 +5,7 @@ import {
   FormControl,
   FormErrorMessage,
   Heading,
+  Icon,
   Image,
   Input,
   InputGroup,
@@ -26,16 +27,83 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Navbar from "~/components/Navbar";
 import LoginBackground from "~/components/login/login-background";
+import Layout from "~/layout";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
+};
+
+const NavbarLogin = () => {
+  return (
+    <Layout title="Navbar">
+      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+      <Flex
+        position={"relative"}
+        display={"block"}
+        backgroundColor={"transparent"}
+        h={"60px"}
+        my={"20px"}
+      />
+
+      <Flex
+        my={"20px"}
+        mx={"auto"}
+        top={0}
+        position={"fixed"}
+        insetX={0}
+        zIndex={1}
+        background="url('/navbarbg.svg')"
+        maxWidth={"343px"}
+        w={"full"}
+        h="60px"
+        borderRadius="50px"
+        flexDir="row"
+        alignItems="center"
+        paddingY="2%"
+        paddingX="22px"
+        boxShadow="0px 0px 20px 0px #FFFC8366"
+        transitionDuration={"0.3s"}
+        transitionTimingFunction={"ease-in-out"}
+      >
+        <Box
+          backgroundColor="#0B0A0A"
+          opacity="0.6"
+          borderRadius="50px"
+          position="absolute"
+          top="0"
+          left="0"
+          bottom="0"
+          right="0"
+        />
+
+        <Image
+          alt="Ekor"
+          src="/ekor.svg"
+          position="absolute"
+          left="0"
+          height="full"
+          objectFit="cover"
+          objectPosition="center"
+          borderRadius="50px"
+        />
+
+        <Image
+          objectFit="cover"
+          objectPosition="center"
+          src="/Vector.svg"
+          alt="OSKM ITB"
+          zIndex="2"
+        />
+      </Flex>
+    </Layout>
+  );
 };
 
 function Navbar2({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Flex flexDirection="column">
-        <Navbar currentPage=""/>
+        <NavbarLogin />
         {children}
       </Flex>
     </Box>
@@ -280,7 +348,7 @@ const Login = ({
         minHeight="100vh"
       >
         <Flex
-          justifyContent={{ base: "center"}}
+          justifyContent={{ base: "center" }}
           alignItems="center"
           width="100%"
           flexDirection={"column"}
