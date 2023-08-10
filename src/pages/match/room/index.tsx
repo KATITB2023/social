@@ -30,9 +30,6 @@ import {FUTUREFLAG} from "~/constant";
 import ComingSoon from "~/components/screen/ComingSoon";
 
 const Room: NextPage = () => {
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
-  }
   const router = useRouter();
   const toast = useToast();
   const { data: session } = useSession({ required: true });
@@ -210,6 +207,10 @@ const Room: NextPage = () => {
   };
 
   const messageEmit = useEmit("anonymousMessage");
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
 
   return (
     <Layout title="Chat">

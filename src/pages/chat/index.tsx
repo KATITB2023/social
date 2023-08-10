@@ -17,9 +17,6 @@ const ChatHome: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
-  }
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
   };
@@ -27,6 +24,10 @@ const ChatHome: NextPage = () => {
   const isNoChatHandler = (val: boolean) => {
     setIsNoChat(val);
   };
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
 
   return (
     <Layout title="Home">

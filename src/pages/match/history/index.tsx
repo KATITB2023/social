@@ -13,10 +13,6 @@ const History: NextPage = () => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
-  }
-
   const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
     api.messageAnonymous.chatHeader.useInfiniteQuery(
       {
@@ -63,6 +59,10 @@ const History: NextPage = () => {
       }
     };
   }, [hasNextPage]);
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
 
   return (
     <Layout title={"Riwayat Percakapan"}>

@@ -15,9 +15,6 @@ import ComingSoon from "~/components/screen/ComingSoon";
 
 export default function FriendProfilePage() {
   const router = useRouter();
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
-  }
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
   const profileQuery = api.friend.getOtherUserProfile.useQuery({
@@ -51,6 +48,10 @@ export default function FriendProfilePage() {
 
   if (student.image === null || "" || undefined) {
     student.image = "/defaultprofpict.svg";
+  }
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
   }
   return (
     <BackgroundAndNavigationBar>
