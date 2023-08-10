@@ -1,9 +1,11 @@
-import { Flex, Image, Text, Spacer } from "@chakra-ui/react";
-import React from "react";
+import { Flex, Image, Text, Spacer, Box } from "@chakra-ui/react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ReactionButton from "./ReactionButton";
+import { useInView } from "framer-motion";
+import { api } from "~/utils/api";
 
 type Reaction = {
   count: number;
@@ -18,6 +20,7 @@ type FeedProps = {
   createdAt: Date;
   text: string;
   id: number;
+  read: boolean;
 };
 
 type Reactions = {
@@ -30,7 +33,10 @@ const Feed: React.FC<FeedProps> = ({
   createdAt,
   text,
   id,
+  read,
 }) => {
+  const [isSeen, setIsSeen] = useState(read);
+
   const getFeedPostedMessage = (feedDate: Date) => {
     dayjs.extend(utc);
     dayjs.extend(relativeTime);
@@ -51,9 +57,22 @@ const Feed: React.FC<FeedProps> = ({
   const isVideoLink = (link: string) =>
     /^https:\/\/www\.youtube\.com\/embed\/[\w-]+$/.test(link);
   const isImageLink = (link: string) => /\.(jpeg|jpg|png|gif)$/i.test(link);
+  const feedRef = useRef(null);
+  const readMutation = api.feed.readFeed.useMutation();
+  const isInView = useInView(feedRef);
+  useEffect(() => {
+    if (!isSeen) {
+      const result = readMutation.mutate({
+        feedId: id,
+      });
+      setTimeout(() => {
+        setIsSeen(true);
+      }, 2000);
+    }
+  }, [isInView, id, isSeen]);
 
   return (
-    <Flex flexDirection={"column"} justifyContent={"center"}>
+    <Flex flexDirection={"column"} justifyContent={"center"} ref={feedRef}>
       {/* Feeds Header */}
       <Flex
         w={"100%"}
@@ -136,29 +155,31 @@ const Feed: React.FC<FeedProps> = ({
         </Text>
 
         {/* Post yang belom dilihat */}
-        {/* <Box
-                                w="100%"
-                                h="100%"
-                                bg="#C0EACA"
-                                boxShadow="0px 0px 10px #FFFC83"
-                                borderRadius={10}
-                                border="0.25px #C0EACA solid"
-                                justifyContent="center"
-                                alignItems="center"
-                                gap={10}
-                                display="inline-flex"
-                            >
-                                <Text
-                                    textAlign="center"
-                                    color="#4909B3"
-                                    fontSize={9.25}
-                                    fontFamily="Inter"
-                                    fontWeight="700"
-                                    lineHeight="12.02px"
-                                >
-                                    Post yang Belum Dilihat
-                                </Text>
-                            </Box> */}
+        {!isSeen && (
+          <Box
+            w="100%"
+            h="100%"
+            bg="#C0EACA"
+            boxShadow="0px 0px 10px #FFFC83"
+            borderRadius={10}
+            border="0.25px #C0EACA solid"
+            justifyContent="center"
+            alignItems="center"
+            gap={10}
+            display="inline-flex"
+          >
+            <Text
+              textAlign="center"
+              color="#4909B3"
+              fontSize={9.25}
+              fontFamily="Inter"
+              fontWeight="700"
+              lineHeight="12.02px"
+            >
+              Post yang Belum Dilihat
+            </Text>
+          </Box>
+        )}
       </Flex>
     </Flex>
   );

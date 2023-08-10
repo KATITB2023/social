@@ -101,7 +101,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/attendance-list",
+      route: "/attendance",
     },
     {
       icon: MdOutlineAssignment,

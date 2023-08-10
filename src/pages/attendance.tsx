@@ -113,7 +113,7 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
       <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
-        <Navbar currentPage={"Attendance"} />
+        <Navbar/>
         {children}
       </Flex>
     </Box>
@@ -283,6 +283,8 @@ const EventCard = ({
           bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
           borderColor="#E8553E"
           text="tidak hadir"
+          onClick={() => void handleAttend(event.id)}
+          isDisabled={false}
         />
       )}
     </Flex>
