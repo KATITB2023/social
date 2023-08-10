@@ -1,3 +1,11 @@
+import { useState } from "react";
+import { api } from "~/utils/api";
+import { TRPCClientError } from "@trpc/client";
+import {
+  type AttendanceEvent,
+  type AttendanceRecord,
+  Status,
+} from "@prisma/client";
 import {
   Box,
   Image,
@@ -9,49 +17,10 @@ import {
   Spacer,
   useToast,
   Spinner,
-  position
+  // position
 } from "@chakra-ui/react";
+
 import Navbar from "~/components/Navbar";
-
-import { api } from "~/utils/api";
-import {
-  type AttendanceEvent,
-  type AttendanceRecord,
-  Status,
-} from "@prisma/client";
-import { useState } from "react";
-import { TRPCClientError } from "@trpc/client";
-
-// const eventList = {
-//   "Day 1": {
-//     "1": {
-//       title: "Sesi 2 (Talkshow)",
-//       startTime: "17.50",
-//       endTime: "18.10",
-//       status: "tandai hadir",
-//     },
-//     "2": {
-//       title: "Sesi 2 (Talkshow)",
-//       startTime: "17.50",
-//       endTime: "18.10",
-//       status: "tandai hadir",
-//     },
-//   },
-//   "Day 2": {
-//     "1": {
-//       title: "Sesi 2 (Talkshow)",
-//       startTime: "17.50",
-//       endTime: "18.10",
-//       status: "tandai hadir",
-//     },
-//     "2": {
-//       title: "Sesi 2 (Talkshow)",
-//       startTime: "17.50",
-//       endTime: "18.10",
-//       status: "tandai hadir",
-//     },
-//   },
-// };
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -181,6 +150,7 @@ const StatusButton = ({
   )
 };
 
+// UTILS FUNCTION
 const getTwoTime = (startDate: Date, endDate: Date) => {
   const startTime = startDate.toLocaleTimeString("id-ID", {
     hour: "2-digit",
@@ -234,17 +204,17 @@ const EventCard = ({
   );
   const toast = useToast();
   const absenMutation = api.absensi.submitAbsensi.useMutation();
-  const canAbsen = validTime(event.startTime, event.endTime);
+  const canAttend = validTime(event.startTime, event.endTime);
 
   const handleAttend = async (eventId: string) => {
     setLoading(true);
     try {
-      const result = await absenMutation.mutateAsync(eventId);
+      const result = await absenMutation.mutateAsync({eventId});
 
       toast({
         title: "Success",
         status: "success",
-        description: result?.message,
+        description: result,
         duration: 2000,
         isClosable: true,
         position: "top",
@@ -304,7 +274,7 @@ const EventCard = ({
                 )
             )
         ) 
-      ) : canAbsen ? (
+      ) : canAttend ? (
         loading ? (
           <Spinner color="#1C939A" />
         ) : (
@@ -327,6 +297,7 @@ interface EventsDay {
   day: string;
   events: AbsenStatus[];
 }
+
 
 const AttendListPage = () => {
   const eventQuery = api.absensi.viewAbsensi.useQuery();
@@ -351,8 +322,8 @@ const AttendListPage = () => {
           day: dayId,
           events: [absenStatus],
         });
-      } else {
-        eventsByDay[dayIndex].events.push(absenStatus);
+      } else if (eventsByDay[dayIndex]){
+        eventsByDay[dayIndex]?.events.push(absenStatus);
       }
     });
   }
