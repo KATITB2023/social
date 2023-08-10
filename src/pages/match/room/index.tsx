@@ -276,10 +276,14 @@ const Room: NextPage = () => {
             >
               <Header
                 name={
-                  profileData !== undefined ? profileData.name : "Anonymous"
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.name
+                    : "Anonymous"
                 }
                 image={
-                  profileData !== undefined ? profileData.image : undefined
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.image
+                    : undefined
                 }
                 isTyping={currentlyTyping}
                 isAnon={true}
