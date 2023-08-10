@@ -115,7 +115,7 @@ function Navbar2({ children }: childrenOnlyProps) {
         </Flex>
 
         <Flex flexDirection="column" h={"full"} w={"full"} >
-          <Navbar currentPage="" />
+          <NavbarLogin />
           {children}
         </Flex>
       </Box>
@@ -204,7 +204,7 @@ const LoginForm = ({
       w={"full"}
       justifyContent={"center"}
       alignItems="center"
-      height="90vh"
+      height="80vh"
       gap="25px"
     >
       <Flex

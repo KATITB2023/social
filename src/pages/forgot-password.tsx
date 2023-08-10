@@ -100,7 +100,7 @@ const ForgotPasswordForm = () => {
         zIndex={0}
         justifyContent={"center"}
         alignItems="center"
-        height="90vh"
+        height="80vh"
       >
         <Flex
           flexDir="column"
