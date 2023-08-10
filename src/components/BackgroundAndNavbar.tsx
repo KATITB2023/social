@@ -16,7 +16,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         backgroundRepeat={"no-repeat"}
       >
         <Flex flexDirection="column">
-          <Navbar currentPage={"Error"} />
+          <Navbar />
           {children}
         </Flex>
       </Box>

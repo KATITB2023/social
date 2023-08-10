@@ -208,7 +208,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
   return (
     <Center>
       <Box
-        width="350px"
+        width="80vw"
         height="relative"
         padding={{ base: "16px", sm: "16px" }}
         justifyContent="space-between"
@@ -289,7 +289,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
   return (
     <Center>
       <Box
-        width="350px"
+        width="80vw"
         height="87px"
         padding={{ base: "16px", sm: "16px" }}
         justifyContent="space-between"
@@ -373,7 +373,27 @@ export default function AssignmentListPage() {
           </Heading>
           <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
           {boxContent === "Daily Quest" ? (
-            <Box maxHeight="68vh" overflowY="scroll">
+            <Box
+              maxHeight="68vh"
+              overflowY="scroll"
+              sx={{
+                "::-webkit-scrollbar": {
+                  width: "11px",
+                  position: "absolute",
+                  right: "5px",
+                },
+                "::-webkit-scrollbar-track": {
+                  background: "#2F2E2E",
+                  borderRadius: "5px",
+                  marginY: "10px",
+                  marginRight: "10px",
+                },
+                "::-webkit-scrollbar-thumb": {
+                  background: "white",
+                  borderRadius: "5px",
+                },
+              }}
+            >
               {(dailyData.data ?? []).map((task) => (
                 <TugasDailyQuest
                   key={task.id}
@@ -385,7 +405,27 @@ export default function AssignmentListPage() {
               ))}
             </Box>
           ) : boxContent === "Side Quest" ? (
-            <Box maxHeight="68vh" overflowY="scroll">
+            <Box
+              maxHeight="68vh"
+              overflowY="scroll"
+              sx={{
+                "::-webkit-scrollbar": {
+                  width: "11px",
+                  position: "absolute",
+                  right: "5px",
+                },
+                "::-webkit-scrollbar-track": {
+                  background: "#2F2E2E",
+                  borderRadius: "5px",
+                  marginY: "10px",
+                  marginRight: "10px",
+                },
+                "::-webkit-scrollbar-thumb": {
+                  background: "white",
+                  borderRadius: "5px",
+                },
+              }}
+            >
               {(sideData.data ?? []).map((task) => (
                 <TugasSideQuest
                   key={task.id}

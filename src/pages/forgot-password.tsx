@@ -35,7 +35,7 @@ function Navbar2({ children }: childrenOnlyProps) {
           <LoginBackground />
         </Flex>
         <Flex flexDirection="column" h={"full"} w={"full"}>
-          <Navbar currentPage={"Forgot Password"} />
+          <Navbar />
           {children}
         </Flex>
       </Box>

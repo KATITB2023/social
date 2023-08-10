@@ -1,18 +1,17 @@
+import { Flex } from "@chakra-ui/react";
 import { type Message } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Divider from "~/components/chat/Divider";
+import Footer from "~/components/chat/Footer";
+import Header from "~/components/chat/Header";
+import Messages from "~/components/chat/Messages";
+import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { api } from "~/utils/api";
-import { Container, Flex, Image, Box } from "@chakra-ui/react";
-import Header from "~/components/chat/Header";
-import Divider from "~/components/chat/Divider";
-import Messages from "~/components/chat/Messages";
-import Footer from "~/components/chat/Footer";
-import useEmit from "~/hooks/useEmit";
-import Navbar from "~/components/Navbar";
 
 // const userPair = api.message.getUser.useQuery({ pairId }).data;
 
@@ -20,23 +19,27 @@ const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
   const pairId = router.query.pairId as string;
-  const userPair = api.friend.getOtherUserProfile.useQuery({ userId: pairId }).data;
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const userPair = api.friend.getOtherUserProfile.useQuery(
+    {
+      userId: pairId,
+    },
+    { enabled: !!pairId }
+  ).data;
 
   const messageQuery = api.message.infinite.useInfiniteQuery(
     { pairId },
     {
-      getPreviousPageParam: (d) => d.prevCursor,
+      getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
+      enabled: !!pairId,
     }
   );
 
   const updateMessageIsRead = api.message.updateIsRead.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
-  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-    messageQuery;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -52,14 +55,13 @@ const Chat: NextPage = () => {
       for (const msg of incoming ?? []) map[msg.id] = msg;
 
       return Object.values(map).sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
       );
     });
-    setTimeout(() => bottomRef.current?.scrollIntoView(), 75);
   }, []);
 
   useEffect(() => {
-    if (session) {
+    if (session?.user?.id && pairId) {
       try {
         updateMessageIsRead.mutate({
           receiverId: session.user.id,
@@ -67,7 +69,7 @@ const Chat: NextPage = () => {
         });
       } catch (err) {}
     }
-  }, []);
+  }, [pairId, updateMessageIsRead.mutate, session?.user?.id]);
 
   // When new data from `useInfiniteQuery`, merge with current state
   useEffect(() => {
@@ -126,7 +128,6 @@ const Chat: NextPage = () => {
         backgroundRepeat={"no-repeat"}
         overflowY={"hidden"}
       >
-
         {/* Room chat */}
         <Flex
           w={"100%"}
@@ -146,10 +147,10 @@ const Chat: NextPage = () => {
 
           <Messages
             messages={messages ?? []}
-            hasPreviousPage={hasPreviousPage}
-            fetchPreviousPage={() => void fetchPreviousPage()}
-            isFetchingPreviousPage={isFetchingPreviousPage}
-            bottomRef={bottomRef}
+            hasNextPage={hasNextPage}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={isFetchingNextPage}
           />
 
           <Divider />

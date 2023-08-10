@@ -57,18 +57,18 @@ const Footer = () => {
         <Box w={"full"}>
           <HStack marginTop="33px" spacing={{ base: "51px", lg: "45px" }}>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/about-us" color="white" _hover={{ textDecoration: "none" }}>
                 About Us
               </Link>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/interactive-map" color="white" _hover={{ textDecoration: "none" }}>
                 Interactive Map
               </Link>
             </VStack>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="/merchandise" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/merchandise" color="white" _hover={{ textDecoration: "none" }}>
                 Merchandise
               </Link>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/blog" color="white" _hover={{ textDecoration: "none" }}>
                 Blog
               </Link>
             </VStack>
@@ -78,34 +78,34 @@ const Footer = () => {
         <Divider my="20px" />
 
         <Flex gap={"13px"} justifyContent={"start"} w={"full"}>
-          <Link href="/" color="white">
+          <Link href="https://twitter.com/oskmitb" color="white">
             <Image
               src="/footer/foot-twitter.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          <Link href="https://www.instagram.com/oskm.itb/" color="white">
             <Image
               src="/footer/foot-instagram.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          <Link href="https://www.youtube.com/channel/UCmkkBEqwMZ1SEZN937pdpgA" color="white">
             <Image
               src="/footer/foot-youtube.png"
               draggable="false"
               loading="lazy"
             />
           </Link>
-          <Link href="/" color="white">
+          {/* <Link href="/" color="white">
             <Image
               src="/footer/foot-linkedin.png"
               draggable="false"
               loading="lazy"
             />
-          </Link>
+          </Link> */}
         </Flex>
 
         <Box marginTop="22px" alignItems="left">

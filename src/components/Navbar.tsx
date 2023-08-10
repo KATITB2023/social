@@ -22,13 +22,12 @@ import {
   MdOutlineAssignmentInd,
   MdOutlinePersonOutline,
   MdPersonAddAlt,
-  MdShoppingBasket,
-  MdStarOutline,
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -91,10 +90,12 @@ const DrawerButton = ({
   );
 };
 
-const Navbar = ({ currentPage }: { currentPage: string }) => {
+const Navbar = () => {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { pathname, push } = useRouter();
+  const currentPage = pathname.split("/")[1];
 
   const DrawerArray: PairDrawerButton[] = [
     { icon: MdNewspaper, text: "Feeds", route: "/" },
@@ -113,8 +114,8 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Leaderboard",
       route: "/leaderboard",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
-    { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
+    // { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    // { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
@@ -128,7 +129,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdErrorOutline,
       text: "Rules",
-      route: "/",
+      route: "https://cdn.oskmitb.com/sop_peserta_oskm.pdf",
     },
   ];
 
@@ -209,13 +210,16 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
           borderRadius="50px"
         />
 
-        <Image
-          objectFit="cover"
-          objectPosition="center"
-          src="/Vector.svg"
-          alt="OSKM ITB"
-          zIndex="2"
-        />
+        <Box zIndex="2">
+          <Link href={"/"}>
+            <Image
+              objectFit="cover"
+              objectPosition="center"
+              src="/Vector.svg"
+              alt="OSKM ITB"
+            />
+          </Link>
+        </Box>
 
         <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
           <Icon
@@ -265,7 +269,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   <Box
                     minW={"60px"}
                     minH={"60px"}
-                    backgroundImage={selfProfile.image!}
+                    backgroundImage={
+                      selfProfile.image
+                        ? selfProfile.image
+                        : "/defaultprofpict.svg"
+                    }
                     backgroundPosition={"center"}
                     backgroundSize={"cover"}
                     borderRadius={"full"}
@@ -287,7 +295,14 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   <DrawerButton
                     key={idx}
                     data={tuple}
-                    type={tuple.text === currentPage ? 1 : 0}
+                    type={
+                      currentPage?.length === 0 && tuple.text === "Feeds"
+                        ? 1
+                        : tuple.text.toUpperCase() ===
+                          currentPage?.toUpperCase()
+                        ? 1
+                        : 0
+                    }
                   />
                 );
               })}
