@@ -88,6 +88,7 @@ const Messages = ({
                 boxShadow={"0px 4px 20px 0px #00000080"}
               >
                 <Image
+                  alt="Chat ornament"
                   pos={"absolute"}
                   top={1.5}
                   right={-2}
@@ -135,6 +136,7 @@ const Messages = ({
                 boxShadow={"0px 4px 20px 0px #00000080"}
               >
                 <Image
+                  alt="Chat partner ornament"
                   pos={"absolute"}
                   top={1.5}
                   left={-2}

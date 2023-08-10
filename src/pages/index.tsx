@@ -16,10 +16,6 @@ interface Feed {
   link: string;
 }
 
-interface FeedsPageProps {
-  feeds: Feed[];
-}
-
 function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box
@@ -66,7 +62,7 @@ export default function FeedsPage() {
       fetchNextPage().catch((e) => console.log(e));
     }
   }, [bottomView, hasNextPage, fetchNextPage]);
-
+  
   return (
     <BackgroundAndNavbar>
       <Flex flexDirection={"column"} justifyContent={"center"}>
@@ -81,6 +77,7 @@ export default function FeedsPage() {
                 createdAt={feed.createdAt}
                 text={feed.text}
                 id={feed.id}
+                read = {feed.read}
               />
             );
           })}
