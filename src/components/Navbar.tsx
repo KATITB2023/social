@@ -1,4 +1,3 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
@@ -7,7 +6,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
   Flex,
   Icon,
   Image,
@@ -24,11 +22,9 @@ import {
   MdLeaderboard,
   MdShoppingBasket,
   MdPersonAddAlt,
-  MdOutlineErrorOutline,
   MdStarOutline,
   MdErrorOutline,
 } from "react-icons/md";
-import Layout from "~/layout";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
@@ -160,8 +156,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   });
 
   return (
-    <Layout title="Navbar">
-      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+    <>
       <Flex
         position={"relative"}
         display={"block"}
@@ -271,7 +266,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Layout>
+    </>
   );
 };
 
