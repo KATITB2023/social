@@ -42,7 +42,7 @@ const ComingSoon = () => {
           minWidth="100%"
           width="100%"
         />
-        <Heading size="H3" alignSelf="center">
+        <Heading size="H3" textAlign="center" alignSelf="center">
             UNDER MAINTENANCE
         </Heading>
         <Text
