@@ -75,7 +75,14 @@ const Match: NextPage = () => {
     setQuestionPage(page);
   };
   return (
-    <Box display={"flex"} position={"relative"} height="100vh" width="100%">
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      position={"relative"}
+      height="100vh"
+      width="100%"
+    >
       <Image
         src="/components/new-chat/background-new-chat.png"
         alt="vbg chat"
@@ -124,10 +131,10 @@ const Match: NextPage = () => {
         top={"30%"}
         left={0}
       />
-      <Navbar />
-      
+      <Navbar currentPage="Chat" />
+
       <VStack
-        minH="80vh"
+        minH="60vh"
         width="100%"
         marginTop={"0px"}
         justifyContent={"center"}
@@ -151,7 +158,7 @@ const Match: NextPage = () => {
             handlePageChange={handlePageChange}
             findMatch={findMatch}
             setIsFindingFriend={setIsFindingFriend}
-            isFindingFriend = {isFindingFriend}
+            isFindingFriend={isFindingFriend}
           />
         )}
         <Footer />
