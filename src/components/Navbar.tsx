@@ -1,4 +1,3 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
@@ -7,7 +6,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
   Flex,
   Icon,
   Image,
@@ -20,14 +18,16 @@ import {
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
-  MdOutlineHome,
   MdOutlinePersonOutline,
+  MdLeaderboard,
+  MdShoppingBasket,
   MdPersonAddAlt,
   MdStarOutline,
+  MdErrorOutline,
 } from "react-icons/md";
-import Layout from "~/layout";
-import { IconType } from "react-icons";
+import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -46,7 +46,30 @@ const DrawerButton = ({
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
-
+  if (type === 2) {
+    return (
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color = "#E8553E"
+        py={3}
+        borderRadius={2}
+        cursor={"pointer"}
+        _hover={{ bg: "#3D2283" }}
+        onClick={() => void signOut({callbackUrl : "/login"})}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    );
+  }
   return (
     <Flex
       flexDir="row"
@@ -72,18 +95,24 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const DrawerArray: PairDrawerButton[] = [
-    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/",
+      route: "/attendance-list",
     },
     {
       icon: MdOutlineAssignment,
       text: "Assignment",
       route: "/assignment-list",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/" },
+    {
+      icon: MdLeaderboard,
+      text: "Leaderboard",
+      route: "/leaderboard",
+    },
+    { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
@@ -94,13 +123,18 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Profile",
       route: "/profile",
     },
+    {
+      icon: MdErrorOutline,
+      text: "Rules",
+      route: "/",
+    },
   ];
 
-  const LogoutButtonData : PairDrawerButton = {
-      icon: MdLogout,
-      text: "Logout",
-      route: "/",
-  }
+  const LogoutButtonData: PairDrawerButton = {
+    icon: MdLogout,
+    text: "Logout",
+    route: "/",
+  };
 
   //   Scroll mechanism algorithm
   useEffect(() => {
@@ -122,8 +156,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   });
 
   return (
-    <Layout title="Navbar">
-      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+    <>
       <Flex
         position={"relative"}
         display={"block"}
@@ -164,6 +197,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
         />
 
         <Image
+          alt="Ekor"
           src="/ekor.svg"
           position="absolute"
           left="0"
@@ -191,6 +225,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
             marginRight="10px"
           />
           <Image
+            alt="Hamburger menu"
             cursor={"pointer"}
             src="/hamburgermenu.svg"
             height="30px"
@@ -212,7 +247,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               top="0"
               justifyContent="space-evenly"
               right="0"
-              paddingY="80px"
+              paddingY="40px"
               paddingX="20px"
               flexDir="column"
               zIndex="3"
@@ -226,15 +261,12 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton
-                data={LogoutButtonData}
-                type={2}
-              />
+              <DrawerButton data={LogoutButtonData} type={2}/>
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Layout>
+    </>
   );
 };
 

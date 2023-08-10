@@ -12,7 +12,6 @@ import {
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
 import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 import NotFound from "./404";
@@ -46,12 +45,11 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
 interface submission {
   isSubmitted: boolean;
   isDeadlinePassed: boolean;
-  filePath: string | null;
+  fileSubmitted: string | null ;
 }
 
 // Main Function
 export default function ShowSubmissionPage() {
-  const { data: session } = useSession({ required: true });
   const router = useRouter();
   const taskId = router.query.taskId as string;
   const inputAssignmentData = api.assignment.viewAssignment.useQuery({
@@ -66,7 +64,7 @@ export default function ShowSubmissionPage() {
   const inputSubmissionData: submission = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
-    filePath: assignmentData.filePath,
+    fileSubmitted: assignmentData.submission?.filePath as string,
   };
 
   return (
@@ -74,8 +72,9 @@ export default function ShowSubmissionPage() {
       <Flex
         flexDirection="column"
         justifyContent="space-between"
-        mx="24px"
-        my="70px"
+        align-items= "center"
+        my="0px"
+        mx="5%"
       >
         <HStack mb="3px">
           <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
@@ -133,7 +132,7 @@ function SubmissionStatus(param: submission) {
         fontSize="12px"
       >
         Submitted at {param.submissionDate}</Text>
-  */}
+      */}
     </Center>
   ) : param.isDeadlinePassed ? (
     <Flex>
@@ -181,6 +180,7 @@ function FileUpload(param: submission) {
   const taskId = router.query.taskId as string;
 
   function handleCancelClick() {
+    void router.push("/assignment-list");
     setFileSelected(false);
   }
 
@@ -196,7 +196,7 @@ function FileUpload(param: submission) {
     <Box
       borderColor={"white"}
       height="184px"
-      width="325px"
+      width="100%"
       justifyContent={"center"}
       alignItems="center"
       borderWidth="1px"
@@ -211,13 +211,24 @@ function FileUpload(param: submission) {
       textDecorationLine="underline"
       color="yellow.4"
     >
-      {param.filePath}
+      <a
+        href={param.fileSubmitted as string}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          textDecoration: "underline",
+          color: "yellow.4",
+          cursor: "pointer",
+        }}
+      >
+        Download submitted file
+      </a>
     </Box>
   ) : param.isDeadlinePassed ? (
     <Box
       borderColor={"white"}
       height="184px"
-      width="325px"
+      width="100%"
       justifyContent={"center"}
       alignItems="center"
       borderWidth="1px"
@@ -238,7 +249,7 @@ function FileUpload(param: submission) {
       <Box
         borderColor={"white"}
         height="184px"
-        width="325px"
+        width="100%"
         justifyContent={"center"}
         alignItems="center"
         borderWidth="1px"
@@ -260,7 +271,7 @@ function FileUpload(param: submission) {
           </Text>
         ) : (
           <>
-            <Image mt={-10} position="absolute" src="/komethello.png" />
+            <Image mt={-10} position="absolute" src="/komethello.png" alt="komethello"/>
             <Button
               bg={"transparent"}
               borderColor={"yellow.4"}
