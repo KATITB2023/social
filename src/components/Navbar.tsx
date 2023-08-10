@@ -20,10 +20,13 @@ import {
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
-  MdOutlineHome,
   MdOutlinePersonOutline,
+  MdLeaderboard,
+  MdShoppingBasket,
   MdPersonAddAlt,
+  MdOutlineErrorOutline,
   MdStarOutline,
+  MdErrorOutline,
 } from "react-icons/md";
 import Layout from "~/layout";
 import { IconType } from "react-icons";
@@ -72,11 +75,6 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const DrawerArray: PairDrawerButton[] = [
-    {
-      icon: MdOutlineHome,
-      text: "Back to Home",
-      route: "/",
-    },
     { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
     {
       icon: MdOutlineAssignmentInd,
@@ -88,7 +86,13 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Assignment",
       route: "/assignment-list",
     },
+    {
+      icon: MdLeaderboard,
+      text: "Leaderboard",
+      route: "/leaderboard",
+    },
     { icon: MdStarOutline, text: "Showcase", route: "/" },
+    { icon: MdShoppingBasket, text: "Merchandise", route: "/" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
@@ -98,6 +102,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       icon: MdOutlinePersonOutline,
       text: "Profile",
       route: "/profile",
+    },
+    {
+      icon: MdErrorOutline,
+      text: "Rules",
+      route: "/",
     },
   ];
 
@@ -217,7 +226,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               top="0"
               justifyContent="space-evenly"
               right="0"
-              paddingY="80px"
+              paddingY="40px"
               paddingX="20px"
               flexDir="column"
               zIndex="3"
