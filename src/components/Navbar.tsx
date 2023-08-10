@@ -115,8 +115,8 @@ const Navbar = () => {
       text: "Leaderboard",
       route: "/leaderboard",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
-    { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
+    // { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    // { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
