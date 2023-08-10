@@ -7,7 +7,7 @@ import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
 import ReactionButton from "~/components/feeds/ReactionButton";
-
+import { useRouter } from "next/router";
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
 };
@@ -79,7 +79,11 @@ type InfiniteFeeds = {
   nextCursor: number | undefined;
 };
 export default function FeedsPage() {
-  useSession({ required: true });
+  const sessionStatus = useSession();
+  const router = useRouter();
+  if(sessionStatus.status === "unauthenticated"){
+    void router.push("/login")
+  }
   const isVideoLink = (link: string) =>
     /^https:\/\/www\.youtube\.com\/embed\/[\w-]+$/.test(link);
   const isImageLink = (link: string) => /\.(jpeg|jpg|png|gif)$/i.test(link);
