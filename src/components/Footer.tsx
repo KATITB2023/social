@@ -57,18 +57,18 @@ const Footer = () => {
         <Box w={"full"}>
           <HStack marginTop="33px" spacing={{ base: "51px", lg: "45px" }}>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/about-us" color="white" _hover={{ textDecoration: "none" }}>
                 About Us
               </Link>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/interactive-map" color="white" _hover={{ textDecoration: "none" }}>
                 Interactive Map
               </Link>
             </VStack>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="/merchandise" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/merchandise" color="white" _hover={{ textDecoration: "none" }}>
                 Merchandise
               </Link>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/blog" color="white" _hover={{ textDecoration: "none" }}>
                 Blog
               </Link>
             </VStack>
