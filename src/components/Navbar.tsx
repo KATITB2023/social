@@ -31,6 +31,7 @@ import {
 import Layout from "~/layout";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -73,8 +74,9 @@ const DrawerButton = ({
 const Navbar = ({ currentPage }: { currentPage: string }) => {
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session } = useSession({ required: true });
 
-  const DrawerArray: PairDrawerButton[] = [
+  const DrawerArray: PairDrawerButton[] = session ? [
     { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
@@ -108,7 +110,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Rules",
       route: "/",
     },
-  ];
+  ] : [{
+    icon: MdErrorOutline,
+    text: "Rules",
+    route: "/",
+  }];
 
   const LogoutButtonData: PairDrawerButton = {
     icon: MdLogout,
@@ -240,7 +246,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton data={LogoutButtonData} type={2} />
+              {session ? <DrawerButton data={LogoutButtonData} type={2} /> : <></>}
             </Flex>
           </DrawerBody>
         </DrawerContent>

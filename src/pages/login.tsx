@@ -270,7 +270,7 @@ const Login = ({
     <Navbar2>
       <Head>
         <title>Login - KAT ITB 2023</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <Flex
         position="absolute"
