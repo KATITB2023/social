@@ -1,19 +1,20 @@
 import React from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
+import { type UserMatch } from "@prisma/client";
 import useEmit from "~/hooks/useEmit";
 
-const KamuYakin = ({
+const KamuDirequest = ({
   setOpen,
-  setSender,
+  match
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSender: React.Dispatch<React.SetStateAction<boolean>>;
+  match : UserMatch | null;
 }) => {
-  const endMatch = useEmit("endMatch");
-  const handleEndMatch = (answer: boolean) => {
-    if (answer) {
-      endMatch.mutate(undefined);
-    } else {
+
+  const askReveal = useEmit("askReveal");
+  const handleAskReveal = (choice: boolean) => {
+    if (match) {
+      askReveal.mutate({ agree: choice });
       setOpen(false);
     }
   };
@@ -41,15 +42,13 @@ const KamuYakin = ({
         lineHeight="100%" /* 32px */
         letterSpacing="-0.32px"
       >
-        Kamu yakin
+        Kamu 
         <br />
-        ingin
+        direquest
         <br />
-        mengakhiri
+        untuk reveal
         <br />
-        percakapan
-        <br />
-        ini?
+        profil nih!
       </Text>
       <Flex gap="20px">
         <Button
@@ -63,8 +62,7 @@ const KamuYakin = ({
           borderColor="yellow.5"
           background="gray.600"
           onClick={() => {
-            handleEndMatch(false);
-            setSender(false);
+            handleAskReveal(false);
           }}
         >
           <Text
@@ -75,7 +73,7 @@ const KamuYakin = ({
             fontWeight="700"
             lineHeight="150%" /* 24px */
           >
-            Gajadi hehe
+            Malu nih
           </Text>
         </Button>
 
@@ -89,8 +87,7 @@ const KamuYakin = ({
           borderRadius="12px"
           background="yellow.5"
           onClick={() => {
-            handleEndMatch(true);
-            setSender(true);
+            handleAskReveal(true);
           }}
         >
           <Text
@@ -101,7 +98,7 @@ const KamuYakin = ({
             fontWeight="700"
             lineHeight="150%" /* 24px */
           >
-            Yakin
+            Gaskeun
           </Text>
         </Button>
       </Flex>
@@ -109,4 +106,4 @@ const KamuYakin = ({
   );
 };
 
-export default KamuYakin;
+export default KamuDirequest;

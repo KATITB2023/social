@@ -55,7 +55,7 @@ export default function SubmissionPage() {
         const fileName = url.split("/").pop();
         const aTag = document.createElement("a");
         aTag.href = blobURL;
-        aTag.setAttribute("download", fileName! + ".pdf");
+        aTag.setAttribute("download", fileName! );
         document.body.appendChild(aTag);
         aTag.click();
         aTag.remove();

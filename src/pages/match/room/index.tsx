@@ -18,6 +18,10 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "~/components/Image";
 import Navbar from "~/components/Navbar";
+import KamuDirequest from "~/components/PopupChat/KamuDirequest";
+import TemanmuMenolak from "~/components/PopupChat/TemanmuMenolak";
+import YahTemanmu from "~/components/PopupChat/YahTemanmu";
+import YayTemanmu from "~/components/PopupChat/YayTemenmu";
 import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
@@ -39,6 +43,19 @@ const Room: NextPage = () => {
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const client = api.useContext();
+
+  const [isSender, setSender] = useState(false);
+  const [isYahTemanmu, setYahTemanmu] = useState(false);
+  const [isYayTemanmu, setYayTemanmu] = useState(false);
+  const [isTemanmuMenolak, setTemanmuMenolak] = useState(false);
+  const [isKamuDirequest, setKamuDirequest] = useState(false);
+
+  const closeAll = () => {
+    setYahTemanmu(false);
+    setYayTemanmu(false);
+    setTemanmuMenolak(false);
+    setKamuDirequest(false);
+  }
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
@@ -168,8 +185,13 @@ const Room: NextPage = () => {
       void client.messageAnonymous.chatHeader.invalidate();
       if (match) {
         if (data.endedAt !== null) {
-          setMatch(null);
-          void router.push("/chat");
+          if (!isSender) {
+            setYahTemanmu(true);
+          } else {
+            setMatch(null);
+            void router.push("/chat");
+          }
+          setSender(false);
         }
       }
     },
@@ -177,7 +199,6 @@ const Room: NextPage = () => {
   );
 
   const askReveal = useEmit("askReveal");
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useSubscription(
     "askReveal",
@@ -186,28 +207,19 @@ const Room: NextPage = () => {
         if (askReveal) {
           setMatch(data);
           if (data.isRevealed) {
-            toast({
-              title: "Yay temenmu uda reveal profil nih!",
-            });
+            setYayTemanmu(true);
           } else {
-            onOpen();
+            setKamuDirequest(true);
           }
         } else {
-          toast({
-            title: "Temanmu menolak reveal profil :(",
-          });
+          setTemanmuMenolak(true);
         }
       }
     },
     [match, messageQuery]
   );
 
-  const handleAskReveal = (choice: boolean) => {
-    onClose();
-    if (match) {
-      askReveal.mutate({ agree: choice });
-    }
-  };
+  
 
   const messageEmit = useEmit("anonymousMessage");
 
@@ -247,7 +259,8 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+
+          {/* <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader color="black">
@@ -267,7 +280,8 @@ const Room: NextPage = () => {
                 </Button>
               </ModalFooter>
             </ModalContent>
-          </Modal>
+          </Modal> */}
+
           <Flex
             w="100%"
             h="100vh"
@@ -314,7 +328,45 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
+                  isAnonRevealed = {profileData !== undefined && match.isRevealed ? true : false}
+                  setSender={setSender}
                 />
+              </Flex>
+            </Flex>
+          </Flex>
+
+          {/* For Popup */}
+          <Flex
+            position={"fixed"}
+            display={isYahTemanmu || isYayTemanmu || isTemanmuMenolak || isKamuDirequest ? "block" : "none"}
+            w={"100vw"}
+            h={"100vh"}
+            top={0}
+            left={0}
+            zIndex={3}
+          >
+            <Flex
+              position={"relative"}
+              w={"full"}
+              h={"full"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              {/* Black overlay */}
+              <Flex
+                position={"absolute"}
+                w={"100vw"}
+                h={"100vh"}
+                bg={"black"}
+                opacity={0.7}
+                onClick={() => closeAll}
+              />
+
+              <Flex zIndex={4}> 
+              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu}/>}
+              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak}/>}
+              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} match={match}/>}
               </Flex>
             </Flex>
           </Flex>

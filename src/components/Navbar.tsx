@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import {
   Box,
+  Button,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -12,6 +13,10 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { type IconType } from "react-icons";
 import {
   MdChatBubbleOutline,
   MdErrorOutline,
@@ -23,11 +28,8 @@ import {
   MdOutlinePersonOutline,
   MdPersonAddAlt,
 } from "react-icons/md";
-import { type IconType } from "react-icons";
-import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
+import { FUTUREFLAG } from "~/constant";
 import { api } from "~/utils/api";
-import Link from "next/link";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -42,7 +44,6 @@ const DrawerButton = ({
   data: PairDrawerButton;
   type: number;
 }) => {
-  const router = useRouter();
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
@@ -53,6 +54,7 @@ const DrawerButton = ({
         alignItems="center"
         color="#E8553E"
         py={3}
+        as="button"
         borderRadius={2}
         cursor={"pointer"}
         _hover={{ bg: "#3D2283" }}
@@ -71,22 +73,28 @@ const DrawerButton = ({
     );
   }
   return (
-    <Flex
-      flexDir="row"
-      alignItems="center"
-      color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
-      py={3}
-      borderRadius={2}
-      cursor={"pointer"}
-      borderLeft={type == 1 ? "2px" : "0"}
-      _hover={{ bg: "#3D2283" }}
-      onClick={() => void router.push(data.route)}
-    >
-      <Icon as={data.icon} height="20px" width="20px" marginLeft="10px"></Icon>
-      <Text marginTop="3px" size="B4" marginLeft="10px">
-        {data.text}
-      </Text>
-    </Flex>
+    <Link href={data.route}>
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
+        py={3}
+        borderRadius={2}
+        cursor={"pointer"}
+        borderLeft={type == 1 ? "2px" : "0"}
+        _hover={{ bg: "#3D2283" }}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    </Link>
   );
 };
 
@@ -94,7 +102,7 @@ const Navbar = () => {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { pathname, push } = useRouter();
+  const { pathname } = useRouter();
   const currentPage = pathname.split("/")[1];
 
   const DrawerArray: PairDrawerButton[] = [
@@ -221,23 +229,32 @@ const Navbar = () => {
           </Link>
         </Box>
 
-        <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
-          <Icon
-            cursor={"pointer"}
-            color="white"
-            as={MdPersonAddAlt}
-            height="30px"
-            width="30px"
-            marginRight="10px"
-          />
-          <Image
-            alt="Hamburger menu"
-            cursor={"pointer"}
-            src="/hamburgermenu.svg"
-            height="30px"
-            width="30px"
-            onClick={onOpen}
-          />
+        <Flex
+          flex="1"
+          flexDir="row"
+          justifyContent="end"
+          zIndex="2"
+          alignItems={"center"}
+        >
+          {FUTUREFLAG && (
+            <Icon
+              cursor={"pointer"}
+              color="white"
+              as={MdPersonAddAlt}
+              height="30px"
+              width="30px"
+              marginRight="10px"
+            />
+          )}
+          <Button variant={"unstyled"} onClick={onOpen}>
+            <Image
+              alt="Hamburger menu"
+              cursor={"pointer"}
+              src="/hamburgermenu.svg"
+              height="30px"
+              width="30px"
+            />
+          </Button>
         </Flex>
       </Flex>
 
