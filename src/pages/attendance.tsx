@@ -306,7 +306,7 @@ const AttendListPage = () => {
   return (
     <Layout title={"Attendance"}>
       <BackgroundAndNavbar>
-        <Container bgImage="url('attendancelist_background.svg')">
+        <Container bgImage="url('attendancelist_background.svg')" pb={"10"}>
           <Flex flexDir="column">
             <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
               ATTENDANCE LIST
