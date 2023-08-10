@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type PropsWithChildren, useState } from "react";
 import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
 import {
@@ -8,25 +8,19 @@ import {
 } from "@prisma/client";
 import {
   Box,
-  Image,
+  Button,
   Container,
   Flex,
   Heading,
-  Button,
-  Text,
+  Image,
   Spacer,
-  useToast,
   Spinner,
-  // position
+  Text,
+  useToast,
 } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import NotFound from "./404";
 
 import Navbar from "~/components/Navbar";
-
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
+import Layout from "~/layout";
 
 interface BgAssetProps {
   name: string;
@@ -56,9 +50,14 @@ const BackgroundAsset = (props: BgAssetProps) => {
   );
 };
 
-const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
+const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
   return (
-    <Box position="relative" minHeight="100vh" height="100%" overflow={"hidden"}>
+    <Box
+      position="relative"
+      minHeight="100vh"
+      height="100%"
+      overflow={"hidden"}
+    >
       <Image
         src="background.png"
         alt="background"
@@ -113,7 +112,7 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
       <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
-        <Navbar/>
+        <Navbar currentPage={"Attendance"} />
         {children}
       </Flex>
     </Box>
@@ -298,14 +297,9 @@ interface AbsenStatus {
 }
 
 const AttendListPage = () => {
-  const {data: session} = useSession();
   const hasil = api.absensi.viewAbsensi.useQuery();
   const eventList = hasil.data;
   const eventsByDay: Map<string, AbsenStatus[]> = new Map();
-
-  if(!session) {
-    return <NotFound />
-  }
 
   if (eventList) {
     eventList.forEach(({ event, record, status, day }) => {
@@ -325,29 +319,31 @@ const AttendListPage = () => {
   }
 
   return (
-    <BackgroundAndNavbar>
-      <Container bgImage="url('attendancelist_background.svg')">
-        <Flex flexDir="column">
-          <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
-            ATTENDANCE LIST
-          </Heading>
+    <Layout title={"Attendance"}>
+      <BackgroundAndNavbar>
+        <Container bgImage="url('attendancelist_background.svg')">
           <Flex flexDir="column">
-            {Array.from(eventsByDay.keys()).map((item) => (
-              <Flex key={item} flexDir="column" gap="20px" mt="44px">
-                <Heading size="SH4">{item}</Heading>
-                {eventsByDay.get(item)!.map((eventsInDay, index) => (
-                  <EventCard
-                    key={index}
-                    event={eventsInDay.event}
-                    status={eventsInDay.status}
-                  />
-                ))}
-              </Flex>
-            ))}
+            <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
+              ATTENDANCE LIST
+            </Heading>
+            <Flex flexDir="column">
+              {Array.from(eventsByDay.keys()).map((item) => (
+                <Flex key={item} flexDir="column" gap="20px" mt="44px">
+                  <Heading size="SH4">{item}</Heading>
+                  {eventsByDay.get(item)!.map((eventsInDay, index) => (
+                    <EventCard
+                      key={index}
+                      event={eventsInDay.event}
+                      status={eventsInDay.status}
+                    />
+                  ))}
+                </Flex>
+              ))}
+            </Flex>
           </Flex>
-        </Flex>
-      </Container>
-    </BackgroundAndNavbar>
+        </Container>
+      </BackgroundAndNavbar>
+    </Layout>
   );
 };
 export default AttendListPage;
