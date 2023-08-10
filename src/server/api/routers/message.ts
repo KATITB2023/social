@@ -325,10 +325,7 @@ export const messageRouter = createTRPCRouter({
       });
 
       if (!message) {
-        throw new TRPCError({
-          message: "Message not found",
-          code: "BAD_REQUEST",
-        });
+        return false;
       }
 
       await ctx.prisma.message.updateMany({
@@ -337,6 +334,7 @@ export const messageRouter = createTRPCRouter({
           isRead: true,
         },
       });
+      return true;
     }),
   updateOneIsRead: protectedProcedure
     .input(

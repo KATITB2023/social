@@ -74,11 +74,12 @@ const Room: NextPage = () => {
   }, []);
 
   const messageQuery = api.messageAnonymous.infinite.useInfiniteQuery(
-    { userMatchId: match !== null ? match.id : "" }, // to fix
+    { userMatchId: match?.id ?? "" }, // to fix
     {
       getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
+      enabled: !!match?.id,
     }
   );
 
@@ -106,7 +107,7 @@ const Room: NextPage = () => {
       for (const msg of incoming ?? []) map[msg.id] = msg;
 
       return Object.values(map).sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
       );
     });
     setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
