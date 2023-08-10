@@ -1,5 +1,5 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { type Feed as extendFeed } from "~/server/types/feed";
 
 export const feedRouter = createTRPCRouter({
@@ -105,11 +105,13 @@ export const feedRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Mencari apakah user pernah memberikan reaction yang sama di sebuah feed
-      const reaction = await ctx.prisma.feedReaction.findFirst({
+      const reaction = await ctx.prisma.feedReaction.findUnique({
         where: {
-          feedId: input.feedId,
-          userId: ctx.session.user.id,
-          reaction: input.reaction,
+          feedId_userId_reaction: {
+            feedId: input.feedId,
+            userId: ctx.session.user.id,
+            reaction: input.reaction,
+          },
         },
       });
       // Kalau belum pernah ada reaction, tambahkan reaction baru
