@@ -78,27 +78,21 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
     <Flex
       alignContent="center"
       marginLeft="24px"
-      height="1353px"
+      maxH="1353px"
       flexDirection="column"
       gap="15px"
     >
-      {dataRest.map((item, index) => {
-        if (
-          index + 1 >= currentPage - 1 * Number(participantsPerPage) &&
-          index + 1 <= currentPage * Number(participantsPerPage)
-        ) {
-          return (
-            <CardLeaderboardParticipant
-              key={item?.userId || "-"}
-              name={item?.name || "-"}
-              nim={item?.nim || "-"}
-              ranking={item?.rank || 0}
-              image={item?.profileImage || "-"}
-              points={item?.point || 0}
-            />
-          );
-        }
-        return null;
+      {dataRest.map((item) => {
+        return (
+          <CardLeaderboardParticipant
+            key={item?.userId || "-"}
+            name={item?.name || "-"}
+            nim={item?.nim || "-"}
+            ranking={item?.rank || 0}
+            image={item?.profileImage || "-"}
+            points={item?.point || 0}
+          />
+        );
       })}
     </Flex>
   );
@@ -125,7 +119,6 @@ const Leaderboard = () => {
 
   const totalParticipants = students.data.length;
   const totalPages = Math.ceil(totalParticipants / participantsPerPage);
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -136,7 +129,7 @@ const Leaderboard = () => {
     (currentPage - 1) * participantsPerPage,
     currentPage * participantsPerPage
   );
-
+  console.log("paginatedData", currentPage, paginatedData);
   const getPageButtons = () => {
     const pageButtons = [];
     const maxVisiblePages = 5;
@@ -198,12 +191,12 @@ const Leaderboard = () => {
   return (
     <Box
       w="375px"
-      h="2332px"
+      maxH="2332px"
+      minH="100vh"
       backgroundImage="/leaderboardbg.png"
       position="relative"
       backgroundSize="cover"
-      marginTop="-100px"
-      paddingTop="18%"
+      paddingTop="1%"
     >
       <Box
         backgroundImage="/leaderboardlogo.png"
@@ -213,7 +206,8 @@ const Leaderboard = () => {
         bottom="0"
         right="0"
       ></Box>
-      {/* <Navbar /> */}
+
+      <Navbar currentPage="Leaderboard" />
       <Box
         w="full"
         h="29px"
@@ -228,7 +222,8 @@ const Leaderboard = () => {
           color="yellow.5"
           whiteSpace="nowrap"
           textAlign="center"
-          zIndex="13"
+          zIndex="0"
+          marginTop="-0.1%"
         >
           TOP SPACEFARERS
         </Heading>
