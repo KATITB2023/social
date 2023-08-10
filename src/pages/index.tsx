@@ -39,7 +39,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         minWidth="100%"
         width="100%"
       />
-      <Flex flexDirection="column">
+      <Flex flexDirection="column" width={"100%"}>
         <Navbar currentPage="Feeds" />
         {children}
       </Flex>
