@@ -18,7 +18,10 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "~/components/Image";
 import Navbar from "~/components/Navbar";
+import KamuDirequest from "~/components/PopupChat/KamuDirequest";
+import TemanmuMenolak from "~/components/PopupChat/TemanmuMenolak";
 import YahTemanmu from "~/components/PopupChat/YahTemanmu";
+import YayTemanmu from "~/components/PopupChat/YayTemenmu";
 import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
@@ -36,9 +39,18 @@ const Room: NextPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const client = api.useContext();
 
-  const [popUpOpen, setPopUpOpen] = useState(false);
   const [isSender, setSender] = useState(false);
-  const [yahTemanmu, setYahTemanmu] = useState(false);
+  const [isYahTemanmu, setYahTemanmu] = useState(false);
+  const [isYayTemanmu, setYayTemanmu] = useState(false);
+  const [isTemanmuMenolak, setTemanmuMenolak] = useState(false);
+  const [isKamuDirequest, setKamuDirequest] = useState(false);
+
+  const closeAll = () => {
+    setYahTemanmu(false);
+    setYayTemanmu(false);
+    setTemanmuMenolak(false);
+    setKamuDirequest(false);
+  }
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
@@ -169,7 +181,6 @@ const Room: NextPage = () => {
       if (match) {
         if (data.endedAt !== null) {
           if (!isSender) {
-            setPopUpOpen(true);
             setYahTemanmu(true);
           } else {
             setMatch(null);
@@ -183,7 +194,6 @@ const Room: NextPage = () => {
   );
 
   const askReveal = useEmit("askReveal");
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useSubscription(
     "askReveal",
@@ -192,28 +202,19 @@ const Room: NextPage = () => {
         if (askReveal) {
           setMatch(data);
           if (data.isRevealed) {
-            toast({
-              title: "Yay temenmu uda reveal profil nih!",
-            });
+            setYayTemanmu(true);
           } else {
-            onOpen();
+            setKamuDirequest(true);
           }
         } else {
-          toast({
-            title: "Temanmu menolak reveal profil :(",
-          });
+          setTemanmuMenolak(true);
         }
       }
     },
     [match, messageQuery]
   );
 
-  const handleAskReveal = (choice: boolean) => {
-    onClose();
-    if (match) {
-      askReveal.mutate({ agree: choice });
-    }
-  };
+  
 
   const messageEmit = useEmit("anonymousMessage");
 
@@ -249,7 +250,8 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+
+          {/* <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader color="black">
@@ -269,7 +271,7 @@ const Room: NextPage = () => {
                 </Button>
               </ModalFooter>
             </ModalContent>
-          </Modal>
+          </Modal> */}
 
           <Flex
             w="100%"
@@ -327,7 +329,7 @@ const Room: NextPage = () => {
           {/* For Popup */}
           <Flex
             position={"fixed"}
-            display={popUpOpen ? "block" : "none"}
+            display={isYahTemanmu || isYayTemanmu || isTemanmuMenolak || isKamuDirequest ? "block" : "none"}
             w={"100vw"}
             h={"100vh"}
             top={0}
@@ -348,10 +350,15 @@ const Room: NextPage = () => {
                 h={"100vh"}
                 bg={"black"}
                 opacity={0.7}
-                onClick={() => setPopUpOpen(false)}
+                onClick={() => closeAll}
               />
 
-              <Flex zIndex={4}> {yahTemanmu && <YahTemanmu setMatch={setMatch} />}</Flex>
+              <Flex zIndex={4}> 
+              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu}/>}
+              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak}/>}
+              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} match={match}/>}
+              </Flex>
             </Flex>
           </Flex>
         </>

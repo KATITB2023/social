@@ -2,6 +2,7 @@ import { Flex, Text, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useEmit from "~/hooks/useEmit";
 import KamuYakin from "../PopupChat/KamuYakin";
+import BerhasilRequest from "../PopupChat/BerhasilRequest";
 
 export const AnonMenu = ({
   setOpen,
@@ -14,24 +15,26 @@ export const AnonMenu = ({
 }) => {
   const endMatch = useEmit("endMatch");
   const askReveal = useEmit("askReveal");
-  const [popUpOpen, setPopUpOpen] = useState(false);
   const [isKamuYakin, setKamuYakin] = useState(false);
+  const [isBerhasilRequest, setBerhasilRequest] = useState(false);
   const toast = useToast();
-  console.log(isRevealed)
+  console.log(isRevealed);
 
   // End Match Handling
   const handleEndMatch = () => {
-    setPopUpOpen(true);
     setKamuYakin(true);
     setSender(true);
   };
 
   const handleAskReveal = () => {
+    setBerhasilRequest(true);
     askReveal.mutate({ agree: true });
-    toast({
-      title: "Berhasil request teman untuk reveal profil!",
-    });
   };
+
+  const closeAll = () => {
+    setKamuYakin(false);
+    setBerhasilRequest(false);
+  }
 
   return (
     <>
@@ -134,7 +137,7 @@ export const AnonMenu = ({
       {/* For Popup */}
       <Flex
         position={"fixed"}
-        display={popUpOpen ? "block" : "none"}
+        display={isKamuYakin || isBerhasilRequest ? "block" : "none"}
         w={"100vw"}
         h={"100vh"}
         top={0}
@@ -155,13 +158,14 @@ export const AnonMenu = ({
             h={"100vh"}
             bg={"black"}
             opacity={0.7}
-            onClick={() => setPopUpOpen(false)}
+            onClick={() => closeAll}
           />
 
           <Flex zIndex={4}>
             {isKamuYakin && (
-              <KamuYakin setOpen={setPopUpOpen} setSender={setSender} />
+              <KamuYakin setOpen={setKamuYakin} setSender={setSender} />
             )}
+            {isBerhasilRequest && <BerhasilRequest setOpen={setBerhasilRequest} />}
           </Flex>
         </Flex>
       </Flex>
