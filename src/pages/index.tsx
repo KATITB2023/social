@@ -6,7 +6,7 @@ import Navbar from "~/components/Navbar";
 const Home: NextPage = () => {
   return (
     <Layout title="Home">
-      <Navbar />
+      <Navbar currentPage="Back to Home"/>
       <Container>Hello world </Container>
       <Heading size="SH1">SH1</Heading>
       <Heading size="H3">h3</Heading>
