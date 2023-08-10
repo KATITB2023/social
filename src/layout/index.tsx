@@ -27,7 +27,7 @@ export default function Layout({ title, children }: Props) {
       <Head>
         <title>{title}</title>
         <meta name="description" content="Social App OSKM ITB 2023" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <motion.div
         initial={{ opacity: 0 }}
