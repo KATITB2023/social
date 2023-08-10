@@ -97,7 +97,6 @@ const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pathname, push } = useRouter();
   const currentPage = pathname.split("/")[1];
-  console.log(currentPage);
 
   const DrawerArray: PairDrawerButton[] = [
     { icon: MdNewspaper, text: "Feeds", route: "/" },
