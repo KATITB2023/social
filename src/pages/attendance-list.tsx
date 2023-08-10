@@ -19,6 +19,8 @@ import {
   Spinner,
   // position
 } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import NotFound from "./404";
 
 import Navbar from "~/components/Navbar";
 
@@ -294,9 +296,15 @@ interface AbsenStatus {
 }
 
 const AttendListPage = () => {
+  const {data: session} = useSession();
   const hasil = api.absensi.viewAbsensi.useQuery();
   const eventList = hasil.data;
   const eventsByDay: Map<string, AbsenStatus[]> = new Map();
+
+  if(!session) {
+    return <NotFound />
+  }
+
   if (eventList) {
     eventList.forEach(({ event, record, status, day }) => {
       const absenStatus: AbsenStatus = {
