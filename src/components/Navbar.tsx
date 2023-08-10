@@ -22,13 +22,12 @@ import {
   MdOutlineAssignmentInd,
   MdOutlinePersonOutline,
   MdPersonAddAlt,
-  MdShoppingBasket,
-  MdStarOutline,
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -211,13 +210,16 @@ const Navbar = () => {
           borderRadius="50px"
         />
 
-        <Image
-          objectFit="cover"
-          objectPosition="center"
-          src="/Vector.svg"
-          alt="OSKM ITB"
-          zIndex="2"
-        />
+        <Box zIndex="2">
+          <Link href={"/"}>
+            <Image
+              objectFit="cover"
+              objectPosition="center"
+              src="/Vector.svg"
+              alt="OSKM ITB"
+            />
+          </Link>
+        </Box>
 
         <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
           <Icon
