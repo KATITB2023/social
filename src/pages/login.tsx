@@ -35,7 +35,7 @@ function Navbar2({ children }: childrenOnlyProps) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Flex flexDirection="column">
-        <Navbar />
+        <Navbar currentPage=""/>
         {children}
       </Flex>
     </Box>
