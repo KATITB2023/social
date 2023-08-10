@@ -106,7 +106,6 @@ function UserProfilePicture({
     </Box>
   );
 }
-
 function ProfileInfo({ info }: { info: SelfProfile }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -159,22 +158,29 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
       </Flex>
       <HStack justifyContent="center" spacing={5} marginTop="5%">
         <Button
-          width="40%"
-          paddingY="0.5em"
+          paddingX="24px"
+          paddingY="8px"
           backgroundColor="yellow.5"
           alignSelf="center"
           onClick={onOpen}
+          fontFamily={"SomarRounded-Bold"}
+          color={"#4909B3"}
+          width={"114px"}
+          borderRadius={"12px"}
         >
           <Text size="B5">Edit Password</Text>
         </Button>
         <EditPasswordModal isOpen={isOpen} onClose={onClose} />
         <Button
-          width="40%"
-          paddingX="1.5em"
-          paddingY="0.5em"
+          paddingX="24px"
+          paddingY="8px"
           backgroundColor="yellow.5"
           alignSelf="center"
           onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
+          fontFamily={"SomarRounded-Bold"}
+          color={"#4909B3"}
+          width={"114px"}
+          borderRadius={"12px"}
         >
           <Text size="B5">Edit Profile</Text>
         </Button>
