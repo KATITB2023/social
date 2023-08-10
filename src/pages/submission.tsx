@@ -72,8 +72,9 @@ export default function ShowSubmissionPage() {
       <Flex
         flexDirection="column"
         justifyContent="space-between"
-        mx="24px"
-        my="70px"
+        align-items= "center"
+        my="0px"
+        mx="5%"
       >
         <HStack mb="3px">
           <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
@@ -179,6 +180,7 @@ function FileUpload(param: submission) {
   const taskId = router.query.taskId as string;
 
   function handleCancelClick() {
+    void router.push("/assignment-list");
     setFileSelected(false);
   }
 
