@@ -6,94 +6,108 @@ import {
   Heading,
   HStack,
   Image,
-  Spacer,
   Text,
+  Spacer,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import Navbar from "~/components/Navbar";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
-import LoadingScreen from "~/components/LoadingScreen";
-import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import Layout from "~/layout";
+import NotFound from "./404";
+
+type childrenOnlyProps = {
+  children: string | JSX.Element | JSX.Element[];
+};
+
+function BackgroundAndNavbar({ children }: childrenOnlyProps) {
+  return (
+    <Box position="relative" minHeight="100vh" height="100%">
+      <Image
+        src="background.png"
+        alt="background"
+        height="100%"
+        zIndex="-1"
+        position="absolute"
+        objectFit="cover"
+        minWidth="100%"
+        width="100%"
+      />
+      <Flex flexDirection="column">
+        <Navbar />
+        {children}
+      </Flex>
+    </Box>
+  );
+}
 
 // Data Structure
-interface id {
+interface submission {
   isSubmitted: boolean;
   isDeadlinePassed: boolean;
-  fileSubmitted: string | null;
+  fileSubmitted: string | null ;
 }
 
 // Main Function
-export default function SubmissionPage() {
+export default function ShowSubmissionPage() {
   const router = useRouter();
-  const taskId = router.query.id as string;
+  const taskId = router.query.taskId as string;
   const inputAssignmentData = api.assignment.viewAssignment.useQuery({
     assignmentId: taskId,
   });
   const assignmentData = inputAssignmentData.data;
 
   if (!assignmentData) {
-    return <LoadingScreen />;
+    return <NotFound />;
   }
 
-  const inputSubmissionData: id = {
+  const inputSubmissionData: submission = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
     fileSubmitted: assignmentData.submission?.filePath as string,
   };
 
   return (
-    <Layout title={"Submission"}>
-      <BackgroundAndNavbar>
-        <Flex
-          flexDirection="column"
-          justifyContent="space-between"
-          align-items="center"
-          mx="5%"
-          paddingY={5}
-        >
-          <HStack mb="3px">
-            <Image
-              cursor={"pointer"}
-              onClick={() => {
-                void router.back();
-              }}
-              src="/BackButton.svg"
-              w={"15px"}
-            />
-            <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
-              Deadline
-            </Text>
-            <Text> : </Text>
-            <Text color="#ffffff" fontFamily="body" fontSize="12px">
-              {assignmentData.endTime.toLocaleDateString()}
-            </Text>
-          </HStack>
-          <Heading color="yellow.4" alignSelf="left">
-            {assignmentData.title}
-          </Heading>
-          <SubmissionStatus {...inputSubmissionData} />
-          <Text
-            color="white"
-            fontFamily="subheading"
-            fontSize="20px"
-            alignSelf="left"
-            mt="30px"
-            mb="3px"
-          >
-            Soal 01
+    <BackgroundAndNavbar>
+      <Flex
+        flexDirection="column"
+        justifyContent="space-between"
+        align-items= "center"
+        my="0px"
+        mx="5%"
+      >
+        <HStack mb="3px">
+          <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
+            Deadline
           </Text>
-          <Text textAlign={"justify"}>{assignmentData.description}</Text>
-          <FileUpload {...inputSubmissionData} />
-        </Flex>
-      </BackgroundAndNavbar>
-    </Layout>
+          <Text> : </Text>
+          <Text color="#ffffff" fontFamily="body" fontSize="12px">
+            {assignmentData.endTime.toLocaleDateString()}
+          </Text>
+        </HStack>
+        <Heading color="yellow.4" alignSelf="left">
+          {assignmentData.title}
+        </Heading>
+        <SubmissionStatus {...inputSubmissionData} />
+        <Text
+          color="white"
+          fontFamily="subheading"
+          fontSize="20px"
+          alignSelf="left"
+          mt="30px"
+          mb="3px"
+        >
+          Soal 01
+        </Text>
+        <Text textAlign={"justify"}>{assignmentData.description}</Text>
+        <FileUpload {...inputSubmissionData} />
+      </Flex>
+    </BackgroundAndNavbar>
   );
 }
 
 // Other Functions
-function SubmissionStatus(param: id) {
+function SubmissionStatus(param: submission) {
   return param.isSubmitted ? (
     <Center>
       <Box
@@ -157,7 +171,7 @@ function SubmissionStatus(param: id) {
   );
 }
 
-function FileUpload(param: id) {
+function FileUpload(param: submission) {
   const [fileSelected, setFileSelected] = useState(false);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [isSubmitOpen, setSubmitOpen] = useState(false);
@@ -181,6 +195,7 @@ function FileUpload(param: id) {
   return param.isSubmitted ? (
     <Box
       borderColor={"white"}
+      height="184px"
       width="100%"
       justifyContent={"center"}
       alignItems="center"
@@ -230,7 +245,7 @@ function FileUpload(param: id) {
       Tidak mengumpulkan tugas
     </Box>
   ) : (
-    <Flex flexDir={"column"} justifyContent={"space-between"}>
+    <>
       <Box
         borderColor={"white"}
         height="184px"
@@ -241,7 +256,6 @@ function FileUpload(param: id) {
         display="inline-flex"
         verticalAlign={"center"}
         mt={5}
-        mb={20}
         borderRadius="20px"
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         flexDirection="column"
@@ -257,12 +271,7 @@ function FileUpload(param: id) {
           </Text>
         ) : (
           <>
-            <Image
-              mt={-10}
-              position="absolute"
-              src="/komethello.png"
-              alt="komethello"
-            />
+            <Image mt={-10} position="absolute" src="/komethello.png" alt="komethello"/>
             <Button
               bg={"transparent"}
               borderColor={"yellow.4"}
@@ -278,7 +287,7 @@ function FileUpload(param: id) {
               width="116px"
             >
               <label htmlFor="fileInput">
-                <Text> Upload File </Text>
+                <Text> upload file </Text>
               </label>
             </Button>
             <input
@@ -295,8 +304,7 @@ function FileUpload(param: id) {
           </>
         )}
       </Box>
-
-      <HStack gap="20px" bottom="30px">
+      <HStack gap="20px" position="absolute" bottom="30px">
         <Button
           backgroundColor={"gray.600"}
           display="flex"
@@ -332,15 +340,14 @@ function FileUpload(param: id) {
           </Text>
         </Button>
       </HStack>
-
       <SubmitPopUp
         isSubmitting={isSubmitOpen}
         submittingFile={setSubmitOpen}
         fileToSend={file}
         taskId={taskId}
       />
-    </Flex>
+    </>
   );
 }
 
-export { SubmissionPage };
+export { ShowSubmissionPage };

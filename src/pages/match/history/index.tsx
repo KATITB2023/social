@@ -70,7 +70,7 @@ const History: NextPage = () => {
         backgroundRepeat={"no-repeat"}
         alignItems="center"
       >
-        <Navbar currentPage="Chat" />
+        <Navbar />
         <VStack
           ref={vStackRef}
           spacing={5}

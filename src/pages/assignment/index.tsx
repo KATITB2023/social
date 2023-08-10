@@ -45,7 +45,7 @@ const DailySideQuest: React.FC<{
           left={isToggled ? "65px" : "0"}
           transform={isToggled ? "translateX(65px)" : "translateX(-2px)"}
           transition="transform 0.07s"
-          zIndex="0"
+          zIndex="2"
         >
           <Box // Box Komet
             width="300px"
@@ -216,7 +216,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
         borderRadius="12px"
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         marginTop="7px"
-        marginBottom="-30px"
+        marginBottom="10px"
       >
         <Text
           color="var(--yellow-yellow-4, #FFE655)"
@@ -297,7 +297,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
         borderRadius="12px"
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         marginTop="7px"
-        marginBottom="-30px"
+        marginBottom="10px"
       >
         <Text
           color="var(--yellow-yellow-4, #FFE655)"
@@ -373,7 +373,27 @@ export default function AssignmentListPage() {
           </Heading>
           <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
           {boxContent === "Daily Quest" ? (
-            <>
+            <Box
+              maxHeight="68vh"
+              overflowY="scroll"
+              sx={{
+                "::-webkit-scrollbar": {
+                  width: "11px",
+                  position: "absolute",
+                  right: "5px",
+                },
+                "::-webkit-scrollbar-track": {
+                  background: "#2F2E2E",
+                  borderRadius: "5px",
+                  marginY: "10px",
+                  marginRight: "10px",
+                },
+                "::-webkit-scrollbar-thumb": {
+                  background: "white",
+                  borderRadius: "5px",
+                },
+              }}
+            >
               {(dailyData.data ?? []).map((task) => (
                 <TugasDailyQuest
                   key={task.id}
@@ -383,9 +403,29 @@ export default function AssignmentListPage() {
                   deadline={task.endTime}
                 />
               ))}
-            </>
+            </Box>
           ) : boxContent === "Side Quest" ? (
-            <>
+            <Box
+              maxHeight="68vh"
+              overflowY="scroll"
+              sx={{
+                "::-webkit-scrollbar": {
+                  width: "11px",
+                  position: "absolute",
+                  right: "5px",
+                },
+                "::-webkit-scrollbar-track": {
+                  background: "#2F2E2E",
+                  borderRadius: "5px",
+                  marginY: "10px",
+                  marginRight: "10px",
+                },
+                "::-webkit-scrollbar-thumb": {
+                  background: "white",
+                  borderRadius: "5px",
+                },
+              }}
+            >
               {(sideData.data ?? []).map((task) => (
                 <TugasSideQuest
                   key={task.id}
@@ -394,7 +434,7 @@ export default function AssignmentListPage() {
                   statusTugas={task.submissionStatus}
                 />
               ))}
-            </>
+            </Box>
           ) : null}
         </Flex>
       </BackgroundAndNavbar>
