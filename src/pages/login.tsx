@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   Heading,
-  Icon,
   Image,
   Input,
   InputGroup,
@@ -25,7 +24,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import Navbar from "~/components/Navbar";
 import LoginBackground from "~/components/login/login-background";
 import Layout from "~/layout";
 
@@ -172,7 +170,7 @@ const LoginForm = ({
       redirect: false,
       csrfToken,
     });
-    if (res?.error) {
+    if (!res?.ok && res?.error) {
       handleError(res.error);
       setError("root", { message: res.error });
       reset({}, { keepErrors: true, keepValues: true });
