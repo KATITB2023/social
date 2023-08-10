@@ -35,7 +35,7 @@ type childrenOnlyProps = {
 function Navbar2({ children }: childrenOnlyProps) {
   return (
     <>
-      <Box position="relative" minHeight="100vh" height="auto">
+      <Box position="relative" height={"100vh"}>
         {/* Grey layer */}
         <Flex
           position="absolute"
@@ -44,10 +44,10 @@ function Navbar2({ children }: childrenOnlyProps) {
           zIndex={0}
           minHeight="100%"
         >
-          <LoginBackground />{" "}
+          <LoginBackground />
         </Flex>
 
-        <Flex flexDirection="column" h={"full"} w={"full"}>
+        <Flex flexDirection="column" h={"full"} w={"full"} >
           <Navbar currentPage="" />
           {children}
         </Flex>
@@ -138,7 +138,7 @@ const LoginForm = ({
       flexDir={"column"}
       justifyContent={"center"}
       alignItems="center"
-      h={"full"}
+      minHeight="100vh"
       gap="25px"
     >
       <Flex
