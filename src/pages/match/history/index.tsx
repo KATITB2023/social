@@ -65,9 +65,12 @@ const History: NextPage = () => {
         direction="column"
         position="relative"
         bg={`url(/addchatbg.png)`}
+        backgroundPosition={"center"}
+        backgroundSize={"cover"}
+        backgroundRepeat={"no-repeat"}
         alignItems="center"
       >
-        <Navbar />
+        <Navbar currentPage="Chat" />
         <VStack
           ref={vStackRef}
           spacing={5}
