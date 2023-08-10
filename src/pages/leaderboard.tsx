@@ -202,6 +202,8 @@ const Leaderboard = () => {
       backgroundImage="/leaderboardbg.png"
       position="relative"
       backgroundSize="cover"
+      marginTop="-100px"
+      paddingTop="18%"
     >
       <Box
         backgroundImage="/leaderboardlogo.png"
@@ -211,7 +213,7 @@ const Leaderboard = () => {
         bottom="0"
         right="0"
       ></Box>
-      <Navbar />
+      {/* <Navbar /> */}
       <Box
         w="full"
         h="29px"
