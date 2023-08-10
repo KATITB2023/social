@@ -91,8 +91,8 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Leaderboard",
       route: "/leaderboard",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/" },
-    { icon: MdShoppingBasket, text: "Merchandise", route: "/" },
+    { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
