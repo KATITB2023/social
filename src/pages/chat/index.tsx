@@ -10,12 +10,16 @@ import ChatPageHeader from "~/components/chat/ChatPageHeader";
 import ExistingChat from "~/components/chat/ExistingChat";
 import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
 import Header from "~/components/chat/Header";
+import {FUTUREFLAG} from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
 
 const ChatHome: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
-
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
   };
