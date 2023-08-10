@@ -18,7 +18,7 @@ export const messageRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const page = await ctx.prisma.message.findMany({
+      const items = await ctx.prisma.message.findMany({
         orderBy: {
           createdAt: "desc",
         },
@@ -51,23 +51,22 @@ export const messageRouter = createTRPCRouter({
         },
       });
 
-      const items = page.reverse();
-      let prevCursor = undefined;
+      let nextCursor = undefined;
 
       if (items.length > input.take) {
-        const prev = items.shift();
+        const next = items.pop();
 
-        if (prev) {
-          prevCursor = {
-            id: prev.id,
-            date: prev.createdAt,
+        if (next) {
+          nextCursor = {
+            id: next.id,
+            date: next.createdAt,
           };
         }
       }
 
       return {
         items,
-        prevCursor,
+        nextCursor,
       };
     }),
   availableUser: protectedProcedure.query(async ({ ctx }) => {
@@ -296,10 +295,7 @@ export const messageRouter = createTRPCRouter({
       });
 
       if (!message) {
-        throw new TRPCError({
-          message: "Message not found",
-          code: "BAD_REQUEST",
-        });
+        return false;
       }
 
       await ctx.prisma.message.updateMany({
@@ -308,6 +304,7 @@ export const messageRouter = createTRPCRouter({
           isRead: true,
         },
       });
+      return true;
     }),
   updateIsReadByMatchId: protectedProcedure
     .input(

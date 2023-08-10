@@ -76,17 +76,16 @@ const Room: NextPage = () => {
   const messageQuery = api.messageAnonymous.infinite.useInfiniteQuery(
     { userMatchId: match !== null ? match.id : "" }, // to fix
     {
-      getPreviousPageParam: (d) => d.prevCursor,
+      getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
     }
   );
 
-  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-    messageQuery;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
   useEffect(() => {
-    if (match && session) {
+    if (match && session?.user?.id) {
       try {
         updateMessageIsRead.mutate({
           userMatchId: match.id,
@@ -94,7 +93,7 @@ const Room: NextPage = () => {
         });
       } catch (err) {}
     }
-  }, []);
+  }, [session?.user?.id, match, updateMessageIsRead.mutate]);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -127,7 +126,6 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-
         addMessages([post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
@@ -224,7 +222,7 @@ const Room: NextPage = () => {
           overflowY={"hidden"}
         >
           <Flex position={"absolute"} top={0}>
-            <Navbar/>
+            <Navbar />
           </Flex>
           <Image
             src="/components/anon_chat_page/anon_comet.png"
@@ -290,10 +288,10 @@ const Room: NextPage = () => {
 
               <Messages
                 messages={messages ?? []}
-                hasPreviousPage={hasPreviousPage}
-                fetchPreviousPage={() => void fetchPreviousPage()}
-                isFetchingPreviousPage={isFetchingPreviousPage}
-                bottomRef={bottomRef}
+                hasNextPage={hasNextPage}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                fetchNextPage={fetchNextPage}
+                isFetchingNextPage={isFetchingNextPage}
               />
 
               <Divider />
