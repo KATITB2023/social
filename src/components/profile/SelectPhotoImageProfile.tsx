@@ -13,19 +13,17 @@ import { sanitizeURL, uploadFile } from "~/utils/file";
 import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
 import ImageCropDrawer from "./ImageCropDrawer";
+import { MdSettingsInputComponent } from "react-icons/md";
 
 export const SelectPhotoImageProfile = ({
   open,
   setOpen,
-  changeImage,
   nim,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  changeImage: React.Dispatch<React.SetStateAction<string | undefined>>;
   nim: string;
 }) => {
-  const [pictureSelected, setPictureSelected] = useState(false);
   const [imageSelected, setImageSelected] = useState<File | undefined>(
     undefined
   );
@@ -42,15 +40,15 @@ export const SelectPhotoImageProfile = ({
 
   function onImageChange(file: FileList) {
     if (file[0]) {
-      setPictureSelected(true);
-      setImageSelected(file[0]);
       onOpen();
+      setImageSelected(file[0]);
     }
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   function onCancel() {
     onClose();
+    setImageSelected(undefined);
   }
 
   async function deleteProfile() {
@@ -226,18 +224,16 @@ export const SelectPhotoImageProfile = ({
                     }}
                   />
 
-                  {pictureSelected ? (
-                    <ImageCropDrawer
-                      imageFile={imageSelected as File}
-                      onCancel={onCancel}
-                      isOpen={isOpen}
-                      onOpen={onOpen}
-                      onClose={onClose}
-                      setCroppedImage={setCroppedImage}
-                      nim={nim}
-                      updateImage={updateImage}
-                    />
-                  ) : null}
+                  <ImageCropDrawer
+                    imageFile={imageSelected as File}
+                    onCancel={onCancel}
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    setCroppedImage={setCroppedImage}
+                    nim={nim}
+                    updateImage={updateImage}
+                  />
                 </Box>
               </Box>
             </Box>

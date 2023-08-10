@@ -2,11 +2,11 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   Heading,
   IconButton,
-  Input,
   Text,
-  Center,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import React, { useState } from "react";
@@ -17,10 +17,13 @@ import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImagePr
 import ProfilePicture from "~/components/profile/ProfilePicture";
 import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import EditPasswordModal from "~/components/profile/EditPasswordModal";
 
 import { api } from "~/utils/api";
 import { type SelfProfile } from "~/server/types/user-profile";
 import EditingProfile from "~/components/profile/EditingProfile";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export interface EditableProps {
   bio?: string;
@@ -29,28 +32,14 @@ export interface EditableProps {
   image?: string;
 }
 
-const defautProfile: SelfProfile = {
-  bio: "something",
-  campus: "GANESHA",
-  email: "Vicenta_Ryan@hotmail.coui",
-  faculty: "Sekolah Teknik Elektro dan Informatika",
-  friendCount: 0,
-  gender: "MALE",
-  id: "5d42b047-2fff-45d0-9e07-567f3e6265a4",
-  image: null,
-  instagram: "@gana.dipaa",
-  name: "Rufus Wiza",
-  nim: "13521003",
-  pin: "842081",
-  point: 0,
-  visitedCount: 0,
-};
-
 export default function ProfilePage() {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [openSelectImage, setOpenSelectImage] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>("");
-
+  const sessionStatus = useSession();
+  const router = useRouter();
+  if (sessionStatus.status === "unauthenticated") {
+    void router.push("/login");
+  }
   if (!selfProfile) return null;
   return (
     <BackgroundAndNavigationBar>
@@ -65,7 +54,7 @@ export default function ProfilePage() {
           Profile
         </Heading>
         <UserProfilePicture
-          src={profileImage ? profileImage : selfProfile?.image ?? undefined}
+          src={selfProfile?.image ?? undefined}
           setOpen={setOpenSelectImage}
         />
         <Flex
@@ -83,7 +72,6 @@ export default function ProfilePage() {
         <SelectPhotoImageProfile
           open={openSelectImage}
           setOpen={setOpenSelectImage}
-          changeImage={setProfileImage}
           nim={selfProfile.nim}
         />
       </Flex>
@@ -119,25 +107,14 @@ function UserProfilePicture({
   );
 }
 
-function ProfileInfo({
-  info,
-  onProfileEdit,
-}: { info: SelfProfile } & {
-  onProfileEdit: ({ bio, instagram, email }: EditableProps) => void;
-}) {
+function ProfileInfo({ info }: { info: SelfProfile }) {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [bio, setBio] = useState(info.bio || "");
-  const [instagram, setInstagram] = useState(info.instagram || "");
-  const [email, setEmail] = useState(info.email || "");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return isEditMode ? (
-    <EditingProfile
-      initialState={info}
-      setIsEditMode={setIsEditMode}
-      onProfileEdit={onProfileEdit}
-    />
+    <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
-    <>
+    <Box maxHeight="40vh" overflowY="scroll">
       <Flex
         flexDirection="column"
         justifyContent="space-between"
@@ -157,20 +134,33 @@ function ProfileInfo({
           <LabelValueContainer
             label={key}
             key={key}
-            value={info[value] || "-"}
+            value={info[value as keyof SelfProfile]?.toString() || "-"}
           />
         ))}
       </Flex>
-      <Button
-        paddingX="1.5em"
-        paddingY="0.5em"
-        backgroundColor="yellow.5"
-        alignSelf="center"
-        onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
-      >
-        <Text size="B5"> edit profile</Text>
-      </Button>
-    </>
+      <HStack justifyContent="center" spacing={5} marginTop="5%">
+        <Button
+          width="40%"
+          paddingY="0.5em"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={onOpen}
+        >
+          <Text size="B5">Edit Password</Text>
+        </Button>
+        <EditPasswordModal isOpen={isOpen} onClose={onClose} />
+        <Button
+          width="40%"
+          paddingX="1.5em"
+          paddingY="0.5em"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
+        >
+          <Text size="B5">Edit Profile</Text>
+        </Button>
+      </HStack>
+    </Box>
   );
 }
 

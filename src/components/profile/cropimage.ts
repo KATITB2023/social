@@ -89,6 +89,7 @@ export default async function getCroppedImg(
       if (!blob) throw new Error("Failed to create a blob from canvas.");
 
       // Convert the blob to a file
+
       const file = new File([blob], "croppedImage.jpeg", {
         type: "image/jpeg",
       });
