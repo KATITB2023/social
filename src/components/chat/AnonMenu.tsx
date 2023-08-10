@@ -5,16 +5,19 @@ import KamuYakin from "../PopupChat/KamuYakin";
 
 export const AnonMenu = ({
   setOpen,
-  setSender
+  setSender,
+  isRevealed,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSender: React.Dispatch<React.SetStateAction<boolean>>;
+  isRevealed: boolean;
 }) => {
   const endMatch = useEmit("endMatch");
   const askReveal = useEmit("askReveal");
   const [popUpOpen, setPopUpOpen] = useState(false);
   const [isKamuYakin, setKamuYakin] = useState(false);
   const toast = useToast();
+  console.log(isRevealed)
 
   // End Match Handling
   const handleEndMatch = () => {
@@ -103,16 +106,18 @@ export const AnonMenu = ({
           <Text> &#128680; &nbsp; Laporkan Teman </Text>
         </Flex>
 
-        <Flex
-          cursor={"pointer"}
-          gap={3}
-          p={1.5}
-          borderRadius={20}
-          _hover={{ bgColor: "#4D5668" }}
-          onClick={handleAskReveal}
-        >
-          <Text> &#128064; &nbsp; Minta Reveal Profile </Text>
-        </Flex>
+        {!isRevealed && (
+          <Flex
+            cursor={"pointer"}
+            gap={3}
+            p={1.5}
+            borderRadius={20}
+            _hover={{ bgColor: "#4D5668" }}
+            onClick={handleAskReveal}
+          >
+            <Text> &#128064; &nbsp; Minta Reveal Profile </Text>
+          </Flex>
+        )}
 
         <Flex
           cursor={"pointer"}
@@ -154,9 +159,9 @@ export const AnonMenu = ({
           />
 
           <Flex zIndex={4}>
-          {
-            isKamuYakin && <KamuYakin setOpen={setPopUpOpen} setSender={setSender}/>
-          }
+            {isKamuYakin && (
+              <KamuYakin setOpen={setPopUpOpen} setSender={setSender} />
+            )}
           </Flex>
         </Flex>
       </Flex>
