@@ -1,7 +1,7 @@
 import QuestionBox from "./Box";
 import Eclipse from "./Eclipse";
 import MatchButton from "./Button";
-import { Text, Box, ButtonGroup, Image } from "@chakra-ui/react";
+import { Text, Box, ButtonGroup, Image, Button } from "@chakra-ui/react";
 import React from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { ChatTopic } from "~/server/types/message";
@@ -18,7 +18,7 @@ type SecondQuestionProps = {
 type ThirdQuestionProps = {
   handlePageChange: (page: number) => void;
   findMatch: () => void;
-  isFindingFriend : boolean;
+  isFindingFriend: boolean;
   setIsFindingFriend: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -44,6 +44,9 @@ export const FirstQuestion: React.FC<FirstQuestionProps> = ({
             borderColor="yellow.5"
             backgroundColor="gray.600"
             onClick={() => setIsAnonymous(true)}
+            _hover={{
+              bg: "gray.500",
+            }}
           >
             <Text
               fontFamily="SomarRounded-Bold"
@@ -161,6 +164,9 @@ export const SecondQuestion: React.FC<SecondQuestionProps> = ({
                 justifyContent={"center"}
                 onClick={() => setTopic(item)}
                 cursor={"pointer"}
+                _hover={{
+                  bgColor: topic === item ? "yellow.5" : "gray.500",
+                }}
               >
                 <Text
                   alignSelf={"center"}
@@ -179,6 +185,9 @@ export const SecondQuestion: React.FC<SecondQuestionProps> = ({
           borderColor="yellow.5"
           backgroundColor="gray.600"
           onClick={() => handlePageChange(1)}
+          _hover={{
+            bg: "gray.500",
+          }}
         >
           <Text fontFamily="SomarRounded-Bold" color="yellow.5" fontSize="16px">
             {/* Set ke anonim */}
@@ -205,7 +214,7 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
   handlePageChange,
   findMatch,
   isFindingFriend,
-  setIsFindingFriend
+  setIsFindingFriend,
 }) => {
   return (
     <Box
@@ -253,7 +262,8 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
           <Box display={"flex"} flexDirection={"column"} gap={"20px"}>
             <Box
               border={"2px solid #FFFC83"}
-              backgroundColor="#2F2E2E"
+              backgroundColor={!isFindingFriend ? "yellow.5" : "gray.600"}
+              color={!isFindingFriend ? "purple.2" : "yellow.5"}
               paddingX="28px"
               paddingY="10px"
               borderRadius="12px"
@@ -261,12 +271,13 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               maxW="100%"
               alignSelf={"center"}
               cursor={"pointer"}
-              onClick={()=>setIsFindingFriend(false)}
-              opacity={!isFindingFriend ? 1 : 0.7} 
+              onClick={() => setIsFindingFriend(false)}
+              _hover = {{
+                bg: isFindingFriend && "gray.500"
+              }}
             >
               <Text
                 fontSize={"16px"}
-                color={"yellow.5"}
                 fontFamily={"SomarRounded-Bold"}
                 alignSelf={"center"}
                 textAlign={"center"}
@@ -275,20 +286,23 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               </Text>
             </Box>
             <Box
-              backgroundColor="yellow.5"
+              border={"2px solid #FFFC83"}
+              backgroundColor={isFindingFriend ? "yellow.5" : "gray.600"}
+              color={isFindingFriend ? "purple.2" : "yellow.5"}
               borderRadius="12px"
               paddingX="28px"
               paddingY="10px"
               w="282px"
               maxW="100%"
               alignSelf={"center"}
-              onClick={()=>setIsFindingFriend(true)}
-              opacity={isFindingFriend ? 1 : 0.7}
+              onClick={() => setIsFindingFriend(true)}
               cursor={"pointer"}
+              _hover = {{
+                bg: !isFindingFriend && "gray.500"
+              }}
             >
               <Text
                 fontSize="16px"
-                color="purple.2"
                 fontFamily="SomarRounded-Bold"
                 alignSelf={"center"}
                 textAlign={"center"}
@@ -307,6 +321,9 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
         paddingX={"28px"}
         cursor="pointer"
         onClick={() => findMatch()}
+        _hover={{
+          bg: "#FF755E",
+        }}
       >
         <Text
           fontSize={"28px"}
