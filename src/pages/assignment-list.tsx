@@ -13,6 +13,8 @@ import { match } from "ts-pattern";
 import { AssignmentType } from "@prisma/client";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
+import NotFound from "./404";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -383,6 +385,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
 
 // Main function
 export default function AssignmentListPage() {
+  const {data: session} = useSession();
   const [boxContent, setBoxContent] = useState("Daily Quest");
   const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
   const tasks = assignmentQuery.data || [];
@@ -390,6 +393,10 @@ export default function AssignmentListPage() {
   const handleBoxContentChange = (content: string) => {
     setBoxContent(content);
   };
+  alert(session)
+  if(!session) {
+    return <NotFound />
+  }
 
   return (
     <BackgroundAndNavbar>
