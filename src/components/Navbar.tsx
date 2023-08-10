@@ -277,7 +277,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                     color={"yellow.5"}
                     noOfLines={2}
                   >
-                    {selfProfile.name! }
+                    {selfProfile.name}
                   </Text>
                 </Flex>
               )}
