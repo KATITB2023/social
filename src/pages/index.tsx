@@ -5,7 +5,10 @@ import { useEffect, useRef } from "react";
 import BackgroundAndNavbar from "~/components/feeds/BackgroundAndNavbar";
 import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 export default function FeedsPage() {
   useSession({ required: true });
