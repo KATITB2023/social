@@ -1,5 +1,5 @@
 import { Flex, Image, Text, Spacer, Box } from "@chakra-ui/react";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -35,6 +35,8 @@ const Feed: React.FC<FeedProps> = ({
   id,
   read,
 }) => {
+  const [isSeen, setIsSeen] = useState(read);
+
   const getFeedPostedMessage = (feedDate: Date) => {
     dayjs.extend(utc);
     dayjs.extend(relativeTime);
@@ -57,13 +59,18 @@ const Feed: React.FC<FeedProps> = ({
   const isImageLink = (link: string) => /\.(jpeg|jpg|png|gif)$/i.test(link);
   const feedRef = useRef(null);
   const readMutation = api.feed.readFeed.useMutation();
-
   const isInView = useInView(feedRef);
   useEffect(() => {
-    const result = readMutation.mutate({
-      feedId: id,
-    });
-  }, [isInView, id]);
+    if (!isSeen) {
+      const result = readMutation.mutate({
+        feedId: id,
+      });
+      setTimeout(() => {
+        setIsSeen(true);
+      }, 2000);
+    }
+  }, [isInView, id, isSeen]);
+
   return (
     <Flex flexDirection={"column"} justifyContent={"center"} ref={feedRef}>
       {/* Feeds Header */}
@@ -148,7 +155,7 @@ const Feed: React.FC<FeedProps> = ({
         </Text>
 
         {/* Post yang belom dilihat */}
-        {!read && (
+        {!isSeen && (
           <Box
             w="100%"
             h="100%"
