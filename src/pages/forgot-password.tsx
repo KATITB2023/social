@@ -12,6 +12,7 @@ import {
 import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
@@ -22,12 +23,24 @@ type childrenOnlyProps = {
 
 function Navbar2({ children }: childrenOnlyProps) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
-      <Flex flexDirection="column">
-        <Navbar currentPage={"Forgot Password"} />
-        {children}
-      </Flex>
-    </Box>
+    <>
+      <Box position="relative" height="100vh">
+        <Flex
+          backgroundColor="gray.600"
+          position={"absolute"}
+          h={"100%"}
+          w={"100%"}
+          zIndex={0}
+        >
+          <LoginBackground />
+        </Flex>
+        <Flex flexDirection="column" h={"full"} w={"full"}>
+          <Navbar currentPage={"Forgot Password"} />
+          {children}
+        </Flex>
+      </Box>
+      <Footer/>
+    </>
   );
 }
 
@@ -93,27 +106,17 @@ const ForgotPasswordForm = () => {
   return (
     <Navbar2>
       <Flex
-        position="absolute"
         width="100%"
-        backgroundColor="gray.600"
         zIndex={0}
-        minHeight="100vh"
-        justifyContent={{ base: "center", md: "end" }}
+        justifyContent={"center"}
         alignItems="center"
-        paddingInline={{ base: "0", md: "15vw" }}
+        height="80vh"
       >
-        <LoginBackground />
         <Flex
-          width="300px"
-          height="250px"
-          direction="column"
+          flexDir="column"
           justifyContent="center"
           alignItems="center"
-          position="absolute"
           gap="25px"
-          left="50%"
-          top="50%"
-          transform="translate(-50%, -50%)"
         >
           <Flex
             direction="column"
@@ -141,6 +144,7 @@ const ForgotPasswordForm = () => {
               Tenang saja, Spacefarers!
             </Text>
           </Flex>
+
           <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
             <VStack spacing={7}>
               <FormControl isInvalid={!!errors.email}>
