@@ -35,7 +35,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column">
-        <Navbar />
+        <Navbar currentPage={"Assignment"} />
         {children}
       </Flex>
     </Box>
