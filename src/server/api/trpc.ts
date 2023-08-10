@@ -13,9 +13,9 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { bucket } from "~/server/bucket";
 import { prisma } from "~/server/db";
 import { tracer } from "~/server/tracer";
+import { transporter } from "~/server/mail";
 import { getServerAuthSession } from "~/server/auth";
 
 /**
@@ -45,7 +45,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     session: opts.session,
     prisma,
     tracer,
-    bucket,
+    transporter,
   };
 };
 

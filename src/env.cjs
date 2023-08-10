@@ -45,20 +45,6 @@ exports.env = createEnv({
       // SAMPLER_RATIO must be a positive number
       z.number().positive().min(0).max(1)
     ),
-    GOOGLE_APPLICATION_CREDENTIALS: z.string().min(1),
-    BUCKET_NAME: z.string().min(1),
-    URL_EXPIRATION_TIME: z.preprocess(
-      // If URL_EXPIRATION_TIME is not set, set it to 1 hour
-      (str) => (str ? +str : 60 * 60 * 1000),
-      // URL_EXPIRATION_TIME must be a positive integer
-      z.number().int().positive().min(1)
-    ),
-    BUCKET_CORS_EXPIRATION_TIME: z.preprocess(
-      // If BUCKET_CORS_EXPIRATION_TIME is not set, set it to 1 hour
-      (str) => (str ? +str : 60 * 60),
-      // BUCKET_CORS_EXPIRATION_TIME must be a positive integer
-      z.number().int().positive().min(1)
-    ),
     TYPING_TIMEOUT: z.preprocess(
       // If TYPING_TIMEOUT is not set, set it to 1000 ms
       (str) => (str ? +str : 1000),
@@ -67,6 +53,16 @@ exports.env = createEnv({
     ),
     // IF REDIS_URL is not set, will not using redis (memory cache)
     REDIS_URL: z.string().url(),
+    SMTP_HOST: z.string().min(1),
+    SMTP_PORT: z.preprocess(
+      // If SMTP_PORTL is not set, set it to 587
+      (str) => (str ? +str : 587),
+      // SMTP_PORTL must be a positive integer
+      z.number().int().positive().min(1)
+    ),
+    SMTP_USER: z.string().min(1),
+    SMTP_PASS: z.string().min(1),
+    WS_PORT: z.coerce.number().int().positive().default(3001)
   },
 
   /**
@@ -77,6 +73,7 @@ exports.env = createEnv({
   client: {
     NEXT_PUBLIC_API_URL: z.string().url(),
     NEXT_PUBLIC_WS_URL: z.string().url(),
+    NEXT_PUBLIC_BUCKET_API_KEY: z.string().min(1),
   },
 
   /**
@@ -92,14 +89,16 @@ exports.env = createEnv({
     S_MAXAGE: process.env.S_MAXAGE,
     STALE_WHILE_REVALIDATE: process.env.STALE_WHILE_REVALIDATE,
     SAMPLER_RATIO: process.env.SAMPLER_RATIO,
-    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    BUCKET_NAME: process.env.BUCKET_NAME,
-    URL_EXPIRATION_TIME: process.env.URL_EXPIRATION_TIME,
-    BUCKET_CORS_EXPIRATION_TIME: process.env.BUCKET_CORS_EXPIRATION_TIME,
     TYPING_TIMEOUT: process.env.TYPING_TIMEOUT,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
+    NEXT_PUBLIC_BUCKET_API_KEY: process.env.NEXT_PUBLIC_BUCKET_API_KEY,
     REDIS_URL: process.env.REDIS_URL,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
+    WS_PORT: process.env.WS_PORT
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

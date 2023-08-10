@@ -15,11 +15,4 @@ export default createNextApiHandler({
           );
         }
       : undefined,
-  responseMeta() {
-    return {
-      headers: {
-        "Cache-Control": `s-maxage=${env.S_MAXAGE}, stale-while-revalidate=${env.STALE_WHILE_REVALIDATE}`,
-      },
-    };
-  },
 });
