@@ -1,4 +1,3 @@
-
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
@@ -21,23 +20,108 @@ import {
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
-  MdOutlineHome,
   MdOutlinePersonOutline,
+  MdLeaderboard,
+  MdShoppingBasket,
   MdPersonAddAlt,
+  MdOutlineErrorOutline,
   MdStarOutline,
+  MdErrorOutline,
 } from "react-icons/md";
 import Layout from "~/layout";
+import { IconType } from "react-icons";
+import { useRouter } from "next/router";
 
-const Navbar: NextPage = () => {
+type PairDrawerButton = {
+  icon: IconType;
+  text: string;
+  route: string;
+};
+
+const DrawerButton = ({
+  data,
+  type,
+}: {
+  data: PairDrawerButton;
+  type: number;
+}) => {
+  const router = useRouter();
+  // Type 0 = default
+  // Type 1 = current
+  // Type 2 = special for logout
+
+  return (
+    <Flex
+      flexDir="row"
+      alignItems="center"
+      color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
+      py={3}
+      borderRadius={2}
+      cursor={"pointer"}
+      borderLeft={type == 1 ? "2px" : "0"}
+      _hover={{ bg: "#3D2283" }}
+      onClick={() => void router.push(data.route)}
+    >
+      <Icon as={data.icon} height="20px" width="20px" marginLeft="10px"></Icon>
+      <Text marginTop="3px" size="B4" marginLeft="10px">
+        {data.text}
+      </Text>
+    </Flex>
+  );
+};
+
+const Navbar = ({ currentPage }: { currentPage: string }) => {
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const DrawerArray: PairDrawerButton[] = [
+    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    {
+      icon: MdOutlineAssignmentInd,
+      text: "Attendance",
+      route: "/",
+    },
+    {
+      icon: MdOutlineAssignment,
+      text: "Assignment",
+      route: "/assignment-list",
+    },
+    {
+      icon: MdLeaderboard,
+      text: "Leaderboard",
+      route: "/leaderboard",
+    },
+    { icon: MdStarOutline, text: "Showcase", route: "/" },
+    { icon: MdShoppingBasket, text: "Merchandise", route: "/" },
+    {
+      icon: MdChatBubbleOutline,
+      text: "Chat",
+      route: "/chat",
+    },
+    {
+      icon: MdOutlinePersonOutline,
+      text: "Profile",
+      route: "/profile",
+    },
+    {
+      icon: MdErrorOutline,
+      text: "Rules",
+      route: "/",
+    },
+  ];
+
+  const LogoutButtonData : PairDrawerButton = {
+      icon: MdLogout,
+      text: "Logout",
+      route: "/",
+  }
 
   //   Scroll mechanism algorithm
   useEffect(() => {
     let prevScrollPosY = window.scrollY;
 
     const detectScrollY = () => {
-      if (window.scrollY < prevScrollPosY) {
+      if (window.scrollY <= prevScrollPosY) {
         setNavbarPos(0);
       } else {
         setNavbarPos(-100);
@@ -60,7 +144,6 @@ const Navbar: NextPage = () => {
         backgroundColor={"transparent"}
         h={"60px"}
         my={"20px"}
-        zIndex={2}
       />
 
       <Flex
@@ -138,110 +221,29 @@ const Navbar: NextPage = () => {
             <Flex
               height="100%"
               width="100%"
-              backgroundColor="#1D0263"
+              backgroundColor="navy.1"
               position="absolute"
               top="0"
               justifyContent="space-evenly"
               right="0"
-              paddingY="80px"
+              paddingY="40px"
               paddingX="20px"
               flexDir="column"
               zIndex="3"
-              opacity="1"
             >
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineHome}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Back to Home
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdNewspaper}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Feeds
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineAssignmentInd}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="10px">
-                  Attendance
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdOutlineAssignment}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="10px">
-                  Assignment
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdStarOutline}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Showcase
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="white">
-                <Icon
-                  as={MdChatBubbleOutline}
-                  height="20px"
-                  width="20px"
-                  marginLeft="11px"
-                ></Icon>
-                <Text marginTop="1px" size="B4" marginLeft="9px">
-                  Chat
-                </Text>
-              </Flex>
-              <Flex
-                flexDir="row"
-                alignItems="center"
-                color="yellow"
-                borderLeft="2px"
-              >
-                <Icon
-                  as={MdOutlinePersonOutline}
-                  height="22px"
-                  width="22px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="2px" size="B4" marginLeft="10px">
-                  Profile
-                </Text>
-              </Flex>
-              <Flex flexDir="row" alignItems="center" color="#E8553E">
-                <Icon
-                  as={MdLogout}
-                  height="20px"
-                  width="20px"
-                  marginLeft="10px"
-                ></Icon>
-                <Text marginTop="3px" size="B4" marginLeft="10px">
-                  Logout
-                </Text>
-              </Flex>
+              {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
+                return (
+                  <DrawerButton
+                    key={idx}
+                    data={tuple}
+                    type={tuple.text === currentPage ? 1 : 0}
+                  />
+                );
+              })}
+              <DrawerButton
+                data={LogoutButtonData}
+                type={2}
+              />
             </Flex>
           </DrawerBody>
         </DrawerContent>
