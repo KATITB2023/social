@@ -130,7 +130,7 @@ const Navbar = () => {
     {
       icon: MdErrorOutline,
       text: "Rules",
-      route: "/rules",
+      route: "https://cdn.oskmitb.com/test_pentol_nat.jpg?q=100&?w=128",
     },
   ];
 
