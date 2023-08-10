@@ -1,23 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Image, VStack } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import useEmit from "~/hooks/useEmit";
-import useSubscription from "~/hooks/useSubscription";
-import { ChatTopic } from "~/server/types/message";
+import LoadingScreen from "~/components/LoadingScreen";
 import Navbar from "~/components/Navbar";
-import { Box, Image, VStack } from "@chakra-ui/react";
 import Footer from "~/components/newchat/Footer";
 import {
   FirstQuestion,
   SecondQuestion,
   ThirdQuestion,
 } from "~/components/newchat/Questions";
-import LoadingScreen from "~/components/LoadingScreen";
-import Layout from "~/layout";
-import {FUTUREFLAG} from "~/constant";
 import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
+import useEmit from "~/hooks/useEmit";
+import useSubscription from "~/hooks/useSubscription";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { ChatTopic } from "~/server/types/message";
+
+export const getServerSideProps = withSession({ force: true });
 
 const Match: NextPage = () => {
   const [questionPage, setQuestionPage] = useState(1);
@@ -80,10 +83,10 @@ const Match: NextPage = () => {
     return <LoadingScreen />;
   }
 
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
   }
-  
+
   return (
     <Layout title={"Match"}>
       <Box

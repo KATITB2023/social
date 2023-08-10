@@ -19,19 +19,13 @@ import {
   type InferGetServerSidePropsType,
 } from "next";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
-import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, type PropsWithChildren } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Footer from "~/components/Footer";
-import Navbar from "~/components/Navbar";
 import LoginBackground from "~/components/login/login-background";
 import Layout from "~/layout";
-
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
 
 const NavbarLogin = () => {
   return (
@@ -99,7 +93,7 @@ const NavbarLogin = () => {
   );
 };
 
-function Navbar2({ children }: childrenOnlyProps) {
+function Navbar2({ children }: PropsWithChildren) {
   return (
     <>
       <Box position="relative" height={"100vh"}>
@@ -114,12 +108,12 @@ function Navbar2({ children }: childrenOnlyProps) {
           <LoginBackground />
         </Flex>
 
-        <Flex flexDirection="column" h={"full"} w={"full"} >
+        <Flex flexDirection="column" h={"full"} w={"full"}>
           <NavbarLogin />
           {children}
         </Flex>
       </Box>
-      <Footer/>
+      <Footer />
     </>
   );
 }
@@ -228,7 +222,11 @@ const LoginForm = ({
       </Flex>
 
       <form onSubmit={(e) => void handleSubmit(login)(e)}>
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken ?? undefined} />
+        <input
+          name="csrfToken"
+          type="hidden"
+          defaultValue={csrfToken ?? undefined}
+        />
         <VStack spacing={4}>
           <FormControl isInvalid={!!errors.nim}>
             <Input

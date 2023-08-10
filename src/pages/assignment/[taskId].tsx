@@ -9,13 +9,16 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { api } from "~/utils/api";
+import { useState } from "react";
 import SubmitPopUp from "~/components/assignment/SubmitPopUp";
-import LoadingScreen from "~/components/LoadingScreen";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import LoadingScreen from "~/components/LoadingScreen";
 import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 // Data Structure
 interface id {
@@ -44,8 +47,8 @@ export default function SubmissionPage() {
     fileSubmitted: assignmentData.submission?.filePath as string,
   };
 
-  const downloadFile = (url: string) => {void 
-    fetch(url)
+  const downloadFile = (url: string) => {
+    void fetch(url)
       .then((response) => response.blob())
       .then((blob) => {
         const blobURL = window.URL.createObjectURL(new Blob([blob]));

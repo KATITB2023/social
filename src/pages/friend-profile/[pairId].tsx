@@ -1,17 +1,20 @@
-import { Flex, Text, Heading, Button, Box } from "@chakra-ui/react";
-import { MdPersonPin, MdChatBubbleOutline } from "react-icons/md";
-import Link from "next/link";
-import { api } from "~/utils/api";
+import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import NotFound from "../404";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { MdChatBubbleOutline, MdPersonPin } from "react-icons/md";
+import LabelValueContainer from "~/components/profile/LabelValueContainer";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
+import { withSession } from "~/server/auth/withSession";
+import { api } from "~/utils/api";
+import NotFound from "../404";
 import ProfilePage, {
   BackgroundAndNavigationBar,
   ProfilePicture,
 } from "../profile";
-import LabelValueContainer from "~/components/profile/LabelValueContainer";
-import {FUTUREFLAG} from "~/constant";
-import ComingSoon from "~/components/screen/ComingSoon";
+
+export const getServerSideProps = withSession({ force: true });
 
 export default function FriendProfilePage() {
   const router = useRouter();
@@ -50,8 +53,8 @@ export default function FriendProfilePage() {
     student.image = "/defaultprofpict.svg";
   }
 
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
   }
   return (
     <BackgroundAndNavigationBar>

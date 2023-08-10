@@ -8,14 +8,15 @@ import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
 import Messages from "~/components/chat/Messages";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
 import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import {FUTUREFLAG} from "~/constant";
-import ComingSoon from "~/components/screen/ComingSoon";
 
-// const userPair = api.message.getUser.useQuery({ pairId }).data;
+export const getServerSideProps = withSession({ force: true });
 
 const Chat: NextPage = () => {
   const router = useRouter();
@@ -120,8 +121,8 @@ const Chat: NextPage = () => {
 
   const messageEmit = useEmit("message");
 
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
   }
 
   return (

@@ -11,25 +11,25 @@ import {
 } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/router";
+import type { PropsWithChildren } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
+import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
 
 interface FormValues {
   newPassword: string;
   confirmPassword: string;
 }
 
-function Navbar2({ children }: childrenOnlyProps) {
+export const getServerSideProps = withSession({ force: true });
+
+function Navbar2({ children }: PropsWithChildren) {
   return (
     <Box position="relative" minHeight="100vh" height="100%">
       <Flex flexDirection="column">
-        <Navbar/>
+        <Navbar />
         {children}
       </Flex>
     </Box>
