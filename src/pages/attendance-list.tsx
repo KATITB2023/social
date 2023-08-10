@@ -56,7 +56,7 @@ const BackgroundAsset = (props: BgAssetProps) => {
 
 const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
+    <Box position="relative" minHeight="100vh" height="100%" overflow={"hidden"}>
       <Image
         src="background.png"
         alt="background"
