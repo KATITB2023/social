@@ -21,10 +21,10 @@ interface LeaderboardData {
   nim: string;
 }
 
-const participantsPerPage: number = 18;
+const participantsPerPage = 18;
 
 const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
-  let dataTop3 = [];
+  const dataTop3 = [];
   for (let i = 0; i < 3; i++) {
     if (data[i]) {
       dataTop3.push(data[i]);
@@ -68,7 +68,7 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
   data,
   currentPage,
 }) => {
-  let dataRest = [];
+  const dataRest = [];
   for (let i = 3; i < data.length; i++) {
     if (data[i]) {
       dataRest.push(data[i]);
@@ -129,7 +129,6 @@ const Leaderboard = () => {
     (currentPage - 1) * participantsPerPage,
     currentPage * participantsPerPage
   );
-  console.log("paginatedData", currentPage, paginatedData);
   const getPageButtons = () => {
     const pageButtons = [];
     const maxVisiblePages = 5;
