@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Layout from "~/layout";
 import { Container, Heading,Text} from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
-
+  
 const Home: NextPage = () => {
   return (
     <Layout title="Home">
