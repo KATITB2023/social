@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Feed from "~/components/feeds/Feed";
 import { useInView } from "framer-motion";
+import Layout from "~/layout";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -39,7 +40,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         minWidth="100%"
         width="100%"
       />
-      <Flex flexDirection="column">
+      <Flex flexDirection="column" width={"100%"}>
         <Navbar currentPage="Feeds" />
         {children}
       </Flex>
@@ -68,24 +69,26 @@ export default function FeedsPage() {
   }, [bottomView, hasNextPage, fetchNextPage]);
 
   return (
-    <BackgroundAndNavbar>
-      <Flex flexDirection={"column"} justifyContent={"center"}>
-        {data?.pages
-          .flatMap((page) => page.data)
-          .map((feed) => {
-            return (
-              <Feed
-                key={feed.id}
-                reactions={feed.reactions}
-                attachmentUrl={feed.attachmentUrl}
-                createdAt={feed.createdAt}
-                text={feed.text}
-                id={feed.id}
-              />
-            );
-          })}
-        <div ref={bottomRef}></div>
-      </Flex>
-    </BackgroundAndNavbar>
+    <Layout title={"Beranda"}>
+      <BackgroundAndNavbar>
+        <Flex flexDirection={"column"} justifyContent={"center"}>
+          {data?.pages
+            .flatMap((page) => page.data)
+            .map((feed) => {
+              return (
+                <Feed
+                  key={feed.id}
+                  reactions={feed.reactions}
+                  attachmentUrl={feed.attachmentUrl}
+                  createdAt={feed.createdAt}
+                  text={feed.text}
+                  id={feed.id}
+                />
+              );
+            })}
+          <div ref={bottomRef}></div>
+        </Flex>
+      </BackgroundAndNavbar>
+    </Layout>
   );
 }
