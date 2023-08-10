@@ -4,13 +4,19 @@ import { useRouter } from "next/router";
 
 interface HeaderProps {
   name: string | undefined;
-  image : string | null | undefined ;
+  image: string | null | undefined;
   isTyping: boolean;
   isAnon: boolean;
   handleClick: () => void;
 }
 
-const Header = ({ name, image, isTyping, isAnon, handleClick }: HeaderProps) => {
+const Header = ({
+  name,
+  image,
+  isTyping,
+  isAnon,
+  handleClick,
+}: HeaderProps) => {
   const router = useRouter();
   return (
     <Flex
@@ -28,7 +34,7 @@ const Header = ({ name, image, isTyping, isAnon, handleClick }: HeaderProps) => 
       borderBottomRightRadius={"20px"}
       boxShadow="0px 4px 20px 0px #FFFC8366"
     >
-      <Navbar />
+      <Navbar currentPage={"Chat"} />
       <Flex
         position={"absolute"}
         paddingX={"15px"}
@@ -54,11 +60,7 @@ const Header = ({ name, image, isTyping, isAnon, handleClick }: HeaderProps) => 
                 src="/components/anon_chat_page/anon_profile.svg"
               />
             ) : (
-              <Avatar
-                w={"35px"}
-                h={"35px"}
-                src={image}
-              />
+              <Avatar w={"35px"} h={"35px"} src={image} />
             )}
 
             <Flex flexDirection="column" mx="5" justify="center">
