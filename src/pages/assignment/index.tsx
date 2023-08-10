@@ -375,6 +375,7 @@ export default function AssignmentListPage() {
           {boxContent === "Daily Quest" ? (
             <Box
               maxHeight="68vh"
+              maxW={"100%"}
               overflowY="scroll"
               sx={{
                 "::-webkit-scrollbar": {
@@ -407,6 +408,7 @@ export default function AssignmentListPage() {
           ) : boxContent === "Side Quest" ? (
             <Box
               maxHeight="68vh"
+              maxW={"100%"}
               overflowY="scroll"
               sx={{
                 "::-webkit-scrollbar": {
