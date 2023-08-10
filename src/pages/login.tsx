@@ -11,31 +11,25 @@ import {
   InputRightElement,
   Link,
   Text,
-  VStack,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
-import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { type PropsWithChildren, useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Footer from "~/components/Footer";
-import Navbar from "~/components/Navbar";
 import LoginBackground from "~/components/login/login-background";
 import Layout from "~/layout";
 
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
-
 const NavbarLogin = () => {
   return (
-    <Layout title="Navbar">
+    <>
       {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
       <Flex
         position={"relative"}
@@ -95,11 +89,11 @@ const NavbarLogin = () => {
           zIndex="2"
         />
       </Flex>
-    </Layout>
+    </>
   );
 };
 
-function Navbar2({ children }: childrenOnlyProps) {
+function Navbar2({ children }: PropsWithChildren) {
   return (
     <>
       <Box position="relative" height={"100vh"}>
@@ -114,12 +108,12 @@ function Navbar2({ children }: childrenOnlyProps) {
           <LoginBackground />
         </Flex>
 
-        <Flex flexDirection="column" h={"full"} w={"full"} >
+        <Flex flexDirection="column" h={"full"} w={"full"}>
           <NavbarLogin />
           {children}
         </Flex>
       </Box>
-      <Footer/>
+      <Footer />
     </>
   );
 }
@@ -228,7 +222,11 @@ const LoginForm = ({
       </Flex>
 
       <form onSubmit={(e) => void handleSubmit(login)(e)}>
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+        <input
+          name="csrfToken"
+          type="hidden"
+          defaultValue={csrfToken ?? undefined}
+        />
         <VStack spacing={4}>
           <FormControl isInvalid={!!errors.nim}>
             <Input
@@ -339,16 +337,18 @@ const Login = ({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <Navbar2>
-      <Flex
-        justifyContent={"center"}
-        alignItems="center"
-        width="100%"
-        flexDirection={"column"}
-      >
-        <LoginForm csrfToken={csrfToken} />
-      </Flex>
-    </Navbar2>
+    <Layout title={"Login"}>
+      <Navbar2>
+        <Flex
+          justifyContent={"center"}
+          alignItems="center"
+          width="100%"
+          flexDirection={"column"}
+        >
+          <LoginForm csrfToken={csrfToken} />
+        </Flex>
+      </Navbar2>
+    </Layout>
   );
 };
 
@@ -357,7 +357,7 @@ export const getServerSideProps = async (
 ) => {
   const csrfToken = await getCsrfToken(context);
   return {
-    props: { csrfToken },
+    props: { csrfToken: csrfToken ?? null },
   };
 };
 

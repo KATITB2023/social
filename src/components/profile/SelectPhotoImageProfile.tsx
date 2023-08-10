@@ -7,10 +7,13 @@ import {
   Collapse,
   useToast,
   Spinner,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { sanitizeURL, uploadFile } from "~/utils/file";
 import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
+import ImageCropDrawer from "./ImageCropDrawer";
+import { MdSettingsInputComponent } from "react-icons/md";
 
 export const SelectPhotoImageProfile = ({
   open,
@@ -21,11 +24,12 @@ export const SelectPhotoImageProfile = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   nim: string;
 }) => {
-  const [pictureSelected, setPictureSelected] = useState(false);
   const [imageSelected, setImageSelected] = useState<File | undefined>(
     undefined
   );
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [croppedImage, setCroppedImage] = useState<string>("");
+
   const utils = api.useContext();
   const toast = useToast();
   const profileMutaion = api.profile.editProfile.useMutation({
@@ -36,9 +40,45 @@ export const SelectPhotoImageProfile = ({
 
   function onImageChange(file: FileList) {
     if (file[0]) {
-      setPictureSelected(true);
+      onOpen();
       setImageSelected(file[0]);
     }
+  }
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  function onCancel() {
+    onClose();
+    setImageSelected(undefined);
+  }
+
+  async function deleteProfile() {
+    try {
+      setIsUpdating(true);
+      const res = await profileMutaion.mutateAsync({
+        image: undefined,
+      });
+      toast({
+        title: "Success",
+        status: "success",
+        description: res.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (e: unknown) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    setIsUpdating(false);
+    setOpen(false);
   }
 
   async function updateImage(file: File) {
@@ -72,154 +112,134 @@ export const SelectPhotoImageProfile = ({
         position: "top",
       });
     }
+
     setIsUpdating(false);
-    return;
+    setOpen(false);
   }
 
   return (
-    <Box zIndex={10}>
-      <Collapse in={open} animateOpacity>
-        <Box
-          display={"flex"}
-          w={"full"}
-          mx={"auto"}
-          justifyContent={"center"}
-          alignContent={"center"}
-        >
-          {/* Black Layer */}
-          <Box
-            position={"absolute"}
-            background={"black"}
-            h={"full"}
-            w={"full"}
-            maxW={"375px"}
-            top={0}
-            opacity={0.5}
-            onClick={() => setOpen(false)}
-          />
-
+    <>
+      <Box zIndex={10}>
+        <Collapse in={open} animateOpacity>
           <Box
             display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            position={"fixed"}
-            bottom={0}
-            background={"purple.1"}
-            height={"274px"}
             w={"full"}
-            maxW={"375px"}
-            padding={"10px"}
-            gap={"30px"}
+            mx={"auto"}
+            justifyContent={"center"}
+            alignContent={"center"}
           >
+            {/* Black Layer */}
             <Box
-              display={"flex"}
-              flexDir={"row"}
+              position={"absolute"}
+              background={"black"}
+              h={"full"}
               w={"full"}
-              justifyContent={"space-between"}
-            >
-              <Text fontWeight={700} size={"SH5"} color={"white"}>
-                {" "}
-                Profile photo{" "}
-              </Text>
-              <Box display={"flex"} gap={"15px"}>
-                <Image
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  src="/components/trashbin.svg"
-                  alt="trash icon"
-                />
-                <Image
-                  onClick={() => setOpen(false)}
-                  src="/components/closeButton.svg"
-                  alt="close icon"
-                />
-              </Box>
-            </Box>
+              maxW={"375px"}
+              top={0}
+              opacity={0.5}
+              onClick={() => setOpen(false)}
+            />
 
             <Box
-              w={"220px"}
-              h={"119px"}
-              background={"transparent"}
-              borderStyle={"dotted"}
-              borderRadius={"10px"}
-              borderWidth={"1px"}
-              borderColor={"white"}
               display={"flex"}
-              justifyContent={"center"}
+              flexDirection={"column"}
+              justifyContent={"space-evenly"}
               alignItems={"center"}
-              gap={"10px"}
+              position={"fixed"}
+              bottom={0}
+              background={"purple.1"}
+              height={"230px"}
+              w={"full"}
+              maxW={"375px"}
+              padding={"10px"}
+              gap={"30px"}
+              pb={"30px"}
             >
-              <Image src="/components/addFile.svg" alt="add file" />
+              <Box
+                display={"flex"}
+                flexDir={"row"}
+                w={"full"}
+                justifyContent={"space-between"}
+              >
+                <Text fontWeight={700} size={"SH5"} color={"white"}>
+                  {" "}
+                  Profile photo{" "}
+                </Text>
+                <Box display={"flex"} gap={"15px"}>
+                  <Image
+                    onClick={() => {
+                      void deleteProfile();
+                    }}
+                    src="/components/trashbin.svg"
+                    alt="trash icon"
+                  />
+                  <Image
+                    onClick={() => setOpen(false)}
+                    src="/components/closeButton.svg"
+                    alt="close icon"
+                  />
+                </Box>
+              </Box>
 
-              <Box display={"flex"} flexDirection={"column"} gap={"6px"}>
-                <Button
-                  backgroundColor={"yellow.5"}
-                  borderRadius={"12px"}
-                  width={"112px"}
-                  height={"34px"}
-                >
-                  <label htmlFor="img">
-                    <Text fontWeight={700} color={"purple.2"} size={"SH5"}>
-                      {" "}
-                      Select File{" "}
-                    </Text>
-                  </label>
-                </Button>
+              <Box
+                w={"220px"}
+                h={"119px"}
+                background={"transparent"}
+                borderStyle={"dotted"}
+                borderRadius={"10px"}
+                borderWidth={"1px"}
+                borderColor={"white"}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={"10px"}
+              >
+                <Image src="/components/addFile.svg" alt="add file" />
 
-                <input
-                  hidden
-                  type="file"
-                  id="img"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    if (files) {
-                      onImageChange(files);
-                    }
-                  }}
-                />
+                <Box display={"flex"} flexDirection={"column"} gap={"6px"}>
+                  <Button
+                    backgroundColor={"yellow.5"}
+                    borderRadius={"12px"}
+                    width={"112px"}
+                    height={"34px"}
+                  >
+                    <label htmlFor="img">
+                      <Text fontWeight={700} color={"purple.2"} size={"SH5"}>
+                        {" "}
+                        Select File{" "}
+                      </Text>
+                    </label>
+                  </Button>
 
-                {pictureSelected ? (
-                  <Text size={"B5"} fontWeight={400} color={"green.3"}>
-                    {" "}
-                    Selected file{" "}
-                  </Text>
-                ) : (
-                  <Text size={"B5"} fontWeight={400} color={"yellow.1"}>
-                    {" "}
-                    No file chosen{" "}
-                  </Text>
-                )}
+                  <input
+                    hidden
+                    type="file"
+                    id="img"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (files) {
+                        onImageChange(files);
+                      }
+                    }}
+                  />
+
+                  <ImageCropDrawer
+                    imageFile={imageSelected as File}
+                    onCancel={onCancel}
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    setCroppedImage={setCroppedImage}
+                    nim={nim}
+                    updateImage={updateImage}
+                  />
+                </Box>
               </Box>
             </Box>
-
-            <Button
-              borderRadius={"12px"}
-              w={"123px"}
-              h={"48px"}
-              background={pictureSelected ? "yellow.1" : "gray.400"}
-              onClick={() => {
-                setOpen(false);
-                if (pictureSelected) {
-                  void updateImage(imageSelected as File);
-                }
-                setPictureSelected(false);
-              }}
-            >
-              {isUpdating ? (
-                <Spinner />
-              ) : (
-                <Text fontWeight={700} color={"white"} size={"SH5"}>
-                  {" "}
-                  Submit{" "}
-                </Text>
-              )}
-            </Button>
           </Box>
-        </Box>
-      </Collapse>
-    </Box>
+        </Collapse>
+      </Box>
+    </>
   );
 };
