@@ -34,7 +34,7 @@ const Header = ({
       borderBottomRightRadius={"20px"}
       boxShadow="0px 4px 20px 0px #FFFC8366"
     >
-      <Navbar />
+      <Navbar currentPage={"Chat"} />
       <Flex
         position={"absolute"}
         paddingX={"15px"}

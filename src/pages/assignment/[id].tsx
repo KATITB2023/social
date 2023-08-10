@@ -158,7 +158,7 @@ function FileUpload(param: id) {
   const taskId = router.query.taskId as string;
 
   function handleCancelClick() {
-    void router.push("/assignment");
+    void router.push("/assignment-list");
     setFileSelected(false);
   }
 

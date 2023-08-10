@@ -91,20 +91,17 @@ const DrawerButton = ({
   );
 };
 
-const Navbar = () => {
+const Navbar = ({ currentPage }: { currentPage: string }) => {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { pathname, push } = useRouter();
-  const currentPage = pathname.split("/")[1];
-  console.log(currentPage);
 
   const DrawerArray: PairDrawerButton[] = [
     { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/attendance",
+      route: "/attendance-list",
     },
     {
       icon: MdOutlineAssignment,
@@ -131,7 +128,7 @@ const Navbar = () => {
     {
       icon: MdErrorOutline,
       text: "Rules",
-      route: "/rules",
+      route: "/",
     },
   ];
 
@@ -268,11 +265,7 @@ const Navbar = () => {
                   <Box
                     minW={"60px"}
                     minH={"60px"}
-                    backgroundImage={
-                      selfProfile.image
-                        ? selfProfile.image
-                        : "/defaultprofpict.svg"
-                    }
+                    backgroundImage={selfProfile.image!}
                     backgroundPosition={"center"}
                     backgroundSize={"cover"}
                     borderRadius={"full"}
@@ -294,14 +287,7 @@ const Navbar = () => {
                   <DrawerButton
                     key={idx}
                     data={tuple}
-                    type={
-                      currentPage?.length === 0 && tuple.text === "Feeds"
-                        ? 1
-                        : tuple.text.toUpperCase() ===
-                          currentPage?.toUpperCase()
-                        ? 1
-                        : 0
-                    }
+                    type={tuple.text === currentPage ? 1 : 0}
                   />
                 );
               })}
