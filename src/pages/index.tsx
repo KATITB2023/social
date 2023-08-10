@@ -42,7 +42,7 @@ function BackgroundAndNavbar({ children }: childrenOnlyProps) {
         width="100%"
       />
       <Flex flexDirection="column" width={"100%"}>
-        <Navbar currentPage="Feeds" />
+        <Navbar/>
         {children}
       </Flex>
     </Box>

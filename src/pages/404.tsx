@@ -19,7 +19,6 @@ const NotFound = () => {
             alt="404"
             height="100%"
             position="relative"
-            objectFit="cover"
             minWidth="100%"
             width="100%"
           />

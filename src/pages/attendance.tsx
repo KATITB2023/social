@@ -113,7 +113,7 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
       <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
-        <Navbar currentPage={"Attendance"} />
+        <Navbar/>
         {children}
       </Flex>
     </Box>

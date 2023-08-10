@@ -45,7 +45,7 @@ const DailySideQuest: React.FC<{
           left={isToggled ? "65px" : "0"}
           transform={isToggled ? "translateX(65px)" : "translateX(-2px)"}
           transition="transform 0.07s"
-          zIndex="2"
+          zIndex="0"
         >
           <Box // Box Komet
             width="300px"
