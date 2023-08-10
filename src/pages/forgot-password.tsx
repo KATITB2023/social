@@ -9,10 +9,12 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
+import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
+import { api } from "~/utils/api";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -45,6 +47,9 @@ const ForgotPasswordForm = () => {
   const router = useRouter();
   const toast = useToast();
 
+  const requestResetPasswordMutation =
+    api.auth.requestResetPassword.useMutation();
+
   const handleSuccess = () => {
     toast({
       title: "Success",
@@ -68,16 +73,21 @@ const ForgotPasswordForm = () => {
     });
   };
 
-  const onSubmit: SubmitHandler<{ email: string }> = (data, event) => {
-    event?.preventDefault();
-    if (data.email !== "anu@anu.anu") {
-      handleError("Email tidak terdaftar");
-      reset({}, { keepErrors: true, keepValues: true });
-      return;
-    }
+  const onSubmit: SubmitHandler<{ email: string }> = async (data, event) => {
+    try {
+      event?.preventDefault();
 
-    handleSuccess();
-    reset();
+      // Call procedure to send email
+      await requestResetPasswordMutation.mutateAsync(data);
+
+      handleSuccess();
+      reset();
+    } catch (err) {
+      if (!(err instanceof TRPCClientError)) throw err;
+
+      handleError(err.message);
+      reset({}, { keepErrors: true, keepValues: true });
+    }
   };
 
   return (
