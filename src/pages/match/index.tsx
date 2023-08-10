@@ -69,7 +69,6 @@ const Match: NextPage = () => {
   useSubscription("match", (_) => {
     queued.current = false;
     setFoundMatch(true);
-    setIsLoading(false);
     void router.push(`/match/room`);
   });
   const handlePageChange = (page: number) => {

@@ -106,7 +106,7 @@ export const cancelQueue = async (queue: UserQueue) => {
 
   try {
     await redis.lrem(key, 0, serializeUserQueue(queue));
-    await redis.del(queue.userId);
+    await redis.del(generateQueueKey(queue.userId));
   } finally {
     await lock.release();
   }
