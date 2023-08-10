@@ -1,6 +1,5 @@
 import { Box, Image, Flex } from "@chakra-ui/react";
 import Navbar from "../Navbar";
-import NavigationBar from "./NavigationBar";
 
 export default function BackgroundAndNavigationBar({
   children,
@@ -20,7 +19,7 @@ export default function BackgroundAndNavigationBar({
         width="100%"
       />
       <Flex flexDirection="column">
-        <NavigationBar />
+        <Navbar currentPage="Profile"/>
         {children}
       </Flex>
     </Box>
