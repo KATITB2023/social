@@ -16,7 +16,6 @@ import SubmitPopUp from "~/components/assignment/SubmitPopUp";
 import LoadingScreen from "~/components/LoadingScreen";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Layout from "~/layout";
-import Link from "next/link";
 
 // Data Structure
 interface id {
@@ -45,7 +44,7 @@ export default function SubmissionPage() {
     fileSubmitted: assignmentData.submission?.filePath as string,
   };
 
-  const downloadFile = (url: string) => {
+  const downloadFile = (url: string) => {void 
     fetch(url)
       .then((response) => response.blob())
       .then((blob) => {
@@ -53,7 +52,7 @@ export default function SubmissionPage() {
         const fileName = url.split("/").pop();
         const aTag = document.createElement("a");
         aTag.href = blobURL;
-        aTag.setAttribute("download", fileName + ".pdf");
+        aTag.setAttribute("download", fileName! + ".pdf");
         document.body.appendChild(aTag);
         aTag.click();
         aTag.remove();
