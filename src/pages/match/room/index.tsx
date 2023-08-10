@@ -1,55 +1,92 @@
+import {
+  Button,
+  Flex,
+  Heading,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import { type Message, type UserMatch } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { type Message, type UserMatch } from "@prisma/client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "~/components/Image";
+import Navbar from "~/components/Navbar";
+import Divider from "~/components/chat/Divider";
+import Footer from "~/components/chat/Footer";
+import Header from "~/components/chat/Header";
+import Messages from "~/components/chat/Messages";
+import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
-import { Container, Flex } from "@chakra-ui/react";
-import Header from "~/components/chat/Header";
-import Divider from "~/components/chat/Divider";
-import Messages from "~/components/chat/Messages";
-import Footer from "~/components/chat/Footer";
-import useEmit from "~/hooks/useEmit";
 import { api } from "~/utils/api";
-import AnonFooterMenu from "~/components/chat/AnonFooterMenu";
 
 const Room: NextPage = () => {
   const router = useRouter();
+  const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const client = api.useContext();
+
+  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
+  const { data: profileData, refetch } =
+    api.friend.getOtherUserProfile.useQuery(
+      {
+        userId:
+          match === null
+            ? ""
+            : match.firstUserId === session?.user.id
+            ? match.secondUserId
+            : match.firstUserId,
+      },
+      {
+        enabled: false,
+      }
+    );
+
+  useEffect(() => {
+    if (profileData === undefined && match !== null && match.isRevealed) {
+      void refetch();
+    }
+  }, [match, profileData, refetch]);
 
   const checkMatch = useEmit("checkMatch", {
-    onSuccess: (data) => {
-      if (data.match !== null) {
-        setMatch(data.match);
+    onSuccess: (resData) => {
+      const match = resData.match;
+      if (match !== null) {
+        setMatch(match);
       } else {
         void router.push("/match");
       }
     },
   });
 
-  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
-  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
-
   useEffect(() => {
     checkMatch.mutate({});
   }, []);
 
   const messageQuery = api.messageAnonymous.infinite.useInfiniteQuery(
-    { userMatchId: match !== null ? match.id : "" }, // to fix
+    { userMatchId: match?.id ?? "" }, // to fix
     {
-      getPreviousPageParam: (d) => d.prevCursor,
+      getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
+      enabled: !!match?.id,
     }
   );
 
-  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-    messageQuery;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
   useEffect(() => {
-    if (match && session) {
+    if (match && session?.user?.id) {
       try {
         updateMessageIsRead.mutate({
           userMatchId: match.id,
@@ -57,7 +94,7 @@ const Room: NextPage = () => {
         });
       } catch (err) {}
     }
-  }, []);
+  }, [session?.user?.id, match, updateMessageIsRead.mutate]);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -70,9 +107,10 @@ const Room: NextPage = () => {
       for (const msg of incoming ?? []) map[msg.id] = msg;
 
       return Object.values(map).sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
       );
     });
+    setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
   }, []);
 
   useEffect(() => {
@@ -89,7 +127,7 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-        setMessages((prev) => [...prev, post]);
+        addMessages([post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
             updateOneMessageIsRead.mutate({ messageId: post.id });
@@ -122,55 +160,153 @@ const Room: NextPage = () => {
   useSubscription(
     "endMatch",
     (data) => {
+      void client.messageAnonymous.chatHeader.invalidate();
       if (match) {
         if (data.endedAt !== null) {
           setMatch(null);
-          void router.push("/");
+          void router.push("/chat");
         }
       }
     },
     [match, messageQuery]
   );
 
+  const askReveal = useEmit("askReveal");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useSubscription(
+    "askReveal",
+    (data, askReveal) => {
+      if (match) {
+        if (askReveal) {
+          setMatch(data);
+          if (data.isRevealed) {
+            toast({
+              title: "Yay temenmu uda reveal profil nih!",
+            });
+          } else {
+            onOpen();
+          }
+        } else {
+          toast({
+            title: "Temanmu menolak reveal profil :(",
+          });
+        }
+      }
+    },
+    [match, messageQuery]
+  );
+
+  const handleAskReveal = (choice: boolean) => {
+    onClose();
+    if (match) {
+      askReveal.mutate({ agree: choice });
+    }
+  };
+
   const messageEmit = useEmit("anonymousMessage");
 
   return (
     <Layout title="Chat">
-      <Container>
-        {match === null ? (
-          "Loading"
-        ) : (
-          <>
+      {match === null ? (
+        <Flex
+          w={"full"}
+          h={"100vh"}
+          justifyContent={"center"}
+          position={"relative"}
+          flexDir={"column"}
+          alignItems={"center"}
+          bgImage={"/components/anon_chat_page/anon_match_bg.png"}
+          backgroundPosition={"center"}
+          backgroundSize={"cover"}
+          backgroundRepeat={"no-repeat"}
+          overflowY={"hidden"}
+        >
+          <Flex position={"absolute"} top={0}>
+            <Navbar />
+          </Flex>
+          <Image
+            src="/components/anon_chat_page/anon_comet.png"
+            width={254}
+            height={254}
+            alt="comet"
+          />
+          <Heading size={"H3"} fontWeight={400} color={"yellow.5"}>
+            {" "}
+            MATCHING UP{" "}
+          </Heading>
+        </Flex>
+      ) : (
+        <>
+          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader color="black">
+                Kamu direquest untuk reveal profil nih!
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalFooter>
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={() => handleAskReveal(true)}
+                >
+                  Yes
+                </Button>
+                <Button variant="ghost" onClick={() => handleAskReveal(false)}>
+                  No
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Flex
+            w="100%"
+            h="100vh"
+            pos={"relative"}
+            backgroundImage="/components/chat_page/chat_bg.png"
+            backgroundSize={"cover"}
+            backgroundRepeat={"no-repeat"}
+            overflowY={"hidden"}
+          >
             <Flex
-              w="100%"
-              h="100vh"
-              justify="center"
-              align="center"
-              backgroundColor={"blue"}
+              w={"100%"}
+              h="100%"
+              flexDir="column"
+              justifyContent={"space-between"}
             >
-              <Flex w={"100%"} h="90%" flexDir="column">
-                <Header name="Anonymous" isTyping={currentlyTyping} />
-                <Divider />
-                <Messages
-                  messages={messages ?? []}
-                  hasPreviousPage={hasPreviousPage}
-                  fetchPreviousPage={() => void fetchPreviousPage()}
-                  isFetchingPreviousPage={isFetchingPreviousPage}
+              <Header
+                name={
+                  profileData !== undefined ? profileData.name : "Anonymous"
+                }
+                image={
+                  profileData !== undefined ? profileData.image : undefined
+                }
+                isTyping={currentlyTyping}
+                isAnon={true}
+                handleClick={() => void router.push("/chat")}
+              />
+              <Divider />
+
+              <Messages
+                messages={messages ?? []}
+                hasNextPage={hasNextPage}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                fetchNextPage={fetchNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+              />
+
+              <Divider />
+              <Flex>
+                <Footer
+                  onSubmit={(text) => messageEmit.mutate({ message: text })}
+                  receiverId={match.id}
+                  isAnon={true}
                 />
-                <Divider />
-                <Flex>
-                  <AnonFooterMenu />
-                  <Footer
-                    onSubmit={(text) => messageEmit.mutate({ message: text })}
-                    receiverId={match.id}
-                    isAnon={true}
-                  />
-                </Flex>
               </Flex>
             </Flex>
-          </>
-        )}
-      </Container>
+          </Flex>
+        </>
+      )}
     </Layout>
   );
 };

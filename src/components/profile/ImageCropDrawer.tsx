@@ -12,10 +12,10 @@ import {
   Flex,
   Heading,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import ProfilePicture from "./ProfilePicture";
-import { uploadFile } from "~/utils/file";
-import Header from "../chat/Header";
+import { TRPCClientError } from "@trpc/client";
 
 interface ImageCropProps {
   imageFile: File;
@@ -66,9 +66,9 @@ export default function ImageCropDrawer({
       const url = URL.createObjectURL(imageFile);
       setImageURL(url);
 
-      // Clean up - revoke the object URL when it's no longer needed.
+      // clean up
       return () => {
-        URL.revokeObjectURL(url);
+        // URL.revokeObjectURL(url);
       };
     }
   }, [imageFile]);
@@ -88,13 +88,33 @@ export default function ImageCropDrawer({
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
+  const toast = useToast();
   async function updateCurrPreview() {
-    const currPreviewFile = await getCroppedImg(imageURL, croppedAreaPixels);
-    setCurrPreview(currPreviewFile);
+    try {
+      const currPreviewFile = await getCroppedImg(imageURL, croppedAreaPixels);
+      setCurrPreview(currPreviewFile);
+    } catch (e: unknown) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: "Please try again.",
+        isClosable: true,
+        position: "top",
+      });
+    }
   }
 
   return (
-    <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="full">
+    <Drawer
+      placement="bottom"
+      onClose={() => {
+        onCancel();
+        setCurrPreview(undefined);
+      }}
+      isOpen={isOpen}
+      size="full"
+    >
       <DrawerOverlay />
       <DrawerContent bgColor="navy.1">
         <DrawerHeader>
@@ -105,7 +125,10 @@ export default function ImageCropDrawer({
         <DrawerBody>
           <Flex flexDir="column" gap="30px" alignItems={"center"}>
             <Button
-              onClick={onCancel}
+              onClick={() => {
+                onCancel();
+                setCurrPreview(undefined);
+              }}
               alignSelf="flex-end"
               backgroundColor="pink.3"
             >
@@ -134,7 +157,12 @@ export default function ImageCropDrawer({
                 }}
               />
             </Box>
-            <Button onClick={updateCurrPreview} alignSelf="center">
+            <Button
+              onClick={() => {
+                void updateCurrPreview();
+              }}
+              alignSelf="center"
+            >
               {" "}
               Preview Profile{" "}
             </Button>

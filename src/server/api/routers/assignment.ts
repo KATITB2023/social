@@ -55,14 +55,17 @@ export const assignmentRouter = createTRPCRouter({
   getAssignmentList: protectedProcedure
     .input(
       z.object({
-        type: z.nativeEnum(AssignmentType).optional(),
+        type: z.nativeEnum(AssignmentType).default("MANDATORY"),
       })
     )
     .query(async ({ input, ctx }) => {
       // Get all assignments
       const allAssignments = await ctx.prisma.assignment.findMany({
         where: {
-          type: input.type,
+          type:
+            input.type === "SIDE_QUEST"
+              ? "SIDE_QUEST"
+              : { in: ["MANDATORY", "DAILY_QUEST"] },
         },
         include: {
           submission: {
@@ -107,7 +110,7 @@ export const assignmentRouter = createTRPCRouter({
         filePath: z.string(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const assignment = await ctx.prisma.assignment.findFirst({
         where: {
           id: input.assignmentId,
