@@ -50,10 +50,18 @@ export default function SubmissionPage() {
           flexDirection="column"
           justifyContent="space-between"
           align-items="center"
-          my="0px"
           mx="5%"
+          paddingY={5}
         >
           <HStack mb="3px">
+            <Image
+              cursor={"pointer"}
+              onClick={() => {
+                void router.back();
+              }}
+              src="/BackButton.svg"
+              w={"15px"}
+            />
             <Text color="#ffffff" fontFamily="subheading" fontSize="12px">
               Deadline
             </Text>
@@ -173,7 +181,6 @@ function FileUpload(param: id) {
   return param.isSubmitted ? (
     <Box
       borderColor={"white"}
-      height="184px"
       width="100%"
       justifyContent={"center"}
       alignItems="center"
@@ -223,7 +230,7 @@ function FileUpload(param: id) {
       Tidak mengumpulkan tugas
     </Box>
   ) : (
-    <>
+    <Flex flexDir={"column"} justifyContent={"space-between"}>
       <Box
         borderColor={"white"}
         height="184px"
@@ -234,6 +241,7 @@ function FileUpload(param: id) {
         display="inline-flex"
         verticalAlign={"center"}
         mt={5}
+        mb={20}
         borderRadius="20px"
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         flexDirection="column"
@@ -270,7 +278,7 @@ function FileUpload(param: id) {
               width="116px"
             >
               <label htmlFor="fileInput">
-                <Text> upload file </Text>
+                <Text> Upload File </Text>
               </label>
             </Button>
             <input
@@ -287,7 +295,8 @@ function FileUpload(param: id) {
           </>
         )}
       </Box>
-      <HStack gap="20px" position="absolute" bottom="30px">
+
+      <HStack gap="20px" bottom="30px">
         <Button
           backgroundColor={"gray.600"}
           display="flex"
@@ -323,13 +332,14 @@ function FileUpload(param: id) {
           </Text>
         </Button>
       </HStack>
+
       <SubmitPopUp
         isSubmitting={isSubmitOpen}
         submittingFile={setSubmitOpen}
         fileToSend={file}
         taskId={taskId}
       />
-    </>
+    </Flex>
   );
 }
 

@@ -69,6 +69,7 @@ const Header = ({
                 fontSize="lg"
                 fontWeight={700}
                 textShadow={"0px 4px 20px #98F9FF80"}
+                noOfLines={2}
               >
                 {name}
               </Text>
