@@ -1,19 +1,17 @@
-import React, { useState } from "react";
 import {
   Box,
-  Image,
-  Text,
   Button,
   Collapse,
-  useToast,
-  Spinner,
+  Image,
+  Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { sanitizeURL, uploadFile } from "~/utils/file";
-import { api } from "~/utils/api";
 import { TRPCClientError } from "@trpc/client";
+import React, { useRef, useState } from "react";
+import { api } from "~/utils/api";
+import { sanitizeURL, uploadFile } from "~/utils/file";
 import ImageCropDrawer from "./ImageCropDrawer";
-import { MdSettingsInputComponent } from "react-icons/md";
 
 export const SelectPhotoImageProfile = ({
   open,
@@ -37,6 +35,8 @@ export const SelectPhotoImageProfile = ({
       void utils.profile.getUserProfile.invalidate();
     },
   });
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function onImageChange(file: FileList) {
     if (file[0]) {
@@ -166,18 +166,15 @@ export const SelectPhotoImageProfile = ({
                   Profile photo{" "}
                 </Text>
                 <Box display={"flex"} gap={"15px"}>
-                  <Image
-                    onClick={() => {
-                      void deleteProfile();
-                    }}
-                    src="/components/trashbin.svg"
-                    alt="trash icon"
-                  />
-                  <Image
-                    onClick={() => setOpen(false)}
-                    src="/components/closeButton.svg"
-                    alt="close icon"
-                  />
+                  <Button
+                    variant={"unstyled"}
+                    onClick={() => void deleteProfile()}
+                  >
+                    <Image src="/components/trashbin.svg" alt="trash icon" />
+                  </Button>
+                  <Button variant={"unstyled"} onClick={() => setOpen(false)}>
+                    <Image src="/components/closeButton.svg" alt="close icon" />
+                  </Button>
                 </Box>
               </Box>
 
@@ -202,13 +199,13 @@ export const SelectPhotoImageProfile = ({
                     borderRadius={"12px"}
                     width={"112px"}
                     height={"34px"}
+                    fontWeight={700}
+                    color={"purple.2"}
+                    size={"SH5"}
+                    onClick={() => inputRef.current?.click()}
                   >
-                    <label htmlFor="img">
-                      <Text fontWeight={700} color={"purple.2"} size={"SH5"}>
-                        {" "}
-                        Select File{" "}
-                      </Text>
-                    </label>
+                    {" "}
+                    Select File{" "}
                   </Button>
 
                   <input
@@ -216,6 +213,7 @@ export const SelectPhotoImageProfile = ({
                     type="file"
                     id="img"
                     accept="image/*"
+                    ref={inputRef}
                     onChange={(e) => {
                       const files = e.target.files;
                       if (files) {
