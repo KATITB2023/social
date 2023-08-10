@@ -1,13 +1,16 @@
 import { Box, Flex, Spinner, VStack } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import Navbar from "~/components/Navbar";
-import Footer from "~/components/newchat/Footer";
-import Layout from "~/layout";
-import { api } from "~/utils/api";
 import { useEffect, useRef } from "react";
+import Navbar from "~/components/Navbar";
 import CardHistoryChat from "~/components/history/CardHistoryChat";
-import {FUTUREFLAG} from "~/constant";
+import Footer from "~/components/newchat/Footer";
 import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 const History: NextPage = () => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
@@ -60,8 +63,8 @@ const History: NextPage = () => {
     };
   }, [hasNextPage]);
 
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
   }
 
   return (

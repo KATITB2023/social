@@ -1,10 +1,13 @@
-import React, { useState } from "react";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { match } from "ts-pattern";
-import { api } from "~/utils/api";
-import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 const DailySideQuest: React.FC<{
   handleBoxContentChange: (content: string) => void;

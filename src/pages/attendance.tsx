@@ -1,11 +1,3 @@
-import { type PropsWithChildren, useState } from "react";
-import { api } from "~/utils/api";
-import { TRPCClientError } from "@trpc/client";
-import {
-  type AttendanceEvent,
-  type AttendanceRecord,
-  type Status,
-} from "@prisma/client";
 import {
   Box,
   Button,
@@ -17,10 +9,21 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import {
+  type AttendanceEvent,
+  type AttendanceRecord,
+  type Status,
+} from "@prisma/client";
+import { TRPCClientError } from "@trpc/client";
+import { useState, type PropsWithChildren } from "react";
+import { api } from "~/utils/api";
 
+import dayjs from "dayjs";
 import Navbar from "~/components/Navbar";
 import Layout from "~/layout";
-import dayjs from "dayjs";
+import { withSession } from "~/server/auth/withSession";
+
+export const getServerSideProps = withSession({ force: true });
 
 interface BgAssetProps {
   name: string;

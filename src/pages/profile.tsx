@@ -9,21 +9,24 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { MdPersonPin, MdCameraAlt } from "react-icons/md";
+import { MdCameraAlt, MdPersonPin } from "react-icons/md";
 
-import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
-import ProfilePicture from "~/components/profile/ProfilePicture";
-import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
 import EditPasswordModal from "~/components/profile/EditPasswordModal";
+import LabelValueContainer from "~/components/profile/LabelValueContainer";
+import ProfilePicture from "~/components/profile/ProfilePicture";
+import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
 
-import { api } from "~/utils/api";
-import { type SelfProfile } from "~/server/types/user-profile";
-import EditingProfile from "~/components/profile/EditingProfile";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import EditingProfile from "~/components/profile/EditingProfile";
+import { withSession } from "~/server/auth/withSession";
+import { type SelfProfile } from "~/server/types/user-profile";
+import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 export interface EditableProps {
   bio?: string;
