@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Feed from "~/components/feeds/Feed";
 import { useInView } from "framer-motion";
 import Layout from "~/layout";
+import Footer from "~/components/Footer";
 
 type childrenOnlyProps = {
   children: string | JSX.Element | JSX.Element[];
@@ -89,6 +90,7 @@ export default function FeedsPage() {
           <div ref={bottomRef}></div>
         </Flex>
       </BackgroundAndNavbar>
+      <Footer/>
     </Layout>
   );
 }
