@@ -1,4 +1,3 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
@@ -7,7 +6,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
   Flex,
   Icon,
   Image,
@@ -24,13 +22,12 @@ import {
   MdLeaderboard,
   MdShoppingBasket,
   MdPersonAddAlt,
-  MdOutlineErrorOutline,
   MdStarOutline,
   MdErrorOutline,
 } from "react-icons/md";
-import Layout from "~/layout";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -49,7 +46,30 @@ const DrawerButton = ({
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
-
+  if (type === 2) {
+    return (
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color = "#E8553E"
+        py={3}
+        borderRadius={2}
+        cursor={"pointer"}
+        _hover={{ bg: "#3D2283" }}
+        onClick={() => void signOut({callbackUrl : "/login"})}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    );
+  }
   return (
     <Flex
       flexDir="row"
@@ -136,8 +156,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   });
 
   return (
-    <Layout title="Navbar">
-      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+    <>
       <Flex
         position={"relative"}
         display={"block"}
@@ -178,6 +197,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
         />
 
         <Image
+          alt="Ekor"
           src="/ekor.svg"
           position="absolute"
           left="0"
@@ -205,6 +225,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
             marginRight="10px"
           />
           <Image
+            alt="Hamburger menu"
             cursor={"pointer"}
             src="/hamburgermenu.svg"
             height="30px"
@@ -240,12 +261,12 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton data={LogoutButtonData} type={2} />
+              <DrawerButton data={LogoutButtonData} type={2}/>
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Layout>
+    </>
   );
 };
 
