@@ -1,25 +1,27 @@
 import React, { type PropsWithChildren } from "react";
 import { Box, Flex, Heading, Image, Text, Link } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
+import Footer from "~/components/Footer";
 
 function BackgroundAndNavbar({ children }: PropsWithChildren) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
-      <Image
-        src="/background.png"
-        alt="background"
-        height="100%"
-        zIndex="-1"
-        position="absolute"
-        objectFit="cover"
-        minWidth="100%"
-        width="100%"
-      />
-      <Flex flexDirection="column">
-        <Navbar currentPage={"Error"} />
-        {children}
-      </Flex>
-    </Box>
+    <>
+      <Box
+        position="relative"
+        height="100vh"
+        overflow={"hidden"}
+        backgroundImage={"/background.png"}
+        backgroundSize={"cover"}
+        backgroundPosition={"center"}
+        backgroundRepeat={"no-repeat"}
+      >
+        <Flex flexDirection="column">
+          <Navbar currentPage={"Error"} />
+          {children}
+        </Flex>
+      </Box>
+      <Footer />
+    </>
   );
 }
 const NotFound = () => {
@@ -36,7 +38,6 @@ const NotFound = () => {
           src="404.svg"
           alt="404"
           height="100%"
-          zIndex="-1"
           position="relative"
           objectFit="cover"
           minWidth="100%"

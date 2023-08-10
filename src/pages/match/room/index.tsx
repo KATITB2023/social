@@ -35,18 +35,39 @@ const Room: NextPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const client = api.useContext();
 
+  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
+  const { data: profileData, refetch } =
+    api.friend.getOtherUserProfile.useQuery(
+      {
+        userId:
+          match === null
+            ? ""
+            : match.firstUserId === session?.user.id
+            ? match.secondUserId
+            : match.firstUserId,
+      },
+      {
+        enabled: false,
+      }
+    );
+
+  useEffect(() => {
+    if (profileData === undefined && match !== null && match.isRevealed) {
+      void refetch();
+    }
+  }, [match, profileData, refetch]);
+
   const checkMatch = useEmit("checkMatch", {
-    onSuccess: (data) => {
-      if (data.match !== null) {
-        setMatch(data.match);
+    onSuccess: (resData) => {
+      const match = resData.match;
+      if (match !== null) {
+        setMatch(match);
       } else {
         void router.push("/match");
       }
     },
   });
-
-  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
-  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   useEffect(() => {
     checkMatch.mutate({});
@@ -144,7 +165,7 @@ const Room: NextPage = () => {
       if (match) {
         if (data.endedAt !== null) {
           setMatch(null);
-          void router.push("/");
+          void router.push("/chat");
         }
       }
     },
@@ -159,6 +180,7 @@ const Room: NextPage = () => {
     (data, askReveal) => {
       if (match) {
         if (askReveal) {
+          setMatch(data);
           if (data.isRevealed) {
             toast({
               title: "Yay temenmu uda reveal profil nih!",
@@ -254,11 +276,15 @@ const Room: NextPage = () => {
               justifyContent={"space-between"}
             >
               <Header
-                name="Anonymous"
-                image={undefined}
+                name={
+                  profileData !== undefined ? profileData.name : "Anonymous"
+                }
+                image={
+                  profileData !== undefined ? profileData.image : undefined
+                }
                 isTyping={currentlyTyping}
                 isAnon={true}
-                handleClick={() => router.back()}
+                handleClick={() => void router.push("/chat")}
               />
               <Divider />
 
