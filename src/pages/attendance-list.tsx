@@ -111,7 +111,7 @@ const BackgroundAndNavbar = ({ children }: childrenOnlyProps) => {
       <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
 
       <Flex flexDirection="column">
-        <Navbar />
+        <Navbar currentPage={"Attendance"} />
         {children}
       </Flex>
     </Box>
@@ -127,27 +127,27 @@ const StatusButton = ({
 }: {
   onClick?: () => void;
   isDisabled?: boolean;
-  bg:string;
+  bg: string;
   borderColor?: string;
   text: string;
 }) => {
   return (
     <Button
-    border="1px"
-    borderColor={borderColor}
-    bg={bg}
-    borderRadius="12px"
-    py="4px"
-    px="16px"
-    size="xs"
-    _hover={isDisabled ? { opacity: 1 } : { opacity: 0.8 }}
-    onClick={isDisabled ? undefined : onClick}
-  >
-    <Text color={borderColor} size="A">
-      {text}
-    </Text>
-  </Button>
-  )
+      border="1px"
+      borderColor={borderColor}
+      bg={bg}
+      borderRadius="12px"
+      py="4px"
+      px="16px"
+      size="xs"
+      _hover={isDisabled ? { opacity: 1 } : { opacity: 0.8 }}
+      onClick={isDisabled ? undefined : onClick}
+    >
+      <Text color={borderColor} size="A">
+        {text}
+      </Text>
+    </Button>
+  );
 };
 
 // UTILS FUNCTION
@@ -188,7 +188,7 @@ const EventCard = ({
   const handleAttend = async (eventId: string) => {
     setLoading(true);
     try {
-      const result = await absenMutation.mutateAsync({eventId});
+      const result = await absenMutation.mutateAsync({ eventId });
 
       toast({
         title: "Success",
@@ -239,28 +239,49 @@ const EventCard = ({
       </Flex>
       <Spacer />
       {alreadyAbsen ? (
-        status===Status.HADIR ? (
-          <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="hadir"/>
-          ) : (
-            status===Status.IZIN_DITERIMA ? (
-              <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="izin diterima"/>
-              ) : (
-                status===Status.IZIN_PENDING ? (
-                <StatusButton bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF" borderColor="green.2" text="izin pending"/>
-                ) : (
-                  // izin ditolak
-                  <StatusButton bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderColor="#E8553E" text="izin ditolak"/>
-                )
-            )
-        ) 
+        status === Status.HADIR ? (
+          <StatusButton
+            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+            borderColor="green.2"
+            text="hadir"
+          />
+        ) : status === Status.IZIN_DITERIMA ? (
+          <StatusButton
+            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+            borderColor="green.2"
+            text="izin diterima"
+          />
+        ) : status === Status.IZIN_PENDING ? (
+          <StatusButton
+            bg="linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF"
+            borderColor="green.2"
+            text="izin pending"
+          />
+        ) : (
+          // izin ditolak
+          <StatusButton
+            bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
+            borderColor="#E8553E"
+            text="izin ditolak"
+          />
+        )
       ) : canAttend ? (
         loading ? (
           <Spinner color="#1C939A" />
         ) : (
-          <StatusButton bg="yellow.5" text="tandai hadir" onClick={() => void handleAttend(event.id)} isDisabled={false}/>
+          <StatusButton
+            bg="yellow.5"
+            text="tandai hadir"
+            onClick={() => void handleAttend(event.id)}
+            isDisabled={false}
+          />
         )
       ) : (
-        <StatusButton bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF" borderColor="#E8553E" text="tidak hadir"/>
+        <StatusButton
+          bg="linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
+          borderColor="#E8553E"
+          text="tidak hadir"
+        />
       )}
     </Flex>
   );
@@ -283,7 +304,7 @@ const AttendListPage = () => {
         record,
         status,
       };
-      if(eventsByDay.has(day)) {
+      if (eventsByDay.has(day)) {
         const temp = eventsByDay.get(day)!;
         eventsByDay.delete(day);
         eventsByDay.set(day, temp.concat([absenStatus]));
@@ -292,7 +313,7 @@ const AttendListPage = () => {
       }
     });
   }
-  
+
   return (
     <BackgroundAndNavbar>
       <Container bgImage="url('attendancelist_background.svg')">
@@ -304,9 +325,13 @@ const AttendListPage = () => {
             {Array.from(eventsByDay.keys()).map((item) => (
               <Flex key={item} flexDir="column" gap="20px" mt="44px">
                 <Heading size="SH4">{item}</Heading>
-                 {eventsByDay.get(item)!.map((eventsInDay, index) => (
-                  <EventCard key={index} event={eventsInDay.event} status={eventsInDay.status} />
-                ))} 
+                {eventsByDay.get(item)!.map((eventsInDay, index) => (
+                  <EventCard
+                    key={index}
+                    event={eventsInDay.event}
+                    status={eventsInDay.status}
+                  />
+                ))}
               </Flex>
             ))}
           </Flex>
