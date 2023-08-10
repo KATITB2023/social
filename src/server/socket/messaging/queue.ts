@@ -105,6 +105,7 @@ export const cancelQueue = async (queue: UserQueue) => {
   const lock = await redlock.acquire([`lock:${key}`], 5000);
 
   try {
+    await redis.del(generateQueueKey(queue.userId));
     await redis.lrem(key, 0, serializeUserQueue(queue));
     await redis.del(queue.userId);
   } finally {
