@@ -160,6 +160,7 @@ const Chat: NextPage = () => {
             }}
             receiverId={pairId}
             isAnon={false}
+            setSender={undefined}
           />
         </Flex>
       </Flex>

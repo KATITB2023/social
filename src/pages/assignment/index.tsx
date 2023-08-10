@@ -376,6 +376,7 @@ export default function AssignmentListPage() {
             <Box
               maxHeight="68vh"
               overflowY="scroll"
+              maxWidth={"100%"}
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
@@ -408,6 +409,7 @@ export default function AssignmentListPage() {
             <Box
               maxHeight="68vh"
               overflowY="scroll"
+              maxWidth={"100%"}
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
