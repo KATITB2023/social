@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   Heading,
-  Icon,
   Image,
   Input,
   InputGroup,
@@ -187,7 +186,7 @@ const LoginForm = ({
       redirect: false,
       csrfToken,
     });
-    if (res?.error) {
+    if (!res?.ok && res?.error) {
       handleError(res.error);
       setError("root", { message: res.error });
       reset({}, { keepErrors: true, keepValues: true });
