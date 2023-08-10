@@ -317,6 +317,7 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
+                  isAnonRevealed = {profileData !== undefined && match.isRevealed ? true : false}
                   setSender={setSender}
                 />
               </Flex>
@@ -350,7 +351,7 @@ const Room: NextPage = () => {
                 onClick={() => setPopUpOpen(false)}
               />
 
-              <Flex zIndex={4}>{yahTemanmu && <YahTemanmu setMatch={setMatch} />}</Flex>
+              <Flex zIndex={4}> {yahTemanmu && <YahTemanmu setMatch={setMatch} />}</Flex>
             </Flex>
           </Flex>
         </>
