@@ -43,10 +43,12 @@ export default function ImageCropDrawer({
   onClose,
   setCroppedImage,
   nim,
+  updateImage,
 }: ImageCropProps &
   useDisclosureType & {
     setCroppedImage: React.Dispatch<React.SetStateAction<string>>;
     nim: string;
+    updateImage: (file: File) => Promise<void>;
   }) {
   const [zoom, setZoom] = useState<number>(1);
   const [crop, setCrop] = useState<CropPosition>({ x: 0, y: 0 });
@@ -55,8 +57,9 @@ export default function ImageCropDrawer({
     CropPosition & CropDimension
   >({ x: 0, y: 0, width: 0, height: 0 });
 
-  const [currPreview, setCurrPreview] = useState<string>("");
+  const [currPreview, setCurrPreview] = useState<File | undefined>();
   const [imageURL, setImageURL] = useState<string>("");
+  const cdnURL = `https://cdn.oskmitb.com/${nim}`;
 
   useEffect(() => {
     if (imageFile) {
@@ -86,11 +89,10 @@ export default function ImageCropDrawer({
   };
 
   async function updateCurrPreview() {
-    const currPreviewURL = await getCroppedImg(imageURL, croppedAreaPixels);
-    setCurrPreview(currPreviewURL as string);
+    const currPreviewFile = await getCroppedImg(imageURL, croppedAreaPixels);
+    setCurrPreview(currPreviewFile);
   }
 
-  const URL = `https://cdn.oskmitb.com/${nim}`;
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="full">
       <DrawerOverlay />
@@ -117,13 +119,18 @@ export default function ImageCropDrawer({
             <Button onClick={updateCurrPreview}> Preview Profile </Button>
             <Box width="164px" aspectRatio={"1/1"}>
               {currPreview && (
-                <ProfilePicture src={currPreview} size="164px" br="full" />
+                <ProfilePicture
+                  src={URL.createObjectURL(currPreview)}
+                  size="164px"
+                  br="full"
+                />
               )}
             </Box>
             <Button
               onClick={() => {
                 onClose();
                 setCroppedImage(currPreview);
+                void updateImage(currPreview as File);
               }}
             >
               {" "}

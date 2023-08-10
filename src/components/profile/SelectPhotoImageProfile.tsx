@@ -203,6 +203,7 @@ export const SelectPhotoImageProfile = ({
                       onClose={onClose}
                       setCroppedImage={setCroppedImage}
                       nim={nim}
+                      updateImage={updateImage}
                     />
                   ) : null}
                 </Box>
@@ -232,15 +233,6 @@ export const SelectPhotoImageProfile = ({
           </Box>
         </Collapse>
       </Box>
-      <ImageCropDrawer
-        imageFile={imageSelected as File}
-        onCancel={onCancel}
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        setCroppedImage={setCroppedImage}
-        nim={nim}
-      />
     </>
   );
 };
