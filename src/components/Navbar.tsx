@@ -27,11 +27,8 @@ import {
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
-<<<<<<< HEAD
 import { useSession } from "next-auth/react";
-=======
 import { signOut } from "next-auth/react";
->>>>>>> 750548a8312e6a33d8d1751afb3497c87688027e
 
 type PairDrawerButton = {
   icon: IconType;
@@ -270,11 +267,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-<<<<<<< HEAD
-              {session ? <DrawerButton data={LogoutButtonData} type={2} /> : <></>}
-=======
-              <DrawerButton data={LogoutButtonData} type={2}/>
->>>>>>> 750548a8312e6a33d8d1751afb3497c87688027e
+              {session ? <DrawerButton data={LogoutButtonData} type={2}/> : <></>}
             </Flex>
           </DrawerBody>
         </DrawerContent>
