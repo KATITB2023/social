@@ -65,7 +65,7 @@ const Footer = () => {
               </Link>
             </VStack>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="/merchandise" color="white" _hover={{ textDecoration: "none" }}>
                 Merchandise
               </Link>
               <Link href="/" color="white" _hover={{ textDecoration: "none" }}>
