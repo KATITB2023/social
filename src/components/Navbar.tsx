@@ -29,7 +29,7 @@ import {
   MdErrorOutline,
 } from "react-icons/md";
 import Layout from "~/layout";
-import { IconType } from "react-icons";
+import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 
 type PairDrawerButton = {
@@ -79,7 +79,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/",
+      route: "/attendance-list",
     },
     {
       icon: MdOutlineAssignment,
@@ -110,11 +110,11 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     },
   ];
 
-  const LogoutButtonData : PairDrawerButton = {
-      icon: MdLogout,
-      text: "Logout",
-      route: "/",
-  }
+  const LogoutButtonData: PairDrawerButton = {
+    icon: MdLogout,
+    text: "Logout",
+    route: "/",
+  };
 
   //   Scroll mechanism algorithm
   useEffect(() => {
@@ -240,10 +240,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton
-                data={LogoutButtonData}
-                type={2}
-              />
+              <DrawerButton data={LogoutButtonData} type={2} />
             </Flex>
           </DrawerBody>
         </DrawerContent>
