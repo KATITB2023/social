@@ -18,10 +18,6 @@ interface Feed {
   link: string;
 }
 
-interface FeedsPageProps {
-  feeds: Feed[];
-}
-
 function BackgroundAndNavbar({ children }: childrenOnlyProps) {
   return (
     <Box
@@ -72,7 +68,7 @@ export default function FeedsPage() {
   return (
     <Layout title={"Beranda"}>
       <BackgroundAndNavbar>
-        <Flex flexDirection={"column"} justifyContent={"center"}>
+        <Flex flexDirection={"column"} justifyContent={"center"} marginTop={10} >
           {data?.pages
             .flatMap((page) => page.data)
             .map((feed) => {
