@@ -1,12 +1,12 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { getFriendStatus } from "~/utils/friend";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
 import {
   type SelfProfile,
   type UserProfile,
 } from "~/server/types/user-profile";
-import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
+import { getFriendStatus } from "~/utils/friend";
 
 const ACCEPTED_FRIENDSHIP_STATUS = [
   "FRIEND",
@@ -23,26 +23,24 @@ export const friendRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const currUser = ctx.session.user;
+      const queryFilter = /^\d{1,8}$/.test(input.query)
+        ? ({
+            nim: {
+              startsWith: input.query,
+            },
+          } as const)
+        : ({
+            profile: {
+              name: {
+                contains: input.query,
+                mode: "insensitive",
+              },
+            },
+          } as const);
       const users = await ctx.prisma.user.findMany({
         where: {
           AND: [
-            {
-              OR: [
-                {
-                  profile: {
-                    name: {
-                      contains: input.query,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-                {
-                  nim: {
-                    startsWith: input.query,
-                  },
-                },
-              ],
-            },
+            queryFilter,
             {
               id: {
                 not: currUser.id,
@@ -169,7 +167,7 @@ export const friendRouter = createTRPCRouter({
     )
 
     .mutation(async ({ ctx, input }) => {
-      const userExists = await ctx.prisma.user.findFirst({
+      const userExists = await ctx.prisma.user.findUnique({
         where: {
           id: input.userId,
         },
@@ -260,12 +258,14 @@ export const friendRouter = createTRPCRouter({
       z
         .object({
           status: z.enum(ACCEPTED_FRIENDSHIP_STATUS),
+          limit: z.number().min(5).max(40).default(20),
+          cursor: z.number().min(1).default(1),
         })
         .refine((data) => ACCEPTED_FRIENDSHIP_STATUS.includes(data.status), {
           message: "Status must be one of the accepted friendship statuses",
         })
     )
-    .query(async ({ ctx, input }): Promise<UserProfile[]> => {
+    .query(async ({ ctx, input }) => {
       const currUser = ctx.session.user;
       const userId = currUser.id;
 
@@ -285,6 +285,8 @@ export const friendRouter = createTRPCRouter({
           ...whereCondition,
           OR: [{ userInitiatorId: userId }, { userReceiverId: userId }],
         },
+        skip: input.limit * (input.cursor - 1),
+        take: input.limit,
       });
 
       const friendIds = friendships.map((friendship) => {
@@ -303,7 +305,8 @@ export const friendRouter = createTRPCRouter({
         },
       });
 
-      return friendProfiles.map((profile) => {
+      const data: UserProfile[] = friendProfiles.map((profile) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { updatedAt, userId, ...rest } = profile;
         return {
           ...rest,
@@ -312,5 +315,141 @@ export const friendRouter = createTRPCRouter({
           status: input.status,
         };
       });
+
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
+    }),
+  getOtherUserProfile: protectedProcedure
+    .input(
+      z
+        .object({
+          pin: z.string().optional(),
+          nim: z.string().optional(),
+          userId: z.string().optional(),
+        })
+        .and(
+          z.union(
+            [
+              z.object({
+                pin: z.string(),
+                nim: z.undefined(),
+                userId: z.undefined(),
+              }),
+              z.object({
+                pin: z.undefined(),
+                nim: z.string(),
+                userId: z.undefined(),
+              }),
+              z.object({
+                pin: z.undefined(),
+                nim: z.undefined(),
+                userId: z.string(),
+              }),
+            ],
+            {}
+          )
+        )
+    )
+    .query(async ({ ctx, input }) => {
+      if (
+        (input.userId && ctx.session.user.id === input.userId) ||
+        (input.nim && ctx.session.user.nim === input.nim)
+      ) {
+        // request user's own profile
+        throw new TRPCError({
+          message: "Cannot request user's own profile",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      if (input.pin || input.userId || input.nim) {
+        const profile = await ctx.prisma.profile.findFirst({
+          where: {
+            OR: [
+              {
+                userId: input.userId,
+              },
+              {
+                pin: input.pin,
+              },
+              {
+                user: {
+                  nim: input.nim,
+                },
+              },
+            ],
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        // user is not found
+        if (!profile) {
+          throw new TRPCError({
+            message: "Profile not found",
+            code: "BAD_REQUEST",
+          });
+        }
+
+        // user is found
+        const friendship = await ctx.prisma.friendship.findFirst({
+          where: {
+            OR: [
+              {
+                userInitiatorId: ctx.session.user.id,
+                userReceiverId: profile.userId,
+              },
+              {
+                userReceiverId: ctx.session.user.id,
+                userInitiatorId: profile.userId,
+              },
+            ],
+          },
+        });
+
+        return {
+          ...profile,
+          id: profile.userId,
+          nim: profile.user.nim,
+          status: friendship
+            ? friendship.accepted
+              ? "FRIEND"
+              : friendship.userInitiatorId === ctx.session.user.id
+              ? "REQUESTING_FRIENDSHIP"
+              : "WAITING_FOR_ACCEPTANCE"
+            : "NOT_FRIEND",
+        };
+      }
+    }),
+
+  incrementVisitCounter: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.profile.update({
+          where: {
+            userId: input.userId,
+          },
+          data: {
+            visitedCount: {
+              increment: 1,
+            },
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          message: "Target Profile not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return true;
     }),
 });
