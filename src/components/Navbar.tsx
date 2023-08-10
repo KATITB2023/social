@@ -28,6 +28,7 @@ import {
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+import { api } from "~/utils/api";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -91,6 +92,7 @@ const DrawerButton = ({
 };
 
 const Navbar = ({ currentPage }: { currentPage: string }) => {
+  const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -252,6 +254,34 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               flexDir="column"
               zIndex="3"
             >
+              {selfProfile && (
+                <Flex
+                  flexDir={"row"}
+                  gap={3}
+                  alignItems={"center"}
+                  mb={5}
+                  w={"full"}
+                >
+                  <Box
+                    minW={"60px"}
+                    minH={"60px"}
+                    backgroundImage={selfProfile.image!}
+                    backgroundPosition={"center"}
+                    backgroundSize={"cover"}
+                    borderRadius={"full"}
+                    border={"2px white solid"}
+                  />
+                  <Text
+                    fontSize={"20px"}
+                    fontWeight={"bold"}
+                    color={"yellow.5"}
+                    noOfLines={2}
+                  >
+                    {selfProfile.name}
+                  </Text>
+                </Flex>
+              )}
+
               {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
                 return (
                   <DrawerButton
@@ -261,7 +291,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton data={LogoutButtonData} type={2} />
+              {selfProfile && <DrawerButton data={LogoutButtonData} type={2} />}
             </Flex>
           </DrawerBody>
         </DrawerContent>
