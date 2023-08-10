@@ -37,7 +37,7 @@ const ChatHome: NextPage = () => {
         alignItems="center"
       >
         {/* <Box position="absolute"> */}
-          {!openAddChat && <Navbar />}
+          {!openAddChat && <Navbar currentPage="Chat"/>}
           {openAddChat && (
             <Header
               name={undefined}
