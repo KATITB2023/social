@@ -222,6 +222,11 @@ export const SelectPhotoImageProfile = ({
                     }}
                   />
 
+                <Text fontWeight={700} fontSize={"SH5"} color={"white"}>
+                  {" "}
+                  *png, jpg, jpeg{" "}
+                </Text>
+
                   <ImageCropDrawer
                     imageFile={imageSelected as File}
                     onCancel={onCancel}
