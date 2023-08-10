@@ -211,7 +211,7 @@ export const messageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Mencari pengguna yang dilaporkan
-      const reportedUser = await ctx.prisma.user.findFirst({
+      const reportedUser = await ctx.prisma.user.findUnique({
         where: {
           id: input.userId,
         },
@@ -286,20 +286,10 @@ export const messageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const whereCondition = {
-        AND: [
-          {
-            receiverId: input.receiverId,
-          },
-          {
-            senderId: input.senderId,
-          },
-          {
-            userMatchId: null,
-          },
-          {
-            isRead: false,
-          },
-        ],
+        receiverId: input.receiverId,
+        senderId: input.senderId,
+        userMatchId: null,
+        isRead: false,
       };
       const message = await ctx.prisma.message.findFirst({
         where: whereCondition,
@@ -328,17 +318,9 @@ export const messageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const whereCondition = {
-        AND: [
-          {
-            receiverId: input.receiverId,
-          },
-          {
-            userMatchId: input.userMatchId,
-          },
-          {
-            isRead: false,
-          },
-        ],
+        receiverId: input.receiverId,
+        userMatchId: input.userMatchId,
+        isRead: false,
       };
 
       const message = await ctx.prisma.message.findFirst({
