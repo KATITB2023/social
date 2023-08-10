@@ -166,7 +166,7 @@ export const SelectPhotoImageProfile = ({
                   Profile photo{" "}
                 </Text>
                 <Box display={"flex"} gap={"15px"}>
-     {/*              <Button
+                  {/*              <Button
                     variant={"unstyled"}
                     onClick={() => void deleteProfile()}
                   >
@@ -212,7 +212,7 @@ export const SelectPhotoImageProfile = ({
                     hidden
                     type="file"
                     id="img"
-                    accept="image/*"
+                    accept=".png, .jpg, .jpeg, .webp"
                     ref={inputRef}
                     onChange={(e) => {
                       const files = e.target.files;

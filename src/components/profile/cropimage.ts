@@ -90,10 +90,10 @@ export default async function getCroppedImg(
 
       // Convert the blob to a file
 
-      const file = new File([blob], "croppedImage.jpeg", {
-        type: "image/jpeg",
+      const file = new File([blob], "croppedImage.png", {
+        type: "image/png",
       });
       resolve(file);
-    }, "image/jpeg");
+    }, "image/png");
   });
 }
