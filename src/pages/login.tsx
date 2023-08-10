@@ -11,8 +11,8 @@ import {
   InputRightElement,
   Link,
   Text,
-  VStack,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import {
   type GetServerSidePropsContext,
@@ -20,8 +20,8 @@ import {
 } from "next";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState, type PropsWithChildren } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { type PropsWithChildren, useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
@@ -29,7 +29,7 @@ import Layout from "~/layout";
 
 const NavbarLogin = () => {
   return (
-    <Layout title="Navbar">
+    <>
       {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
       <Flex
         position={"relative"}
@@ -89,7 +89,7 @@ const NavbarLogin = () => {
           zIndex="2"
         />
       </Flex>
-    </Layout>
+    </>
   );
 };
 
@@ -337,16 +337,18 @@ const Login = ({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <Navbar2>
-      <Flex
-        justifyContent={"center"}
-        alignItems="center"
-        width="100%"
-        flexDirection={"column"}
-      >
-        <LoginForm csrfToken={csrfToken} />
-      </Flex>
-    </Navbar2>
+    <Layout title={"Login"}>
+      <Navbar2>
+        <Flex
+          justifyContent={"center"}
+          alignItems="center"
+          width="100%"
+          flexDirection={"column"}
+        >
+          <LoginForm csrfToken={csrfToken} />
+        </Flex>
+      </Navbar2>
+    </Layout>
   );
 };
 
