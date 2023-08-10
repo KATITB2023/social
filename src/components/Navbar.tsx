@@ -14,16 +14,16 @@ import {
 } from "@chakra-ui/react";
 import {
   MdChatBubbleOutline,
+  MdErrorOutline,
+  MdLeaderboard,
   MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
   MdOutlinePersonOutline,
-  MdLeaderboard,
-  MdShoppingBasket,
   MdPersonAddAlt,
+  MdShoppingBasket,
   MdStarOutline,
-  MdErrorOutline,
 } from "react-icons/md";
 import { type IconType } from "react-icons";
 import { useRouter } from "next/router";
@@ -51,12 +51,12 @@ const DrawerButton = ({
       <Flex
         flexDir="row"
         alignItems="center"
-        color = "#E8553E"
+        color="#E8553E"
         py={3}
         borderRadius={2}
         cursor={"pointer"}
         _hover={{ bg: "#3D2283" }}
-        onClick={() => void signOut({callbackUrl : "/login"})}
+        onClick={() => void signOut({ callbackUrl: "/login" })}
       >
         <Icon
           as={data.icon}
@@ -104,7 +104,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
     {
       icon: MdOutlineAssignment,
       text: "Assignment",
-      route: "/assignment-list",
+      route: "/assignment",
     },
     {
       icon: MdLeaderboard,
@@ -261,7 +261,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
                   />
                 );
               })}
-              <DrawerButton data={LogoutButtonData} type={2}/>
+              <DrawerButton data={LogoutButtonData} type={2} />
             </Flex>
           </DrawerBody>
         </DrawerContent>
