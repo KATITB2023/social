@@ -29,7 +29,7 @@ export const authRouter = createTRPCRouter({
 
       if (!profile) {
         throw new TRPCError({
-          message: "User not found",
+          message: "Email anda tidak terdaftar di sistem!",
           code: "BAD_REQUEST",
         });
       }
@@ -88,7 +88,7 @@ export const authRouter = createTRPCRouter({
       if (!getToken) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User Tidak Ditemukan!",
+          message: "User tidak ditemukan!",
         });
       }
 
@@ -101,7 +101,7 @@ export const authRouter = createTRPCRouter({
       if (expiredTime < currentTime) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Token Expired!",
+          message: "Token sudah expired!",
         });
       }
 
@@ -110,7 +110,7 @@ export const authRouter = createTRPCRouter({
         // Error Message (Token Tidak Valid)
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Token Tidak Valid!",
+          message: "Token tidak valid!",
         });
       }
 
@@ -149,12 +149,14 @@ export const authRouter = createTRPCRouter({
           id: ctx.session.user.id,
         },
       });
+
       if (!user) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User not found",
+          message: "User tidak ditemukan!",
         });
       }
+
       const isValid = await compareHash(input.oldPassword, user.passwordHash);
       if (isValid) {
         await ctx.prisma.user.update({
@@ -165,12 +167,13 @@ export const authRouter = createTRPCRouter({
             passwordHash: await generateHash(input.newPassword),
           },
         });
-        return "Password has been updated!";
-      } else {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Password not right",
-        });
+
+        return "Password berhasil diupdate!";
       }
+
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Password not right",
+      });
     }),
 });
