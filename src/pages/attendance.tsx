@@ -30,7 +30,7 @@ interface BgAssetProps extends ImageProps {
   src: string;
 }
 
-const BackgroundAsset : React.FC<BgAssetProps> = ({src, ...rest}) => {
+const BackgroundAsset: React.FC<BgAssetProps> = ({ src, ...rest }) => {
   return (
     <Image
       src={`/${src}`}
@@ -60,23 +60,27 @@ const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
         minWidth="100%"
         width="100%"
       />
-      <BackgroundAsset src="komet4.png" top="40px" left={0} />
       <BackgroundAsset
-        src="bulan1.png"
+        src="components/attendance/komet4.png"
+        top="40px"
+        left={0}
+      />
+      <BackgroundAsset
+        src="components/attendance/bulan1.png"
         top={"40%"}
         left="-28px"
         height="150px"
         width="150px"
       />
       <BackgroundAsset
-        src="nebulaBiru.png"
+        src="components/attendance/nebulaBiru.png"
         top={"25%"}
         left="-40px"
         height="400px"
         width="400px"
       />
       <BackgroundAsset
-        src="nebulaPink.png"
+        src="components/attendance/nebulaPink.png"
         top="-2px"
         left="8px"
         height="400px"
@@ -84,9 +88,13 @@ const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
         objectPosition="50% 100%"
         objectFit="contain"
       />
-      <BackgroundAsset src="bintang2.png" top={"40%"} left="16px" />
       <BackgroundAsset
-        src="komet1.png"
+        src="components/attendance/bintang2.png"
+        top={"40%"}
+        left="16px"
+      />
+      <BackgroundAsset
+        src="components/attendance/komet1.png"
         top={"60%"}
         right={0}
         height="220px"
@@ -95,13 +103,17 @@ const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
         objectFit="contain"
       />
       <BackgroundAsset
-        src="spark1Biru.png"
+        src="components/attendance/spark1Biru.png"
         top={"50%"}
         right={0}
         objectPosition="190% 100%"
         objectFit="contain"
       />
-      <BackgroundAsset src="spark1Merah.png" top={"80%"} left="-28px" />
+      <BackgroundAsset
+        src="components/attendance/spark1Merah.png"
+        top={"80%"}
+        left="-28px"
+      />
 
       <Flex flexDirection="column">
         <Navbar />

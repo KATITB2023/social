@@ -209,7 +209,7 @@ const Navbar = () => {
 
         <Image
           alt="Ekor"
-          src="/ekor.svg"
+          src="/ekor.png"
           position="absolute"
           left="0"
           height="full"

@@ -231,6 +231,7 @@ function FileUpload(param: id) {
       fontSize="16px"
       textDecorationLine="underline"
       color="yellow.4"
+      paddingY={"10px"}
     >
       <a
         href={param.fileSubmitted as string}
