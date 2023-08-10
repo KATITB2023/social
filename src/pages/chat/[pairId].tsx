@@ -20,9 +20,6 @@ import ComingSoon from "~/components/screen/ComingSoon";
 const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
-  if(!FUTUREFLAG) {
-    return <ComingSoon />
-  }
 
   const pairId = router.query.pairId as string;
   const userPair = api.friend.getOtherUserProfile.useQuery(
@@ -122,6 +119,10 @@ const Chat: NextPage = () => {
   );
 
   const messageEmit = useEmit("message");
+
+  if(!FUTUREFLAG) {
+    return <ComingSoon />
+  }
 
   return (
     <Layout title="Chat">
