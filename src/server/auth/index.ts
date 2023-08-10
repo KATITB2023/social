@@ -153,9 +153,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  pages:{
-    signIn : "/login"
-  }
+  pages: {
+    signIn: "/login",
+  },
 };
 
 /**
