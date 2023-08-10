@@ -208,7 +208,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
   return (
     <Center>
       <Box
-        width="350px"
+        width="80vw"
         height="relative"
         padding={{ base: "16px", sm: "16px" }}
         justifyContent="space-between"
@@ -289,7 +289,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
   return (
     <Center>
       <Box
-        width="350px"
+        width="80vw"
         height="87px"
         padding={{ base: "16px", sm: "16px" }}
         justifyContent="space-between"
