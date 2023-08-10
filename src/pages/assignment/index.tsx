@@ -1,46 +1,11 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Text,
-  Center,
-} from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { match } from "ts-pattern";
-import { AssignmentType } from "@prisma/client";
-import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
+import Layout from "~/layout";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
-};
-
-// Fungsi Background & Navbar
-function BackgroundAndNavbar({ children }: childrenOnlyProps) {
-  return (
-    <Box  display={"flex"} position="relative" minHeight="100vh" height="100%" w={"full"}>
-      <Image
-        src="background.png"
-        alt="background"
-        height="100%"
-        zIndex="-1"
-        position="fixed"
-        objectFit="cover"
-        width="100%"
-        maxWidth={"375px"}
-      />
-      <Flex flexDirection="column" gap={"28px"} w="full">
-        <Navbar currentPage="Assignment" />
-        {children}
-      </Flex>
-    </Box>
-  );
-}
-
-// Fungsi Toggle untuk switch Dailiy Quest & Side Quest
 const DailySideQuest: React.FC<{
   handleBoxContentChange: (content: string) => void;
 }> = ({ handleBoxContentChange }) => {
@@ -288,8 +253,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
             color="#4909b3"
             onClick={() =>
               void router.push({
-                pathname: "/submission",
-                query: { taskId: id },
+                pathname: `/assignment/${id}`,
               })
             }
           >
@@ -368,8 +332,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
             color="#4909b3"
             onClick={() =>
               void router.push({
-                pathname: "/submission",
-                query: { taskId: id },
+                pathname: `/assignment/${id}`,
               })
             }
           >
@@ -384,31 +347,34 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
 // Main function
 export default function AssignmentListPage() {
   const [boxContent, setBoxContent] = useState("Daily Quest");
-  const assignmentQuery = api.assignment.getAssignmentList.useQuery({});
-  const tasks = assignmentQuery.data || [];
+  const dailyData = api.assignment.getAssignmentList.useQuery({
+    type: "MANDATORY",
+  });
+  const sideData = api.assignment.getAssignmentList.useQuery({
+    type: "SIDE_QUEST",
+  });
 
   const handleBoxContentChange = (content: string) => {
     setBoxContent(content);
   };
 
   return (
-    <BackgroundAndNavbar>
-      <Flex
-        flexDirection="column"
-        alignItems={"center"}
-        justifyContent="space-between"
-        gap="40px"
-        mx="24px"
-      >
-        <Heading color="#ffe655" size="H4" alignSelf="center">
-          Mission Hub
-        </Heading>
-        <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
-        {boxContent === "Daily Quest" ? (
-          <>
-            {tasks
-              .filter((task) => task.type === AssignmentType.DAILY_QUEST)
-              .map((task) => (
+    <Layout title={"Assignment"}>
+      <BackgroundAndNavbar>
+        <Flex
+          flexDirection="column"
+          alignItems={"center"}
+          justifyContent="space-between"
+          gap="40px"
+          mx="24px"
+        >
+          <Heading color="#ffe655" size="H4" alignSelf="center">
+            Mission Hub
+          </Heading>
+          <DailySideQuest handleBoxContentChange={handleBoxContentChange} />
+          {boxContent === "Daily Quest" ? (
+            <>
+              {(dailyData.data ?? []).map((task) => (
                 <TugasDailyQuest
                   key={task.id}
                   id={task.id}
@@ -417,12 +383,10 @@ export default function AssignmentListPage() {
                   deadline={task.endTime}
                 />
               ))}
-          </>
-        ) : boxContent === "Side Quest" ? (
-          <>
-            {tasks
-              .filter((task) => task.type === AssignmentType.SIDE_QUEST)
-              .map((task) => (
+            </>
+          ) : boxContent === "Side Quest" ? (
+            <>
+              {(sideData.data ?? []).map((task) => (
                 <TugasSideQuest
                   key={task.id}
                   id={task.id}
@@ -430,9 +394,10 @@ export default function AssignmentListPage() {
                   statusTugas={task.submissionStatus}
                 />
               ))}
-          </>
-        ) : null}
-      </Flex>
-    </BackgroundAndNavbar>
+            </>
+          ) : null}
+        </Flex>
+      </BackgroundAndNavbar>
+    </Layout>
   );
 }
