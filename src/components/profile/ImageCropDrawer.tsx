@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "~/components/profile/cropimage";
 import {
@@ -42,6 +42,7 @@ export default function ImageCropDrawer({
   onOpen,
   onClose,
   setCroppedImage,
+  nim,
 }: ImageCropProps &
   useDisclosureType & {
     setCroppedImage: React.Dispatch<React.SetStateAction<string>>;
@@ -55,6 +56,19 @@ export default function ImageCropDrawer({
   >({ x: 0, y: 0, width: 0, height: 0 });
 
   const [currPreview, setCurrPreview] = useState<string>("");
+  const [imageURL, setImageURL] = useState<string>("");
+
+  useEffect(() => {
+    if (imageFile) {
+      const url = URL.createObjectURL(imageFile);
+      setImageURL(url);
+
+      // Clean up - revoke the object URL when it's no longer needed.
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [imageFile]);
 
   const onCropChange = (crop: CropPosition) => {
     setCrop(crop);
@@ -75,6 +89,8 @@ export default function ImageCropDrawer({
     const currPreviewURL = await getCroppedImg(imageURL, croppedAreaPixels);
     setCurrPreview(currPreviewURL as string);
   }
+
+  const URL = `https://cdn.oskmitb.com/${nim}`;
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="full">
       <DrawerOverlay />

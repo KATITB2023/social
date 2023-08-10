@@ -195,16 +195,16 @@ export const SelectPhotoImageProfile = ({
                   />
 
                   {pictureSelected ? (
-                    <Text size={"B5"} fontWeight={400} color={"green.3"}>
-                      {" "}
-                      Selected file{" "}
-                    </Text>
-                  ) : (
-                    <Text size={"B5"} fontWeight={400} color={"yellow.1"}>
-                      {" "}
-                      No file chosen{" "}
-                    </Text>
-                  )}
+                    <ImageCropDrawer
+                      imageFile={imageSelected as File}
+                      onCancel={onCancel}
+                      isOpen={isOpen}
+                      onOpen={onOpen}
+                      onClose={onClose}
+                      setCroppedImage={setCroppedImage}
+                      nim={nim}
+                    />
+                  ) : null}
                 </Box>
               </Box>
 
