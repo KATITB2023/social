@@ -9,13 +9,13 @@ const NotFound = () => {
       <BackgroundAndNavbar>
         <Flex
           flexDirection="column"
-          justifyContent="space-between"
+          justifyContent="center"
           gap="14px"
           mx="40px"
-          my="140px"
+          minH={"80vh"}
         >
           <Image
-            src="/404.svg"
+            src="/404.png"
             alt="404"
             height="100%"
             position="relative"
