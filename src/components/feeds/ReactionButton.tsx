@@ -53,8 +53,10 @@ const ReactionButton: React.FC<ReactionButtonProps> = ({ reactions, id }) => {
             if (reaction) {
               if (data) {
                 reaction.count++;
+                reaction.reacted = true;
               } else {
                 reaction.count--;
+                reaction.reacted = false;
               }
               if (reaction.count === 0) {
                 delete feed.reactions[variables.reaction];
