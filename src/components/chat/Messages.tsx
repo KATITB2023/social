@@ -1,54 +1,76 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Flex, Text, Image } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import { type Message } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import { useInView } from "framer-motion";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
 
 interface MessagesProps {
   messages: Message[];
-  hasPreviousPage?: boolean;
-  isFetchingPreviousPage: boolean;
-  fetchPreviousPage: () => void;
-  bottomRef: React.RefObject<HTMLDivElement>;
+  hasNextPage?: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
 }
 
 const Messages = ({
   messages,
-  hasPreviousPage,
-  isFetchingPreviousPage,
-  fetchPreviousPage,
-  bottomRef,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
 }: MessagesProps) => {
   const { data: session } = useSession({ required: true });
-  const infinityRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(infinityRef);
-  const [shouldScroll, setShouldScroll] = useState<boolean>(true);
+  const [lastMessageRef, setLastMessageRef] = useState<HTMLDivElement | null>(
+    null
+  );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isScrollingUp = useRef(false);
 
   useEffect(() => {
-    if (!shouldScroll && hasPreviousPage && inView && !isFetchingPreviousPage) {
-      fetchPreviousPage();
+    if (!hasNextPage || isFetchingNextPage) return;
+    const container = containerRef.current;
+    function listener() {
+      if (container) {
+        // check if containerRef scrolled max to the top in flex column reverse
+        if (
+          Math.abs(
+            container.scrollTop -
+              container.clientHeight +
+              container.scrollHeight
+          ) < 3
+        ) {
+          fetchNextPage();
+        }
+      }
     }
-  }, [
-    inView,
-    hasPreviousPage,
-    isFetchingPreviousPage,
-    fetchPreviousPage,
-    shouldScroll,
-  ]);
+
+    container?.addEventListener("scroll", listener);
+    return () => container?.removeEventListener("scroll", listener);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   useEffect(() => {
-    if (shouldScroll && messages.length !== 0) {
-      bottomRef.current?.scrollIntoView();
-      setShouldScroll(false);
+    const container = containerRef.current;
+    function listener() {
+      if (container) {
+        isScrollingUp.current = container.scrollTop < 0;
+      }
     }
-  }, [shouldScroll, messages.length]);
+    container?.addEventListener("scroll", listener);
+    return () => container?.removeEventListener("scroll", listener);
+  }, []);
+
+  useEffect(() => {
+    if (
+      lastMessageRef &&
+      (!isScrollingUp.current || messages[0]?.senderId === session?.user.id)
+    ) {
+      lastMessageRef.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [lastMessageRef, messages[0]?.senderId, session?.user.id]);
 
   return (
     <Flex
       w={"full"}
       h={"full"}
-      flexDir={"column"}
+      flexDir={"column-reverse"}
       overflowY={"scroll"}
       p="3"
       sx={{
@@ -64,15 +86,19 @@ const Messages = ({
           borderRadius: "full",
         },
       }}
+      ref={containerRef}
     >
-      <div ref={infinityRef} />
-      {messages.map((item) => {
+      {messages.map((item, idx) => {
         if (item.senderId === session?.user.id) {
           const date = dayjs(item.createdAt).tz("Asia/Jakarta");
           const local = dayjs().tz("Asia/Jakarta");
-          const messageArr = item.message.split("\n");
           return (
-            <Flex key={item.id} w="100%" justify="flex-end">
+            <Flex
+              key={item.id}
+              w="100%"
+              justify="flex-end"
+              ref={idx === 0 ? setLastMessageRef : null}
+            >
               <Flex
                 bg="green.5"
                 position={"relative"}
@@ -94,16 +120,13 @@ const Messages = ({
                   right={-2}
                   src="/components/chat_page/chat_self_ornament.svg"
                 />
-                {messageArr.map((m) => {
-                  return (
-                    <>
-                      <Text fontWeight={400} fontSize={"16px"}>
-                        {" "}
-                        {m}{" "}
-                      </Text>
-                    </>
-                  );
-                })}
+                <Text
+                  fontWeight={400}
+                  fontSize={"16px"}
+                  whiteSpace={"pre-line"}
+                >
+                  {item.message}
+                </Text>
                 <Flex flexDir={"row"} justify={"end"} gap={2}>
                   {date.isSame(local, "day") ? (
                     <Text fontSize={"12px"}> Today </Text>
@@ -118,9 +141,12 @@ const Messages = ({
         } else {
           const date = dayjs(item.createdAt).tz("Asia/Jakarta");
           const local = dayjs().tz("Asia/Jakarta");
-          const messageArr = item.message.split("\n");
           return (
-            <Flex key={item.id} w="100%">
+            <Flex
+              key={item.id}
+              w="100%"
+              ref={idx === 0 ? setLastMessageRef : null}
+            >
               <Flex
                 bg="yellow.5"
                 pos={"relative"}
@@ -142,16 +168,13 @@ const Messages = ({
                   left={-2}
                   src="/components/chat_page/chat_partner_ornament.svg"
                 />
-                {messageArr.map((m) => {
-                  return (
-                    <>
-                      <Text fontWeight={400} fontSize={"16px"}>
-                        {" "}
-                        {m}{" "}
-                      </Text>
-                    </>
-                  );
-                })}
+                <Text
+                  fontWeight={400}
+                  fontSize={"16px"}
+                  whiteSpace={"pre-line"}
+                >
+                  {item.message}
+                </Text>
                 <Flex flexDir={"row"} gap={2}>
                   {date.isSame(local, "day") ? (
                     <Text fontSize={"12px"}> Today </Text>
@@ -165,7 +188,6 @@ const Messages = ({
           );
         }
       })}
-      <div ref={bottomRef} />
     </Flex>
   );
 };
