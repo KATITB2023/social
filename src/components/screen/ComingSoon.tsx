@@ -33,7 +33,7 @@ const ComingSoon = () => {
         my="140px"
       >
         <Image
-          src="maintenance.svg"
+          src="coming_soon.png"
           alt="404"
           height="100%"
           zIndex="-1"
@@ -42,17 +42,9 @@ const ComingSoon = () => {
           minWidth="100%"
           width="100%"
         />
-        <Heading size="H3" textAlign="center" alignSelf="center">
-            UNDER MAINTENANCE
+        <Heading marginTop="5%" size="SH5" textAlign="center" alignSelf="center">
+          Roket kami sedang mencari tujuan selanjutnya...
         </Heading>
-        <Text
-          fontFamily="body"
-          fontSize="14px"
-          marginBottom="8px"
-          align="center"
-        >
-          Bersiaplah Spacefarers! Sesuatu yang menakjubkan sedang dipersiapkan!
-        </Text>
       </Flex>
     </BackgroundAndNavbar>
   );
