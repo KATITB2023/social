@@ -328,23 +328,6 @@ interface EventsDay {
   events: AbsenStatus[];
 }
 
-const isThere = ({
-  eventsDay,
-  dayId,
-}: {
-  eventsDay: EventsDay[];
-  dayId: string;
-}) => {
-  eventsDay.forEach(({ day, events }) => {
-    if (dayId === day) {
-      return true;
-    }
-  });
-  return false;
-};
-
-
-
 const AttendListPage = () => {
   const eventQuery = api.absensi.viewAbsensi.useQuery();
   const eventList = eventQuery?.data;
@@ -369,10 +352,11 @@ const AttendListPage = () => {
           events: [absenStatus],
         });
       } else {
-        eventsByDay[dayId].events.push(absenStatus);
+        eventsByDay[dayIndex].events.push(absenStatus);
       }
     });
   }
+  
   return (
     <BackgroundAndNavbar>
       <Container bgImage="url('attendancelist_background.svg')">
