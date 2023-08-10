@@ -1,11 +1,11 @@
-import { Flex, Image, Text, Spacer, Box } from "@chakra-ui/react";
-import React, { useEffect, useState, useRef } from "react";
+import { Box, Flex, Image, Spacer, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
-import ReactionButton from "./ReactionButton";
+import utc from "dayjs/plugin/utc";
 import { useInView } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
+import ReactionButton from "./ReactionButton";
 
 type Reaction = {
   count: number;
@@ -58,16 +58,17 @@ const Feed: React.FC<FeedProps> = ({
     /^https:\/\/www\.youtube\.com\/embed\/[\w-]+$/.test(link);
   const isImageLink = (link: string) => /\.(jpeg|jpg|png|gif)$/i.test(link);
   const feedRef = useRef(null);
-  const readMutation = api.feed.readFeed.useMutation();
+  const readMutation = api.feed.readFeed.useMutation({
+    onSuccess() {
+      setIsSeen(true);
+    },
+  });
   const isInView = useInView(feedRef);
   useEffect(() => {
-    if (!isSeen) {
-      const result = readMutation.mutate({
+    if (!isSeen && isInView) {
+      readMutation.mutate({
         feedId: id,
       });
-      setTimeout(() => {
-        setIsSeen(true);
-      }, 2000);
     }
   }, [isInView, id, isSeen]);
 

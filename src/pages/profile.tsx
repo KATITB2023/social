@@ -114,8 +114,8 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
   return isEditMode ? (
     <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
-    <Box 
-      maxHeight="40vh" 
+    <Box
+      maxHeight="40vh"
       overflowY="scroll"
       sx={{
         "::-webkit-scrollbar": {
@@ -127,14 +127,13 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           background: "#2F2E2E",
           borderRadius: "5px",
           marginY: "10px",
-          marginRight: "10px",
         },
         "::-webkit-scrollbar-thumb": {
           background: "white",
           borderRadius: "5px",
         },
       }}
-      >
+    >
       <Flex
         flexDirection="column"
         justifyContent="space-between"

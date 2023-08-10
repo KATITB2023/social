@@ -32,6 +32,7 @@ export default function SubmissionPage() {
     assignmentId: taskId,
   });
   const assignmentData = inputAssignmentData.data;
+  const filePath = assignmentData?.filePath;
 
   if (!assignmentData) {
     return <LoadingScreen />;
@@ -41,6 +42,21 @@ export default function SubmissionPage() {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
     isDeadlinePassed: assignmentData.submissionStatus === "PASSED_DEADLINE",
     fileSubmitted: assignmentData.submission?.filePath as string,
+  };
+
+  const downloadFile = (url: string) => {void 
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobURL = window.URL.createObjectURL(new Blob([blob]));
+        const fileName = url.split("/").pop();
+        const aTag = document.createElement("a");
+        aTag.href = blobURL;
+        aTag.setAttribute("download", fileName! + ".pdf");
+        document.body.appendChild(aTag);
+        aTag.click();
+        aTag.remove();
+      });
   };
 
   return (
@@ -85,6 +101,23 @@ export default function SubmissionPage() {
             Soal 01
           </Text>
           <Text textAlign={"justify"}>{assignmentData.description}</Text>
+          {filePath && (
+            <Button
+              w={"50%"}
+              my={2}
+              bg={"yellow.5"}
+              border={"2px gray.600 solid"}
+              _hover={{
+                bg: "gray.600",
+                color: "yellow.5",
+              }}
+              onClick={() => {
+                downloadFile(filePath);
+              }}
+            >
+              Download Panduan
+            </Button>
+          )}
           <FileUpload {...inputSubmissionData} />
         </Flex>
       </BackgroundAndNavbar>
