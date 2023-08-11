@@ -333,7 +333,7 @@ function FileUpload(param: id) {
         )}
       </Box>
 
-      <HStack gap="20px" bottom="30px">
+      <Flex justifyContent={"space-between"} w={"full"}>
         <Button
           backgroundColor={"gray.600"}
           display="flex"
@@ -368,7 +368,7 @@ function FileUpload(param: id) {
             Submit
           </Text>
         </Button>
-      </HStack>
+      </Flex>
 
       <SubmitPopUp
         isSubmitting={isSubmitOpen}
