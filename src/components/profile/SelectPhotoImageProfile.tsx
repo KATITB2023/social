@@ -134,7 +134,7 @@ export const SelectPhotoImageProfile = ({
               background={"black"}
               h={"full"}
               w={"full"}
-              maxW={"375px"}
+              maxW={"500px"}
               top={0}
               opacity={0.5}
               onClick={() => setOpen(false)}
@@ -150,7 +150,7 @@ export const SelectPhotoImageProfile = ({
               background={"purple.1"}
               height={"230px"}
               w={"full"}
-              maxW={"375px"}
+              maxW={"500px"}
               padding={"10px"}
               gap={"30px"}
               pb={"30px"}
@@ -166,12 +166,12 @@ export const SelectPhotoImageProfile = ({
                   Profile photo{" "}
                 </Text>
                 <Box display={"flex"} gap={"15px"}>
-                  <Button
+     {/*              <Button
                     variant={"unstyled"}
                     onClick={() => void deleteProfile()}
                   >
                     <Image src="/components/trashbin.svg" alt="trash icon" />
-                  </Button>
+                  </Button> */}
                   <Button variant={"unstyled"} onClick={() => setOpen(false)}>
                     <Image src="/components/closeButton.svg" alt="close icon" />
                   </Button>

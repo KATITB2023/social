@@ -108,6 +108,7 @@ export default function SubmissionPage() {
             <Button
               w={"50%"}
               my={2}
+              minWidth={"175px"}
               bg={"yellow.5"}
               border={"2px gray.600 solid"}
               _hover={{
@@ -342,7 +343,7 @@ function FileUpload(param: id) {
           textColor={"yellow.5"}
           borderColor={"yellow.5"}
           borderWidth="2px"
-          width="155px"
+          width="45%"
           height="48px"
           borderRadius="10px"
           onClick={handleCancelClick}
@@ -359,7 +360,7 @@ function FileUpload(param: id) {
           textColor={"gray.600"}
           borderColor={"yellow.5"}
           borderWidth="2px"
-          width="155px"
+          width="45%"
           height="48px"
           borderRadius="10px"
           onClick={() => setSubmitOpen(true)}
