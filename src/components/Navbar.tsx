@@ -184,8 +184,8 @@ const Navbar = () => {
         insetX={0}
         zIndex={1}
         background="url('/navbarbg.svg')"
-        maxWidth={"343px"}
-        w={"full"}
+        maxWidth={"450px"}
+        w={"90%"}
         h="60px"
         borderRadius="50px"
         flexDir="row"
