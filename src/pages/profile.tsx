@@ -22,6 +22,7 @@ import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImagePr
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import EditingProfile from "~/components/profile/EditingProfile";
+import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { type SelfProfile } from "~/server/types/user-profile";
 import { api } from "~/utils/api";
@@ -43,42 +44,44 @@ export default function ProfilePage() {
   if (sessionStatus.status === "unauthenticated") {
     void router.push("/login");
   }
-  if (!selfProfile) return null;
+  if (!selfProfile) return <Layout title="Profile"></Layout>;
   return (
-    <BackgroundAndNavigationBar>
-      <Flex
-        flexDirection="column"
-        justifyContent="space-between"
-        gap="20px"
-        mx="24px"
-        my="35px"
-      >
-        <Heading color="yellow.5" size="H4" alignSelf="center">
-          Profile
-        </Heading>
-        <UserProfilePicture
-          src={selfProfile?.image ?? undefined}
-          setOpen={setOpenSelectImage}
-        />
+    <Layout title="Profile">
+      <BackgroundAndNavigationBar>
         <Flex
-          alignSelf="center"
-          width="140px"
-          alignItems="center"
-          gap="12px"
-          justifyContent="space-evenly"
-          color="white"
+          flexDirection="column"
+          justifyContent="space-between"
+          gap="20px"
+          mx="24px"
+          my="35px"
         >
-          <MdPersonPin style={{ fontSize: "20px" }} />
-          <Text size="B3"> PIN : {selfProfile.pin}</Text>
+          <Heading color="yellow.5" size="H4" alignSelf="center">
+            Profile
+          </Heading>
+          <UserProfilePicture
+            src={selfProfile?.image ?? undefined}
+            setOpen={setOpenSelectImage}
+          />
+          <Flex
+            alignSelf="center"
+            width="140px"
+            alignItems="center"
+            gap="12px"
+            justifyContent="space-evenly"
+            color="white"
+          >
+            <MdPersonPin style={{ fontSize: "20px" }} />
+            <Text size="B3"> PIN : {selfProfile.pin}</Text>
+          </Flex>
+          <ProfileInfo info={selfProfile} />
+          <SelectPhotoImageProfile
+            open={openSelectImage}
+            setOpen={setOpenSelectImage}
+            nim={selfProfile.nim}
+          />
         </Flex>
-        <ProfileInfo info={selfProfile} />
-        <SelectPhotoImageProfile
-          open={openSelectImage}
-          setOpen={setOpenSelectImage}
-          nim={selfProfile.nim}
-        />
-      </Flex>
-    </BackgroundAndNavigationBar>
+      </BackgroundAndNavigationBar>
+    </Layout>
   );
 }
 

@@ -153,7 +153,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <div style={{ maxWidth: "375px", margin: "auto" }}>
+    <div style={{ maxWidth: "500px", width:"full", margin: "auto" }}>
       {/* Set max width for mobile-only resolution */}
       <ChakraProvider theme={theme}>
         <SessionProvider session={session}>

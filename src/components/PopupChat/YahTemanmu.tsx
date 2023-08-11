@@ -1,7 +1,20 @@
 import React from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
+import { type UserMatch } from "@prisma/client";
+import { useRouter } from "next/router";
 
-const YahTemanmu = () => {
+const YahTemanmu = ({
+  setMatch,
+}: {
+  setMatch: React.Dispatch<React.SetStateAction<UserMatch | null>>;
+}) => {
+
+  const router = useRouter();
+  const handleAcceptEndMatch = () => {
+    setMatch(null);
+    void router.push("/chat");
+  };
+
   return (
     <Flex
       display="flex"
@@ -14,6 +27,7 @@ const YahTemanmu = () => {
       borderRadius="20px"
       background="#1F1F2E"
       boxShadow="0px 4px 20px 0px rgba(255, 252, 131, 0.40)"
+      onClick={handleAcceptEndMatch}
     >
       <Flex
         color="yellow.4"
@@ -28,7 +42,7 @@ const YahTemanmu = () => {
         <p>
           Yah temanmu mengakhiri percakapan nih
           <br />
-          :”(
+          {":”("}
         </p>
       </Flex>
       <Button
