@@ -29,9 +29,7 @@ export const absensiRouter = createTRPCRouter({
     });
 
     const getEventDayData = await ctx.prisma.attendanceDay.findMany({
-      include: {
-
-      },
+      include: {},
     });
 
     for (const eventData of getEventData) {
@@ -47,7 +45,7 @@ export const absensiRouter = createTRPCRouter({
       }
       let day = "Day 0";
       for (const eventDay of getEventDayData) {
-        if(eventData.dayId == eventDay.id) {
+        if (eventData.dayId == eventDay.id) {
           day = eventDay.name;
           break;
         }
@@ -81,7 +79,8 @@ export const absensiRouter = createTRPCRouter({
           studentId: student.id,
         },
       });
-      if (findRecord) {
+
+      if (findRecord !== null && findRecord.status !== "TIDAK_HADIR") {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Sudah Melakukan Absensi!",
@@ -115,8 +114,14 @@ export const absensiRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.attendanceRecord.create({
-        data: {
+      await ctx.prisma.attendanceRecord.upsert({
+        where: {
+          studentId_eventId: {
+            eventId: input.eventId,
+            studentId: student.id,
+          },
+        },
+        create: {
           date: new Date(),
           status: Status.HADIR,
           student: {
@@ -129,6 +134,10 @@ export const absensiRouter = createTRPCRouter({
               id: input.eventId,
             },
           },
+        },
+        update: {
+          date: new Date(),
+          status: Status.HADIR,
         },
       });
 
