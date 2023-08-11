@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Image,
+  type ImageProps,
   Spacer,
   Text,
   useToast,
@@ -15,7 +16,7 @@ import {
   type Status,
 } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
-import { useState, type PropsWithChildren } from "react";
+import React, { useState, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
 
 import dayjs from "dayjs";
@@ -25,30 +26,18 @@ import { withSession } from "~/server/auth/withSession";
 
 export const getServerSideProps = withSession({ force: true });
 
-interface BgAssetProps {
-  name: string;
-  left: string;
-  top: string;
-  height?: string;
-  width?: string;
-  objPos?: string;
-  objFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
+interface BgAssetProps extends ImageProps {
+  src: string;
 }
 
-const BackgroundAsset = (props: BgAssetProps) => {
-  const { name, left, top, height, width, objPos, objFit } = props;
+const BackgroundAsset: React.FC<BgAssetProps> = ({ src, ...rest }) => {
   return (
     <Image
-      src={`/${name}.svg`}
+      src={`/${src}`}
       alt="asset"
       zIndex="-1"
       position="absolute"
-      height={height ? height : "200px"}
-      width={width ? width : "200px"}
-      top={top}
-      left={left}
-      objectPosition={objPos ? objPos : ""}
-      objectFit={objFit}
+      {...rest}
     />
   );
 };
@@ -71,48 +60,60 @@ const BackgroundAndNavbar = ({ children }: PropsWithChildren) => {
         minWidth="100%"
         width="100%"
       />
-      <BackgroundAsset name="komet4" top="40px" left="-35px" />
       <BackgroundAsset
-        name="bulan1"
-        top="380px"
+        src="components/attendance/komet4.png"
+        top="40px"
+        left={0}
+      />
+      <BackgroundAsset
+        src="components/attendance/bulan1.png"
+        top={"40%"}
         left="-28px"
         height="150px"
         width="150px"
       />
       <BackgroundAsset
-        name="nebulaBiru"
-        top="233px"
+        src="components/attendance/nebulaBiru.png"
+        top={"25%"}
         left="-40px"
         height="400px"
         width="400px"
       />
       <BackgroundAsset
-        name="nebulaPink"
+        src="components/attendance/nebulaPink.png"
         top="-2px"
         left="8px"
         height="400px"
         width="400px"
-        objPos="50% 100%"
-        objFit="contain"
+        objectPosition="50% 100%"
+        objectFit="contain"
       />
-      <BackgroundAsset name="bintang2" top="388px" left="16px" />
       <BackgroundAsset
-        name="komet1"
-        top="630px"
-        left="143px"
+        src="components/attendance/bintang2.png"
+        top={"40%"}
+        left="16px"
+      />
+      <BackgroundAsset
+        src="components/attendance/komet1.png"
+        top={"60%"}
+        right={0}
         height="220px"
         width="240px"
-        objPos="475% 100%"
-        objFit="contain"
+        objectPosition="100% 100%"
+        objectFit="contain"
       />
       <BackgroundAsset
-        name="spark1Biru"
-        top="403px"
-        left="180px"
-        objPos="190% 100%"
-        objFit="contain"
+        src="components/attendance/spark1Biru.png"
+        top={"50%"}
+        right={0}
+        objectPosition="190% 100%"
+        objectFit="contain"
       />
-      <BackgroundAsset name="spark1Merah" top="605px" left="-28px" />
+      <BackgroundAsset
+        src="components/attendance/spark1Merah.png"
+        top={"80%"}
+        left="-28px"
+      />
 
       <Flex flexDirection="column">
         <Navbar />
@@ -317,7 +318,7 @@ const AttendListPage = () => {
             <Flex flexDir="column">
               {Array.from(eventsByDay.keys()).map((item) => (
                 <Flex key={item} flexDir="column" gap="20px" mt="44px">
-                  <Heading size="SH4">{item}</Heading>
+                  <Heading size="SH4">{item.toUpperCase()}</Heading>
                   {eventsByDay.get(item)!.map((eventsInDay, index) => (
                     <EventCard
                       key={index}

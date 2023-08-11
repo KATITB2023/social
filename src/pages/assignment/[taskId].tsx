@@ -55,7 +55,7 @@ export default function SubmissionPage() {
         const fileName = url.split("/").pop();
         const aTag = document.createElement("a");
         aTag.href = blobURL;
-        aTag.setAttribute("download", fileName! + ".pdf");
+        aTag.setAttribute("download", fileName! );
         document.body.appendChild(aTag);
         aTag.click();
         aTag.remove();
@@ -108,6 +108,7 @@ export default function SubmissionPage() {
             <Button
               w={"50%"}
               my={2}
+              minWidth={"175px"}
               bg={"yellow.5"}
               border={"2px gray.600 solid"}
               _hover={{
@@ -231,6 +232,7 @@ function FileUpload(param: id) {
       fontSize="16px"
       textDecorationLine="underline"
       color="yellow.4"
+      paddingY={"10px"}
     >
       <a
         href={param.fileSubmitted as string}
@@ -332,7 +334,7 @@ function FileUpload(param: id) {
         )}
       </Box>
 
-      <HStack gap="20px" bottom="30px">
+      <Flex justifyContent={"space-between"} w={"full"}>
         <Button
           backgroundColor={"gray.600"}
           display="flex"
@@ -341,7 +343,7 @@ function FileUpload(param: id) {
           textColor={"yellow.5"}
           borderColor={"yellow.5"}
           borderWidth="2px"
-          width="155px"
+          width="45%"
           height="48px"
           borderRadius="10px"
           onClick={handleCancelClick}
@@ -358,7 +360,7 @@ function FileUpload(param: id) {
           textColor={"gray.600"}
           borderColor={"yellow.5"}
           borderWidth="2px"
-          width="155px"
+          width="45%"
           height="48px"
           borderRadius="10px"
           onClick={() => setSubmitOpen(true)}
@@ -367,7 +369,7 @@ function FileUpload(param: id) {
             Submit
           </Text>
         </Button>
-      </HStack>
+      </Flex>
 
       <SubmitPopUp
         isSubmitting={isSubmitOpen}

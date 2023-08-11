@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import Cropper from "react-easy-crop";
-import getCroppedImg from "~/components/profile/cropimage";
 import {
   Box,
   Button,
@@ -14,8 +11,11 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import ProfilePicture from "./ProfilePicture";
 import { TRPCClientError } from "@trpc/client";
+import React, { useEffect, useState } from "react";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "~/components/profile/cropimage";
+import ProfilePicture from "./ProfilePicture";
 
 interface ImageCropProps {
   imageFile: File;
@@ -113,85 +113,95 @@ export default function ImageCropDrawer({
         setCurrPreview(undefined);
       }}
       isOpen={isOpen}
-      size="full"
     >
       <DrawerOverlay />
-      <DrawerContent bgColor="navy.1">
-        <DrawerHeader>
-          <Heading size="H4" color="yellow.5">
-            Crop Image
-          </Heading>
-        </DrawerHeader>
-        <DrawerBody>
-          <Flex flexDir="column" gap="30px" alignItems={"center"}>
-            <Button
-              onClick={() => {
-                onCancel();
-                setCurrPreview(undefined);
-              }}
-              alignSelf="flex-end"
-              backgroundColor="pink.3"
-            >
-              <Text size="B3" color="white">
-                Cancel
-              </Text>
-            </Button>
-            <Box aspectRatio="1 / 1" width="100%" position="relative">
-              <Cropper
-                image={imageURL}
-                zoom={zoom}
-                crop={crop}
-                aspect={aspect.value}
-                onCropChange={onCropChange}
-                onZoomChange={onZoomChange}
-                onCropComplete={onCropComplete}
-                style={{
-                  containerStyle: {
-                    height: "100%",
-                    width: "100%",
-                    overflow: "hidden",
-                    background: "#000",
-                  },
-                  cropAreaStyle: { minHeight: "100%", minWidth: "100%" },
-                }}
-              />
-            </Box>
-            <Button
-              onClick={() => {
-                void updateCurrPreview();
-              }}
-              alignSelf="center"
-            >
-              {" "}
-              Preview Profile{" "}
-            </Button>
-            <Box width="164px" aspectRatio={"1/1"}>
-              {currPreview && (
-                <ProfilePicture
-                  src={URL.createObjectURL(currPreview)}
-                  size="164px"
-                  br="full"
-                />
-              )}
-            </Box>
-
-            {currPreview ? (
+      <DrawerContent
+        justifyContent={"center"}
+        flexDirection={"row"}
+        background={"transparent"}
+      >
+        <Box bgColor="navy.1" maxW={"375px"} width={"full"}>
+          <DrawerHeader>
+            <Heading size="H4" color="yellow.5">
+              Crop Image
+            </Heading>
+          </DrawerHeader>
+          <DrawerBody>
+            <Flex flexDir="column" gap="30px" alignItems={"center"}>
               <Button
                 onClick={() => {
-                  onClose();
-                  void updateImage(currPreview);
-                  setZoom(1);
-                  setCrop({ x: 0, y: 0 });
+                  onCancel();
                   setCurrPreview(undefined);
                 }}
-                backgroundColor={"yellow.5"}
+                alignSelf="flex-end"
+                backgroundColor="pink.3"
+              >
+                <Text size="B3" color="white">
+                  Cancel
+                </Text>
+              </Button>
+              <Flex
+                justifyContent={"center"}
+                position="relative"
+                width={"50%"}
+                aspectRatio={"1 / 1"}
+              >
+                <Cropper
+                  image={imageURL}
+                  zoom={zoom}
+                  crop={crop}
+                  aspect={aspect.value}
+                  onCropChange={onCropChange}
+                  onZoomChange={onZoomChange}
+                  onCropComplete={onCropComplete}
+                  style={{
+                    containerStyle: {
+                      height: "100%",
+                      width: "100%",
+                      overflow: "hidden",
+                      background: "#000",
+                    },
+                    cropAreaStyle: { minHeight: "100%", minWidth: "100%" },
+                  }}
+                />
+              </Flex>
+              <Button
+                onClick={() => {
+                  void updateCurrPreview();
+                }}
+                alignSelf="center"
               >
                 {" "}
-                Set Profile!
+                Preview Profile{" "}
               </Button>
-            ) : null}
-          </Flex>
-        </DrawerBody>
+              <Box width="164px" aspectRatio={"1/1"}>
+                {currPreview && (
+                  <ProfilePicture
+                    src={URL.createObjectURL(currPreview)}
+                    size="164px"
+                    br="full"
+                  />
+                )}
+              </Box>
+
+              {currPreview ? (
+                <Button
+                  onClick={() => {
+                    onClose();
+                    void updateImage(currPreview);
+                    setZoom(1);
+                    setCrop({ x: 0, y: 0 });
+                    setCurrPreview(undefined);
+                  }}
+                  backgroundColor={"yellow.5"}
+                >
+                  {" "}
+                  Set Profile!
+                </Button>
+              ) : null}
+            </Flex>
+          </DrawerBody>
+        </Box>
       </DrawerContent>
     </Drawer>
   );

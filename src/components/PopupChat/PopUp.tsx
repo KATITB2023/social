@@ -11,9 +11,10 @@ interface PopupProps {
   content2: string;
   content3: string;
   content4: string;
+  setOpen : React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PopUp: FC<PopupProps> = ({ content1, content2, content3, content4 }) => {
+const PopUp: FC<PopupProps> = ({ content1, content2, content3, content4, setOpen }) => {
   return (
     <Flex
       display= "flex"
@@ -63,6 +64,7 @@ const PopUp: FC<PopupProps> = ({ content1, content2, content3, content4 }) => {
           borderRadius= "12px"
           background= "yellow.5"
           cursor= "pointer"
+          onClick={() => setOpen(false)}
         >
           <Text
             color= "purple.2"

@@ -220,6 +220,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         marginTop="7px"
         marginBottom="10px"
+        marginRight={"12px"}
       >
         <Text
           color="var(--yellow-yellow-4, #FFE655)"
@@ -301,6 +302,7 @@ const TugasSideQuest: React.FC<TugasSideQuestProps> = ({
         background="linear-gradient(314deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0.00) 100%), rgba(255, 255, 255, 0.40)"
         marginTop="7px"
         marginBottom="10px"
+        marginRight={"12px"}
       >
         <Text
           color="var(--yellow-yellow-4, #FFE655)"
@@ -378,7 +380,9 @@ export default function AssignmentListPage() {
           {boxContent === "Daily Quest" ? (
             <Box
               maxHeight="68vh"
-              overflowY="scroll"
+              maxW={"100%"}
+              overflowY="auto"
+              maxWidth={"100%"}
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
@@ -410,7 +414,9 @@ export default function AssignmentListPage() {
           ) : boxContent === "Side Quest" ? (
             <Box
               maxHeight="68vh"
-              overflowY="scroll"
+              maxW={"100%"}
+              overflowY="auto"
+              maxWidth={"100%"}
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
