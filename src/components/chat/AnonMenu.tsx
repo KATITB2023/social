@@ -53,11 +53,11 @@ export const AnonMenu = ({
 
       <Flex
         backgroundColor={"#2D3648"}
-        w={"375px"}
+        marginX={"auto"}
+        w={"full"}
         position={"absolute"}
         flexDir={"column"}
         bottom={0}
-        left={0}
         mx={"auto"}
         zIndex={2}
         gap={"16px"}
