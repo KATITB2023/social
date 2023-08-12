@@ -38,7 +38,6 @@ export const getServerSideProps = withSession({ force: true });
 
 const Room: NextPage = () => {
   const router = useRouter();
-  const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -104,6 +103,7 @@ const Room: NextPage = () => {
       enabled: !!match?.id,
     }
   );
+  console.log(match?.id)
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -198,8 +198,6 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
-  const askReveal = useEmit("askReveal");
-
   useSubscription(
     "askReveal",
     (data, askReveal) => {
@@ -218,8 +216,6 @@ const Room: NextPage = () => {
     },
     [match, messageQuery]
   );
-
-  
 
   const messageEmit = useEmit("anonymousMessage");
 
@@ -259,29 +255,6 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-
-          {/* <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader color="black">
-                Kamu direquest untuk reveal profil nih!
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalFooter>
-                <Button
-                  colorScheme="blue"
-                  mr={3}
-                  onClick={() => handleAskReveal(true)}
-                >
-                  Yes
-                </Button>
-                <Button variant="ghost" onClick={() => handleAskReveal(false)}>
-                  No
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal> */}
-
           <Flex
             w="100%"
             h="100vh"
