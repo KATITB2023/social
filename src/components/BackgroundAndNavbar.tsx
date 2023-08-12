@@ -14,6 +14,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         backgroundSize={"cover"}
         backgroundPosition={"center"}
         backgroundRepeat={"no-repeat"}
+        pb={10}
       >
         <Flex flexDirection="column">
           <Navbar />
