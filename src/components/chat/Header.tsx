@@ -61,7 +61,7 @@ const Header = ({
                 src="/components/anon_chat_page/anon_profile.svg"
               />
             ) : (
-              <Avatar w={"35px"} h={"35px"} src={image} />
+              <Avatar w={"35px"} h={"35px"} src={image} name={name}/>
             )}
 
             <Flex flexDirection="column" mx="5" justify="center">

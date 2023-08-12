@@ -183,7 +183,8 @@ const Navbar = () => {
         position={"fixed"}
         insetX={0}
         zIndex={1}
-        background="url('/navbarbg.png')"
+        backgroundImage="url('/navbarbg.svg')"
+        backgroundSize={"cover"}
         maxWidth={"450px"}
         w={"90%"}
         h="60px"
