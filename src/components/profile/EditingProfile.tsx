@@ -29,7 +29,7 @@ export default function EditingProfile({
   );
   const [email, setEmail] = useState<string>(initialState.email ?? "");
   const utils = api.useContext();
-  const profileMutaion = api.profile.editProfile.useMutation({
+  const profileMutation = api.profile.editProfile.useMutation({
     onSuccess(): void {
       void utils.profile.getUserProfile.invalidate();
     },
@@ -40,12 +40,11 @@ export default function EditingProfile({
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const res = await profileMutaion.mutateAsync({
+      const res = await profileMutation.mutateAsync({
         bio: bio,
         instagram: instagram,
         email: email,
       });
-
       toast({
         title: "Success",
         status: "success",
