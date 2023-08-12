@@ -15,9 +15,7 @@ export const getServerSideProps = withSession({ force: true });
 
 const ChatHistory: NextPage = () => {
   const router = useRouter();
-  const { data: session } = useSession({ required: true });
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [match, setMatch] = useState<UserMatch | null>(null);
   const currentlyTyping = false;
 
   const userMatchId = router.query.userMatchId as string;
@@ -31,21 +29,9 @@ const ChatHistory: NextPage = () => {
     }
   );
 
-  const { data: profileData, refetch } =
-    api.friend.getOtherUserProfile.useQuery(
-      {
-        userId:
-          match === null
-            ? ""
-            : match.firstUserId === session?.user.id
-            ? match.secondUserId
-            : match.firstUserId,
-      },
-      {
-        enabled: false,
-      }
-    );
-  
+  const profileData = api.messageAnonymous.matchInfo.useQuery({userMatchId}).data;
+
+  console.log(profileData)
 
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
@@ -91,8 +77,8 @@ const ChatHistory: NextPage = () => {
           justifyContent={"space-between"}
         >
           <Header
-            name={"."}
-            image={undefined}
+            name={profileData?.name}
+            image={profileData?.profileImage}
             isTyping={currentlyTyping}
             isAnon={true}
             handleClick={() => void router.push("/chat")}
