@@ -12,7 +12,7 @@ const Menu = ({ children, isActive, ...props }: MenuProps) => {
     return (
     <Flex
       {...props}
-      width="full"
+      width="6rem"
       paddingBottom="6px"
       justifyContent="center"
       gap="2"

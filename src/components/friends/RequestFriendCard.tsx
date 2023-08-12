@@ -9,7 +9,10 @@ import {
 
 import { MdOutlineCancel } from "react-icons/md";
 
-export default function RequestFriendCard() {
+export default function RequestFriendCard(props: {
+    onOpen : () => void,
+    onOpen2 : () => void,
+  }) {
     return (
     <Card
         display="flex"
@@ -134,6 +137,7 @@ export default function RequestFriendCard() {
                 gap={12}
                 bg="#FFFC83"
                 borderRadius="12px"
+                onClick={props.onOpen2}
             >
                 {/* Label */}
                 <Text
@@ -162,6 +166,7 @@ export default function RequestFriendCard() {
                 size='24px'
                 _hover={{ bg: "transparent" }}
                 icon={<MdOutlineCancel />}
+                onClick={props.onOpen}
                 />
             </Flex>
         </Flex>

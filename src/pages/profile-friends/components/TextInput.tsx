@@ -7,12 +7,7 @@ const TextInput = () => {
     <InputGroup>
       <InputLeftElement
         pointerEvents="none"
-        sx={{
-          color: "gray.300",
-          _groupFocus: {
-            color: "yellow",
-          },
-        }}
+        color='white'
       >
         <Search2Icon />
       </InputLeftElement>
