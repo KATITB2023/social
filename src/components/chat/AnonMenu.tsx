@@ -18,7 +18,6 @@ export const AnonMenu = ({
   const [isKamuYakin, setKamuYakin] = useState(false);
   const [isBerhasilRequest, setBerhasilRequest] = useState(false);
   const toast = useToast();
-  console.log(isRevealed);
 
   // End Match Handling
   const handleEndMatch = () => {

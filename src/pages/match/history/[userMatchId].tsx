@@ -31,8 +31,6 @@ const ChatHistory: NextPage = () => {
 
   const profileData = api.messageAnonymous.matchInfo.useQuery({userMatchId}).data;
 
-  console.log(profileData)
-
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
