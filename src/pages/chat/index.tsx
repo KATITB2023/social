@@ -1,6 +1,5 @@
 import { Flex, Icon, IconButton } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { AiFillPlusCircle } from "react-icons/ai";
 import Navbar from "~/components/Navbar";
@@ -17,7 +16,6 @@ import { withSession } from "~/server/auth/withSession";
 export const getServerSideProps = withSession({ force: true });
 
 const ChatHome: NextPage = () => {
-  const { data: session } = useSession({ required: true });
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
   const addChatHandler = () => {

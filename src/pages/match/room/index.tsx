@@ -1,16 +1,4 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Modal,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import { type Message, type UserMatch } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -38,7 +26,6 @@ export const getServerSideProps = withSession({ force: true });
 
 const Room: NextPage = () => {
   const router = useRouter();
-  const toast = useToast();
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -55,7 +42,7 @@ const Room: NextPage = () => {
     setYayTemanmu(false);
     setTemanmuMenolak(false);
     setKamuDirequest(false);
-  }
+  };
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
@@ -104,6 +91,7 @@ const Room: NextPage = () => {
       enabled: !!match?.id,
     }
   );
+  console.log(match?.id);
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -198,8 +186,6 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
-  const askReveal = useEmit("askReveal");
-
   useSubscription(
     "askReveal",
     (data, askReveal) => {
@@ -218,8 +204,6 @@ const Room: NextPage = () => {
     },
     [match, messageQuery]
   );
-
-  
 
   const messageEmit = useEmit("anonymousMessage");
 
@@ -259,29 +243,6 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-
-          {/* <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader color="black">
-                Kamu direquest untuk reveal profil nih!
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalFooter>
-                <Button
-                  colorScheme="blue"
-                  mr={3}
-                  onClick={() => handleAskReveal(true)}
-                >
-                  Yes
-                </Button>
-                <Button variant="ghost" onClick={() => handleAskReveal(false)}>
-                  No
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal> */}
-
           <Flex
             w="100%"
             h="100vh"
@@ -328,7 +289,9 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
-                  isAnonRevealed = {profileData !== undefined && match.isRevealed ? true : false}
+                  isAnonRevealed={
+                    profileData !== undefined && match.isRevealed ? true : false
+                  }
                   setSender={setSender}
                 />
               </Flex>
@@ -338,7 +301,14 @@ const Room: NextPage = () => {
           {/* For Popup */}
           <Flex
             position={"fixed"}
-            display={isYahTemanmu || isYayTemanmu || isTemanmuMenolak || isKamuDirequest ? "block" : "none"}
+            display={
+              isYahTemanmu ||
+              isYayTemanmu ||
+              isTemanmuMenolak ||
+              isKamuDirequest
+                ? "block"
+                : "none"
+            }
             w={"100vw"}
             h={"100vh"}
             top={0}
@@ -362,11 +332,15 @@ const Room: NextPage = () => {
                 onClick={() => closeAll}
               />
 
-              <Flex zIndex={4}> 
-              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
-              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu}/>}
-              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak}/>}
-              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} match={match}/>}
+              <Flex zIndex={4}>
+                {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+                {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu} />}
+                {isTemanmuMenolak && (
+                  <TemanmuMenolak setOpen={setTemanmuMenolak} />
+                )}
+                {isKamuDirequest && (
+                  <KamuDirequest setOpen={setKamuDirequest} match={match} />
+                )}
               </Flex>
             </Flex>
           </Flex>

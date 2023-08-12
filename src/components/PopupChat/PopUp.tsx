@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import "~/pages/_app"
 import {
   Button,
@@ -14,7 +14,7 @@ interface PopupProps {
   setOpen : React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PopUp: FC<PopupProps> = ({ content1, content2, content3, content4, setOpen }) => {
+const PopUp = ({ content1, content2, content3, content4, setOpen } : PopupProps) => {
   return (
     <Flex
       display= "flex"

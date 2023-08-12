@@ -1,6 +1,6 @@
 import React from "react";
 import type { ButtonProps } from "@chakra-ui/react";
-import { Button, Text } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 interface DynamicProps extends ButtonProps {
   borderColor?: string;

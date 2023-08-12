@@ -146,13 +146,13 @@ const Feed: React.FC<FeedProps> = ({
         <Text
           textAlign="justify"
           color="white"
-          fontSize={9.25}
+          fontSize={12}
           fontFamily="SomarRounded-Regular"
           fontWeight="500"
-          lineHeight="12px"
+          lineHeight="15px"
           word-wrap="break-word"
         >
-          {text}
+          <div dangerouslySetInnerHTML={{ __html: text }} />
         </Text>
 
         {/* Post yang belom dilihat */}
