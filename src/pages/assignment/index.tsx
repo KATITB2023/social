@@ -383,6 +383,7 @@ export default function AssignmentListPage() {
               maxW={"100%"}
               overflowY="auto"
               maxWidth={"100%"}
+              minHeight="50vh"
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
@@ -417,6 +418,7 @@ export default function AssignmentListPage() {
               maxW={"100%"}
               overflowY="auto"
               maxWidth={"100%"}
+              minHeight="50vh"
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
