@@ -8,9 +8,20 @@ import Request from "./components/Request";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+
+export const getServerSideProps = withSession({ force: true });
 
 
 const ProfileFriends: NextPage = () => {
+  const sessionStatus = useSession();
+  const router = useRouter();
+  if (sessionStatus.status === "unauthenticated") {
+    void router.push("/login");
+  }
   const params = useSearchParams()
   const [state, setState] = React.useState<string>(params.get('status') ?? 'my-friends')
     useEffect (() => {
