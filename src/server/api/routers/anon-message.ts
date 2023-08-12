@@ -109,7 +109,7 @@ export const anonymousMessageRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const page = await ctx.prisma.message.findMany({
+      const items = await ctx.prisma.message.findMany({
         orderBy: {
           createdAt: "desc",
         },
@@ -128,23 +128,22 @@ export const anonymousMessageRouter = createTRPCRouter({
         },
       });
 
-      const items = page.reverse();
-      let prevCursor = undefined;
+      let nextCursor = undefined;
 
       if (items.length > input.take) {
-        const prev = items.shift();
+        const next = items.pop();
 
-        if (prev) {
-          prevCursor = {
-            id: prev.id,
-            date: prev.createdAt,
+        if (next) {
+          nextCursor = {
+            id: next.id,
+            date: next.createdAt,
           };
         }
       }
 
       return {
         items,
-        prevCursor,
+        nextCursor,
       };
     }),
 });

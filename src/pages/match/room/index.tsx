@@ -18,14 +18,23 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "~/components/Image";
 import Navbar from "~/components/Navbar";
+import KamuDirequest from "~/components/PopupChat/KamuDirequest";
+import TemanmuMenolak from "~/components/PopupChat/TemanmuMenolak";
+import YahTemanmu from "~/components/PopupChat/YahTemanmu";
+import YayTemanmu from "~/components/PopupChat/YayTemenmu";
 import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
 import Messages from "~/components/chat/Messages";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
 import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 const Room: NextPage = () => {
   const router = useRouter();
@@ -35,37 +44,71 @@ const Room: NextPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const client = api.useContext();
 
+  const [isSender, setSender] = useState(false);
+  const [isYahTemanmu, setYahTemanmu] = useState(false);
+  const [isYayTemanmu, setYayTemanmu] = useState(false);
+  const [isTemanmuMenolak, setTemanmuMenolak] = useState(false);
+  const [isKamuDirequest, setKamuDirequest] = useState(false);
+
+  const closeAll = () => {
+    setYahTemanmu(false);
+    setYayTemanmu(false);
+    setTemanmuMenolak(false);
+    setKamuDirequest(false);
+  }
+
+  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
+  const { data: profileData, refetch } =
+    api.friend.getOtherUserProfile.useQuery(
+      {
+        userId:
+          match === null
+            ? ""
+            : match.firstUserId === session?.user.id
+            ? match.secondUserId
+            : match.firstUserId,
+      },
+      {
+        enabled: false,
+      }
+    );
+
+  useEffect(() => {
+    if (profileData === undefined && match !== null && match.isRevealed) {
+      void refetch();
+    }
+  }, [match, profileData, refetch]);
+
   const checkMatch = useEmit("checkMatch", {
-    onSuccess: (data) => {
-      if (data.match !== null) {
-        setMatch(data.match);
+    onSuccess: (resData) => {
+      const match = resData.match;
+      if (match !== null) {
+        setMatch(match);
       } else {
         void router.push("/match");
       }
     },
   });
 
-  const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
-  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
-
   useEffect(() => {
     checkMatch.mutate({});
   }, []);
 
   const messageQuery = api.messageAnonymous.infinite.useInfiniteQuery(
-    { userMatchId: match !== null ? match.id : "" }, // to fix
+    { userMatchId: match?.id ?? "" }, // to fix
     {
-      getPreviousPageParam: (d) => d.prevCursor,
+      getNextPageParam: (d) => d.nextCursor,
       refetchInterval: false,
       refetchOnWindowFocus: false,
+      enabled: !!match?.id,
     }
   );
 
-  const { hasPreviousPage, isFetchingPreviousPage, fetchPreviousPage } =
-    messageQuery;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
   useEffect(() => {
-    if (match && session) {
+    if (match && session?.user?.id) {
       try {
         updateMessageIsRead.mutate({
           userMatchId: match.id,
@@ -73,7 +116,7 @@ const Room: NextPage = () => {
         });
       } catch (err) {}
     }
-  }, []);
+  }, [session?.user?.id, match, updateMessageIsRead.mutate]);
 
   // List of messages that are rendered
   const [messages, setMessages] = useState<Message[]>([]);
@@ -86,7 +129,7 @@ const Room: NextPage = () => {
       for (const msg of incoming ?? []) map[msg.id] = msg;
 
       return Object.values(map).sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
       );
     });
     setTimeout(() => bottomRef.current?.scrollIntoView(), 150);
@@ -106,7 +149,7 @@ const Room: NextPage = () => {
         post.userMatchId !== null &&
         post.userMatchId === match.id
       ) {
-        setMessages((prev) => [...prev, post]);
+        addMessages([post]);
         if (match && session && post.receiverId === session.user.id) {
           try {
             updateOneMessageIsRead.mutate({ messageId: post.id });
@@ -142,8 +185,13 @@ const Room: NextPage = () => {
       void client.messageAnonymous.chatHeader.invalidate();
       if (match) {
         if (data.endedAt !== null) {
-          setMatch(null);
-          void router.push("/");
+          if (!isSender) {
+            setYahTemanmu(true);
+          } else {
+            setMatch(null);
+            void router.push("/chat");
+          }
+          setSender(false);
         }
       }
     },
@@ -151,38 +199,33 @@ const Room: NextPage = () => {
   );
 
   const askReveal = useEmit("askReveal");
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useSubscription(
     "askReveal",
     (data, askReveal) => {
       if (match) {
         if (askReveal) {
+          setMatch(data);
           if (data.isRevealed) {
-            toast({
-              title: "Yay temenmu uda reveal profil nih!",
-            });
+            setYayTemanmu(true);
           } else {
-            onOpen();
+            setKamuDirequest(true);
           }
         } else {
-          toast({
-            title: "Temanmu menolak reveal profil :(",
-          });
+          setTemanmuMenolak(true);
         }
       }
     },
     [match, messageQuery]
   );
 
-  const handleAskReveal = (choice: boolean) => {
-    onClose();
-    if (match) {
-      askReveal.mutate({ agree: choice });
-    }
-  };
+  
 
   const messageEmit = useEmit("anonymousMessage");
+
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
+  }
 
   return (
     <Layout title="Chat">
@@ -201,7 +244,7 @@ const Room: NextPage = () => {
           overflowY={"hidden"}
         >
           <Flex position={"absolute"} top={0}>
-            <Navbar currentPage={"Chat"} />
+            <Navbar />
           </Flex>
           <Image
             src="/components/anon_chat_page/anon_comet.png"
@@ -216,7 +259,8 @@ const Room: NextPage = () => {
         </Flex>
       ) : (
         <>
-          <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+
+          {/* <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader color="black">
@@ -236,7 +280,8 @@ const Room: NextPage = () => {
                 </Button>
               </ModalFooter>
             </ModalContent>
-          </Modal>
+          </Modal> */}
+
           <Flex
             w="100%"
             h="100vh"
@@ -253,20 +298,28 @@ const Room: NextPage = () => {
               justifyContent={"space-between"}
             >
               <Header
-                name="Anonymous"
-                image={undefined}
+                name={
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.name
+                    : "Anonymous"
+                }
+                image={
+                  profileData !== undefined && match.isRevealed
+                    ? profileData.image
+                    : undefined
+                }
                 isTyping={currentlyTyping}
                 isAnon={true}
-                handleClick={() => router.back()}
+                handleClick={() => void router.push("/chat")}
               />
               <Divider />
 
               <Messages
                 messages={messages ?? []}
-                hasPreviousPage={hasPreviousPage}
-                fetchPreviousPage={() => void fetchPreviousPage()}
-                isFetchingPreviousPage={isFetchingPreviousPage}
-                bottomRef={bottomRef}
+                hasNextPage={hasNextPage}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                fetchNextPage={fetchNextPage}
+                isFetchingNextPage={isFetchingNextPage}
               />
 
               <Divider />
@@ -275,7 +328,45 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
+                  isAnonRevealed = {profileData !== undefined && match.isRevealed ? true : false}
+                  setSender={setSender}
                 />
+              </Flex>
+            </Flex>
+          </Flex>
+
+          {/* For Popup */}
+          <Flex
+            position={"fixed"}
+            display={isYahTemanmu || isYayTemanmu || isTemanmuMenolak || isKamuDirequest ? "block" : "none"}
+            w={"100vw"}
+            h={"100vh"}
+            top={0}
+            left={0}
+            zIndex={3}
+          >
+            <Flex
+              position={"relative"}
+              w={"full"}
+              h={"full"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              {/* Black overlay */}
+              <Flex
+                position={"absolute"}
+                w={"100vw"}
+                h={"100vh"}
+                bg={"black"}
+                opacity={0.7}
+                onClick={() => closeAll}
+              />
+
+              <Flex zIndex={4}> 
+              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu}/>}
+              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak}/>}
+              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} match={match}/>}
               </Flex>
             </Flex>
           </Flex>

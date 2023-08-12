@@ -1,12 +1,12 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { getFriendStatus } from "~/utils/friend";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
 import {
   type SelfProfile,
   type UserProfile,
 } from "~/server/types/user-profile";
-import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
+import { getFriendStatus } from "~/utils/friend";
 
 const ACCEPTED_FRIENDSHIP_STATUS = [
   "FRIEND",
@@ -23,26 +23,24 @@ export const friendRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const currUser = ctx.session.user;
+      const queryFilter = /^\d{1,8}$/.test(input.query)
+        ? ({
+            nim: {
+              startsWith: input.query,
+            },
+          } as const)
+        : ({
+            profile: {
+              name: {
+                contains: input.query,
+                mode: "insensitive",
+              },
+            },
+          } as const);
       const users = await ctx.prisma.user.findMany({
         where: {
           AND: [
-            {
-              OR: [
-                {
-                  profile: {
-                    name: {
-                      contains: input.query,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-                {
-                  nim: {
-                    startsWith: input.query,
-                  },
-                },
-              ],
-            },
+            queryFilter,
             {
               id: {
                 not: currUser.id,
@@ -169,7 +167,7 @@ export const friendRouter = createTRPCRouter({
     )
 
     .mutation(async ({ ctx, input }) => {
-      const userExists = await ctx.prisma.user.findFirst({
+      const userExists = await ctx.prisma.user.findUnique({
         where: {
           id: input.userId,
         },

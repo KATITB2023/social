@@ -11,34 +11,110 @@ import {
   InputRightElement,
   Link,
   Text,
-  VStack,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
-import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { type PropsWithChildren, useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import Navbar from "~/components/Navbar";
+import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
+import Layout from "~/layout";
 
-type childrenOnlyProps = {
-  children: string | JSX.Element | JSX.Element[];
+const NavbarLogin = () => {
+  return (
+    <>
+      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+      <Flex
+        position={"relative"}
+        display={"block"}
+        backgroundColor={"transparent"}
+        h={"60px"}
+        my={"20px"}
+      />
+
+      <Flex
+        my={"20px"}
+        mx={"auto"}
+        top={0}
+        position={"fixed"}
+        insetX={0}
+        zIndex={1}
+        background="url('/navbarbg.svg')"
+        maxWidth={"450px"}
+        w={"90%"}
+        h="60px"
+        borderRadius="50px"
+        flexDir="row"
+        alignItems="center"
+        paddingY="2%"
+        paddingX="22px"
+        boxShadow="0px 0px 20px 0px #FFFC8366"
+        transitionDuration={"0.3s"}
+        transitionTimingFunction={"ease-in-out"}
+      >
+        <Box
+          backgroundColor="#0B0A0A"
+          opacity="0.6"
+          borderRadius="50px"
+          position="absolute"
+          top="0"
+          left="0"
+          bottom="0"
+          right="0"
+        />
+
+        <Image
+          alt="Ekor"
+          src="/ekor.svg"
+          position="absolute"
+          left="0"
+          height="full"
+          objectFit="cover"
+          objectPosition="center"
+          borderRadius="50px"
+        />
+
+        <Image
+          objectFit="cover"
+          objectPosition="center"
+          src="/Vector.svg"
+          alt="OSKM ITB"
+          zIndex="2"
+        />
+      </Flex>
+    </>
+  );
 };
 
-function Navbar2({ children }: childrenOnlyProps) {
+function Navbar2({ children }: PropsWithChildren) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
-      <Flex flexDirection="column">
-        <Navbar currentPage=""/>
-        {children}
-      </Flex>
-    </Box>
+    <>
+      <Box position="relative" height={"100vh"}>
+        {/* Grey layer */}
+        <Flex
+          position="absolute"
+          width="100%"
+          backgroundColor="gray.600"
+          zIndex={0}
+          minHeight="100%"
+        >
+          <LoginBackground />
+        </Flex>
+
+        <Flex flexDirection="column" h={"full"} w={"full"}>
+          <NavbarLogin />
+          {children}
+        </Flex>
+      </Box>
+      <Footer />
+    </>
   );
 }
 
@@ -82,7 +158,7 @@ const LoginForm = ({
   };
 
   const handleRedirect = () => {
-    void router.push("/profile");
+    void router.push("/");
   };
 
   const handleError = (message: string) => {
@@ -104,14 +180,12 @@ const LoginForm = ({
       redirect: false,
       csrfToken,
     });
-
-    if (res?.error) {
+    if (!res?.ok && res?.error) {
       handleError(res.error);
       setError("root", { message: res.error });
       reset({}, { keepErrors: true, keepValues: true });
       return;
     }
-
     handleLoggedIn();
     reset();
   };
@@ -120,41 +194,39 @@ const LoginForm = ({
 
   return (
     <Flex
-      width="300px"
-      height="359.31px"
-      direction="column"
-      justifyContent={{ base: "center", md: "end" }}
+      flexDir={"column"}
+      w={"full"}
+      justifyContent={"center"}
       alignItems="center"
-      position="absolute"
+      height="80vh"
       gap="25px"
     >
       <Flex
-        width="114px"
-        height="128.31px"
         gap="20px"
-        direction="column"
+        flexDir={"column"}
         justifyContent="center"
         alignItems="center"
+        zIndex={0}
       >
         <Image
-          src="logoOSKM.svg"
+          src="/logoOSKM.svg"
+          alt="logo OSKM"
           width="60px"
-          height="70.306px"
           style={{
             filter: "drop-shadow(0px 4px 11px rgba(255, 255, 255, 0.25))",
           }}
         />
-        <Heading
-          size={{ base: "xl", md: "3xl" }}
-          color="yellow.5"
-          textShadow={`0px 0px 10px `}
-        >
+        <Heading size={"H3"} color="yellow.5" textShadow={`0px 0px 10px `}>
           LOGIN
         </Heading>
       </Flex>
 
       <form onSubmit={(e) => void handleSubmit(login)(e)}>
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+        <input
+          name="csrfToken"
+          type="hidden"
+          defaultValue={csrfToken ?? undefined}
+        />
         <VStack spacing={4}>
           <FormControl isInvalid={!!errors.nim}>
             <Input
@@ -234,7 +306,6 @@ const LoginForm = ({
             isLoading={isSubmitting}
             loadingText="Loading"
             isDisabled={!isDirty || !isValid}
-            zIndex="5"
           >
             <Text
               width="45px"
@@ -247,7 +318,13 @@ const LoginForm = ({
               Login
             </Text>
           </Button>
-          <Link href="/forgot-password" size="B5" zIndex="5" lineHeight="18px">
+          <Link
+            href="/forgot-password"
+            size="B5"
+            zIndex={0}
+            lineHeight="18px"
+            cursor={"pointer"}
+          >
             Lupa Password?
           </Link>
         </Flex>
@@ -260,29 +337,18 @@ const Login = ({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <Navbar2>
-      <Head>
-        <title>Login - KAT ITB 2023</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Flex
-        position="absolute"
-        width="100%"
-        backgroundColor="gray.600"
-        zIndex={0}
-        minHeight="100vh"
-      >
+    <Layout title={"Login"}>
+      <Navbar2>
         <Flex
-          justifyContent={{ base: "center", md: "end" }}
+          justifyContent={"center"}
           alignItems="center"
-          paddingInline={{ base: "0", md: "15vw" }}
           width="100%"
+          flexDirection={"column"}
         >
-          <LoginBackground />
           <LoginForm csrfToken={csrfToken} />
         </Flex>
-      </Flex>
-    </Navbar2>
+      </Navbar2>
+    </Layout>
   );
 };
 
@@ -291,7 +357,7 @@ export const getServerSideProps = async (
 ) => {
   const csrfToken = await getCsrfToken(context);
   return {
-    props: { csrfToken },
+    props: { csrfToken: csrfToken ?? null },
   };
 };
 

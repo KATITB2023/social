@@ -1,13 +1,13 @@
-import { hash } from "bcrypt";
 import { faker } from "@faker-js/faker";
 import { PrismaClient, Status } from "@prisma/client";
+import { hash } from "bcrypt";
 
 void (async () => {
   let nim = 0;
   const prisma = new PrismaClient();
 
   // seed user
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 500; i++) {
     const user = await prisma.user.upsert({
       where: {
         nim: "13521" + String(nim++).padStart(3, "0"),
@@ -34,6 +34,7 @@ void (async () => {
         gender: faker.helpers.arrayElement(["MALE", "FEMALE"]),
         email: faker.internet.email(),
         bio: faker.lorem.words(10),
+        point: Math.floor(Math.random() * 1000),
       },
     });
   }

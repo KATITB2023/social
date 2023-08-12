@@ -1,17 +1,33 @@
-import { Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Heading,
+  IconButton,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { MdPersonPin, MdCameraAlt } from "react-icons/md";
+import { MdCameraAlt, MdPersonPin } from "react-icons/md";
 
-import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
-import ProfilePicture from "~/components/profile/ProfilePicture";
-import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import EditPasswordModal from "~/components/profile/EditPasswordModal";
+import LabelValueContainer from "~/components/profile/LabelValueContainer";
+import ProfilePicture from "~/components/profile/ProfilePicture";
+import { SelectPhotoImageProfile } from "~/components/profile/SelectPhotoImageProfile";
 
-import { api } from "~/utils/api";
-import { type SelfProfile } from "~/server/types/user-profile";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import EditingProfile from "~/components/profile/EditingProfile";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { type SelfProfile } from "~/server/types/user-profile";
+import { api } from "~/utils/api";
+
+export const getServerSideProps = withSession({ force: true });
 
 export interface EditableProps {
   bio?: string;
@@ -20,63 +36,52 @@ export interface EditableProps {
   image?: string;
 }
 
-// const defautProfile: SelfProfile = {
-//   bio: "something",
-//   campus: "GANESHA",
-//   email: "Vicenta_Ryan@hotmail.coui",
-//   faculty: "Sekolah Teknik Elektro dan Informatika",
-//   friendCount: 0,
-//   gender: "MALE",
-//   id: "5d42b047-2fff-45d0-9e07-567f3e6265a4",
-//   image: null,
-//   instagram: "@gana.dipaa",
-//   name: "Rufus Wiza",
-//   nim: "13521003",
-//   pin: "842081",
-//   point: 0,
-//   visitedCount: 0,
-// };
-
 export default function ProfilePage() {
   const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [openSelectImage, setOpenSelectImage] = useState<boolean>(false);
-
-  if (!selfProfile) return null;
+  const sessionStatus = useSession();
+  const router = useRouter();
+  if (sessionStatus.status === "unauthenticated") {
+    void router.push("/login");
+  }
+  if (!selfProfile) return <Layout title="Profile"></Layout>;
   return (
-    <BackgroundAndNavigationBar>
-      <Flex
-        flexDirection="column"
-        justifyContent="space-between"
-        gap="20px"
-        mx="24px"
-        my="35px"
-      >
-        <Heading color="yellow.5" size="H4" alignSelf="center">
-          Profile
-        </Heading>
-        <UserProfilePicture
-          src={selfProfile?.image ?? undefined}
-          setOpen={setOpenSelectImage}
-        />
+    <Layout title="Profile">
+      <BackgroundAndNavigationBar>
         <Flex
-          alignSelf="center"
-          width="140px"
-          alignItems="center"
-          gap="12px"
-          justifyContent="space-evenly"
-          color="white"
+          flexDirection="column"
+          justifyContent="space-between"
+          gap="20px"
+          mx="24px"
+          my="35px"
         >
-          <MdPersonPin style={{ fontSize: "20px" }} />
-          <Text size="B3"> PIN : {selfProfile.pin}</Text>
+          <Heading color="yellow.5" size="H4" alignSelf="center">
+            Profile
+          </Heading>
+          <UserProfilePicture
+            src={selfProfile?.image ?? undefined}
+            setOpen={setOpenSelectImage}
+          />
+          <Flex
+            alignSelf="center"
+            width="140px"
+            alignItems="center"
+            gap="12px"
+            justifyContent="space-evenly"
+            color="white"
+          >
+            <MdPersonPin style={{ fontSize: "20px" }} />
+            <Text size="B3"> PIN : {selfProfile.pin}</Text>
+          </Flex>
+          <ProfileInfo info={selfProfile} />
+          <SelectPhotoImageProfile
+            open={openSelectImage}
+            setOpen={setOpenSelectImage}
+            nim={selfProfile.nim}
+          />
         </Flex>
-        <ProfileInfo info={selfProfile} />
-        <SelectPhotoImageProfile
-          open={openSelectImage}
-          setOpen={setOpenSelectImage}
-          nim={selfProfile.nim}
-        />
-      </Flex>
-    </BackgroundAndNavigationBar>
+      </BackgroundAndNavigationBar>
+    </Layout>
   );
 }
 
@@ -107,14 +112,33 @@ function UserProfilePicture({
     </Box>
   );
 }
-
 function ProfileInfo({ info }: { info: SelfProfile }) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return isEditMode ? (
     <EditingProfile initialState={info} setIsEditMode={setIsEditMode} />
   ) : (
-    <>
+    <Box
+      maxHeight="40vh"
+      overflowY="scroll"
+      sx={{
+        "::-webkit-scrollbar": {
+          width: "11px",
+          position: "absolute",
+          right: "5px",
+        },
+        "::-webkit-scrollbar-track": {
+          background: "#2F2E2E",
+          borderRadius: "5px",
+          marginY: "10px",
+        },
+        "::-webkit-scrollbar-thumb": {
+          background: "white",
+          borderRadius: "5px",
+        },
+      }}
+    >
       <Flex
         flexDirection="column"
         justifyContent="space-between"
@@ -138,16 +162,36 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
           />
         ))}
       </Flex>
-      <Button
-        paddingX="1.5em"
-        paddingY="0.5em"
-        backgroundColor="yellow.5"
-        alignSelf="center"
-        onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
-      >
-        <Text size="B5"> edit profile</Text>
-      </Button>
-    </>
+      <HStack justifyContent="center" spacing={5} marginTop="5%">
+        <Button
+          paddingX="24px"
+          paddingY="8px"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={onOpen}
+          fontFamily={"SomarRounded-Bold"}
+          color={"#4909B3"}
+          width={"114px"}
+          borderRadius={"12px"}
+        >
+          <Text size="B5">Edit Password</Text>
+        </Button>
+        <EditPasswordModal isOpen={isOpen} onClose={onClose} />
+        <Button
+          paddingX="24px"
+          paddingY="8px"
+          backgroundColor="yellow.5"
+          alignSelf="center"
+          onClick={() => setIsEditMode((isEditMode) => !isEditMode)}
+          fontFamily={"SomarRounded-Bold"}
+          color={"#4909B3"}
+          width={"114px"}
+          borderRadius={"12px"}
+        >
+          <Text size="B5">Edit Profile</Text>
+        </Button>
+      </HStack>
+    </Box>
   );
 }
 

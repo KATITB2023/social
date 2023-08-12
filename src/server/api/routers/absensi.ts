@@ -13,6 +13,7 @@ export const absensiRouter = createTRPCRouter({
       event: AttendanceEvent;
       record: AttendanceRecord | null;
       status: Status | null;
+      day: string;
     }[] = [];
     const student = ctx.session.user;
 
@@ -27,6 +28,10 @@ export const absensiRouter = createTRPCRouter({
       orderBy: [{ startTime: "desc" }],
     });
 
+    const getEventDayData = await ctx.prisma.attendanceDay.findMany({
+      include: {},
+    });
+
     for (const eventData of getEventData) {
       // Status
       let status;
@@ -37,6 +42,13 @@ export const absensiRouter = createTRPCRouter({
       }
       if (!status) {
         status = null;
+      }
+      let day = "Day 0";
+      for (const eventDay of getEventDayData) {
+        if (eventData.dayId == eventDay.id) {
+          day = eventDay.name;
+          break;
+        }
       }
 
       // Record
@@ -50,14 +62,14 @@ export const absensiRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { record: r, ...rest } = eventData;
 
-      absenStatus.push({ event: rest, record, status: status });
+      absenStatus.push({ event: rest, record, status: status, day: day });
     }
 
     return absenStatus;
   }),
   submitAbsensi: protectedProcedure
     .input(z.object({ eventId: z.string().uuid() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       // Error jika absen lebih dari 1 kali
       const student = ctx.session.user;
 
@@ -67,7 +79,8 @@ export const absensiRouter = createTRPCRouter({
           studentId: student.id,
         },
       });
-      if (findRecord) {
+
+      if (findRecord !== null && findRecord.status !== "TIDAK_HADIR") {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Sudah Melakukan Absensi!",
@@ -101,8 +114,14 @@ export const absensiRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.attendanceRecord.create({
-        data: {
+      await ctx.prisma.attendanceRecord.upsert({
+        where: {
+          studentId_eventId: {
+            eventId: input.eventId,
+            studentId: student.id,
+          },
+        },
+        create: {
           date: new Date(),
           status: Status.HADIR,
           student: {
@@ -115,6 +134,10 @@ export const absensiRouter = createTRPCRouter({
               id: input.eventId,
             },
           },
+        },
+        update: {
+          date: new Date(),
+          status: Status.HADIR,
         },
       });
 
