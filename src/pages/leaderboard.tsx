@@ -9,6 +9,11 @@ import Footer from "~/components/Footer";
 import NotFound from "./404";
 import { api } from "~/utils/api";
 import Layout from "~/layout";
+import { FUTUREFLAG } from "~/constant";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { withSession } from "~/server/auth/withSession";
+
+export const getServerSideProps = withSession({ force: true });
 
 interface LeaderboardProps {
   data: LeaderboardData[];
@@ -180,6 +185,10 @@ const LeaderboardPage = () => {
 
     return pageButtons;
   };
+
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
+  }
 
   return (
     <Layout title={"Leaderboard"}>
