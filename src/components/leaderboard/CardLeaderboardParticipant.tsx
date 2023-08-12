@@ -3,10 +3,10 @@ import React from "react";
 
 interface CardProps {
   name: string;
-  nim: number;
-  image: string;
+  nim: string;
+  image: string | null;
   ranking: number;
-  points: string;
+  points: number;
 }
 
 const CardLeaderboardParticipant = ({
@@ -16,14 +16,14 @@ const CardLeaderboardParticipant = ({
   ranking,
   points,
 }: CardProps) => {
-  const isOverflowing = (Name: string) => {
+  const isOverflowing = (name: string) => {
     let tes = "";
-    for (let i = 0; i < Name.length; i++) {
-      if (i > 12) {
+    for (let i = 0; i < name.length; i++) {
+      if (i > 8) {
         tes += "...";
         break;
       } else {
-        tes += Name[i];
+        tes += name[i];
       }
     }
     return tes;
@@ -31,77 +31,71 @@ const CardLeaderboardParticipant = ({
 
   return (
     <Flex
-      w="327px"
+      w="80%"
       h="61px"
       position="relative"
       borderRadius="12px"
       flexDirection="row"
-      margin="20px"
+      mx={"auto"}
+      justifyContent={"space-between"}
+      alignItems={"center"}
+      px={"12px"}
     >
+      {/* Background Color */}
       <Card
         position="absolute"
         top="0"
         bottom="0"
         left="0"
         right="0"
-        opacity="50%"
+        opacity="70%"
         borderRadius="12px"
-        bgGradient="linear(to-l,rgba(43, 7, 146, 0.9),rgba(221, 179, 248, 0.71),rgba(234, 191, 255, 0.6))"
-      ></Card>
+        bgGradient="linear-gradient(340deg, #2B0792 0%, rgba(221, 179, 248, 0.71) 93.23%, rgba(234, 191, 255, 0.60) 100%);"
+      />
+
       <Flex
-        position="relative"
-        w="24px"
-        h="61px"
-        alignItems="center"
-        justifyContent="center"
-        marginLeft="12px"
+        zIndex={0}
+        w={"70%"}
+        flexDir={"row"}
+        alignItems={"center"}
+        gap={3}
       >
         <Text size="B2" color="white" fontWeight="600">
           #{ranking}
         </Text>
-      </Flex>
-      <Box
-        position="relative"
-        w="45px"
-        h="45px"
-        margin="auto 15px"
-        bgColor="yellow.5"
-        borderRadius="full"
-        alignItems="center"
-        justifyContent="center"
-        boxShadow="0px 0px 8px rgba(77, 52, 138, 0.90)"
-      >
-        <Image
-          w="45px"
-          h="45px"
-          borderRadius="full"
-          objectPosition="center"
-          objectFit="cover"
-          top="0"
-          src={image}
-          alt={`Image ${name}`}
+
+        <Box
+          minW={"45px"}
+          minH={"45px"}
+          maxW={"45px"}
+          maxH={"45px"}
+          backgroundImage={image ? image : undefined}
+          backgroundPosition={"center"}
+          backgroundSize={"cover"}
+          borderRadius={"full"}
         />
-      </Box>
-      <Box
-        position="relative"
-        margin="auto 0px"
-        maxWidth="100px"
-        maxHeight="45px"
-        textOverflow="ellipsis"
-        whiteSpace="nowrap"
-        overflow="hidden"
-      >
-        <Text fontWeight="600" size="B3" color="white">
-          {isOverflowing(name)}
-        </Text>
-        <Text size="B5" marginTop="-5px" color="white">
-          {nim}
-        </Text>
-      </Box>
+
+        <Box
+          position="relative"
+          margin="auto 0px"
+          maxHeight="45px"
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
+          overflow="hidden"
+        >
+          <Text fontWeight="600" size="B3" color="white">
+            {name}
+          </Text>
+          <Text size="B5" marginTop="-5px" color="white">
+            {nim}
+          </Text>
+        </Box>
+      </Flex>
+
+      {/* Point Display */}
       <Flex
         w="73px"
         h="28px"
-        position="absolute"
         left="240px"
         top="16px"
         borderRadius="12px"
@@ -109,6 +103,7 @@ const CardLeaderboardParticipant = ({
         alignItems="center"
         justifyContent="center"
         marginTop="2px"
+        zIndex={0}
       >
         <Flex
           position="relative"
@@ -120,7 +115,7 @@ const CardLeaderboardParticipant = ({
           justifyContent="center"
         >
           <Text size="B4" color="purple.1" fontWeight="700">
-            {points}
+            {points} PT
           </Text>
         </Flex>
       </Flex>
