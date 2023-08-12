@@ -1,11 +1,14 @@
+"use client"
 import { NextPage } from "next";
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "~/components/Navbar";
 import { Box, Image, Flex, Input, Text } from "@chakra-ui/react";
 import TextInput from "./components/TextInput";
 import Menu from "./components/Menu";
 import Friends from "./components/Friends";
 import Request from "./components/Request";
+import Link from "next/link";
+import { useSearchParams } from 'next/navigation'
 
 function BackgroundAndNavbar({ children }: { children: React.ReactNode }) {
   return (
@@ -39,7 +42,11 @@ function BackgroundAndNavbar({ children }: { children: React.ReactNode }) {
 }
 
 const ProfileFriends: NextPage = () => {
-    const [state, setState] = React.useState<string>('myfriends')
+  const params = useSearchParams()
+  const [state, setState] = React.useState<string>(params.get('status') ?? 'my-friends')
+    useEffect (() => {
+        setState(params.get('status') ?? 'my-friends')
+    }, [params])
   return (
     <BackgroundAndNavbar>
       <Flex
@@ -51,11 +58,16 @@ const ProfileFriends: NextPage = () => {
       >
         <TextInput />
         <Flex flexDirection="row" justifyContent="center" alignItems='center' gap="40px">
-          <Menu>My Friends</Menu>
-          <Menu>Request</Menu>
+          <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
+            <Link href='?status=my-friends' >My Friends</Link>
+          </Menu>
+
+          <Menu waiting={2} isActive={state=='request'} onClick={()=>{setState('request')}}>
+            <Link href='?status=request' >Request</Link>
+          </Menu>
         </Flex>
         {
-            state === 'myfriends' ? (
+            state === 'my-friends' ? (
                 <Friends/>
             ) : (
                 <Request/>
