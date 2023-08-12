@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Flex, Text, Image, Box } from "@chakra-ui/react";
+import { Text, Box } from "@chakra-ui/react";
 
 
 type EclipseProps = {

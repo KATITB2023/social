@@ -1,4 +1,4 @@
-import { Flex, Text, Box, Card, Image } from "@chakra-ui/react";
+import { Flex, Text, Box, Card } from "@chakra-ui/react";
 import React from "react";
 
 interface CardProps {
@@ -15,18 +15,6 @@ const CardLeaderboardSelf = ({
   ranking,
   points,
 }: CardProps) => {
-  const isOverflowing = (Name: string) => {
-    let tes = "";
-    for (let i = 0; i < Name.length; i++) {
-      if (i > 8) {
-        tes += "...";
-        break;
-      } else {
-        tes += Name[i];
-      }
-    }
-    return tes;
-  };
 
   return (
     <Flex

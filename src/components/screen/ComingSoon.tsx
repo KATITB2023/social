@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from "react";
-import { Box, Flex, Heading, Image, Text, Link } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 
 function BackgroundAndNavbar({ children }: PropsWithChildren) {
