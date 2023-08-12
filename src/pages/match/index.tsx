@@ -52,7 +52,6 @@ const Match: NextPage = () => {
     checkEmit.mutate({});
     return () => {
       if (queued.current) {
-        console.log("cancelling emit");
         cancelEmit.mutate({});
       }
     };
@@ -61,7 +60,6 @@ const Match: NextPage = () => {
   const findMatch = () => {
     if (!queued.current && needQueue && !foundMatch) {
       setIsLoading(true);
-      console.log("request queue");
       queueEmit.mutate({
         isAnonymous: isAnonymous,
         isFindingFriend: isFindingFriend,
