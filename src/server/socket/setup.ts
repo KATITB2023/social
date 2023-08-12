@@ -1,16 +1,15 @@
+import { type Message, type RoomChat, type UserMatch } from "@prisma/client";
 import { createAdapter } from "@socket.io/redis-adapter";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Server, Socket } from "socket.io";
-import { type Message, type UserMatch } from "@prisma/client";
-import type { ServerEventsResolver } from "~/server/socket/helper";
-import { setupScheduleSocket } from "~/server/socket/schedule";
 import { Redis } from "~/server/redis";
 import {
   anonTypingEvent,
   anonymousMessageEvent,
   isTypingEvent,
   messageEvent,
+  askRevealEvent,
 } from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
@@ -18,6 +17,8 @@ import {
   endMatchEvent,
   findMatchEvent,
 } from "~/server/socket/events/queue";
+import type { ServerEventsResolver } from "~/server/socket/helper";
+import { setupScheduleSocket } from "~/server/socket/schedule";
 import { type UserQueue } from "~/server/types/message";
 
 /**
@@ -37,6 +38,7 @@ const serverEvents = [
   cancelMatchEvent,
   checkMatchEvent,
   anonymousMessageEvent,
+  askRevealEvent,
 ] as const;
 
 /**
@@ -76,6 +78,7 @@ export type ServerToClientEvents = {
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
+  askReveal: (match: UserMatch, askReveal: boolean) => void;
 };
 
 interface InterServerEvents {
@@ -95,6 +98,7 @@ export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;
   match: UserMatch | null;
   matchQueue: UserQueue | null;
+  roomChat: Map<string, RoomChat>;
 };
 
 /**
@@ -152,6 +156,13 @@ export function setupSocket(io: SocketServer) {
         next();
       })
       .catch(next);
+  });
+
+  io.use((socket, next) => {
+    socket.data.match = null;
+    socket.data.matchQueue = null;
+    socket.data.roomChat = new Map<string, RoomChat>();
+    next();
   });
 
   // Setup all socket events here

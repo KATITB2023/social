@@ -34,7 +34,7 @@ function useEmit<
   event: T,
   options?: UseMutationOptions<GetReturn<T>, unknown, TData, unknown>
 ) {
-  const mutation = useMutation((data: TData) => {
+  return useMutation((data: TData) => {
     return new Promise<GetReturn<T>>((resolve, reject) => {
       // @ts-expect-error type lying so inference can be easy
       socket.emit(event, data, (res: SocketResponse) => {
@@ -46,8 +46,6 @@ function useEmit<
       });
     });
   }, options);
-
-  return mutation;
 }
 
 export default useEmit;

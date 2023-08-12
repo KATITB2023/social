@@ -8,10 +8,10 @@ export const anonymousMessageRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
-        page: z.number().min(1).default(1),
+        cursor: z.number().min(1).default(1),
       })
     )
-    .query(async ({ ctx, input }): Promise<AnonChatHeader[]> => {
+    .query(async ({ ctx, input }) => {
       const chatHeaders = await ctx.prisma.userMatch.findMany({
         where: {
           AND: [
@@ -59,11 +59,11 @@ export const anonymousMessageRouter = createTRPCRouter({
         orderBy: {
           endedAt: "desc",
         },
-        skip: input.limit * (input.page - 1),
+        skip: input.limit * (input.cursor - 1),
         take: input.limit,
       });
 
-      return chatHeaders.map((chatHeader) => {
+      const data: AnonChatHeader[] = chatHeaders.map((chatHeader) => {
         const otherUser =
           chatHeader.firstUserId === ctx.session.user.id
             ? chatHeader.secondUser
@@ -75,6 +75,9 @@ export const anonymousMessageRouter = createTRPCRouter({
           });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { firstUser, secondUser, ...rest } = chatHeader;
+
         return {
           user: {
             id: otherUser.id,
@@ -83,10 +86,51 @@ export const anonymousMessageRouter = createTRPCRouter({
               ? null
               : otherUser.profile.image,
           },
+          userMatch: rest,
         };
       });
-    }),
 
+      return {
+        data,
+        nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
+      };
+    }),
+  matchInfo: protectedProcedure
+    .input(z.object({ userMatchId: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const userMatch = await ctx.prisma.userMatch.findUnique({
+        where: { id: input.userMatchId },
+      });
+
+      if (userMatch === null) {
+        throw new TRPCError({
+          message: "User Match id not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      const profile = await ctx.prisma.profile.findUnique({
+        where: {
+          userId:
+            userMatch.firstUserId === ctx.session.user.id
+              ? userMatch.secondUserId
+              : userMatch.firstUserId,
+        },
+      });
+
+      if (profile === null) {
+        throw new TRPCError({
+          message: "Profile not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return {
+        id: profile.userId,
+        name: userMatch.isRevealed ? profile.name : "Anonymous",
+        profileImage: userMatch.isRevealed ? profile.image : null,
+      };
+    }),
   infinite: protectedProcedure
     .input(
       z.object({
@@ -101,7 +145,7 @@ export const anonymousMessageRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const page = await ctx.prisma.message.findMany({
+      const items = await ctx.prisma.message.findMany({
         orderBy: {
           createdAt: "desc",
         },
@@ -120,23 +164,22 @@ export const anonymousMessageRouter = createTRPCRouter({
         },
       });
 
-      const items = page.reverse();
-      let prevCursor = undefined;
+      let nextCursor = undefined;
 
       if (items.length > input.take) {
-        const prev = items.shift();
+        const next = items.pop();
 
-        if (prev) {
-          prevCursor = {
-            id: prev.id,
-            date: prev.createdAt,
+        if (next) {
+          nextCursor = {
+            id: next.id,
+            date: next.createdAt,
           };
         }
       }
 
       return {
         items,
-        prevCursor,
+        nextCursor,
       };
     }),
 });
