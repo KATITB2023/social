@@ -34,8 +34,8 @@ export default function FriendProfilePage() {
         <ProfilePage />;
         //console.log("Teman berhasil dihapus");
       })
-      .catch((error) => {
-        //console.error("Error while removing friend:", error);
+      .catch(() => {
+        // console.error("Error while removing friend:", error);
       });
   };
 

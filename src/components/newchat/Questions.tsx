@@ -1,7 +1,7 @@
 import QuestionBox from "./Box";
 import Eclipse from "./Eclipse";
 import MatchButton from "./Button";
-import { Text, Box, ButtonGroup, Image, Button } from "@chakra-ui/react";
+import { Text, Box, ButtonGroup, Image} from "@chakra-ui/react";
 import React from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { ChatTopic } from "~/server/types/message";

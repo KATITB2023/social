@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
-import { type Message, type UserMatch } from "@prisma/client";
+import { type Message } from "@prisma/client";
 import Layout from "~/layout";
-import { useSession } from "next-auth/react";
 import { withSession } from "~/server/auth/withSession";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";

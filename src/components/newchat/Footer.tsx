@@ -1,4 +1,4 @@
-import { Container, Flex, Text, Image, Box } from "@chakra-ui/react";
+import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
