@@ -26,7 +26,8 @@ const Header = ({
       mx={"auto"}
       mt={"20px"}
       minH={"128px"}
-      w={"343px"}
+      maxWidth={"450px"}
+      w={"90%"}
       bg={"#191624"}
       borderTopLeftRadius={"50px"}
       borderTopRightRadius={"50px"}
@@ -34,7 +35,7 @@ const Header = ({
       borderBottomRightRadius={"20px"}
       boxShadow="0px 4px 20px 0px #FFFC8366"
     >
-      <Navbar/>
+      <Navbar />
       <Flex
         position={"absolute"}
         paddingX={"15px"}
