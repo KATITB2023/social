@@ -38,8 +38,9 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
       
-      # - name: Remove all old images
-      #   run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
+      - name: Remove untagged manifests
+        run: UNTAGGED_MANIFESTS=$(doctl registry repository list-tags "$IMAGE_NAME" --format "Tag,Digest" --no-header | awk '$1 == "null" {print $2}'); if [ ! -z "$UNTAGGED_MANIFESTS" ]; then for MANIFEST in $UNTAGGED_MANIFESTS; do doctl registry repository delete-manifest "$IMAGE_NAME" "$MANIFEST" --force; done; else echo "No untagged images found."; fi
+
 
       - name: Push image to DigitalOcean Container Registry
         run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):staging-latest

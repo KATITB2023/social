@@ -64,6 +64,7 @@ export const findMatchEvent = createEvent(
         firstUserId: matchResult.firstPair.userId,
         secondUserId: matchResult.secondPair.userId,
         topic: userQueue.topic,
+        isRevealed: !userQueue.isAnonymous,
       },
     });
 

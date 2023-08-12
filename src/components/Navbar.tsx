@@ -1,33 +1,35 @@
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 import {
   Box,
+  Button,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
-  Spacer,
   Flex,
   Icon,
   Image,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { type IconType } from "react-icons";
 import {
   MdChatBubbleOutline,
+  MdErrorOutline,
+  MdLeaderboard,
   MdLogout,
   MdNewspaper,
   MdOutlineAssignment,
   MdOutlineAssignmentInd,
-  MdOutlineHome,
   MdOutlinePersonOutline,
   MdPersonAddAlt,
-  MdStarOutline,
 } from "react-icons/md";
-import Layout from "~/layout";
-import { IconType } from "react-icons";
-import { useRouter } from "next/router";
+import { FUTUREFLAG } from "~/constant";
+import { api } from "~/utils/api";
 
 type PairDrawerButton = {
   icon: IconType;
@@ -42,53 +44,86 @@ const DrawerButton = ({
   data: PairDrawerButton;
   type: number;
 }) => {
-  const router = useRouter();
   // Type 0 = default
   // Type 1 = current
   // Type 2 = special for logout
-
+  if (type === 2) {
+    return (
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color="#E8553E"
+        py={3}
+        as="button"
+        borderRadius={2}
+        cursor={"pointer"}
+        _hover={{ bg: "#3D2283" }}
+        onClick={() => void signOut({ callbackUrl: "/login" })}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    );
+  }
   return (
-    <Flex
-      flexDir="row"
-      alignItems="center"
-      color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
-      py={3}
-      borderRadius={2}
-      cursor={"pointer"}
-      borderLeft={type == 1 ? "2px" : "0"}
-      _hover={{ bg: "#3D2283" }}
-      onClick={() => void router.push(data.route)}
-    >
-      <Icon as={data.icon} height="20px" width="20px" marginLeft="10px"></Icon>
-      <Text marginTop="3px" size="B4" marginLeft="10px">
-        {data.text}
-      </Text>
-    </Flex>
+    <Link href={data.route}>
+      <Flex
+        flexDir="row"
+        alignItems="center"
+        color={type == 2 ? "#E8553E" : type == 1 ? "yellow.5" : "white"}
+        py={3}
+        borderRadius={2}
+        cursor={"pointer"}
+        borderLeft={type == 1 ? "2px" : "0"}
+        _hover={{ bg: "#3D2283" }}
+      >
+        <Icon
+          as={data.icon}
+          height="20px"
+          width="20px"
+          marginLeft="10px"
+        ></Icon>
+        <Text marginTop="3px" size="B4" marginLeft="10px">
+          {data.text}
+        </Text>
+      </Flex>
+    </Link>
   );
 };
 
-const Navbar = ({ currentPage }: { currentPage: string }) => {
+const Navbar = () => {
+  const { data: selfProfile } = api.profile.getUserProfile.useQuery();
   const [navbarPos, setNavbarPos] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { pathname } = useRouter();
+  const currentPage = pathname.split("/")[1];
 
   const DrawerArray: PairDrawerButton[] = [
-    {
-      icon: MdOutlineHome,
-      text: "Back to Home",
-      route: "/",
-    },
-    { icon: MdNewspaper, text: "Feeds", route: "/feeds" },
+    { icon: MdNewspaper, text: "Feeds", route: "/" },
     {
       icon: MdOutlineAssignmentInd,
       text: "Attendance",
-      route: "/",
+      route: "/attendance",
     },
     {
       icon: MdOutlineAssignment,
       text: "Assignment",
-      route: "/assignment-list",
+      route: "/assignment",
     },
-    { icon: MdStarOutline, text: "Showcase", route: "/" },
+    {
+      icon: MdLeaderboard,
+      text: "Leaderboard",
+      route: "/leaderboard",
+    },
+    // { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
+    // { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
       icon: MdChatBubbleOutline,
       text: "Chat",
@@ -99,13 +134,18 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
       text: "Profile",
       route: "/profile",
     },
+    {
+      icon: MdErrorOutline,
+      text: "Rules",
+      route: "https://go.oskmitb.com/SOPPesertaOSKMITB23",
+    },
   ];
 
-  const LogoutButtonData : PairDrawerButton = {
-      icon: MdLogout,
-      text: "Logout",
-      route: "/",
-  }
+  const LogoutButtonData: PairDrawerButton = {
+    icon: MdLogout,
+    text: "Logout",
+    route: "/",
+  };
 
   //   Scroll mechanism algorithm
   useEffect(() => {
@@ -127,8 +167,7 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
   });
 
   return (
-    <Layout title="Navbar">
-      {/* Make dummy box to have effect set 'sticky' because 'sticky' does not work */}
+    <>
       <Flex
         position={"relative"}
         display={"block"}
@@ -145,8 +184,8 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
         insetX={0}
         zIndex={1}
         background="url('/navbarbg.svg')"
-        maxWidth={"343px"}
-        w={"full"}
+        maxWidth={"450px"}
+        w={"90%"}
         h="60px"
         borderRadius="50px"
         flexDir="row"
@@ -169,7 +208,8 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
         />
 
         <Image
-          src="/ekor.svg"
+          alt="Ekor"
+          src="/ekor.png"
           position="absolute"
           left="0"
           height="full"
@@ -178,30 +218,43 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
           borderRadius="50px"
         />
 
-        <Image
-          objectFit="cover"
-          objectPosition="center"
-          src="/Vector.svg"
-          alt="OSKM ITB"
-          zIndex="2"
-        />
+        <Box zIndex="2">
+          <Link href={"/"}>
+            <Image
+              objectFit="cover"
+              objectPosition="center"
+              src="/Vector.svg"
+              alt="OSKM ITB"
+            />
+          </Link>
+        </Box>
 
-        <Flex flex="1" flexDir="row" justifyContent="end" zIndex="2">
-          <Icon
-            cursor={"pointer"}
-            color="white"
-            as={MdPersonAddAlt}
-            height="30px"
-            width="30px"
-            marginRight="10px"
-          />
-          <Image
-            cursor={"pointer"}
-            src="/hamburgermenu.svg"
-            height="30px"
-            width="30px"
-            onClick={onOpen}
-          />
+        <Flex
+          flex="1"
+          flexDir="row"
+          justifyContent="end"
+          zIndex="2"
+          alignItems={"center"}
+        >
+          {FUTUREFLAG && (
+            <Icon
+              cursor={"pointer"}
+              color="white"
+              as={MdPersonAddAlt}
+              height="30px"
+              width="30px"
+              marginRight="10px"
+            />
+          )}
+          <Button variant={"unstyled"} onClick={onOpen}>
+            <Image
+              alt="Hamburger menu"
+              cursor={"pointer"}
+              src="/hamburgermenu.svg"
+              height="30px"
+              width="30px"
+            />
+          </Button>
         </Flex>
       </Flex>
 
@@ -217,29 +270,65 @@ const Navbar = ({ currentPage }: { currentPage: string }) => {
               top="0"
               justifyContent="space-evenly"
               right="0"
-              paddingY="80px"
+              paddingY="40px"
               paddingX="20px"
               flexDir="column"
               zIndex="3"
             >
+              {selfProfile && (
+                <Flex
+                  flexDir={"row"}
+                  gap={3}
+                  alignItems={"center"}
+                  mb={5}
+                  w={"full"}
+                >
+                  <Box
+                    minW={"60px"}
+                    minH={"60px"}
+                    backgroundImage={
+                      selfProfile.image
+                        ? selfProfile.image
+                        : "/defaultprofpict.svg"
+                    }
+                    backgroundPosition={"center"}
+                    backgroundSize={"cover"}
+                    borderRadius={"full"}
+                    border={"2px white solid"}
+                  />
+                  <Text
+                    fontSize={"20px"}
+                    fontWeight={"bold"}
+                    color={"yellow.5"}
+                    noOfLines={2}
+                  >
+                    {selfProfile.name}
+                  </Text>
+                </Flex>
+              )}
+
               {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
                 return (
                   <DrawerButton
                     key={idx}
                     data={tuple}
-                    type={tuple.text === currentPage ? 1 : 0}
+                    type={
+                      currentPage?.length === 0 && tuple.text === "Feeds"
+                        ? 1
+                        : tuple.text.toUpperCase() ===
+                          currentPage?.toUpperCase()
+                        ? 1
+                        : 0
+                    }
                   />
                 );
               })}
-              <DrawerButton
-                data={LogoutButtonData}
-                type={2}
-              />
+              {selfProfile && <DrawerButton data={LogoutButtonData} type={2} />}
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Layout>
+    </>
   );
 };
 

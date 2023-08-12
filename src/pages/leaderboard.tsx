@@ -5,9 +5,10 @@ import { useSession } from "next-auth/react";
 import CardLeaderboardTop3 from "~/components/leaderboard/CardLeaderboardTop3";
 import CardLeaderboardSelf from "~/components/leaderboard/CardLeaderboardSelf";
 import CardLeaderboardParticipant from "~/components/leaderboard/CardLeaderboardParticipant";
-import Footer from "~/components/chat/Footer";
+import Footer from "~/components/Footer";
 import NotFound from "./404";
 import { api } from "~/utils/api";
+import Layout from "~/layout";
 
 interface LeaderboardProps {
   data: LeaderboardData[];
@@ -50,7 +51,7 @@ const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
           name={paraData?.name || "-"}
           nim={paraData?.nim || "-"}
           ranking={index === 0 ? 1 : paraData?.rank || 0}
-          image={paraData?.profileImage || "-"}
+          image={paraData?.profileImage || "/defaultprofpict.svg"}
           points={paraData?.point || 0}
           marginTop1={index === 0 || index === 2 ? "30px" : "-25px"}
         />
@@ -66,7 +67,6 @@ interface LeaderboardParticipantProps {
 
 const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
   data,
-  currentPage,
 }) => {
   const dataRest = [];
   for (let i = 3; i < data.length; i++) {
@@ -75,13 +75,7 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
     }
   }
   return (
-    <Flex
-      alignContent="center"
-      marginLeft="24px"
-      maxH="1353px"
-      flexDirection="column"
-      gap="15px"
-    >
+    <Flex alignContent="center" maxH="1353px" flexDirection="column" gap="15px">
       {dataRest.map((item) => {
         return (
           <CardLeaderboardParticipant
@@ -89,7 +83,7 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
             name={item?.name || "-"}
             nim={item?.nim || "-"}
             ranking={item?.rank || 0}
-            image={item?.profileImage || "-"}
+            image={item?.profileImage || "/defaultprofpict.svg"}
             points={item?.point || 0}
           />
         );
@@ -98,7 +92,7 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
   );
 };
 
-const Leaderboard = () => {
+const LeaderboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession({ required: true });
   const cursor = 1 as number;
@@ -188,139 +182,149 @@ const Leaderboard = () => {
   };
 
   return (
-    <Box
-      w="375px"
-      maxH="2332px"
-      minH="100vh"
-      backgroundImage="/leaderboardbg.png"
-      position="relative"
-      backgroundSize="cover"
-      paddingTop="1%"
-    >
-      <Box
-        backgroundImage="/leaderboardlogo.png"
-        position="absolute"
-        top="0"
-        left="0"
-        bottom="0"
-        right="0"
-      ></Box>
-
-      <Navbar currentPage="Leaderboard" />
+    <Layout title={"Leaderboard"}>
       <Box
         w="full"
-        h="29px"
-        mt="80px"
-        marginBottom="25px"
-        display="flex"
-        justifyContent="center"
+        maxH="2332px"
+        minH="100vh"
+        backgroundImage="/leaderboardbg.png"
+        backgroundRepeat={"no-repeat"}
+        backgroundPosition={"center"}
+        backgroundSize={"cover"}
+        position="relative"
+        paddingTop="1%"
       >
-        <Heading
-          size="H4"
-          fontWeight="400"
-          color="yellow.5"
-          whiteSpace="nowrap"
-          textAlign="center"
-          zIndex="0"
-          marginTop="-0.1%"
+        <Box
+          backgroundImage="/leaderboardlogo.png"
+          backgroundSize={"cover"}
+          position="absolute"
+          w={"full"}
+          h={"full"}
+          top="0"
+          left="0"
+        />
+
+        <Navbar />
+        <Box
+          w="full"
+          h="29px"
+          mt="80px"
+          marginBottom="25px"
+          display="flex"
+          justifyContent="center"
         >
-          TOP SPACEFARERS
-        </Heading>
-      </Box>
+          <Heading
+            size="H4"
+            fontWeight="400"
+            color="yellow.5"
+            whiteSpace="nowrap"
+            textAlign="center"
+            zIndex="0"
+          >
+            TOP SPACEFARERS
+          </Heading>
+        </Box>
 
-      <LeaderboardTop3 data={students.data} />
+        <LeaderboardTop3 data={students.data} />
 
-      <Box marginLeft="5px">
-        {students.data.map((item, i) => {
-          if (item.userId === id) {
-            return (
-              <CardLeaderboardSelf
-                key={i}
-                name={item.name}
-                nim={item.nim}
-                image={item.profileImage}
-                ranking={item.rank}
-                points={item.point}
-              />
-            );
+        <Box mb={8}>
+          {students.data.map((item, i) => {
+            if (item.userId === id) {
+              return (
+                <CardLeaderboardSelf
+                  key={i}
+                  name={item.name}
+                  nim={item.nim}
+                  image={item?.profileImage || "/defaultprofpict.svg"}
+                  ranking={item.rank}
+                  points={item.point}
+                />
+              );
+            }
+            return null;
+          })}
+        </Box>
+
+        <LeaderboardParticipant
+          data={paginatedData}
+          currentPage={currentPage}
+        />
+
+        <Container
+          width={
+            currentPage <= 3 || currentPage >= totalPages - 2 ? "266px" : "90%"
           }
-          return null;
-        })}
-      </Box>
+          height="45px"
+          padding="0"
+          my="50px"
+          zIndex="2"
+        >
+          <Flex justifyContent="space-between" alignItems="center">
+            <Image
+              src="previouspage.svg"
+              alt="Previous Page"
+              onClick={() => handlePageChange(currentPage - 1)}
+              style={{ cursor: currentPage > 1 ? "pointer" : "not-allowed" }}
+              zIndex="1"
+            />
 
-      <LeaderboardParticipant data={paginatedData} currentPage={currentPage} />
-      <Container
-        width={
-          currentPage <= 3 || currentPage >= totalPages - 2 ? "266px" : "90%"
-        }
-        height="45px"
-        padding="0"
-        mt="50px"
-        zIndex="2"
-      >
-        <Flex justifyContent="space-between" alignItems="center">
-          <Image
-            src="previouspage.svg"
-            alt="Previous Page"
-            onClick={() => handlePageChange(currentPage - 1)}
-            style={{ cursor: currentPage > 1 ? "pointer" : "not-allowed" }}
-            zIndex="1"
-          />
-
-          {getPageButtons().map((button, index) => (
-            <Container
-              position="relative"
-              key={index}
-              w="40px"
-              h="40px"
-              borderRadius="full"
-              bgColor={button === currentPage ? "yellow.5" : "navy.2"}
-              onClick={() => {
-                if (typeof button === "number") {
-                  handlePageChange(button);
-                }
-              }}
-            >
+            {getPageButtons().map((button, index) => (
               <Container
-                position="absolute"
-                w="36px"
-                h="36px"
+                position="relative"
+                key={index}
+                w="40px"
+                h="40px"
                 borderRadius="full"
-                bgColor={button === currentPage ? "navy.2" : "yellow.5"}
-                top="50%"
-                left="50%"
-                transform="translate(-50%,-50%)"
-              ></Container>
-              <Text
-                position="absolute"
-                zIndex="1"
-                size="B2"
-                fontWeight="600"
-                color={button === currentPage ? "yellow.5" : "navy.2"}
-                textAlign="center"
-                lineHeight="40px"
-                top="50%"
-                left="50%"
-                transform="translate(-50%,-50%)"
-                width="100%"
+                bgColor={button === currentPage ? "yellow.5" : "navy.2"}
+                onClick={() => {
+                  if (typeof button === "number") {
+                    handlePageChange(button);
+                  }
+                }}
               >
-                {button}
-              </Text>
-            </Container>
-          ))}
-          <Image
-            src="nextpage.svg"
-            alt="Next Page"
-            zIndex="1"
-            onClick={() => handlePageChange(currentPage + 1)}
-            style={{
-              cursor: currentPage < totalPages ? "pointer" : "not-allowed",
-            }}
-          />
-        </Flex>
-      </Container>
-    </Box>
+                <Container
+                  position="absolute"
+                  w="36px"
+                  h="36px"
+                  borderRadius="full"
+                  bgColor={button === currentPage ? "navy.2" : "yellow.5"}
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%,-50%)"
+                ></Container>
+                <Text
+                  position="absolute"
+                  zIndex="1"
+                  size="B2"
+                  fontWeight="600"
+                  color={button === currentPage ? "yellow.5" : "navy.2"}
+                  textAlign="center"
+                  lineHeight="40px"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%,-50%)"
+                  width="100%"
+                >
+                  {button}
+                </Text>
+              </Container>
+            ))}
+            <Image
+              src="nextpage.svg"
+              alt="Next Page"
+              zIndex="1"
+              onClick={() => handlePageChange(currentPage + 1)}
+              style={{
+                cursor: currentPage < totalPages ? "pointer" : "not-allowed",
+              }}
+            />
+          </Flex>
+         </Container>
+
+        <Footer />
+      </Box>
+    </Layout>
   );
 };
 
-export default Leaderboard;
+export default LeaderboardPage;

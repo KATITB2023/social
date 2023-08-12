@@ -1,21 +1,25 @@
-import { Box, Flex, Icon, IconButton } from "@chakra-ui/react";
-import { AiFillPlusCircle } from "react-icons/ai";
+import { Flex, Icon, IconButton } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { AiFillPlusCircle } from "react-icons/ai";
 import Navbar from "~/components/Navbar";
-import Layout from "~/layout";
-import Footer from "~/components/newchat/Footer";
-import React, { useState } from "react";
+import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
 import ChatPageHeader from "~/components/chat/ChatPageHeader";
 import ExistingChat from "~/components/chat/ExistingChat";
-import AddChatFromFriend from "~/components/chat/AddChatFromFriend";
 import Header from "~/components/chat/Header";
+import Footer from "~/components/newchat/Footer";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+
+export const getServerSideProps = withSession({ force: true });
 
 const ChatHome: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
-
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
   };
@@ -23,6 +27,10 @@ const ChatHome: NextPage = () => {
   const isNoChatHandler = (val: boolean) => {
     setIsNoChat(val);
   };
+
+  if (!FUTUREFLAG) {
+    return <ComingSoon />;
+  }
 
   return (
     <Layout title="Home">
@@ -37,16 +45,16 @@ const ChatHome: NextPage = () => {
         alignItems="center"
       >
         {/* <Box position="absolute"> */}
-          {!openAddChat && <Navbar currentPage="Chat"/>}
-          {openAddChat && (
-            <Header
-              name={undefined}
-              image={undefined}
-              isTyping={false}
-              isAnon={false}
-              handleClick={() => setOpenAddChat(!openAddChat)}
-            />
-          )}
+        {!openAddChat && <Navbar />}
+        {openAddChat && (
+          <Header
+            name={undefined}
+            image={undefined}
+            isTyping={false}
+            isAnon={false}
+            handleClick={() => setOpenAddChat(!openAddChat)}
+          />
+        )}
         {/* </Box> */}
 
         <ChatPageHeader hidden={openAddChat || !isNoChat} />
