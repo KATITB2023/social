@@ -16,7 +16,7 @@ const History: NextPage = () => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { data, isFetching, isError, isSuccess, fetchNextPage, hasNextPage } =
+  const { data, isFetching, fetchNextPage, hasNextPage } =
     api.messageAnonymous.chatHeader.useInfiniteQuery(
       {
         limit: 10,
