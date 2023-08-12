@@ -166,7 +166,7 @@ export const SelectPhotoImageProfile = ({
                   Profile photo{" "}
                 </Text>
                 <Box display={"flex"} gap={"15px"}>
-     {/*              <Button
+                  {/*              <Button
                     variant={"unstyled"}
                     onClick={() => void deleteProfile()}
                   >
@@ -212,20 +212,39 @@ export const SelectPhotoImageProfile = ({
                     hidden
                     type="file"
                     id="img"
-                    accept="image/*"
+                    accept=".png, .jpg, .jpeg"
                     ref={inputRef}
                     onChange={(e) => {
                       const files = e.target.files;
-                      if (files) {
-                        onImageChange(files);
+                      if (files && files[0]) {
+                        const fileName = files[0].name.toLowerCase();
+                        const validExtensions = [".png", ".jpeg", ".jpg"];
+
+                        const fileExtension = fileName.slice(
+                          ((fileName.lastIndexOf(".") - 1) >>> 0) + 2
+                        );
+
+                        if (validExtensions.includes("." + fileExtension)) {
+                          onImageChange(files);
+                        } else {
+                          toast({
+                            title: `Invalid image extension : .${fileExtension}`,
+                            status: "error",
+                            description: "Must be either jpg, jpeg, or png",
+                            duration: 2000,
+                            isClosable: true,
+                            position: "top",
+                          });
+                          e.target.value = "";
+                        }
                       }
                     }}
                   />
 
-                <Text fontWeight={700} fontSize={"SH5"} color={"white"}>
-                  {" "}
-                  *png, jpg, jpeg{" "}
-                </Text>
+                  <Text fontWeight={700} fontSize={"SH5"} color={"white"}>
+                    {" "}
+                    *png, jpg, jpeg{" "}
+                  </Text>
 
                   <ImageCropDrawer
                     imageFile={imageSelected as File}
