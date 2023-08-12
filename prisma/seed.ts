@@ -137,4 +137,32 @@ void (async () => {
       startTime = new Date(endTime);
     }
   }
+
+  const students = await prisma.user.findMany({
+    where: {
+      role: "STUDENT",
+    },
+  });
+  
+  for (const student of students) {
+    const friends = students.filter((s) => s.id !== student.id);
+    const friendshipsCreated = new Set(); // Keep track of friendships to avoid duplicates
+    
+    for (let i = 0; i < 5; i++) {
+      const friend = faker.helpers.arrayElement(friends);
+      
+      // Check if the friendship has already been created to avoid duplicates
+      const friendshipKey = [student.id, friend.id].sort().join(',');
+      if (!friendshipsCreated.has(friendshipKey)) {
+        await prisma.friendship.create({
+          data: {
+            userInitiatorId: student.id,
+            userReceiverId: friend.id,
+          },
+        });
+        friendshipsCreated.add(friendshipKey); // Mark this friendship as created
+      }
+    }
+  }
+  
 })();

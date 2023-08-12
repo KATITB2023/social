@@ -14,11 +14,15 @@ const Friends = () => {
   console.log(getDataRequest.data)
   return (
     <Flex flexDirection='column' gap='2' justifyContent='center' alignItems='center' >
-        <MyFriendCard/>
-        <MyFriendCard/>
-        <MyFriendCard/>
-        <MyFriendCard/>
-        <MyFriendCard/>
+      {
+        getDataRequest.data?.data?.map((item, index) => {
+          return (
+            <MyFriendCard
+              key={index}
+            />
+          )
+        })
+      }
     </Flex>
   )
 }

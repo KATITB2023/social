@@ -12,6 +12,9 @@ import { MdOutlineCancel } from "react-icons/md";
 export default function RequestFriendCard(props: {
     onOpen : () => void,
     onOpen2 : () => void,
+    name : string,
+    image ?: string,
+    status : string,
   }) {
     return (
     <Card
@@ -21,8 +24,7 @@ export default function RequestFriendCard(props: {
         alignItems="center"
         padding="12px"
         gap="16px"
-        width="325px"
-        height="59px"
+        height="fit-content"
         background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
         borderRadius="12px"
         direction={{ base: 'column', sm: 'row' }}
@@ -41,8 +43,6 @@ export default function RequestFriendCard(props: {
             alignItems="center"
             padding={0}
             gap={8}
-            width="170px"
-            height="35px"
             order={0}
             flex="0"
             marginTop="12px"
@@ -66,6 +66,9 @@ export default function RequestFriendCard(props: {
                 border="0.2px solid #8D47E5"
                 boxShadow="0px 4px 30px #EABFFF"
                 borderRadius="50%"
+                {
+                    ...props.image && {backgroundImage: `url(${props.image})`}
+                }
                 />
                 {/* Ellipse 2 */}
                 <Box
@@ -85,12 +88,9 @@ export default function RequestFriendCard(props: {
                 alignItems="flex-start"
                 padding="0px"
                 width="127px"
-                height="33px"
             >
                 {/* Tulip */}
                 <Text
-                width="30px"
-                height="19px"
                 size="B5"
                 lineHeight="20px"
                 display="flex"
@@ -98,20 +98,22 @@ export default function RequestFriendCard(props: {
                 fontWeight={700}
                 color="#FFFFFF"
                 >
-                Tulip
+                {
+                    props.name
+                }
                 </Text>
 
             {/* "yuk berteman!!" */}
             <Text
-                width="127px"
-                height="14px"
                 size="A"
                 lineHeight="16px"
                 display="flex"
                 alignItems="flex-end"
                 color="#FFFFFF"
                 >
-                yuk berteman!!
+                {
+                    props.status
+                }
                 </Text>
             </Flex>
             </Flex>
@@ -121,8 +123,6 @@ export default function RequestFriendCard(props: {
             direction="row"
             justifyContent="center"
             alignItems="center"
-            width="103px"
-            height="24px"
             order={1}
             >
             {/* Button */}

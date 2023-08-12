@@ -12,11 +12,13 @@ import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import NotFound from "../404";
 
 export const getServerSideProps = withSession({ force: true });
 
 
-const ProfileFriends: NextPage = () => {
+const ProfileFriendsPage: NextPage = () => {
   const sessionStatus = useSession();
   const router = useRouter();
   if (sessionStatus.status === "unauthenticated") {
@@ -24,9 +26,26 @@ const ProfileFriends: NextPage = () => {
   }
   const params = useSearchParams()
   const [state, setState] = React.useState<string>(params.get('status') ?? 'my-friends')
-    useEffect (() => {
-        setState(params.get('status') ?? 'my-friends')
-    }, [params])
+  const cursor = 1 as number;
+  const limit = 40 as number;
+  const getRequestData = api.friend.friendList.useQuery({
+    status:'WAITING_FOR_ACCEPTANCE',
+    cursor,
+    limit
+  })
+  useEffect (() => {
+      setState(params.get('status') ?? 'my-friends')
+  }, [params])
+
+  const requestData = getRequestData.data;
+  if (!requestData) {
+    return <Layout title="Profile Friends"></Layout>;
+  }
+  if (!sessionStatus) {
+    return <Layout title="Profile Friends"></Layout>;
+  }
+  const totalRequest = requestData.data.length;
+
   return (
     <BackgroundAndNavigationBar>
       <Flex
@@ -41,8 +60,7 @@ const ProfileFriends: NextPage = () => {
           <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
             <Link href='?status=my-friends' >My Friends</Link>
           </Menu>
-
-          <Menu waiting={2} isActive={state=='request'} onClick={()=>{setState('request')}}>
+          <Menu waiting={totalRequest} isActive={state=='request'} onClick={()=>{setState('request')}}>
             <Link href='?status=request' >Request</Link>
           </Menu>
         </Flex>
@@ -58,4 +76,4 @@ const ProfileFriends: NextPage = () => {
   );
 };
 
-export default ProfileFriends;
+export default ProfileFriendsPage;
