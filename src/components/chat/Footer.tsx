@@ -85,7 +85,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
             setAnonMenuOpen(!anonMenuOpen);
           }}
         >
-          <Image src="/components/anon_chat_page/anon_menu.png" />
+          <Image src="/components/anon_chat_page/anon_menu.png" alt="Anon_Menu"/>
           <Text color={"black"} size={"B4"} fontWeight={400}>
             {" "}
             Menu{" "}
@@ -135,6 +135,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         cursor={"pointer"}
         display={text.length === 0 ? "none" : "block"}
         src="/components/chat_page/chat_submit.svg"
+        alt="Submit"
         borderRadius="full"
         padding={1.5}
         _hover={{

@@ -1,6 +1,5 @@
 import { Flex, Avatar, Text, Image } from "@chakra-ui/react";
 import Navbar from "../Navbar";
-import { useRouter } from "next/router";
 
 interface HeaderProps {
   name: string | undefined;
@@ -17,7 +16,6 @@ const Header = ({
   isAnon,
   handleClick,
 }: HeaderProps) => {
-  const router = useRouter();
   return (
     <Flex
       flexDir={"column"}
@@ -51,6 +49,7 @@ const Header = ({
             handleClick();
           }}
           src="/components/chat_page/chat_backArrow.svg"
+          alt="Back"
         />
         {name ? (
           <Flex>

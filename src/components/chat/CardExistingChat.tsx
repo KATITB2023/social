@@ -1,4 +1,4 @@
-import { Avatar, Flex, HStack, Spacer, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Spacer, Text } from "@chakra-ui/react";
 import CardHomeChat from "./CardHomeChat";
 
 interface CardExistingChatProps {

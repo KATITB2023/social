@@ -1,16 +1,4 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Modal,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import { type Message, type UserMatch } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -54,7 +42,7 @@ const Room: NextPage = () => {
     setYayTemanmu(false);
     setTemanmuMenolak(false);
     setKamuDirequest(false);
-  }
+  };
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
   const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
@@ -103,7 +91,7 @@ const Room: NextPage = () => {
       enabled: !!match?.id,
     }
   );
-  console.log(match?.id)
+  console.log(match?.id);
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -301,7 +289,9 @@ const Room: NextPage = () => {
                   onSubmit={(text) => messageEmit.mutate({ message: text })}
                   receiverId={match.id}
                   isAnon={true}
-                  isAnonRevealed = {profileData !== undefined && match.isRevealed ? true : false}
+                  isAnonRevealed={
+                    profileData !== undefined && match.isRevealed ? true : false
+                  }
                   setSender={setSender}
                 />
               </Flex>
@@ -311,7 +301,14 @@ const Room: NextPage = () => {
           {/* For Popup */}
           <Flex
             position={"fixed"}
-            display={isYahTemanmu || isYayTemanmu || isTemanmuMenolak || isKamuDirequest ? "block" : "none"}
+            display={
+              isYahTemanmu ||
+              isYayTemanmu ||
+              isTemanmuMenolak ||
+              isKamuDirequest
+                ? "block"
+                : "none"
+            }
             w={"100vw"}
             h={"100vh"}
             top={0}
@@ -335,11 +332,15 @@ const Room: NextPage = () => {
                 onClick={() => closeAll}
               />
 
-              <Flex zIndex={4}> 
-              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
-              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu}/>}
-              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak}/>}
-              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} match={match}/>}
+              <Flex zIndex={4}>
+                {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+                {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu} />}
+                {isTemanmuMenolak && (
+                  <TemanmuMenolak setOpen={setTemanmuMenolak} />
+                )}
+                {isKamuDirequest && (
+                  <KamuDirequest setOpen={setKamuDirequest} match={match} />
+                )}
               </Flex>
             </Flex>
           </Flex>

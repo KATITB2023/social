@@ -55,10 +55,12 @@ export default function SubmissionPage() {
         const fileName = url.split("/").pop();
         const aTag = document.createElement("a");
         aTag.href = blobURL;
-        aTag.setAttribute("download", fileName! );
-        document.body.appendChild(aTag);
-        aTag.click();
-        aTag.remove();
+        if (fileName){
+          aTag.setAttribute("download", fileName);
+          document.body.appendChild(aTag);
+          aTag.click();
+          aTag.remove();
+        }
       });
   };
 
@@ -78,6 +80,7 @@ export default function SubmissionPage() {
               onClick={() => {
                 void router.back();
               }}
+              alt="Back"
               src="/BackButton.svg"
               w={"15px"}
             />
