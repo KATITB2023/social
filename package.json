@@ -27,6 +27,7 @@
     "schema": "./node_modules/@katitb2023/database/schema.prisma"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/react": "^2.7.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -61,9 +62,9 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.0",
     "react-icons": "^4.10.1",
-    "redlock": "^5.0.0-beta.2",
     "react-webcam": "^7.1.1",
     "redis": "^4.6.7",
+    "redlock": "^5.0.0-beta.2",
     "sanitize-filename": "^1.6.3",
     "sharp": "^0.32.1",
     "socket.io": "^4.7.1",
