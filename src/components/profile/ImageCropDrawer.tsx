@@ -127,17 +127,17 @@ export default function ImageCropDrawer({
                 Crop Image
               </Heading>
               <Button
-                  onClick={() => {
-                    onCancel();
-                    setCurrPreview(undefined);
-                  }}
-                  alignSelf="flex-end"
-                  backgroundColor="pink.3"
-                >
-                  <Text size="B3" color="white">
-                    Cancel
-                  </Text>
-                </Button>
+                onClick={() => {
+                  onCancel();
+                  setCurrPreview(undefined);
+                }}
+                alignSelf="flex-end"
+                backgroundColor="pink.3"
+              >
+                <Text size="B3" color="white">
+                  Cancel
+                </Text>
+              </Button>
             </Flex>
           </DrawerHeader>
           <DrawerBody>
@@ -180,7 +180,7 @@ export default function ImageCropDrawer({
                 {currPreview && (
                   <ProfilePicture
                     src={URL.createObjectURL(currPreview)}
-                    size="164px"
+                    size={164}
                     br="full"
                   />
                 )}
