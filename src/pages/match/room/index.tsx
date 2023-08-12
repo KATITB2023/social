@@ -29,7 +29,9 @@ const Room: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const client = api.useContext();
+  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
 
   const [isSender, setSender] = useState(false);
   const [isYahTemanmu, setYahTemanmu] = useState(false);
@@ -91,7 +93,6 @@ const Room: NextPage = () => {
       enabled: !!match?.id,
     }
   );
-  console.log(match?.id);
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -138,6 +139,7 @@ const Room: NextPage = () => {
         post.userMatchId === match.id
       ) {
         addMessages([post]);
+        setCurrentlyTyping(false);
         if (match && session && post.receiverId === session.user.id) {
           try {
             updateOneMessageIsRead.mutate({ messageId: post.id });
@@ -148,19 +150,19 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
-  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
-
   useSubscription(
     "anonIsTyping",
     (data) => {
       if (match) {
-        if (
-          data.includes(match.firstUserId) ||
-          data.includes(match.secondUserId)
-        ) {
+        if (data === match.firstUserId || data === match.secondUserId) {
           setCurrentlyTyping(true);
-        } else {
-          setCurrentlyTyping(false);
+          if (timeoutRef.current !== null) {
+            clearTimeout(timeoutRef.current);
+          }
+          timeoutRef.current = setTimeout(
+            () => setCurrentlyTyping(false),
+            1000
+          );
         }
       }
     },
@@ -286,11 +288,13 @@ const Room: NextPage = () => {
               <Divider />
               <Flex>
                 <Footer
-                  onSubmit={(text) => messageEmit.mutate({ message: text })}
+                  onSubmit={(text) => {
+                    messageEmit.mutate({ message: text });
+                  }}
                   receiverId={match.id}
                   isAnon={true}
                   isAnonRevealed={
-                    profileData !== undefined && match.isRevealed ? true : false
+                    !!(profileData !== undefined && match.isRevealed)
                   }
                   setSender={setSender}
                 />
