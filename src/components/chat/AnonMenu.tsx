@@ -1,4 +1,4 @@
-import { Flex, Text, useToast } from "@chakra-ui/react";
+import { Flex, Text} from "@chakra-ui/react";
 import React, { useState } from "react";
 import useEmit from "~/hooks/useEmit";
 import KamuYakin from "../PopupChat/KamuYakin";
@@ -13,12 +13,9 @@ export const AnonMenu = ({
   setSender: React.Dispatch<React.SetStateAction<boolean>>;
   isRevealed: boolean;
 }) => {
-  const endMatch = useEmit("endMatch");
   const askReveal = useEmit("askReveal");
   const [isKamuYakin, setKamuYakin] = useState(false);
   const [isBerhasilRequest, setBerhasilRequest] = useState(false);
-  const toast = useToast();
-  console.log(isRevealed);
 
   // End Match Handling
   const handleEndMatch = () => {

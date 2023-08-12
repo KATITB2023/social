@@ -3,10 +3,11 @@ import React from "react";
 
 interface CardProps {
   name: string;
-  nim: number;
-  image: string;
+  nim: string;
+  image: string | null;
   ranking: number;
-  points: string;
+  points: number;
+  marginTop1: string;
 }
 
 const CardLeaderboardTop3 = ({
@@ -15,21 +16,23 @@ const CardLeaderboardTop3 = ({
   image,
   ranking,
   points,
+  marginTop1,
 }: CardProps) => {
-  const isOverflowing = (Name: string) => {
+  const isOverflowing = (name: string) => {
     let tes = "";
-    for (let i = 0; i < Name.length; i++) {
-      if (i > 12) {
+    for (let i = 0; i < name.length; i++) {
+      if (i > 8) {
         tes += "...";
         break;
       } else {
-        tes += Name[i];
+        tes += name[i];
       }
     }
     return tes;
   };
   return (
     <Box
+      marginTop={marginTop1}
       position="relative"
       alignItems="center"
       justifyContent="center"
@@ -37,7 +40,6 @@ const CardLeaderboardTop3 = ({
       w="100px"
       h="150px"
       borderRadius="12px"
-      margin="20px"
     >
       <Box
         position="absolute"
@@ -45,7 +47,7 @@ const CardLeaderboardTop3 = ({
         bottom="0"
         left="0"
         right="0"
-        opacity="66%"
+        opacity="90%"
         borderRadius="12px"
         background="linear-gradient(317deg, rgba(43, 7, 146, 0.66) 0%, rgba(234, 191, 255, 0.60) 100%)"
       ></Box>
@@ -76,7 +78,7 @@ const CardLeaderboardTop3 = ({
             objectPosition="center"
             objectFit="cover"
             top="0"
-            src={image}
+            src={image != null ? image : undefined}
             alt={`Image ${name}`}
           />
           <Flex
@@ -90,7 +92,7 @@ const CardLeaderboardTop3 = ({
             alignItems="center"
             justifyContent="center"
           >
-            <Text size="B3" fontWeight="600" textAlign="center">
+            <Text size="B3" fontWeight="600" textAlign="center" color="white">
               #{ranking}
             </Text>
           </Flex>
@@ -103,10 +105,10 @@ const CardLeaderboardTop3 = ({
           whiteSpace="nowrap"
           overflow="hidden"
         >
-          <Text fontWeight="600" size="B3">
+          <Text fontWeight="600" size="B3" color="white">
             {isOverflowing(name)}
           </Text>
-          <Text size="B5" textAlign="center" marginTop="-5px">
+          <Text size="B5" textAlign="center" marginTop="-5px" color="white">
             {nim}
           </Text>
         </Box>
@@ -128,7 +130,7 @@ const CardLeaderboardTop3 = ({
             justifyContent="center"
           >
             <Text size="B4" color="purple.1" fontWeight="700">
-              {points}
+              {points} PT
             </Text>
           </Flex>
         </Flex>

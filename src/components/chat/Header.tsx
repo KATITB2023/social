@@ -1,6 +1,5 @@
 import { Flex, Avatar, Text, Image } from "@chakra-ui/react";
 import Navbar from "../Navbar";
-import { useRouter } from "next/router";
 
 interface HeaderProps {
   name: string | undefined;
@@ -17,7 +16,6 @@ const Header = ({
   isAnon,
   handleClick,
 }: HeaderProps) => {
-  const router = useRouter();
   return (
     <Flex
       flexDir={"column"}
@@ -26,7 +24,8 @@ const Header = ({
       mx={"auto"}
       mt={"20px"}
       minH={"128px"}
-      w={"343px"}
+      maxWidth={"450px"}
+      w={"90%"}
       bg={"#191624"}
       borderTopLeftRadius={"50px"}
       borderTopRightRadius={"50px"}
@@ -34,7 +33,7 @@ const Header = ({
       borderBottomRightRadius={"20px"}
       boxShadow="0px 4px 20px 0px #FFFC8366"
     >
-      <Navbar/>
+      <Navbar />
       <Flex
         position={"absolute"}
         paddingX={"15px"}
@@ -50,6 +49,7 @@ const Header = ({
             handleClick();
           }}
           src="/components/chat_page/chat_backArrow.svg"
+          alt="Back"
         />
         {name ? (
           <Flex>
@@ -60,7 +60,7 @@ const Header = ({
                 src="/components/anon_chat_page/anon_profile.svg"
               />
             ) : (
-              <Avatar w={"35px"} h={"35px"} src={image} />
+              <Avatar w={"35px"} h={"35px"} src={image} name={name}/>
             )}
 
             <Flex flexDirection="column" mx="5" justify="center">
