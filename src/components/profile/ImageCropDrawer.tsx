@@ -120,26 +120,28 @@ export default function ImageCropDrawer({
         flexDirection={"row"}
         background={"transparent"}
       >
-        <Box bgColor="navy.1" maxW={"375px"} width={"full"}>
+        <Box bgColor="navy.1" maxW={"500px"} width={"full"}>
           <DrawerHeader>
-            <Heading size="H4" color="yellow.5">
-              Crop Image
-            </Heading>
+            <Flex flexDir="row" justifyContent={"space-between"}>
+              <Heading size="H4" color="yellow.5">
+                Crop Image
+              </Heading>
+              <Button
+                  onClick={() => {
+                    onCancel();
+                    setCurrPreview(undefined);
+                  }}
+                  alignSelf="flex-end"
+                  backgroundColor="pink.3"
+                >
+                  <Text size="B3" color="white">
+                    Cancel
+                  </Text>
+                </Button>
+            </Flex>
           </DrawerHeader>
           <DrawerBody>
             <Flex flexDir="column" gap="30px" alignItems={"center"}>
-              <Button
-                onClick={() => {
-                  onCancel();
-                  setCurrPreview(undefined);
-                }}
-                alignSelf="flex-end"
-                backgroundColor="pink.3"
-              >
-                <Text size="B3" color="white">
-                  Cancel
-                </Text>
-              </Button>
               <Flex
                 justifyContent={"center"}
                 position="relative"
