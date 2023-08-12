@@ -20,5 +20,5 @@ export const currentlyTypingSchedule = schedule("*/1 * * * * *", () => {
     }
   }
 
-  if (updated) io.emit("whoIsTyping", Object.keys(currentlyTyping));
+  // if (updated) io.emit("whoIsTyping", Object.keys(currentlyTyping));
 });
