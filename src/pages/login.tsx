@@ -46,7 +46,7 @@ const NavbarLogin = () => {
         position={"fixed"}
         insetX={0}
         zIndex={1}
-        background="url('/navbarbg.svg')"
+        background="url('/navbarbg.png')"
         maxWidth={"450px"}
         w={"90%"}
         h="60px"
