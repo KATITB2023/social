@@ -1,5 +1,6 @@
 import { Avatar, Flex, Spacer, Text } from "@chakra-ui/react";
 import CardHomeChat from "./CardHomeChat";
+import dayjs from "dayjs";
 
 interface CardExistingChatProps {
   name: string;
@@ -21,31 +22,13 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   path,
 }) => {
   const timeLocalString = time.toLocaleString();
-  const timeLocal = new Date(timeLocalString);
+  const timeLocal = dayjs.utc(time).local();
+  const nowDay = dayjs(now)
+  const timeDay = dayjs(time)
+  const sameDay = nowDay.isSame(timeDay, "day")
 
-  const hour =
-    timeLocal.getHours() < 10
-      ? `0${timeLocal.getHours()}`
-      : timeLocal.getHours();
-  const minute =
-    timeLocal.getMinutes() < 10
-      ? `0${timeLocal.getMinutes()}`
-      : timeLocal.getMinutes();
-  const outputDate1 = `${hour}.${minute}`;
-
-  const sameDay =
-    now.getDate() === timeLocal.getDate() &&
-    timeLocal.getMonth() === timeLocal.getMonth();
-
-  const day = timeLocal.getDate();
-  const month = timeLocal.getMonth() + 1; // Add 1 to account for zero-based months
-  const year = timeLocal.getFullYear().toString().slice(2); // Extract the last two digits of the year
-
-  const formattedDay = day < 10 ? `0${day}` : day;
-  const formattedMonth = month < 10 ? `0${month}` : month;
-
-  // Concatenate the formatted values with the separator
-  const outputDate2 = `${formattedDay}/${formattedMonth}/${year}`;
+  const outputDate1 = timeLocal.format("HH.mm.ss")
+  const outputDate2 = timeLocal.format("DD/MM/YY")
 
   return (
     <CardHomeChat path={path}>
