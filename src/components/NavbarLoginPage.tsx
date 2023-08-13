@@ -20,6 +20,7 @@ export const NavbarLoginPage = () => {
           insetX={0}
           zIndex={1}
           background="url('/navbarbg.png')"
+          backgroundSize={"cover"}
           maxWidth={"450px"}
           w={"90%"}
           h="60px"
