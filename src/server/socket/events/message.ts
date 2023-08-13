@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
-import { askingReveal } from "../state";
+import { askingRevealSet } from "../state";
 import { type RoomChat } from "@prisma/client";
+import { Redis } from "~/server/redis";
 
 export const messageEvent = createEvent(
   {
@@ -131,6 +132,7 @@ export const askRevealEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
+    const redis = Redis.getClient();
     const user = ctx.client.data.session.user;
     const userId = user.id;
     const currentMatch = ctx.client.data.match;
@@ -141,8 +143,8 @@ export const askRevealEvent = createEvent(
       currentMatch.firstUserId === userId
         ? currentMatch.secondUserId
         : currentMatch.firstUserId;
-
-    if (askingReveal.has(receiverId)) {
+    const isExist = await redis.sismember(askingRevealSet, userId);
+    if (isExist) {
       if (input.agree) {
         const match = await ctx.prisma.userMatch.update({
           where: {
@@ -158,9 +160,9 @@ export const askRevealEvent = createEvent(
         ctx.io.to([receiverId]).emit("askReveal", currentMatch, false);
       }
 
-      askingReveal.delete(receiverId);
+      await redis.srem(askingRevealSet, userId);
     } else {
-      askingReveal.add(userId);
+      await redis.sadd(askingRevealSet, userId);
 
       ctx.io.to([receiverId]).emit("askReveal", currentMatch, true);
     }
