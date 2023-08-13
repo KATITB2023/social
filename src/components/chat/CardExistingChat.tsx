@@ -27,7 +27,7 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   const timeDay = dayjs(time)
   const sameDay = nowDay.isSame(timeDay, "day")
 
-  const outputDate1 = timeLocal.format("HH.mm.ss")
+  const outputDate1 = timeLocal.format("HH.mm")
   const outputDate2 = timeLocal.format("DD/MM/YY")
 
   return (
