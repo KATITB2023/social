@@ -21,7 +21,7 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   time,
   path,
 }) => {
-  const timeLocalString = time.toLocaleString();
+
   const timeLocal = dayjs.utc(time).local();
   const nowDay = dayjs(now)
   const timeDay = dayjs(time)
