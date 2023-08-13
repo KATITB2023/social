@@ -1,37 +1,23 @@
-import { 
-    Card, 
-    Flex, 
-    Box, 
-    Text, 
-    Button, 
-    Icon 
-} from "@chakra-ui/react";
+import { Card, Flex, Box, Text, Button, Icon } from "@chakra-ui/react";
 
 import { MdOutlineChatBubbleOutline } from "react-icons/md";
 
-export default function MyFriendCard(props:{
-  name : string,
-  image ?: string,
-  status : string,
+export default function MyFriendCard(props: {
+  name: string;
+  image?: string;
+  status: string;
 }) {
   return (
-  <Card
-    display="flex"
-    flexDirection="row"
-    justifyContent="space-between"
-    alignItems="center"
-    padding="12px"
-    gap="16px"
-    width="325px"
-    background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
-    borderRadius="12px"
-    direction={{ base: 'column', sm: 'row' }}
-  >
-    <Flex
+    <Card
+      display="flex"
       flexDirection="row"
-      justifyContent="space-between"
       alignItems="center"
-      width="100%"
+      padding="12px"
+      gap="16px"
+      width="325px"
+      background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
+      borderRadius="12px"
+      direction={{ base: "column", sm: "row" }}
     >
         <Flex
           flexDirection="row"
@@ -44,11 +30,7 @@ export default function MyFriendCard(props:{
           marginLeft={`${12 - 16}px`}
           marginBottom="12px"
         >
-        <Box
-          position="relative"
-          width="35px"
-          height="35px"
-        >
+          <Box position="relative" width="35px" height="35px">
             <Box
               position="absolute"
               width="35px"
@@ -59,9 +41,7 @@ export default function MyFriendCard(props:{
               border="0.2px solid #8D47E5"
               boxShadow="0px 4px 30px #EABFFF"
               borderRadius="50%"
-              {
-                ...props.image && { backgroundImage: `url(${props.image})` }
-              }
+              {...(props.image && { backgroundImage: `url(${props.image})` })}
             />
             <Box
               position="absolute"
@@ -73,13 +53,14 @@ export default function MyFriendCard(props:{
               boxShadow="0px 4px 30px rgba(0, 0, 0, 0.25)"
               bg="#FFFC83"
             />
-        </Box>
-        <Flex
-          direction="column"
-          justifyContent="center"
-          alignItems="flex-start"
-          padding="0px"
-        >
+          </Box>
+          <Flex
+            direction="column"
+            justifyContent="center"
+            alignItems="flex-start"
+            padding="0px"
+            marginLeft='12px'
+          >
             <Text
               size="B5"
               lineHeight="20px"
@@ -88,23 +69,19 @@ export default function MyFriendCard(props:{
               fontWeight={700}
               color="#FFFFFF"
             >
-            {
-              props.name
-            }
+              {props.name}
             </Text>
 
-           <Text
+            <Text
               size="A"
               lineHeight="16px"
               display="flex"
               alignItems="flex-end"
               color="#FFFFFF"
             >
-            {
-              props.status
-            }
+              {props.status}
             </Text>
-        </Flex>
+          </Flex>
         </Flex>
         <Button
           display="flex"
@@ -118,27 +95,25 @@ export default function MyFriendCard(props:{
           bg="#FFFC83"
           borderRadius="12px"
         >
-            <Icon
-              width="12px"
-              height="12px"
-              color="#4909B3"
-              as={MdOutlineChatBubbleOutline}
-            >
-            </Icon>
-            {/* Label */}
-            <Text
-              width="30px"
-              height="15px"
-              size="A"
-              fontStyle="normal"
-              fontWeight={1000}
-              lineHeight="15px"
-              color="#4909B3"
-            >
+          <Icon
+            width="12px"
+            height="12px"
+            color="#4909B3"
+            as={MdOutlineChatBubbleOutline}
+          ></Icon>
+          {/* Label */}
+          <Text
+            width="30px"
+            height="15px"
+            size="A"
+            fontStyle="normal"
+            fontWeight={1000}
+            lineHeight="15px"
+            color="#4909B3"
+          >
             CHAT
-            </Text>
+          </Text>
         </Button>
-    </Flex>
-  </Card>
+    </Card>
   );
 }

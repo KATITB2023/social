@@ -7,10 +7,10 @@ interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
   waiting?: number;
 }
 
-const Menu = ({ children, isActive, ...props }: MenuProps) => {
+const Menu = ({ children, isActive, waiting }: MenuProps) => {
+  console.log(waiting);
   return (
     <Flex
-      {...props}
       width="6rem"
       paddingBottom="6px"
       justifyContent="center"
@@ -27,23 +27,22 @@ const Menu = ({ children, isActive, ...props }: MenuProps) => {
       >
         {children}
       </Text>
-      {props.waiting && props.waiting > 0 && (
         <Text
           borderRadius="full"
           bgColor="#E8553E"
           color="yellow.5"
           width="fit-content"
           height="fit-content"
-          minWidth="20px" 
+          minWidth="20px"
           minHeight="20px"
           display="flex"
           justifyContent="center"
           alignItems="center"
           fontSize="14px"
+          hidden={waiting === 0 || waiting === undefined}
         >
-          {props.waiting > 99 ? "99+" : props.waiting}
+          {waiting}
         </Text>
-      )}
     </Flex>
   );
 };

@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  IconButton,
   Text,
   Modal,
   ModalOverlay,
@@ -9,7 +8,6 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { RxCross2 } from "react-icons/rx";
 import { MdDone } from "react-icons/md";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
