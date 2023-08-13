@@ -18,7 +18,6 @@ export const getServerSideProps = withSession({ force: true });
 const ChatHome: NextPage = () => {
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
-  console.log(openAddChat, isNoChat);
 
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
@@ -53,6 +52,7 @@ const ChatHome: NextPage = () => {
             isTyping={false}
             isAnon={false}
             handleClick={() => setOpenAddChat(!openAddChat)}
+            profileClick={() => undefined}
           />
         )}
 

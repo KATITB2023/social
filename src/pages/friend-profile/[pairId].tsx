@@ -13,6 +13,7 @@ import ProfilePage, {
   BackgroundAndNavigationBar,
   ProfilePicture,
 } from "../profile";
+import Layout from "~/layout";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -57,67 +58,75 @@ export default function FriendProfilePage() {
     return <ComingSoon />;
   }
   return (
-    <BackgroundAndNavigationBar>
-      <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
-        <Box>
-          <Flex gap="14px">
-            <ProfilePicture size={130} src={student.image} />
-            <Flex
-              flexDirection="column"
-              flexGrow="0"
-              alignItems="flex-start"
-              justifyContent="space-evenly"
-            >
-              <Heading size="SH4" color="yellow.5">
-                {student.name}
-              </Heading>
-              <Flex alignItems="center" gap="12px" color="white">
-                <MdPersonPin style={{ fontSize: "20px" }} />
-                <Text size="B3"> PIN : {student.pin}</Text>
+    <Layout title={`Friend Profile: ${student.name}`}>
+      <BackgroundAndNavigationBar>
+        <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
+          <Box>
+            <Flex gap="14px">
+              <ProfilePicture size={130} src={student.image} />
+              <Flex
+                flexDirection="column"
+                flexGrow="0"
+                alignItems="flex-start"
+                justifyContent="space-evenly"
+              >
+                <Heading size="SH4" color="yellow.5">
+                  {student.name}
+                </Heading>
+                <Flex alignItems="center" gap="12px" color="white">
+                  <MdPersonPin style={{ fontSize: "20px" }} />
+                  <Text size="B3"> PIN : {student.pin}</Text>
+                </Flex>
+                <Link href={`/chat/${student.id}`}>
+                  <Button
+                    backgroundColor="purple.2"
+                    borderRadius="12px"
+                    px="16px"
+                    py="4px"
+                    height="24px"
+                  >
+                    <Flex gap="12px" color="white" alignItems="center" my="0px">
+                      <MdChatBubbleOutline />
+                      <Text size="B5"> CHAT</Text>
+                    </Flex>
+                  </Button>
+                </Link>
               </Flex>
-              <Link href={`chat/${student.id}`}>
-                <Button
-                  backgroundColor="purple.2"
-                  borderRadius="12px"
-                  px="16px"
-                  py="4px"
-                  height="24px"
-                >
-                  <Flex gap="12px" color="white" alignItems="center" my="0px">
-                    <MdChatBubbleOutline />
-                    <Text size="B5"> CHAT</Text>
-                  </Flex>
-                </Button>
-              </Link>
             </Flex>
+          </Box>
+          <Flex flexDirection="column" gap="16px">
+            <LabelValueContainer label="NIM" value={student?.nim || "-"} />
+            <LabelValueContainer
+              label="Fakultas"
+              value={student?.faculty || "-"}
+            />
+            <LabelValueContainer
+              label="Gender"
+              value={student?.gender || "-"}
+            />
+            <LabelValueContainer
+              label="Kampus"
+              value={student?.campus || "-"}
+            />
+            <LabelValueContainer label="Bio" value={student?.bio || "-"} />
+            <LabelValueContainer
+              label="Instagram"
+              value={student?.instagram || "-"}
+            />
+            <LabelValueContainer label="Email" value={student?.email || "-"} />
           </Flex>
-        </Box>
-        <Flex flexDirection="column" gap="16px">
-          <LabelValueContainer label="NIM" value={student?.nim || "-"} />
-          <LabelValueContainer
-            label="Fakultas"
-            value={student?.faculty || "-"}
-          />
-          <LabelValueContainer label="Gender" value={student?.gender || "-"} />
-          <LabelValueContainer label="Kampus" value={student?.campus || "-"} />
-          <LabelValueContainer label="Bio" value={student?.bio || "-"} />
-          <LabelValueContainer
-            label="Instagram"
-            value={student?.instagram || "-"}
-          />
-          <LabelValueContainer label="Email" value={student?.email || "-"} />
+          <Button
+            alignSelf="center"
+            px="32px"
+            py="12px"
+            backgroundColor="yellow.1"
+            color="white"
+            onClick={() => removeFriendExecutor()}
+          >
+            <Text size="B3">delete</Text>
+          </Button>
         </Flex>
-        <Button
-          alignSelf="center"
-          px="32px"
-          py="12px"
-          backgroundColor="yellow.1"
-          color="white"
-          onClick={() => removeFriendExecutor()}
-        >
-          <Text size="B3">delete</Text>
-        </Button>
-      </Flex>
-    </BackgroundAndNavigationBar>
+      </BackgroundAndNavigationBar>
+    </Layout>
   );
 }

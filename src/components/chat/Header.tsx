@@ -7,6 +7,7 @@ interface HeaderProps {
   isTyping: boolean;
   isAnon: boolean;
   handleClick: () => void;
+  profileClick: () => void;
 }
 
 const Header = ({
@@ -15,6 +16,7 @@ const Header = ({
   isTyping,
   isAnon,
   handleClick,
+  profileClick,
 }: HeaderProps) => {
   return (
     <Flex
@@ -44,15 +46,12 @@ const Header = ({
       >
         <Image
           cursor={"pointer"}
-          onClick={() => {
-            // router.back();
-            handleClick();
-          }}
+          onClick={() => {handleClick()}}
           src="/components/chat_page/chat_backArrow.svg"
           alt="Back"
         />
         {name ? (
-          <Flex>
+          <Flex onClick={() => {profileClick()}} cursor={"pointer"}>
             {isAnon || !image ? (
               <Avatar
                 w={"35px"}
@@ -60,7 +59,7 @@ const Header = ({
                 src="/components/anon_chat_page/anon_profile.svg"
               />
             ) : (
-              <Avatar w={"35px"} h={"35px"} src={image} name={name}/>
+              <Avatar w={"35px"} h={"35px"} src={image} name={name} />
             )}
 
             <Flex flexDirection="column" mx="5" justify="center">

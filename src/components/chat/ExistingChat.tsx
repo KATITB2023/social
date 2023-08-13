@@ -45,8 +45,6 @@ const updatePaging = (
     },
     unreadMessageCount: unread,
   };
-  // console.log('test')
-  // console.log(unread)
   pagingArray.unshift(newItem);
   return pagingArray;
 };
@@ -151,7 +149,6 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
           getUserProfile.data?.image ?? null,
           newMessage.senderId === session?.user.id
         );
-        console.log("masuk");
         return updatedPage;
       });
     }
@@ -208,6 +205,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
             count={item.unreadMessageCount}
             now={today}
             time={item.lastMessage.createdAt}
+            isSender={item.lastMessage.senderId === session?.user.id}
           />
         );
       })}

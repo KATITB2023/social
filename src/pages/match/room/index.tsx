@@ -274,6 +274,17 @@ const Room: NextPage = () => {
                 isTyping={currentlyTyping}
                 isAnon={true}
                 handleClick={() => void router.push("/chat")}
+                profileClick={() =>
+                  profileData
+                    ? void router.push(
+                        `/friend-profile/${
+                          match.firstUserId === session?.user.id
+                            ? match.secondUserId
+                            : match.firstUserId
+                        }`
+                      )
+                    : undefined
+                }
               />
               <Divider />
 

@@ -46,14 +46,13 @@ export default function ProfilePage() {
   }
   if (!selfProfile) return <Layout title="Profile"></Layout>;
   return (
-    <Layout title="Profile">
+    <Layout title={`Profile: ${selfProfile.name}`}>
       <BackgroundAndNavigationBar>
         <Flex
           flexDirection="column"
           justifyContent="space-between"
           gap="20px"
           mx="24px"
-          my="35px"
         >
           <Heading color="yellow.5" size="H4" alignSelf="center">
             Profile

@@ -43,7 +43,6 @@ const Request = ({flexRef}:{
 
     if (flexElement) {
       // Attach the scroll event listener to the VStack element
-      console.log("fetch")
       flexElement.addEventListener("scroll", handleScroll);
     }
 

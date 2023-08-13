@@ -272,35 +272,37 @@ const Navbar = () => {
               zIndex="3"
             >
               {selfProfile && (
-                <Flex
-                  flexDir={"row"}
-                  gap={3}
-                  alignItems={"center"}
-                  mb={5}
-                  w={"full"}
-                >
-                  <Box
-                    minW={"60px"}
-                    minH={"60px"}
-                    backgroundImage={
-                      selfProfile.image
-                        ? selfProfile.image
-                        : "/defaultprofpict.svg"
-                    }
-                    backgroundPosition={"center"}
-                    backgroundSize={"cover"}
-                    borderRadius={"full"}
-                    border={"2px white solid"}
-                  />
-                  <Text
-                    fontSize={"20px"}
-                    fontWeight={"bold"}
-                    color={"yellow.5"}
-                    noOfLines={2}
+                <Link href={"/profile"}>
+                  <Flex
+                    flexDir={"row"}
+                    gap={3}
+                    alignItems={"center"}
+                    mb={5}
+                    w={"full"}
                   >
-                    {selfProfile.name}
-                  </Text>
-                </Flex>
+                    <Box
+                      minW={"60px"}
+                      minH={"60px"}
+                      backgroundImage={
+                        selfProfile.image
+                          ? selfProfile.image
+                          : "/defaultprofpict.svg"
+                      }
+                      backgroundPosition={"center"}
+                      backgroundSize={"cover"}
+                      borderRadius={"full"}
+                      border={"2px white solid"}
+                    />
+                    <Text
+                      fontSize={"20px"}
+                      fontWeight={"bold"}
+                      color={"yellow.5"}
+                      noOfLines={2}
+                    >
+                      {selfProfile.name}
+                    </Text>
+                  </Flex>
+                </Link>
               )}
 
               {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {
