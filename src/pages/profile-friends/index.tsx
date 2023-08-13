@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import React, { useEffect } from "react";
-import { Flex,} from "@chakra-ui/react";
+import React, { useEffect,useState } from "react";
+import {  Flex, IconButton, Text,} from "@chakra-ui/react";
 import TextInput from "./components/TextInput";
 import Menu from "./components/Menu";
 import Friends from "./components/Friends";
@@ -9,14 +9,41 @@ import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
 import Layout from "~/layout";
-import { withSession } from "~/server/auth/withSession";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import NotFound from "../404";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { SearchedFriends } from "./components/SearchedFriends";
 
-export const getServerSideProps = withSession({ force: true });
 
+const MenuList = (param:{
+  totalRequest:number
+}) => {
+  const params = useSearchParams()
+  const [state, setState] = useState<string>(params.get('status') ?? 'my-friends')
+  useEffect (() => {
+    setState(params.get('status') ?? 'my-friends')
+}, [params])
+  return (
+    <>
+      <Flex flexDirection="row" justifyContent="center" alignItems='center' gap="40px">
+      <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
+        <Link href='?status=my-friends' >My Friends</Link>
+      </Menu>
+      <Menu waiting={param.totalRequest} isActive={state=='request'} onClick={()=>{setState('request')}}>
+        <Link href='?status=request' >Request</Link>
+      </Menu>
+    </Flex>
+    {
+        state === 'my-friends' ? (
+            <Friends/>
+        ) : (
+            <Request/>
+        )
+    }
+    </>
+  )
+}
 
 const ProfileFriendsPage: NextPage = () => {
   const sessionStatus = useSession();
@@ -24,8 +51,13 @@ const ProfileFriendsPage: NextPage = () => {
   if (sessionStatus.status === "unauthenticated") {
     void router.push("/login");
   }
-  const params = useSearchParams()
-  const [state, setState] = React.useState<string>(params.get('status') ?? 'my-friends')
+
+  const [searchQuery, setSearchQuery] = useState<string>('')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
+
   const cursor = 1 as number;
   const limit = 40 as number;
   const getRequestData = api.friend.friendList.useQuery({
@@ -33,9 +65,6 @@ const ProfileFriendsPage: NextPage = () => {
     cursor,
     limit
   })
-  useEffect (() => {
-      setState(params.get('status') ?? 'my-friends')
-  }, [params])
 
   const requestData = getRequestData.data;
   if (!requestData) {
@@ -55,21 +84,35 @@ const ProfileFriendsPage: NextPage = () => {
         mx="24px"
         my="16px"
       >
-        <TextInput />
-        <Flex flexDirection="row" justifyContent="center" alignItems='center' gap="40px">
-          <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
-            <Link href='?status=my-friends' >My Friends</Link>
-          </Menu>
-          <Menu waiting={totalRequest} isActive={state=='request'} onClick={()=>{setState('request')}}>
-            <Link href='?status=request' >Request</Link>
-          </Menu>
+        <Flex
+          flexDirection="row"
+          alignItems="center"
+          gap="20px"
+        >
+          <TextInput placeholder="search friend" value={searchQuery} onChange={handleChange}/> 
+          {
+            searchQuery != '' && (
+              <IconButton
+              aria-label="Search database"
+              icon={<IoCloseCircleOutline  />}
+              bgColor="transparent"
+              textColor="white"
+              size="sm"
+              fontSize='30px'
+              onClick={() => setSearchQuery('')}
+              display="inline-flex" 
+              alignItems="center"
+            />
+
+            )
+          }  
         </Flex>
         {
-            state === 'my-friends' ? (
-                <Friends/>
-            ) : (
-                <Request/>
-            )
+          searchQuery == '' ? (
+            <MenuList totalRequest={totalRequest}/>
+          ) : (
+            <SearchedFriends searchQuery={searchQuery} />
+          )
         }
       </Flex>
     </BackgroundAndNavigationBar>

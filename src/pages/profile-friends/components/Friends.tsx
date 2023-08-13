@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 
 const Friends = () => {
   const cursor = 1 as number;
-  const limit = 10 as number;
+  const limit = 40 as number;
   const getDataRequest = api.friend.friendList.useQuery({
     status:'FRIEND',
     cursor,
@@ -18,6 +18,9 @@ const Friends = () => {
         getDataRequest.data?.data?.map((item, index) => {
           return (
             <MyFriendCard
+              image={item.image ?? undefined}
+              name={item.name}
+              status={item.bio}
               key={index}
             />
           )

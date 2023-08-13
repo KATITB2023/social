@@ -2,6 +2,7 @@ import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { RxCross2 } from "react-icons/rx";
 import { MdDone } from "react-icons/md";
 
+
 export default function RequestFriendPopUp() {
   return (
     <Flex

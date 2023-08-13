@@ -34,8 +34,8 @@ const Menu = ({ children, isActive, ...props }: MenuProps) => {
           color="yellow.5"
           width="fit-content"
           height="fit-content"
-          minWidth="20px" // Set a minimum width
-          minHeight="20px" // Set a minimum height
+          minWidth="20px" 
+          minHeight="20px"
           display="flex"
           justifyContent="center"
           alignItems="center"

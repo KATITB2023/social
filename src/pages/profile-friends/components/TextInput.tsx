@@ -1,8 +1,14 @@
-import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
+import { InputGroup, InputLeftElement, Input, InputProps } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React from "react";
 
-const TextInput = () => {
+interface TextInputProps extends InputProps {
+  placeholder: string;
+}
+
+const TextInput = ({
+  ...props
+}:TextInputProps) => {
   return (
     <InputGroup>
       <InputLeftElement
@@ -30,7 +36,9 @@ const TextInput = () => {
           color: "inherit",
           fontSize: "14px",
         }}
-        placeholder="add or search friend"
+        value={props.value}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
         _invalid={{
           borderColor: "red.300",
           borderWidth: "2px",

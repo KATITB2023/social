@@ -13,11 +13,25 @@ import {
 } from "@chakra-ui/react";
 import { RxCross2 } from "react-icons/rx";
 import { MdQuestionMark } from "react-icons/md";
+import { api } from "~/utils/api";
+import { useRouter } from "next/navigation";
+
 
 export default function DeleteFriendPopUp(props: {
   onClose: () => void;
   isOpen: boolean;
+  id: string;
 }) {
+  const router = useRouter();
+  const deleteFriend = api.friend.removeFriend.useMutation();
+  const handleDelete = async () => {
+    props.onClose();
+    await deleteFriend.mutateAsync({
+      userId: props.id,
+    });
+    router.refresh();
+  };
+
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
       <ModalOverlay />
@@ -124,7 +138,7 @@ export default function DeleteFriendPopUp(props: {
               height="48px"
               background="#E8553E"
               borderRadius="12px"
-              onClick={props.onClose}
+              onClick={()=>{void handleDelete()}}
             >
               <Text
                 width="53px"
