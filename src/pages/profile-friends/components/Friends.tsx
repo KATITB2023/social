@@ -20,7 +20,7 @@ const Friends = () => {
             <MyFriendCard
               image={item.image ?? undefined}
               name={item.name}
-              status={item.bio}
+              bio={item.bio}
               key={index}
             />
           )

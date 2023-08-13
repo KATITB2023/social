@@ -148,7 +148,7 @@ void (async () => {
     const friends = students.filter((s) => s.id !== student.id);
     const friendshipsCreated = new Set(); // Keep track of friendships to avoid duplicates
     
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 20; i++) {
       const friend = faker.helpers.arrayElement(friends);
       
       // Check if the friendship has already been created to avoid duplicates

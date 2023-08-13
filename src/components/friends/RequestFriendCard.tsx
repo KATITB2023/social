@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export default function RequestFriendCard(props: {
   name: string;
   image?: string;
-  status: string;
+  bio: string;
   id: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,34 +37,42 @@ export default function RequestFriendCard(props: {
         alignItems="center"
         padding="12px"
         gap="16px"
-        height="fit-content"
+        width="325px"
+        height="59px"
         background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
         borderRadius="12px"
-        direction={{ base: "column", sm: "row" }}
-      >
+        direction={{ base: 'column', sm: 'row' }}
+    >
+
         {/* Frame 57 */}
         <Flex
-          flexDirection="row"
-          justifyContent="space-between" // Menambahkan properti justifyContent
-          alignItems="center"
-          width="100%"
+            flexDirection="row"
+            justifyContent="space-between" // Menambahkan properti justifyContent
+            alignItems="center"
+            width="100%"
         >
-          {/* Frame 79 */}
-          <Flex
+            {/* Frame 79 */}
+            <Flex
             flexDirection="row"
             alignItems="center"
             padding={0}
             gap={8}
+            width="170px"
+            height="35px"
             order={0}
             flex="0"
             marginTop="12px"
             marginLeft={`${12 - 16}px`}
             marginBottom="12px"
-          >
+            >
             {/* Group 36 */}
-            <Box position="relative" width="35px" height="35px">
-              {/* Ellipse 1 */}
-              <Box
+            <Box
+                position="relative"
+                width="35px"
+                height="35px"
+            >
+                {/* Ellipse 1 */}
+                <Box
                 position="absolute"
                 width="35px"
                 height="35px"
@@ -75,9 +83,9 @@ export default function RequestFriendCard(props: {
                 boxShadow="0px 4px 30px #EABFFF"
                 borderRadius="50%"
                 {...(props.image && { backgroundImage: `url(${props.image})` })}
-              />
-              {/* Ellipse 2 */}
-              <Box
+                />
+                {/* Ellipse 2 */}
+                <Box
                 position="absolute"
                 width="7px"
                 height="7px"
@@ -86,65 +94,75 @@ export default function RequestFriendCard(props: {
                 top="28px"
                 boxShadow="0px 4px 30px rgba(0, 0, 0, 0.25)"
                 bg="#FFFC83"
-              />
+                />
             </Box>
             <Flex
-              direction="column"
-              justifyContent="center"
-              alignItems="flex-start"
-              padding="0px"
-              width="127px"
+                direction="column"
+                justifyContent="center"
+                alignItems="flex-start"
+                padding="0px"
+                width="127px"
+                height="33px"
             >
-              {/* Tulip */}
-              <Text
+                {/* Tulip */}
+                <Text
+                width="30px"
+                height="19px"
                 size="B5"
                 lineHeight="20px"
                 display="flex"
                 alignItems="flex-end"
                 fontWeight={700}
                 color="#FFFFFF"
-              >
-                {props.name}
-              </Text>
+                >
+                {
+                    props.name.split(' ')[0]
+                }
+                </Text>
 
-              {/* "yuk berteman!!" */}
-              <Text
+            {/* "yuk berteman!!" */}
+            <Text
+                width="127px"
+                height="14px"
                 size="A"
                 lineHeight="16px"
                 display="flex"
-                alignItems="center"
+                alignItems="flex-end"
                 color="#FFFFFF"
-              >
-                {props.status}
-              </Text>
+                noOfLines={1}
+                >
+                {
+                    props.bio
+                }
+                </Text>
             </Flex>
-          </Flex>
+            </Flex>
 
-          {/* Frame 21 */}
-          <Flex
+            {/* Frame 21 */}
+            <Flex
             direction="row"
             justifyContent="center"
             alignItems="center"
+            width="103px"
+            height="24px"
             order={1}
-          >
+            >
             {/* Button */}
             <Button
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-              padding="4px 16px"
-              width="74px"
-              height="23px"
-              gap={12}
-              bg="#FFFC83"
-              borderRadius="12px"
-              onClick={() => {
-                void handleAccept();
-              }}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+                padding="4px 16px"
+                width="74px"
+                height="23px"
+                gap={12}
+                bg="#FFFC83"
+                borderRadius="12px"
+                onClick={()=>{void handleAccept()}}
             >
-              {/* Label */}
-              <Text
+                {/* Label */}
+                <Text
                 width="42px"
                 height="15px"
                 size="A"
@@ -153,25 +171,28 @@ export default function RequestFriendCard(props: {
                 lineHeight="150%"
                 color="#4909B3"
                 flex="none"
-              >
+                >
                 ACCEPT
-              </Text>
+                </Text>
             </Button>
-            <Box marginLeft="5px"></Box>
+            <Box 
+                marginLeft="5px"
+                >
+            </Box>
             <IconButton
-              isRound={true}
-              variant="ghost"
-              color="white"
-              aria-label="Done"
-              fontSize="24px"
-              size="24px"
-              _hover={{ bg: "transparent" }}
-              icon={<MdOutlineCancel />}
-              onClick={onOpen}
-            />
-          </Flex>
+                isRound={true}
+                variant='ghost'
+                color='white'
+                aria-label='Done'
+                fontSize='24px'
+                size='24px'
+                _hover={{ bg: "transparent" }}
+                icon={<MdOutlineCancel />}
+                onClick={onOpen}
+                />
+            </Flex>
         </Flex>
-      </Card>
+    </Card>
     </>
   );
 }

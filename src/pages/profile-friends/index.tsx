@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useState,useRef } from "react";
 import {  Flex, IconButton,} from "@chakra-ui/react";
 import TextInput from "./components/TextInput";
 import Menu from "./components/Menu";
@@ -18,6 +18,7 @@ import { SearchedFriends } from "./components/SearchedFriends";
 
 const MenuList = (param:{
   totalRequest:number
+  ref: React.MutableRefObject<HTMLDivElement | null>
 }) => {
   const params = useSearchParams()
   const [state, setState] = useState<string>(params.get('status') ?? 'my-friends')
@@ -38,7 +39,7 @@ const MenuList = (param:{
         state === 'my-friends' ? (
             <Friends/>
         ) : (
-            <Request/>
+            <Request flexRef={param.ref}/>
         )
     }
     </>
@@ -47,6 +48,7 @@ const MenuList = (param:{
 
 const ProfileFriendsPage: NextPage = () => {
   const sessionStatus = useSession();
+  const flexRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   if (sessionStatus.status === "unauthenticated") {
     void router.push("/login");
@@ -83,6 +85,7 @@ const ProfileFriendsPage: NextPage = () => {
         gap="20px"
         mx="24px"
         my="16px"
+        ref={flexRef}
       >
         <Flex
           flexDirection="row"
@@ -109,7 +112,7 @@ const ProfileFriendsPage: NextPage = () => {
         </Flex>
         {
           searchQuery == '' ? (
-            <MenuList totalRequest={totalRequest}/>
+            <MenuList totalRequest={totalRequest} ref={flexRef}/>
           ) : (
             <SearchedFriends searchQuery={searchQuery} />
           )
