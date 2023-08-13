@@ -101,13 +101,14 @@ const LeaderboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession({ required: true });
   const cursor = 1 as number;
-  const limit = 40 as number;
+  const limit = 15000 as number;
   const getDataLeaderboard = api.leaderboard.getLeaderboard.useQuery({
     cursor,
-    limit,
+    limit
   });
 
   const students = getDataLeaderboard.data;
+
   if (!students) {
     return <NotFound />;
   }
@@ -115,6 +116,7 @@ const LeaderboardPage = () => {
     return <NotFound />;
   }
   const id = session?.user.id;
+  const obj = students.data.find(o => o.userId === id);
 
   const totalParticipants = students.data.length;
   const totalPages = Math.ceil(totalParticipants / participantsPerPage);
@@ -237,21 +239,14 @@ const LeaderboardPage = () => {
         <LeaderboardTop3 data={students.data} />
 
         <Box mb={8}>
-          {students.data.map((item, i) => {
-            if (item.userId === id) {
-              return (
-                <CardLeaderboardSelf
-                  key={i}
-                  name={item.name}
-                  nim={item.nim}
-                  image={item?.profileImage || "/defaultprofpict.svg"}
-                  ranking={item.rank}
-                  points={item.point}
-                />
-              );
-            }
-            return null;
-          })}
+            <CardLeaderboardSelf
+                key={id}
+                name={obj!.name}
+                nim={obj!.nim}
+                image={obj?.profileImage || "/defaultprofpict.svg"}
+                ranking={obj!.rank}
+                points={obj!.point}
+            />
         </Box>
 
         <LeaderboardParticipant
