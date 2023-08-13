@@ -122,6 +122,11 @@ const Navbar = () => {
       text: "Leaderboard",
       route: "/leaderboard",
     },
+    {
+      icon: MdPersonAddAlt,
+      text: "Friends",
+      route: "/friends",
+    },
     // { icon: MdStarOutline, text: "Showcase", route: "/showcase" },
     // { icon: MdShoppingBasket, text: "Merchandise", route: "/merchandise" },
     {
@@ -237,16 +242,6 @@ const Navbar = () => {
           zIndex="2"
           alignItems={"center"}
         >
-          {FUTUREFLAG && (
-            <Icon
-              cursor={"pointer"}
-              color="white"
-              as={MdPersonAddAlt}
-              height="30px"
-              width="30px"
-              marginRight="10px"
-            />
-          )}
           <Button variant={"unstyled"} onClick={onOpen}>
             <Image
               alt="Hamburger menu"
