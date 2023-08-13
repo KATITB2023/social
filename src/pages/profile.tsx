@@ -94,7 +94,7 @@ function UserProfilePicture({
 }) {
   return (
     <Box position="relative" alignSelf="center" width="164px" height="164px">
-      <ProfilePicture src={src} />
+      <ProfilePicture src={src} size={164} />
       <IconButton
         onClick={() => {
           setOpen(true);

@@ -8,7 +8,6 @@ interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Menu = ({ children, isActive, waiting }: MenuProps) => {
-  console.log(waiting);
   return (
     <Flex
       width="6rem"

@@ -55,7 +55,7 @@ void app.prepare().then(() => {
   io.listen(env.WS_PORT);
 
   // Start Schedule
-  currentlyTypingSchedule.start();
+  // currentlyTypingSchedule.start();
 
   console.log(
     `Server listening at http://localhost:${port} as ${
@@ -67,7 +67,7 @@ void app.prepare().then(() => {
     console.log("SIGTERM");
 
     // Stop schedule
-    currentlyTypingSchedule.stop();
+    // currentlyTypingSchedule.stop();
   });
 
   server.listen(port);

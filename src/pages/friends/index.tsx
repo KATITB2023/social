@@ -1,12 +1,12 @@
 import { NextPage } from "next";
-import React, { useEffect,useState,useRef } from "react";
-import {  Flex, IconButton,} from "@chakra-ui/react";
+import React, { useEffect, useState, useRef } from "react";
+import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "./components/TextInput";
 import Menu from "./components/Menu";
 import Friends from "./components/Friends";
 import Request from "./components/Request";
 import Link from "next/link";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
 import Layout from "~/layout";
 import { useSession } from "next-auth/react";
@@ -15,36 +15,51 @@ import { api } from "~/utils/api";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { SearchedFriends } from "./components/SearchedFriends";
 
-
-const MenuList = (param:{
-  totalRequest:number
-  ref: React.MutableRefObject<HTMLDivElement | null>
+const MenuList = (param: {
+  totalRequest: number;
+  ref: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
-  const params = useSearchParams()
-  const [state, setState] = useState<string>(params.get('status') ?? 'my-friends')
-  useEffect (() => {
-    setState(params.get('status') ?? 'my-friends')
-}, [params])
+
+  const params = useSearchParams();
+  const [state, setState] = useState<string>(
+    params.get("status") ?? "my-friends"
+  );
+
+  useEffect(() => {
+    setState(params.get("status") ?? "my-friends");
+  }, [params]);
+
   return (
-    <>
-      <Flex flexDirection="row" justifyContent="center" alignItems='center' gap="40px">
-      <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
-        <Link href='?status=my-friends' >My Friends</Link>
-      </Menu>
-      <Menu waiting={param.totalRequest} isActive={state=='request'} onClick={()=>{setState('request')}}>
-        <Link href='?status=request' >Request</Link>
-      </Menu>
-    </Flex>
-    {
-        state === 'my-friends' ? (
-            <Friends/>
-        ) : (
-            <Request flexRef={param.ref}/>
-        )
-    }
-    </>
-  )
-}
+    <Layout title="Friends">
+      <Flex
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="center"
+        gap="40px"
+      >
+        <Menu
+          isActive={state == "my-friends"}
+          onClick={() => {
+            setState("my-friends");
+          }}
+        >
+          <Link href="?status=my-friends">My Friends</Link>
+        </Menu>
+        
+        <Menu
+          waiting={param.totalRequest}
+          isActive={state == "request"}
+          onClick={() => {
+            setState("request");
+          }}
+        >
+          <Link href="?status=request">Request</Link>
+        </Menu>
+      </Flex>
+      {state === "my-friends" ? <Friends /> : <Request flexRef={param.ref} />}
+    </Layout>
+  );
+};
 
 const ProfileFriendsPage: NextPage = () => {
   const sessionStatus = useSession();
@@ -54,19 +69,19 @@ const ProfileFriendsPage: NextPage = () => {
     void router.push("/login");
   }
 
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
+    setSearchQuery(e.target.value);
+  };
 
   const cursor = 1 as number;
   const limit = 40 as number;
   const getRequestData = api.friend.friendList.useQuery({
-    status:'WAITING_FOR_ACCEPTANCE',
+    status: "WAITING_FOR_ACCEPTANCE",
     cursor,
-    limit
-  })
+    limit,
+  });
 
   const requestData = getRequestData.data;
   if (!requestData) {
@@ -87,36 +102,32 @@ const ProfileFriendsPage: NextPage = () => {
         my="16px"
         ref={flexRef}
       >
-        <Flex
-          flexDirection="row"
-          alignItems="center"
-          gap="20px"
-        >
-          <TextInput placeholder="search friend" value={searchQuery} onChange={handleChange}/> 
-          {
-            searchQuery != '' && (
-              <IconButton
+        <Flex flexDirection="row" alignItems="center" gap="20px">
+          <TextInput
+            placeholder="Add or Search Friend"
+            value={searchQuery}
+            onChange={handleChange}
+          />
+          {searchQuery != "" && (
+            <IconButton
               aria-label="Search database"
-              icon={<IoCloseCircleOutline  />}
+              icon={<IoCloseCircleOutline />}
               bgColor="transparent"
               textColor="white"
               size="sm"
-              fontSize='30px'
-              onClick={() => setSearchQuery('')}
-              display="inline-flex" 
+              fontSize="30px"
+              onClick={() => setSearchQuery("")}
+              display="inline-flex"
               alignItems="center"
             />
-
-            )
-          }  
+          )}
         </Flex>
-        {
-          searchQuery == '' ? (
-            <MenuList totalRequest={totalRequest} ref={flexRef}/>
-          ) : (
-            <SearchedFriends searchQuery={searchQuery} />
-          )
-        }
+
+        {searchQuery == "" ? (
+          <MenuList totalRequest={totalRequest} ref={flexRef} />
+        ) : (
+          <SearchedFriends searchQuery={searchQuery} />
+        )}
       </Flex>
     </BackgroundAndNavigationBar>
   );

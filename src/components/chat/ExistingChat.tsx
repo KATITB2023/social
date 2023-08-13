@@ -81,7 +81,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   const today = new Date();
   useEffect(() => {
     today.setHours(0, 0, 0, 0);
-    onNoChat(data?.pages[0]?.data.length === 0);
+    onNoChat(data?.pages[0]?.data.length === 0 || !data?.pages[0]?.data.length); // zero or undefined
     void refetch();
     // console.log('refetch when moundted again')
   }, []);

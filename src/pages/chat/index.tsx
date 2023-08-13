@@ -18,6 +18,8 @@ export const getServerSideProps = withSession({ force: true });
 const ChatHome: NextPage = () => {
   const [openAddChat, setOpenAddChat] = useState(false);
   const [isNoChat, setIsNoChat] = useState(true);
+  console.log(openAddChat, isNoChat);
+
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
   };
@@ -31,7 +33,7 @@ const ChatHome: NextPage = () => {
   }
 
   return (
-    <Layout title="Home">
+    <Layout title="Chat">
       <Flex
         h="100vh"
         direction="column"
@@ -42,8 +44,8 @@ const ChatHome: NextPage = () => {
         backgroundRepeat={"no-repeat"}
         alignItems="center"
       >
-        {/* <Box position="absolute"> */}
         {!openAddChat && <Navbar />}
+
         {openAddChat && (
           <Header
             name={undefined}
@@ -53,10 +55,10 @@ const ChatHome: NextPage = () => {
             handleClick={() => setOpenAddChat(!openAddChat)}
           />
         )}
-        {/* </Box> */}
 
         <ChatPageHeader hidden={openAddChat || !isNoChat} />
         <AddChatFromFriend hidden={!openAddChat} />
+
         <ExistingChat
           hidden={openAddChat !== isNoChat}
           onNoChat={isNoChatHandler}

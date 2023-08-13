@@ -11,7 +11,6 @@ const Friends = () => {
     cursor,
     limit
   })
-  console.log(getDataRequest.data)
   return (
     <Flex flexDirection='column' gap='2' justifyContent='center' alignItems='center' >
       {

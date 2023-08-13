@@ -3,7 +3,7 @@ import { type Message } from "@prisma/client";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Divider from "~/components/chat/Divider";
 import Footer from "~/components/chat/Footer";
 import Header from "~/components/chat/Header";
@@ -21,7 +21,7 @@ export const getServerSideProps = withSession({ force: true });
 const Chat: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession({ required: true });
-
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const pairId = router.query.pairId as string;
   const userPair = api.friend.getOtherUserProfile.useQuery(
     {
@@ -90,6 +90,7 @@ const Chat: NextPage = () => {
           (post.senderId === session?.user.id && post.receiverId === pairId)) &&
         post.userMatchId === null
       ) {
+        setCurrentlyTyping(false);
         addMessages([post]);
         if (
           session &&
@@ -110,10 +111,12 @@ const Chat: NextPage = () => {
   useSubscription(
     "whoIsTyping",
     (data) => {
-      if (data.includes(pairId)) {
+      if (data === pairId) {
         setCurrentlyTyping(true);
-      } else {
-        setCurrentlyTyping(false);
+        if (timeoutRef.current !== null) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => setCurrentlyTyping(false), 1000);
       }
     },
     [session, messageQuery]

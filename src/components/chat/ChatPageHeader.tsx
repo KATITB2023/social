@@ -1,28 +1,32 @@
-import { Heading, Image, Spacer } from "@chakra-ui/react";
+import { Heading, Image, Box } from "@chakra-ui/react";
 
 interface ChatPageHeaderProps {
   hidden: boolean;
 }
 
-const ChatPageHeader : React.FC<ChatPageHeaderProps> = ({ hidden }) => {
+const ChatPageHeader: React.FC<ChatPageHeaderProps> = ({ hidden }) => {
   return (
-    <>
-      <Spacer hidden={hidden} />
-      <Image alt="maskot oskm" src="maskotglow.svg" w="80%" hidden={hidden} />
+    <Box
+      display={"flex"}
+      hidden={hidden}
+      w={"80%"}
+      position={"relative"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <Image alt="Maskot_OSKM" src="/maskotglow.png" />
       <Heading
         as="h3"
         size="lg"
         color="yellow.400"
         textAlign="center"
         fontWeight="normal"
-        w="80%"
-        hidden={hidden}
+        position={"absolute"}
+        bottom={0}
       >
         TAMBAHIN PERCAKAPAN DULU YUK!
       </Heading>
-      <Spacer hidden={hidden} />
-      <Spacer hidden={hidden} />
-    </>
+    </Box>
   );
 };
 
