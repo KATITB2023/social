@@ -10,24 +10,24 @@ export default function MyFriendCard(props: {
 }) {
   return (
     <Card
-    display="flex"
-    flexDirection="row"
-    justifyContent="space-between"
-    alignItems="center"
-    padding="12px"
-    gap="16px"
-    width="325px"
-    height="59px"
-    background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
-    borderRadius="12px"
-    direction={{ base: 'column', sm: 'row' }}
-  >
-    <Flex
+      display="flex"
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
-      width="100%"
+      padding="12px"
+      gap="16px"
+      width="325px"
+      height="59px"
+      background="linear-gradient(295.13deg, rgba(43, 7, 146, 0.93) 0%, rgba(43, 7, 146, 0.66) 0%, rgba(43, 7, 146, 0) 99.28%), rgba(255, 255, 255, 0.4)"
+      borderRadius="12px"
+      direction={{ base: "column", sm: "row" }}
     >
+      <Flex
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        width="100%"
+      >
         <Flex
           flexDirection="row"
           alignItems="center"
@@ -41,11 +41,7 @@ export default function MyFriendCard(props: {
           marginLeft={`${12 - 16}px`}
           marginBottom="12px"
         >
-        <Box
-          position="relative"
-          width="35px"
-          height="35px"
-        >
+          <Box position="relative" width="35px" height="35px">
             <Box
               position="absolute"
               width="35px"
@@ -68,48 +64,51 @@ export default function MyFriendCard(props: {
               boxShadow="0px 4px 30px rgba(0, 0, 0, 0.25)"
               bg="#FFFC83"
             />
-        </Box>
-        <Flex
-          direction="column"
-          justifyContent="center"
-          alignItems="flex-start"
-          padding="0px"
-          width="127px"
-          height="33px"
-        >
-            <Text
-              width="100%"
-              height="19px"
-              size="B5"
-              lineHeight="20px"
-              display="flex"
-              alignItems="flex-end"
-              fontWeight={700}
-              color="#FFFFFF"
-              noOfLines={1}
-            >
-            {
-              // Ambil Kata terdepan
-              props.name
-            }
-            </Text>
+          </Box>
 
-           <Text
-              width="100%"
-              height="14px"
-              size="A"
-              lineHeight="16px"
-              display="flex"
-              alignItems="flex-end"
-              color="#FFFFFF"
-              noOfLines={1}
+          {/* Name and Bio */}
+          <Link href={`/friend-profile/${props.id}`}>
+            <Flex
+              direction="column"
+              justifyContent="center"
+              alignItems="flex-start"
+              padding="0px"
+              width="127px"
+              height="33px"
             >
-            {
-              props.bio
-            }
-            </Text>
+              <Text
+                width="100%"
+                height="19px"
+                size="B5"
+                lineHeight="20px"
+                display="flex"
+                alignItems="flex-end"
+                fontWeight={700}
+                color="#FFFFFF"
+                noOfLines={1}
+              >
+                {
+                  // Ambil Kata terdepan
+                  props.name
+                }
+              </Text>
+
+              <Text
+                width="100%"
+                height="14px"
+                size="A"
+                lineHeight="16px"
+                display="flex"
+                alignItems="flex-end"
+                color="#FFFFFF"
+                noOfLines={1}
+              >
+                {props.bio}
+              </Text>
+            </Flex>
+          </Link>
         </Flex>
-        </Flex>
+
         <Link href={`chat/${props.id}`}>
           <Button
             display="flex"
@@ -123,29 +122,27 @@ export default function MyFriendCard(props: {
             bg="#FFFC83"
             borderRadius="12px"
           >
-              <Icon
-                width="12px"
-                height="12px"
-                color="#4909B3"
-                as={MdOutlineChatBubbleOutline}
-              >
-              </Icon>
-              {/* Label */}
-              <Text
-                width="30px"
-                height="15px"
-                size="A"
-                fontStyle="normal"
-                fontWeight={1000}
-                lineHeight="15px"
-                color="#4909B3"
-              >
+            <Icon
+              width="12px"
+              height="12px"
+              color="#4909B3"
+              as={MdOutlineChatBubbleOutline}
+            ></Icon>
+            {/* Label */}
+            <Text
+              width="30px"
+              height="15px"
+              size="A"
+              fontStyle="normal"
+              fontWeight={1000}
+              lineHeight="15px"
+              color="#4909B3"
+            >
               CHAT
-              </Text>
+            </Text>
           </Button>
         </Link>
-    </Flex>
-  </Card>
-
+      </Flex>
+    </Card>
   );
 }
