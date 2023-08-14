@@ -80,6 +80,11 @@ const ChatHistory: NextPage = () => {
             isTyping={currentlyTyping}
             isAnon={true}
             handleClick={() => void router.push("/match/history")}
+            profileClick={() => {
+              if (profileData && profileData.name !== "Anonymous") {
+                void router.push(`/friend-profile/${profileData.id}`);
+              }
+            }}
           />
           <Divider />
 

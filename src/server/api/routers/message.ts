@@ -13,7 +13,7 @@ export const messageRouter = createTRPCRouter({
             id: z.string().uuid(),
           })
           .optional(),
-        take: z.number().min(1).max(50).default(10),
+        take: z.number().min(1).max(50).default(25),
         pairId: z.string().uuid(),
       })
     )
