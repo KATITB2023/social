@@ -35,7 +35,7 @@ export default function FriendProfilePage() {
       .mutateAsync({
         userId: pairId,
       })
-      .catch(() => {});
+      .catch(() => undefined);
     window.location.reload();
   };
 
@@ -44,7 +44,7 @@ export default function FriendProfilePage() {
     .mutateAsync({
       userId: pairId,
     })
-    .catch(() => {})
+    .catch(() => undefined)
     window.location.reload();
   };
 

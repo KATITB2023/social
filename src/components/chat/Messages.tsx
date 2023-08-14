@@ -68,7 +68,12 @@ const Messages = ({
     }
   }, [lastMessageRef, messages[0]?.senderId, session?.user.id]);
 
-  console.log(messages[messages.length-1]?.createdAt.getDate())
+  const lastMessageDate = messages[messages.length - 1]?.createdAt
+    .getDate()
+    .toString();
+  const lastMessageMonth = messages[messages.length - 1]
+    ? (messages[messages.length - 1]!.createdAt.getMonth() + 1).toString()
+    : "0";
 
   return (
     <Flex
@@ -103,9 +108,13 @@ const Messages = ({
           borderRadius={"full"}
           mt={4}
         >
-          <Text textAlign={"center"}>
-            Pembicaraan berakhir pada {messages[messages.length-1]?.createdAt.getDate() +"/"+ (messages[messages.length-1]!.createdAt.getMonth()+1) +"/"+messages[messages.length-1]?.createdAt.getFullYear()}
-          </Text>
+          {messages[messages.length - 1] && (
+            <Text textAlign={"center"}>
+              Pembicaraan berakhir pada {lastMessageDate}
+              {"/"}
+              {lastMessageMonth}
+            </Text>
+          )}
         </Flex>
       )}
 

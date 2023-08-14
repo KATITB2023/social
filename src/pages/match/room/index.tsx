@@ -22,6 +22,7 @@ import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { AskRevealStatus } from "~/server/types/message";
 import { api } from "~/utils/api";
+import { Peraturan } from "~/components/PopupChat/Peraturan";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -39,12 +40,14 @@ const Room: NextPage = () => {
   const [isYayTemanmu, setYayTemanmu] = useState(false);
   const [isTemanmuMenolak, setTemanmuMenolak] = useState(false);
   const [isKamuDirequest, setKamuDirequest] = useState(false);
+  const [isPeraturan, setPeraturan] = useState(true);
 
   const closeAll = () => {
     setYahTemanmu(false);
     setYayTemanmu(false);
     setTemanmuMenolak(false);
     setKamuDirequest(false);
+    setPeraturan(false);
   };
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
@@ -318,7 +321,8 @@ const Room: NextPage = () => {
               isYahTemanmu ||
               isYayTemanmu ||
               isTemanmuMenolak ||
-              isKamuDirequest
+              isKamuDirequest ||
+              isPeraturan
                 ? "block"
                 : "none"
             }
@@ -342,7 +346,8 @@ const Room: NextPage = () => {
                 h={"100vh"}
                 bg={"black"}
                 opacity={0.7}
-                onClick={() => closeAll}
+                cursor={"pointer"}
+                onClick={closeAll}
               />
 
               <Flex zIndex={4}>
@@ -354,6 +359,7 @@ const Room: NextPage = () => {
                 {isKamuDirequest && (
                   <KamuDirequest setOpen={setKamuDirequest} />
                 )}
+                {isPeraturan && <Peraturan setOpen={setPeraturan} />}
               </Flex>
             </Flex>
           </Flex>
