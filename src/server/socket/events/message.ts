@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
-import { askingRevealSet } from "../state";
 import { type RoomChat } from "@prisma/client";
-import { Redis } from "~/server/redis";
+import { AskRevealStatus } from "~/server/types/message";
 
 export const messageEvent = createEvent(
   {
@@ -128,11 +127,10 @@ export const anonTypingEvent = createEvent(
 export const askRevealEvent = createEvent(
   {
     name: "askReveal",
-    input: z.object({ agree: z.boolean() }),
+    input: z.object({ state: z.nativeEnum(AskRevealStatus) }),
     authRequired: true,
   },
   async ({ ctx, input }) => {
-    const redis = Redis.getClient();
     const user = ctx.client.data.session.user;
     const userId = user.id;
     const currentMatch = ctx.client.data.match;
@@ -143,28 +141,28 @@ export const askRevealEvent = createEvent(
       currentMatch.firstUserId === userId
         ? currentMatch.secondUserId
         : currentMatch.firstUserId;
-    const isExist = await redis.sismember(askingRevealSet, userId);
-    if (isExist) {
-      if (input.agree) {
-        const match = await ctx.prisma.userMatch.update({
-          where: {
-            id: currentMatch.id,
-          },
-          data: {
-            isRevealed: true,
-          },
-        });
 
-        ctx.io.to([userId, receiverId]).emit("askReveal", match, true);
-      } else {
-        ctx.io.to([receiverId]).emit("askReveal", currentMatch, false);
-      }
+    if (input.state === AskRevealStatus.ASK) {
+      ctx.io
+        .to([receiverId])
+        .emit("askReveal", currentMatch, AskRevealStatus.ASK);
+    } else if (input.state === AskRevealStatus.ACCEPTED) {
+      const match = await ctx.prisma.userMatch.update({
+        where: {
+          id: currentMatch.id,
+        },
+        data: {
+          isRevealed: true,
+        },
+      });
 
-      await redis.srem(askingRevealSet, userId);
+      ctx.io
+        .to([userId, receiverId])
+        .emit("askReveal", match, AskRevealStatus.ACCEPTED);
     } else {
-      await redis.sadd(askingRevealSet, userId);
-
-      ctx.io.to([receiverId]).emit("askReveal", currentMatch, true);
+      ctx.io
+        .to([receiverId])
+        .emit("askReveal", currentMatch, AskRevealStatus.REJECTED);
     }
   }
 );

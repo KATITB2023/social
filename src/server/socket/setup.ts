@@ -7,9 +7,9 @@ import { Redis } from "~/server/redis";
 import {
   anonTypingEvent,
   anonymousMessageEvent,
+  askRevealEvent,
   isTypingEvent,
   messageEvent,
-  askRevealEvent,
 } from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
@@ -19,7 +19,7 @@ import {
 } from "~/server/socket/events/queue";
 import type { ServerEventsResolver } from "~/server/socket/helper";
 import { setupScheduleSocket } from "~/server/socket/schedule";
-import { type UserQueue } from "~/server/types/message";
+import { type AskRevealStatus, type UserQueue } from "~/server/types/message";
 
 /**
  * @description server events are events that are emmited from the client to the server.
@@ -78,7 +78,7 @@ export type ServerToClientEvents = {
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
-  askReveal: (match: UserMatch, askReveal: boolean) => void;
+  askReveal: (match: UserMatch, askReveal: AskRevealStatus) => void;
 };
 
 interface InterServerEvents {

@@ -9,7 +9,6 @@ import {
 import { ChatTopic, type UserQueue } from "~/server/types/message";
 import { Redis } from "~/server/redis";
 import { type UserMatch } from "@prisma/client";
-import { askingRevealSet } from "../state";
 
 export const findMatchEvent = createEvent(
   {
@@ -84,13 +83,6 @@ export const endMatchEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx }) => {
-    const removeFromAskingRevealSet = async (userId: string) => {
-      const redis = Redis.getClient();
-      const isUserExist = await redis.sismember(askingRevealSet, userId);
-      if (isUserExist) {
-        await redis.srem(askingRevealSet, userId);
-      }
-    };
     const currentMatch = ctx.client.data.match;
     if (!currentMatch) return;
 
@@ -107,11 +99,6 @@ export const endMatchEvent = createEvent(
       .in([match.firstUserId, match.secondUserId])
       .fetchSockets()) {
       otherSocket.data.match = null;
-    }
-
-    if (match.endedAt !== null) {
-      await removeFromAskingRevealSet(match.firstUserId);
-      await removeFromAskingRevealSet(match.secondUserId);
     }
 
     ctx.io.to([match.firstUserId, match.secondUserId]).emit("endMatch", match);
