@@ -130,6 +130,11 @@ const Navbar = () => {
       route: "/chat",
     },
     {
+      icon: MdPersonAddAlt,
+      text: "Add Friends",
+      route: "/friends"
+    },
+    {
       icon: MdOutlinePersonOutline,
       text: "Profile",
       route: "/profile",
@@ -237,16 +242,6 @@ const Navbar = () => {
           zIndex="2"
           alignItems={"center"}
         >
-          {FUTUREFLAG && (
-            <Icon
-              cursor={"pointer"}
-              color="white"
-              as={MdPersonAddAlt}
-              height="30px"
-              width="30px"
-              marginRight="10px"
-            />
-          )}
           <Button variant={"unstyled"} onClick={onOpen}>
             <Image
               alt="Hamburger menu"

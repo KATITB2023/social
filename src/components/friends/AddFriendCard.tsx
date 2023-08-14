@@ -1,13 +1,46 @@
-import { Card, Flex, Box, Text, Button, Icon } from "@chakra-ui/react";
-import Link from "next/link";
-import { MdOutlineChatBubbleOutline } from "react-icons/md";
+import { Card, Flex, Box, Text, Button, Icon, useToast } from "@chakra-ui/react";
 
-export default function MyFriendCard(props: {
+import { MdAddCircle } from "react-icons/md";
+import { api } from "~/utils/api";
+
+export default function AddFriendCard(props: {
   name: string;
   image?: string;
   bio: string;
   id: string;
+  statusFriend: string;
 }) {
+const toast = useToast();
+ const addFriend = api.friend.addFriend.useMutation();
+ const handleClickAddFriend = async () => {
+    try {
+        const result = await addFriend.mutateAsync({
+            userId: props.id
+        });
+    
+        toast({
+            title: "Berhasil mengirimkan permintaan pertemanan",
+            status: "success",
+            duration: 1000,
+            isClosable: true,
+            position: "top",
+            });
+
+            // Refresh halaman
+            setTimeout(() => {
+            window.location.reload();
+        }, 100);
+    } catch (error) {
+        toast({
+          title: "Gagal mengirimkan permintaan pertemanan",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+    }
+
   return (
     <Card
     display="flex"
@@ -78,7 +111,7 @@ export default function MyFriendCard(props: {
           height="33px"
         >
             <Text
-              width="100%"
+              width="30px"
               height="19px"
               size="B5"
               lineHeight="20px"
@@ -86,16 +119,15 @@ export default function MyFriendCard(props: {
               alignItems="flex-end"
               fontWeight={700}
               color="#FFFFFF"
-              noOfLines={1}
             >
             {
               // Ambil Kata terdepan
-              props.name
+              props.name.split(' ')[0]
             }
             </Text>
 
            <Text
-              width="100%"
+              width="127px"
               height="14px"
               size="A"
               lineHeight="16px"
@@ -106,12 +138,15 @@ export default function MyFriendCard(props: {
             >
             {
               props.bio
+
             }
             </Text>
         </Flex>
         </Flex>
-        <Link href={`chat/${props.id}`}>
-          <Button
+        {(() => {
+        if (props.statusFriend === "FRIEND") {
+          return (
+            <Button
             display="flex"
             flexDirection="row"
             justifyContent="center"
@@ -119,31 +154,87 @@ export default function MyFriendCard(props: {
             padding="4px 16px"
             width="86px"
             height="23px"
-            gap="12px"
             bg="#FFFC83"
             borderRadius="12px"
-          >
-              <Icon
-                width="12px"
-                height="12px"
-                color="#4909B3"
-                as={MdOutlineChatBubbleOutline}
-              >
-              </Icon>
-              {/* Label */}
-              <Text
-                width="30px"
+            >
+                {/* Label */}
+                <Text
+                width="100%"
                 height="15px"
                 size="A"
                 fontStyle="normal"
                 fontWeight={1000}
                 lineHeight="15px"
                 color="#4909B3"
-              >
-              CHAT
-              </Text>
-          </Button>
-        </Link>
+                >
+                Anda sudah berteman
+                </Text>
+            </Button>
+          )
+        } else if (props.statusFriend === "NOT_FRIEND") {
+          return (
+            <Button
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding="4px 16px"
+            width="86px"
+            height="23px"
+            gap="6px"
+            bg="#FFFC83"
+            borderRadius="12px"
+            onClick={() => void handleClickAddFriend()}
+            >
+                <Icon
+                width="12px"
+                height="12px"
+                color="#4909B3"
+                as={MdAddCircle}
+                >
+                </Icon>
+                {/* Label */}
+                <Text
+                width="100%"
+                height="15px"
+                size="A"
+                fontStyle="normal"
+                fontWeight={1000}
+                lineHeight="15px"
+                color="#4909B3"
+                >
+                Add Friend
+                </Text>
+            </Button>
+          )
+        } else {
+          return (
+            <Button
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding="4px 16px"
+            width="86px"
+            height="23px"
+            bg="#FFFC83"
+            borderRadius="12px"
+            >
+                <Text
+                width="100%"
+                height="15px"
+                size="A"
+                fontStyle="normal"
+                fontWeight={1000}
+                lineHeight="15px"
+                color="#4909B3"
+                >
+                {props.statusFriend === "REQUESTING_FRIENDSHIP" ? "Requested" : "Waiting"}
+                </Text>
+            </Button>
+          )
+        }
+      })()}
     </Flex>
   </Card>
 
