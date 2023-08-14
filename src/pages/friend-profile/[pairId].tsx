@@ -27,6 +27,7 @@ export default function FriendProfilePage() {
   });
 
   const removeFriend = api.friend.removeFriend.useMutation();
+  const addFriend = api.friend.addFriend.useMutation();
   const incrementVisit = api.friend.incrementVisitCounter.useMutation();
 
   const removeFriendExecutor = () => {
@@ -34,14 +35,19 @@ export default function FriendProfilePage() {
       .mutateAsync({
         userId: pairId,
       })
-      .then(() => {
-        <ProfilePage />;
-        //console.log("Teman berhasil dihapus");
-      })
-      .catch(() => {
-        // console.error("Error while removing friend:", error);
-      });
+      .catch(() => {});
+    window.location.reload();
   };
+
+  const addFriendExecutor = () => {
+    addFriend
+    .mutateAsync({
+      userId: pairId,
+    })
+    .catch(() => {})
+    window.location.reload();
+  };
+
 
   useEffect(() => {
     incrementVisit.mutate({ userId: pairId });
@@ -61,7 +67,7 @@ export default function FriendProfilePage() {
     return <ComingSoon />;
   }
   return (
-    <Layout title={`Profile ${student.name}`}>
+    <Layout title={`Profile: ${student.name}`}>
       <BackgroundAndNavigationBar>
         <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
           <Box>
@@ -118,16 +124,65 @@ export default function FriendProfilePage() {
             />
             <LabelValueContainer label="Email" value={student?.email || "-"} />
           </Flex>
-          <Button
-            alignSelf="center"
-            px="32px"
-            py="12px"
-            backgroundColor="yellow.1"
-            color="white"
-            onClick={() => removeFriendExecutor()}
-          >
-            <Text size="B3">delete</Text>
-          </Button>
+          {student.status === "FRIEND" ? (
+            <Button
+              alignSelf="center"
+              px="32px"
+              py="12px"
+              backgroundColor="pink.1"
+              color="white"
+              onClick={() => removeFriendExecutor()}
+            >
+              <Text size="B3">Delete Friend</Text>
+            </Button>
+          ) : student.status === "WAITING_FOR_ACCEPTANCE" ? (
+            <>
+              <Button
+                alignSelf="center"
+                px="32px"
+                py="12px"
+                backgroundColor="green.1"
+                color="white"
+                onClick={() => addFriendExecutor()}
+              >
+                <Text size="B3">Accept Friend Request</Text>
+              </Button>
+              <Button
+                alignSelf="center"
+                px="32px"
+                py="12px"
+                backgroundColor="yellow.1"
+                color="white"
+                onClick={() => removeFriendExecutor()}
+              >
+                <Text size="B3">Decline Friend Request</Text>
+              </Button>
+            </>
+          ) : student.status === "REQUESTING_FRIENDSHIP" ? (
+            <Button
+              isDisabled
+              alignSelf="center"
+              px="32px"
+              py="12px"
+              backgroundColor="yellow.1"
+              color="white"
+            >
+              <Text size="B3">Pending Friend Request</Text>
+            </Button>
+          ) : student.status === "NOT_FRIEND" ? (
+            <Button
+              alignSelf="center"
+              px="32px"
+              py="12px"
+              backgroundColor="navy.5"
+              color="white"
+              onClick={() => addFriendExecutor()}
+            >
+              <Text size="B3">Add Friend</Text>
+            </Button>
+          ) : (
+            <div />
+          )}
         </Flex>
       </BackgroundAndNavigationBar>
     </Layout>
