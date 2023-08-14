@@ -95,6 +95,42 @@ export const anonymousMessageRouter = createTRPCRouter({
         nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
       };
     }),
+  matchInfo: protectedProcedure
+    .input(z.object({ userMatchId: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const userMatch = await ctx.prisma.userMatch.findUnique({
+        where: { id: input.userMatchId },
+      });
+
+      if (userMatch === null) {
+        throw new TRPCError({
+          message: "User Match id not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      const profile = await ctx.prisma.profile.findUnique({
+        where: {
+          userId:
+            userMatch.firstUserId === ctx.session.user.id
+              ? userMatch.secondUserId
+              : userMatch.firstUserId,
+        },
+      });
+
+      if (profile === null) {
+        throw new TRPCError({
+          message: "Profile not found",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return {
+        id: profile.userId,
+        name: userMatch.isRevealed ? profile.name : "Anonymous",
+        profileImage: userMatch.isRevealed ? profile.image : null,
+      };
+    }),
   infinite: protectedProcedure
     .input(
       z.object({

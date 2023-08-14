@@ -4,11 +4,11 @@ interface ChatPageHeaderProps {
   hidden: boolean;
 }
 
-const ChatPageHeader : React.FC<ChatPageHeaderProps> = ({ hidden }) => {
+const ChatPageHeader: React.FC<ChatPageHeaderProps> = ({ hidden }) => {
   return (
     <>
       <Spacer hidden={hidden} />
-      <Image alt="maskot oskm" src="maskotglow.svg" w="80%" hidden={hidden} />
+      <Image alt="maskot oskm" src="maskotglow.png" w="80%" hidden={hidden} />
       <Heading
         as="h3"
         size="lg"

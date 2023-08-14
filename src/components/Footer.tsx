@@ -1,10 +1,8 @@
 import {
-  Center,
   Flex,
   Box,
   Image,
   Link,
-  UnorderedList,
   HStack,
   VStack,
   Divider,
@@ -38,6 +36,7 @@ const Footer = () => {
         position={"absolute"}
         left={0}
         src="/footer/foot-bintangMini.png"
+        alt="Bintang_Mini_Comps"
         draggable="false"
         loading="lazy"
       />
@@ -50,6 +49,7 @@ const Footer = () => {
       >
         <Image
           src="/footer/foot-oskm.svg"
+          alt="Foot_OSKM"
           width={"80%"}
           draggable="false"
           loading="lazy"
@@ -65,7 +65,7 @@ const Footer = () => {
               </Link>
             </VStack>
             <VStack alignItems="left" spacing={{ base: "14px", lg: "45px" }}>
-              <Link href="https://oskmitb.com/merchandise" color="white" _hover={{ textDecoration: "none" }}>
+              <Link href="https://oskmitb.com/merch" color="white" _hover={{ textDecoration: "none" }}>
                 Merchandise
               </Link>
               <Link href="https://oskmitb.com/blog" color="white" _hover={{ textDecoration: "none" }}>
@@ -81,6 +81,7 @@ const Footer = () => {
           <Link href="https://twitter.com/oskmitb" color="white">
             <Image
               src="/footer/foot-twitter.png"
+              alt="Footer_Twitter"
               draggable="false"
               loading="lazy"
             />
@@ -88,6 +89,7 @@ const Footer = () => {
           <Link href="https://www.instagram.com/oskm.itb/" color="white">
             <Image
               src="/footer/foot-instagram.png"
+              alt="Footer_Instagram"
               draggable="false"
               loading="lazy"
             />
@@ -95,6 +97,7 @@ const Footer = () => {
           <Link href="https://www.youtube.com/channel/UCmkkBEqwMZ1SEZN937pdpgA" color="white">
             <Image
               src="/footer/foot-youtube.png"
+              alt="Footer_Youtube"
               draggable="false"
               loading="lazy"
             />
@@ -102,6 +105,7 @@ const Footer = () => {
           {/* <Link href="/" color="white">
             <Image
               src="/footer/foot-linkedin.png"
+              alt="Footer_Linkedin"
               draggable="false"
               loading="lazy"
             />
@@ -112,6 +116,7 @@ const Footer = () => {
           <HStack>
             <Image
               src="/footer/foot-itb.png"
+              alt="Footer_ITB"
               draggable="false"
               loading="lazy"
             />

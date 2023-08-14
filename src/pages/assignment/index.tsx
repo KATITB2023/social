@@ -48,7 +48,7 @@ const DailySideQuest: React.FC<{
           left={isToggled ? "65px" : "0"}
           transform={isToggled ? "translateX(65px)" : "translateX(-2px)"}
           transition="transform 0.07s"
-          zIndex="2"
+          zIndex="0"
         >
           <Box // Box Komet
             width="300px"
@@ -241,7 +241,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
               Deadline
             </Text>
             <Text color="#ffffff" fontFamily="body" fontSize="12px">
-              : {deadline.toLocaleDateString()}
+              : {deadline.toLocaleString("id-ID", { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
             </Text>
           </Flex>
           <Button
@@ -383,6 +383,7 @@ export default function AssignmentListPage() {
               maxW={"100%"}
               overflowY="auto"
               maxWidth={"100%"}
+              minHeight="50vh"
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",
@@ -417,6 +418,7 @@ export default function AssignmentListPage() {
               maxW={"100%"}
               overflowY="auto"
               maxWidth={"100%"}
+              minHeight="50vh"
               sx={{
                 "::-webkit-scrollbar": {
                   width: "11px",

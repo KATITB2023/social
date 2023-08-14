@@ -8,11 +8,17 @@ interface FooterProps {
   onSubmit: (text: string) => void;
   receiverId: string;
   isAnon: boolean;
-  isAnonRevealed : boolean,
-  setSender : React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  isAnonRevealed: boolean;
+  setSender: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
-const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: FooterProps) => {
+const Footer = ({
+  onSubmit,
+  receiverId,
+  isAnon,
+  isAnonRevealed,
+  setSender,
+}: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
@@ -36,7 +42,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
       handleSubmit(text);
     }
 
-    isTyping.mutate({ typing: true, receiverId });
+    isTyping.mutate({ receiverId });
   };
 
   const onKeyUpCustom: React.KeyboardEventHandler<HTMLTextAreaElement> = (
@@ -47,7 +53,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
 
   const onBlurCustom: React.FocusEventHandler<HTMLTextAreaElement> = () => {
     setEnterToPostMessage(true);
-    isTyping.mutate({ typing: false, receiverId });
+    isTyping.mutate({ receiverId });
   };
 
   return (
@@ -85,7 +91,10 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
             setAnonMenuOpen(!anonMenuOpen);
           }}
         >
-          <Image src="/components/anon_chat_page/anon_menu.png" />
+          <Image
+            src="/components/anon_chat_page/anon_menu.png"
+            alt="Anon_Menu"
+          />
           <Text color={"black"} size={"B4"} fontWeight={400}>
             {" "}
             Menu{" "}
@@ -115,14 +124,14 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         sx={{
           "::-webkit-scrollbar": {
             width: "11px",
-            position : "absolute",
-            right : "5px"
+            position: "absolute",
+            right: "5px",
           },
           "::-webkit-scrollbar-track": {
             background: "#2F2E2E",
             borderRadius: "5px",
-            marginY : "10px",
-            marginRight : "10px"
+            marginY: "10px",
+            marginRight: "10px",
           },
           "::-webkit-scrollbar-thumb": {
             background: "purple.2",
@@ -135,6 +144,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         cursor={"pointer"}
         display={text.length === 0 ? "none" : "block"}
         src="/components/chat_page/chat_submit.svg"
+        alt="Submit"
         borderRadius="full"
         padding={1.5}
         _hover={{
@@ -145,7 +155,13 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         }}
       />
 
-      {isAnon && anonMenuOpen && <AnonMenu setOpen={setAnonMenuOpen} setSender={setSender!} isRevealed={isAnonRevealed}/>}
+      {isAnon && anonMenuOpen && (
+        <AnonMenu
+          setOpen={setAnonMenuOpen}
+          setSender={setSender!}
+          isRevealed={isAnonRevealed}
+        />
+      )}
     </Flex>
   );
 };

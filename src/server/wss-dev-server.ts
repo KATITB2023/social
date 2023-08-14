@@ -30,14 +30,14 @@ void (() => {
   console.log(`WebSocket Server listening on ws://localhost:${port}`);
 
   // Start Schedule
-  currentlyTypingSchedule.start();
+  // currentlyTypingSchedule.start();
 
   // On SIGTERM
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
     // Stop Schedule
-    currentlyTypingSchedule.stop();
+    // currentlyTypingSchedule.stop();
 
     // Close WebSocket Server
     io.close();
