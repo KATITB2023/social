@@ -73,7 +73,7 @@ const updatePaging = async (
   return [...pagingArray];
 };
 
-const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
+const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat}) => {
   const { data: session } = useSession({ required: true });
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -221,6 +221,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
             count={item.unreadMessageCount}
             now={today}
             time={item.lastMessage.createdAt}
+            isSender={item.lastMessage.senderId === session?.user.id}
           />
         );
       })}
