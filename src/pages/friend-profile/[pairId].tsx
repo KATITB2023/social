@@ -2,19 +2,19 @@ import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { MdChatBubbleOutline, MdPersonPin } from "react-icons/md";
+import LoadingScreen from "~/components/LoadingScreen";
 import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import ComingSoon from "~/components/screen/ComingSoon";
 import { FUTUREFLAG } from "~/constant";
+import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
 import ProfilePage, {
   BackgroundAndNavigationBar,
   ProfilePicture,
 } from "../profile";
-import Layout from "~/layout";
-import LoadingScreen from "~/components/LoadingScreen";
-import { useEffect } from "react";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -27,6 +27,8 @@ export default function FriendProfilePage() {
   });
 
   const removeFriend = api.friend.removeFriend.useMutation();
+  const incrementVisit = api.friend.incrementVisitCounter.useMutation();
+
   const removeFriendExecutor = () => {
     removeFriend
       .mutateAsync({
@@ -42,9 +44,7 @@ export default function FriendProfilePage() {
   };
 
   useEffect(() => {
-    void api.friend.incrementVisitCounter
-      .useMutation()
-      .mutateAsync({ userId: pairId });
+    incrementVisit.mutate({ userId: pairId });
   }, []);
 
   const student = profileQuery.data;
