@@ -15,7 +15,6 @@ const CardLeaderboardSelf = ({
   ranking,
   points,
 }: CardProps) => {
-  console.log(ranking)
   return (
     <Flex
       w="80%"
