@@ -44,7 +44,7 @@ const SearchedFriends = (props:{
               id={filteredData.profile.id}
               statusFriend={filteredData.status ? filteredData.status : "NOT_FRIEND"}
             /> :
-            <h1>Tidak ditemukan</h1>
+            <h1>Tidak ditemukan pengguna</h1>
           }
 
         </Flex>
