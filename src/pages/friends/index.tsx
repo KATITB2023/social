@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import React, { useEffect,useState,useRef } from "react";
-import {  Flex, IconButton,} from "@chakra-ui/react";
+import React, { useEffect, useState, useRef } from "react";
+import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
 import Layout from "~/layout";
@@ -19,19 +19,19 @@ const ProfileFriendsPage: NextPage = () => {
     void router.push("/login");
   }
 
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
+    setSearchQuery(e.target.value);
+  };
 
   const cursor = 1 as number;
   const limit = 40 as number;
   const getRequestData = api.friend.friendList.useQuery({
-    status:'WAITING_FOR_ACCEPTANCE',
+    status: "WAITING_FOR_ACCEPTANCE",
     cursor,
-    limit
-  })
+    limit,
+  });
 
   const requestData = getRequestData.data;
   if (!requestData) {
@@ -43,47 +43,44 @@ const ProfileFriendsPage: NextPage = () => {
   const totalRequest = requestData.data.length;
 
   return (
-    <BackgroundAndNavigationBar>
-      <Flex
-        flexDirection="column"
-        justifyContent="space-between"
-        gap="20px"
-        mx="24px"
-        my="16px"
-        ref={flexRef}
-      >
+    <Layout title="Friends">
+      <BackgroundAndNavigationBar>
         <Flex
-          flexDirection="row"
-          alignItems="center"
+          flexDirection="column"
+          justifyContent="space-between"
           gap="20px"
+          mx="24px"
+          my="16px"
+          ref={flexRef}
         >
-          <TextInput placeholder="Add friends with pin!" value={searchQuery} onChange={handleChange}/> 
-          {
-            searchQuery != '' && (
-              <IconButton
-              aria-label="Search database"
-              icon={<IoCloseCircleOutline  />}
-              bgColor="transparent"
-              textColor="white"
-              size="sm"
-              fontSize='30px'
-              onClick={() => setSearchQuery('')}
-              display="inline-flex" 
-              alignItems="center"
+          <Flex flexDirection="row" alignItems="center" gap="20px">
+            <TextInput
+              placeholder="Add friends with pin!"
+              value={searchQuery}
+              onChange={handleChange}
             />
-
-            )
-          }  
-        </Flex>
-        {
-          searchQuery == '' && requestData.data ? (
-            <MenuList totalRequest={totalRequest} ref={flexRef}/>
+            {searchQuery != "" && (
+              <IconButton
+                aria-label="Search database"
+                icon={<IoCloseCircleOutline />}
+                bgColor="transparent"
+                textColor="white"
+                size="sm"
+                fontSize="30px"
+                onClick={() => setSearchQuery("")}
+                display="inline-flex"
+                alignItems="center"
+              />
+            )}
+          </Flex>
+          {searchQuery == "" && requestData.data ? (
+            <MenuList totalRequest={totalRequest} ref={flexRef} />
           ) : (
             <SearchedFriends searchQuery={searchQuery} />
-          )
-        }
-      </Flex>
-    </BackgroundAndNavigationBar>
+          )}
+        </Flex>
+      </BackgroundAndNavigationBar>
+    </Layout>
   );
 };
 
