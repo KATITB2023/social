@@ -1,7 +1,8 @@
 import { Card, Flex, Box, Text, Button, Icon, useToast } from "@chakra-ui/react";
 
-import { MdAddCircle } from "react-icons/md";
+import { MdAddCircle, MdOutlineChatBubbleOutline } from "react-icons/md";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 export default function AddFriendCard(props: {
   name: string;
@@ -146,30 +147,40 @@ const toast = useToast();
         {(() => {
         if (props.statusFriend === "FRIEND") {
           return (
-            <Button
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="center"
-            padding="4px 16px"
-            width="86px"
-            height="23px"
-            bg="#FFFC83"
-            borderRadius="12px"
-            >
-                {/* Label */}
-                <Text
-                width="100%"
-                height="15px"
-                size="A"
-                fontStyle="normal"
-                fontWeight={1000}
-                lineHeight="15px"
-                color="#4909B3"
+            <Link href={`/chat/${props.id}`}>
+                <Button
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    padding="4px 16px"
+                    width="86px"
+                    height="23px"
+                    gap="12px"
+                    bg="#FFFC83"
+                    borderRadius="12px"
                 >
-                Anda sudah berteman
-                </Text>
-            </Button>
+                    <Icon
+                        width="12px"
+                        height="12px"
+                        color="#4909B3"
+                        as={MdOutlineChatBubbleOutline}
+                    >
+                    </Icon>
+                    {/* Label */}
+                    <Text
+                        width="30px"
+                        height="15px"
+                        size="A"
+                        fontStyle="normal"
+                        fontWeight={1000}
+                        lineHeight="15px"
+                        color="#4909B3"
+                    >
+                    CHAT
+                    </Text>
+                </Button>
+            </Link>
           )
         } else if (props.statusFriend === "NOT_FRIEND") {
           return (
