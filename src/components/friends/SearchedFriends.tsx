@@ -33,7 +33,7 @@ const SearchedFriends = (props:{
 
     return(
       <>
-        <Text fontWeight='semibold' color='white' fontSize='H4'>Tambah Teman</Text>
+        <Text fontWeight='semibold' color='white' fontSize='H4'>Add Friends</Text>
         <Flex flexDirection='column' justifyContent='center' alignItems='center' gap='2'>
           {filteredData?.profile.id != undefined ? 
             <AddFriendCard
