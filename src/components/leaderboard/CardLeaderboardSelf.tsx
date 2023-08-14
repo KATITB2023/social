@@ -17,7 +17,7 @@ const CardLeaderboardSelf = ({
 }: CardProps) => {
   return (
     <Flex
-      w="80%"
+      w="90%"
       h="61px"
       position="relative"
       borderRadius="12px"
