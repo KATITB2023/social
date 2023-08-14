@@ -39,3 +39,9 @@ export interface UserQueue {
   isFindingFriend: boolean;
   gender: Gender;
 }
+
+export enum AskRevealStatus {
+  REJECTED,
+  ASK,
+  ACCEPTED,
+}

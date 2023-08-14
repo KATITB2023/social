@@ -21,6 +21,7 @@ import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+import { AskRevealStatus } from "~/server/types/message";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -190,15 +191,13 @@ const Room: NextPage = () => {
 
   useSubscription(
     "askReveal",
-    (data, askReveal) => {
+    (data, status) => {
       if (match) {
-        if (askReveal) {
+        if (status === AskRevealStatus.ASK) {
+          setKamuDirequest(true);
+        } else if (status === AskRevealStatus.ACCEPTED) {
           setMatch(data);
-          if (data.isRevealed) {
-            setYayTemanmu(true);
-          } else {
-            setKamuDirequest(true);
-          }
+          setYayTemanmu(true);
         } else {
           setTemanmuMenolak(true);
         }
@@ -293,9 +292,7 @@ const Room: NextPage = () => {
                   }}
                   receiverId={match.id}
                   isAnon={true}
-                  isAnonRevealed={
-                    !!(profileData !== undefined && match.isRevealed)
-                  }
+                  isAnonRevealed={profileData !== undefined && match.isRevealed}
                   setSender={setSender}
                 />
               </Flex>
@@ -343,7 +340,7 @@ const Room: NextPage = () => {
                   <TemanmuMenolak setOpen={setTemanmuMenolak} />
                 )}
                 {isKamuDirequest && (
-                  <KamuDirequest setOpen={setKamuDirequest} match={match} />
+                  <KamuDirequest setOpen={setKamuDirequest} />
                 )}
               </Flex>
             </Flex>
