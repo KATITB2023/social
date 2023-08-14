@@ -293,6 +293,7 @@ const Room: NextPage = () => {
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 fetchNextPage={fetchNextPage}
                 isFetchingNextPage={isFetchingNextPage}
+                isFinished={false}
               />
 
               <Divider />
