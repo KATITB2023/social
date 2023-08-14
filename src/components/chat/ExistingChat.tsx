@@ -45,8 +45,6 @@ const updatePaging = (
     },
     unreadMessageCount: unread,
   };
-  // console.log('test')
-  // console.log(unread)
   pagingArray.unshift(newItem);
   return pagingArray;
 };
@@ -57,7 +55,6 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [hardData, setHardData] = useState<NonAnonChatHeader[]>([]);
-  
 
   const { data, isFetching, fetchNextPage, hasNextPage, refetch } =
     api.message.chatHeader.useInfiniteQuery(
@@ -76,14 +73,13 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
     }
   );
 
-  const [newMessage, setNewMessage] = useState<Message>();
+  const [newMessage, setNewMessage] = useState<Message | null>();
 
   const today = new Date();
   useEffect(() => {
     today.setHours(0, 0, 0, 0);
     onNoChat(data?.pages[0]?.data.length === 0);
     void refetch();
-    // console.log('refetch when moundted again')
   }, []);
 
   useEffect(() => {
@@ -96,7 +92,6 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       }
     }
     setHardData(newHardData);
-    // console.log('refetch when data changed')
   }, [data]);
 
   useEffect(() => {
@@ -139,23 +134,17 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   }, [hasNextPage]);
 
   useEffect(() => {
-    // let ignore = false;
-
-    if (getUserProfile.data && newMessage ) {
-      setHardData((prevData) => {
-        const updatedPage = updatePaging(
-          prevData,
-          newMessage,
-          getUserProfile.data?.id ?? "",
-          getUserProfile.data?.name ?? "",
-          getUserProfile.data?.image ?? null,
-          newMessage.senderId === session?.user.id
-        );
-        console.log("masuk");
-        return updatedPage;
-      });
+    if (getUserProfile.data && newMessage) {
+      const updatedPage = updatePaging(
+        hardData,
+        newMessage,
+        getUserProfile.data?.id ?? "",
+        getUserProfile.data?.name ?? "",
+        getUserProfile.data?.image ?? null,
+        newMessage.senderId === session?.user.id
+      );
+      setHardData(updatedPage);
     }
-    // return () => {ignore = true};
   }, [newMessage, getUserProfile.data]);
 
   useSubscription(
