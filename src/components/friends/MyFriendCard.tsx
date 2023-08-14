@@ -78,7 +78,7 @@ export default function MyFriendCard(props: {
           height="33px"
         >
             <Text
-              width="30px"
+              width="100%"
               height="19px"
               size="B5"
               lineHeight="20px"
@@ -86,15 +86,16 @@ export default function MyFriendCard(props: {
               alignItems="flex-end"
               fontWeight={700}
               color="#FFFFFF"
+              noOfLines={1}
             >
             {
               // Ambil Kata terdepan
-              props.name.split(' ')[0]
+              props.name
             }
             </Text>
 
            <Text
-              width="127px"
+              width="100%"
               height="14px"
               size="A"
               lineHeight="16px"
@@ -105,7 +106,6 @@ export default function MyFriendCard(props: {
             >
             {
               props.bio
-
             }
             </Text>
         </Flex>

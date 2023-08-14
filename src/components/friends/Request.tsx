@@ -10,7 +10,6 @@ const Request = ({flexRef}:{
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const FlexRef = useRef<HTMLDivElement | null>(null);
   const [total, setTotal] = useState<number>(10);
-  const [maximum, setMaximum] = useState<boolean>(false);
   const { data, isFetching, fetchNextPage, hasNextPage } =
   api.friend.friendList.useInfiniteQuery(
     {
@@ -19,7 +18,7 @@ const Request = ({flexRef}:{
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-
+  console.log(data)
   useEffect(() => {
     const flexElement = FlexRef.current
 
@@ -45,7 +44,6 @@ const Request = ({flexRef}:{
 
     if (flexElement) {
       // Attach the scroll event listener to the VStack element
-      console.log("fetch")
       flexElement.addEventListener("scroll", handleScroll);
     }
 
@@ -77,9 +75,14 @@ const Request = ({flexRef}:{
             })
         })
       }
-      <Button onClick={() => setTotal(total + 10)}>
-        See more
-      </Button>
+      {data && data?.pages[0].nextCursor != undefined ? 
+        <Button  onClick={() => setTotal(total + 10)}>
+          See more
+        </Button>
+        : 
+        <></>
+      }
+      
       {isFetching && (
         <Box>
           <Spinner
