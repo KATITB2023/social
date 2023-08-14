@@ -2,7 +2,6 @@ import {
   Body,
   Container,
   Head,
-  Heading,
   Html,
   Img,
   Link,
@@ -28,10 +27,7 @@ export const ForgotPassword = ({
       <Body style={main}>
         <Container>
           <Section style={content}>
-            <Img
-              width={750}
-              src="https://github.com/KATITB2023/social/assets/88751131/cc5648e3-e8b1-49ea-8159-7788b63dccb2"
-            />
+            <Img width={750} src="https://cdn.oskmitb.com/mail-header" />
 
             <Row style={{ ...boxInfos, paddingBottom: "0" }}>
               <Column>
@@ -46,6 +42,7 @@ export const ForgotPassword = ({
                 </Text>
               </Column>
             </Row>
+
             <Row style={{ ...boxInfos, paddingTop: "0", paddingBottom: "0" }}>
               <Column style={containerButton} colSpan={2}>
                 <Button style={button} href={resetURL}>
@@ -69,13 +66,15 @@ export const ForgotPassword = ({
                 textAlign: "center",
                 fontSize: 12,
                 color: "rgb(0,0,0, 0.7)",
-                // fontFamily: "SomarRounded-Regular",
               }}
             >
               © Orientasi Studi Keluarga Mahasiswa (OSKM) ITB 2023 {"  |  "}
               <Link
                 href="https://oskmitb.com"
-                style={{ color: "rgb(0,0,0, 0.7)" }}
+                style={{
+                  color: "rgb(0,0,0, 0.7)",
+                  textDecoration: "underline",
+                }}
               >
                 oskmitb.com
               </Link>
@@ -88,3 +87,43 @@ export const ForgotPassword = ({
 };
 
 export default ForgotPassword;
+
+const main = {
+  backgroundColor: "transparent",
+};
+
+const paragraph = {
+  fontSize: 16,
+  color: "#000000",
+};
+
+const containerButton = {
+  display: "flex",
+  justifyContent: "center",
+  width: "100%",
+};
+
+const button = {
+  backgroundColor: "#62396C",
+  borderRadius: 15,
+  fontWeight: "bold",
+  cursor: "pointer",
+  margin: "0px 258px",
+};
+
+const buttonText = {
+  color: "#FFFC83",
+  fontWeight: "bold",
+  fontSize: 16,
+  margin: "10px 15px",
+};
+
+const content = {
+  border: "1px solid #E5E5E5",
+  borderRadius: 30,
+  overflow: "hidden",
+};
+
+const boxInfos = {
+  padding: "20px 40px",
+};
