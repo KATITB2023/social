@@ -64,9 +64,11 @@ const Footer = ({
       alignItems={"center"}
       paddingX={"10px"}
       paddingY={"15px"}
+      position={"fixed"}
+      bottom={"0"}
+      maxWidth={"500px"}
       borderTopLeftRadius={"10px"}
       borderTopRightRadius={"10px"}
-      position={"relative"}
       gap={"10px"}
       boxShadow={"0px 4px 30px white"}
     >

@@ -133,7 +133,8 @@ const Chat: NextPage = () => {
       <Flex
         w="100%"
         h="100vh"
-        pos={"relative"}
+        maxWidth={"500px"}
+        pos={"fixed"}
         backgroundImage="/components/chat_page/chat_bg.png"
         backgroundSize={"cover"}
         backgroundRepeat={"no-repeat"}
