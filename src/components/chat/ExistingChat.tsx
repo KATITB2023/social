@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import useSubscription from "~/hooks/useSubscription";
 import type { NonAnonChatHeader } from "~/server/types/message";
-import type { Message, Profile } from "@prisma/client";
+import type { Message } from "@prisma/client";
 
 interface existingChatProps {
   hidden: boolean;
@@ -59,7 +59,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
   const [hardData, setHardData] = useState<NonAnonChatHeader[]>([]);
   
 
-  const { data, isFetching, isError, fetchNextPage, hasNextPage, refetch } =
+  const { data, isFetching, fetchNextPage, hasNextPage, refetch } =
     api.message.chatHeader.useInfiniteQuery(
       {
         limit: 10,

@@ -26,7 +26,15 @@ const CustomImageLoader = React.forwardRef<
 
 const Image = chakra(CustomImageLoader, {
   shouldForwardProp: (prop) =>
-    ["width", "height", "src", "alt", "quality"].includes(prop),
+    [
+      "width",
+      "height",
+      "src",
+      "alt",
+      "quality",
+      "layout",
+      "onLoadingComplete",
+    ].includes(prop),
 });
 
 export default Image;

@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  Button,
   Flex,
   Text
 } from "@chakra-ui/react";

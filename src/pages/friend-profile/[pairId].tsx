@@ -32,10 +32,10 @@ export default function FriendProfilePage() {
       })
       .then(() => {
         <ProfilePage />;
-        console.log("Teman berhasil dihapus");
+        //console.log("Teman berhasil dihapus");
       })
-      .catch((error) => {
-        console.error("Error while removing friend:", error);
+      .catch(() => {
+        // console.error("Error while removing friend:", error);
       });
   };
 
@@ -61,7 +61,7 @@ export default function FriendProfilePage() {
       <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
         <Box>
           <Flex gap="14px">
-            <ProfilePicture size="130px" src={student.image} />
+            <ProfilePicture size={130} src={student.image} />
             <Flex
               flexDirection="column"
               flexGrow="0"

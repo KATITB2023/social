@@ -120,14 +120,12 @@ export default function ImageCropDrawer({
         flexDirection={"row"}
         background={"transparent"}
       >
-        <Box bgColor="navy.1" maxW={"375px"} width={"full"}>
+        <Box bgColor="navy.1" maxW={"500px"} width={"full"}>
           <DrawerHeader>
-            <Heading size="H4" color="yellow.5">
-              Crop Image
-            </Heading>
-          </DrawerHeader>
-          <DrawerBody>
-            <Flex flexDir="column" gap="30px" alignItems={"center"}>
+            <Flex flexDir="row" justifyContent={"space-between"}>
+              <Heading size="H4" color="yellow.5">
+                Crop Image
+              </Heading>
               <Button
                 onClick={() => {
                   onCancel();
@@ -140,6 +138,10 @@ export default function ImageCropDrawer({
                   Cancel
                 </Text>
               </Button>
+            </Flex>
+          </DrawerHeader>
+          <DrawerBody>
+            <Flex flexDir="column" gap="30px" alignItems={"center"}>
               <Flex
                 justifyContent={"center"}
                 position="relative"
@@ -178,7 +180,7 @@ export default function ImageCropDrawer({
                 {currPreview && (
                   <ProfilePicture
                     src={URL.createObjectURL(currPreview)}
-                    size="164px"
+                    size={164}
                     br="full"
                   />
                 )}
