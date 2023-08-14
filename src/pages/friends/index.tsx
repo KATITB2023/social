@@ -41,7 +41,7 @@ const ProfileFriendsPage: NextPage = () => {
     return <Layout title="Profile Friends"></Layout>;
   }
   const totalRequest = requestData.data.length;
-  console.log(requestData.data.length)
+
   return (
     <BackgroundAndNavigationBar>
       <Flex
