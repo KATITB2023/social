@@ -19,34 +19,26 @@ type searchFriendByPin = {
 const SearchedFriends = (props:{
     searchQuery: string
   }) => {
-    const [filteredData, setFilteredData] = useState<searchFriendByPin | null>(null)
     const filter = props.searchQuery
-    const result = api.friend.searchUsersByPin.useQuery({
-      query:filter
+    const result = api.friend.getOtherUserProfile.useQuery({
+      pin:filter
     })
-
-    useEffect(() => {
-      if(result.data) {
-        setFilteredData(result.data)
-      }
-    }, [result])
 
     return(
       <>
         <Text fontWeight='semibold' color='white' fontSize='H4'>Add Friends</Text>
         <Flex flexDirection='column' justifyContent='center' alignItems='center' gap='2'>
-          {filteredData?.profile.id != undefined ? 
+          {result.data != undefined && result.data.id != undefined ? 
             <AddFriendCard
-              image={filteredData.profile.image ?? undefined}
-              name={filteredData.profile.name}
-              bio={filteredData.profile.bio}
-              key={filteredData.profile.id}
-              id={filteredData.profile.id}
-              statusFriend={filteredData.status ? filteredData.status : "NOT_FRIEND"}
+              image={result.data.image ?? undefined}
+              name={result.data.name}
+              bio={result.data.bio}
+              key={result.data.id}
+              id={result.data.id}
+              statusFriend={result.data.status ? result.data.status : "NOT_FRIEND"}
             /> :
             <h1>Tidak ditemukan pengguna</h1>
           }
-
         </Flex>
       </>
     )
