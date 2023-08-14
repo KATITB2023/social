@@ -26,45 +26,22 @@ export const leaderboardRouter = createTRPCRouter({
       });
 
       const leaderboardData: Leaderboard[] = [];
-      let currentRank = (input.cursor - 1) * input.limit + 1;
-      let totalSamePoint = 0;
-      let stillSame = false;
+      const baseRank = (input.cursor - 1) * input.limit;
 
       const totalCount = await ctx.prisma.profile.aggregate({
         _count: { userId: true },
       });
 
-      for (const profile of profileData) {
-        // Cek poin sama/tidak dengan point user sebelumnya
-        if (
-          leaderboardData[0] &&
-          leaderboardData[
-            currentRank - (input.cursor - 1) * input.limit + totalSamePoint - 2
-          ]?.point == profile.point
-        ) {
-          currentRank--;
-          totalSamePoint++;
-          stillSame = true;
-        } else {
-          stillSame = false;
-        }
-
-        // Kondisi saat poin sudah tidak sama dan jumlah user dengan poin sama lebih dari 0
-        if (!stillSame && totalSamePoint) {
-          currentRank = currentRank + totalSamePoint;
-          totalSamePoint = 0;
-        }
-
+      profileData.forEach((profile, index) => {
         leaderboardData.push({
           userId: profile.userId,
           name: profile.name,
           profileImage: profile.image,
           point: profile.point,
-          rank: currentRank,
+          rank: baseRank + index + 1,
           nim: profile.user.nim,
         });
-        currentRank++;
-      }
+      });
 
       return {
         data: leaderboardData,
@@ -103,7 +80,7 @@ export const leaderboardRouter = createTRPCRouter({
         name: user.name,
         profileImage: user.image,
         point: user.point,
-        rank: selfPos.position,
+        rank: Number(selfPos.position) + 1,
         nim: user.user.nim,
       };
     }
