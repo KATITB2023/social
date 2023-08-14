@@ -20,8 +20,8 @@ import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
-import { api } from "~/utils/api";
 import { AskRevealStatus } from "~/server/types/message";
+import { api } from "~/utils/api";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -261,12 +261,12 @@ const Room: NextPage = () => {
             >
               <Header
                 name={
-                  profileData !== undefined && match.isRevealed
+                  profileData && match.isRevealed
                     ? profileData.name
                     : "Anonymous"
                 }
                 image={
-                  profileData !== undefined && match.isRevealed
+                  profileData && match.isRevealed
                     ? profileData.image
                     : undefined
                 }
