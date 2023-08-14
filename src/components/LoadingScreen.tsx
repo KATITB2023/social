@@ -4,7 +4,7 @@ import Navbar from "~/components/Navbar";
 
 function BackgroundAndNavbar({ children }: PropsWithChildren) {
   return (
-    <Box position="relative" minHeight="100vh" height="100%">
+    <Box position="relative" minHeight="100vh" height="100%" w={"full"}>
       <Image
         src="/components/anon_chat_page/anon_match_bg.png"
         alt="background"
