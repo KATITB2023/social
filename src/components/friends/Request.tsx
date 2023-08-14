@@ -1,19 +1,21 @@
-import { Flex,Box,Spinner } from '@chakra-ui/react'
+import { Flex,Box,Spinner, Button } from '@chakra-ui/react'
 import React from 'react'
 import RequestFriendCard from '~/components/friends/RequestFriendCard'
 import { api } from "~/utils/api";
-import { useRef,useEffect } from 'react';
+import { useRef,useEffect, useState } from 'react';
 
 const Request = ({flexRef}:{
   flexRef: React.MutableRefObject<HTMLDivElement | null> | null
 }) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const FlexRef = useRef<HTMLDivElement | null>(null);
+  const [total, setTotal] = useState<number>(10);
+  const [maximum, setMaximum] = useState<boolean>(false);
   const { data, isFetching, fetchNextPage, hasNextPage } =
   api.friend.friendList.useInfiniteQuery(
     {
       status: "WAITING_FOR_ACCEPTANCE",
-      limit: 10,
+      limit: total,
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
@@ -75,6 +77,9 @@ const Request = ({flexRef}:{
             })
         })
       }
+      <Button onClick={() => setTotal(total + 10)}>
+        See more
+      </Button>
       {isFetching && (
         <Box>
           <Spinner

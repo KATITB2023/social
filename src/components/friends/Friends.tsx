@@ -21,6 +21,7 @@ const Friends = () => {
               image={item.image ?? undefined}
               name={item.name}
               bio={item.bio}
+              id={item.id}
               key={index}
             />
           )

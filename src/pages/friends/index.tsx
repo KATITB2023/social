@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import React, { useEffect,useState,useRef } from "react";
 import {  Flex, IconButton,} from "@chakra-ui/react";
-import TextInput from "./components/TextInput";
-import Menu from "./components/Menu";
-import Friends from "./components/Friends";
-import Request from "./components/Request";
+import TextInput from "~/components/friends/TextInput";
+import Menu from "~/components/friends/Menu";
+import Friends from "~/components/friends/Friends";
+import Request from "~/components/friends/Request";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { SearchedFriends } from "./components/SearchedFriends";
+import { SearchedFriends } from "~/components/friends/SearchedFriends";
 
 
 const MenuList = (param:{
