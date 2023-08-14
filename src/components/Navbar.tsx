@@ -28,6 +28,7 @@ import {
   MdOutlinePersonOutline,
   MdPersonAddAlt,
 } from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { FUTUREFLAG } from "~/constant";
 import { api } from "~/utils/api";
 
@@ -242,14 +243,15 @@ const Navbar = () => {
           zIndex="2"
           alignItems={"center"}
         >
-          <Button variant={"unstyled"} onClick={onOpen}>
-            <Image
-              alt="Hamburger menu"
-              cursor={"pointer"}
-              src="/hamburgermenu.svg"
-              height="30px"
-              width="30px"
-            />
+          <Button
+            variant={"unstyled"}
+            onClick={onOpen}
+            border={"2px white solid"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <GiHamburgerMenu size={"25px"} />
           </Button>
         </Flex>
       </Flex>
