@@ -1,5 +1,6 @@
 import { Avatar, Flex, Spacer, Text } from "@chakra-ui/react";
 import CardHomeChat from "./CardHomeChat";
+import dayjs from "dayjs";
 
 interface CardExistingChatProps {
   name: string;
@@ -20,36 +21,16 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   time,
   path,
 }) => {
-  const timeLocalString = time.toLocaleString();
-  const timeLocal = new Date(timeLocalString);
+  const timeLocal = dayjs(time).tz("Asia/Jakarta");
+  const nowDay = dayjs(now).tz("Asia/Jakarta");
+  const sameDay = nowDay.isSame(timeLocal, "day");
 
-  const hour =
-    timeLocal.getHours() < 10
-      ? `0${timeLocal.getHours()}`
-      : timeLocal.getHours();
-  const minute =
-    timeLocal.getMinutes() < 10
-      ? `0${timeLocal.getMinutes()}`
-      : timeLocal.getMinutes();
-  const outputDate1 = `${hour}.${minute}`;
-
-  const sameDay =
-    now.getDate() === timeLocal.getDate() &&
-    timeLocal.getMonth() === timeLocal.getMonth();
-
-  const day = timeLocal.getDate();
-  const month = timeLocal.getMonth() + 1; // Add 1 to account for zero-based months
-  const year = timeLocal.getFullYear().toString().slice(2); // Extract the last two digits of the year
-
-  const formattedDay = day < 10 ? `0${day}` : day;
-  const formattedMonth = month < 10 ? `0${month}` : month;
-
-  // Concatenate the formatted values with the separator
-  const outputDate2 = `${formattedDay}/${formattedMonth}/${year}`;
+  const outputDate1 = timeLocal.format("HH.mm");
+  const outputDate2 = timeLocal.format("DD/MM/YY");
 
   return (
     <CardHomeChat path={path}>
-      <Flex p="0" m="0" direction="row" alignItems='center' >
+      <Flex p="0" m="0" direction="row" alignItems="center">
         <Avatar
           name={name}
           src={src}
@@ -59,7 +40,7 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
           fontSize="sm"
           mr="1rem"
         />
-        <Flex direction="column" justify="center" align="flex-start"  >
+        <Flex direction="column" justify="center" align="flex-start">
           <Text
             color="yellow.5"
             fontSize={"16px"}
