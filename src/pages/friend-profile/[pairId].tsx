@@ -8,12 +8,12 @@ import ComingSoon from "~/components/screen/ComingSoon";
 import { FUTUREFLAG } from "~/constant";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import NotFound from "../404";
 import ProfilePage, {
   BackgroundAndNavigationBar,
   ProfilePicture,
 } from "../profile";
 import Layout from "~/layout";
+import LoadingScreen from "~/components/LoadingScreen";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -42,12 +42,8 @@ export default function FriendProfilePage() {
 
   const student = profileQuery.data;
 
-  if (!student) {
-    return <NotFound />;
-  }
-
-  if (!session) {
-    return <NotFound />;
+  if (!student || !session) {
+    return <LoadingScreen />;
   }
 
   if (student.image === null || "" || undefined) {
@@ -58,7 +54,7 @@ export default function FriendProfilePage() {
     return <ComingSoon />;
   }
   return (
-    <Layout title={`Profile: ${student.name}`}>
+    <Layout title={`Profile ${student.name}`}>
       <BackgroundAndNavigationBar>
         <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
           <Box>
