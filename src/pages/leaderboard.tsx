@@ -67,24 +67,28 @@ const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
 
 interface LeaderboardParticipantProps {
   data: LeaderboardData[];
+  id: string;
 }
 
 const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
   data,
+  id
 }) => {
   return (
     <Flex alignContent="center" maxH="1353px" flexDirection="column" gap="15px">
       {data.map((item) => {
-        return (
-          <CardLeaderboardParticipant
-            key={item?.userId || "-"}
-            name={item?.name || "-"}
-            nim={item?.nim || "-"}
-            ranking={item?.rank || 0}
-            image={item?.profileImage || "/defaultprofpict.svg"}
-            points={item?.point || 0}
-          />
-        );
+        if(item.userId != id) {
+          return (
+            <CardLeaderboardParticipant
+              key={item?.userId || "-"}
+              name={item?.name || "-"}
+              nim={item?.nim || "-"}
+              ranking={item?.rank || 0}
+              image={item?.profileImage || "/defaultprofpict.svg"}
+              points={item?.point || 0}
+            />
+          );
+        }
       })}
     </Flex>
   );
@@ -241,6 +245,7 @@ const LeaderboardPage = () => {
 
         <LeaderboardParticipant
           data={students.data}
+          id={id}
         />
 
         <Container
