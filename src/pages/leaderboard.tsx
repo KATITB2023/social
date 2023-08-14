@@ -101,7 +101,6 @@ const LeaderboardPage = () => {
   const getDataSelfLeaderboard = api.leaderboard.getSelfLeaderboard.useQuery();
   const students = getDataLeaderboard.data;
   const selfData = getDataSelfLeaderboard.data;
-  console.log(selfData)
   if (!students) {
     return <NotFound />;
   }
