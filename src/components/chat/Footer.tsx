@@ -1,5 +1,5 @@
+import { Flex, Image, Text, Textarea } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Flex, Textarea, Image, Text } from "@chakra-ui/react";
 import ResizeTextarea from "react-textarea-autosize";
 import useEmit from "~/hooks/useEmit";
 import { AnonMenu } from "./AnonMenu";
@@ -64,9 +64,6 @@ const Footer = ({
       alignItems={"center"}
       paddingX={"10px"}
       paddingY={"15px"}
-      position={"fixed"}
-      bottom={"0"}
-      maxWidth={"500px"}
       borderTopLeftRadius={"10px"}
       borderTopRightRadius={"10px"}
       gap={"10px"}
