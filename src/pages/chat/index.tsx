@@ -17,13 +17,9 @@ export const getServerSideProps = withSession({ force: true });
 
 const ChatHome: NextPage = () => {
   const [openAddChat, setOpenAddChat] = useState(false);
-  const [isNoChat, setIsNoChat] = useState(true);
+  const [isNoChat, setIsNoChat] = useState(false);
   const addChatHandler = () => {
     setOpenAddChat(!openAddChat);
-  };
-
-  const isNoChatHandler = (val: boolean) => {
-    setIsNoChat(val);
   };
 
   if (!FUTUREFLAG) {
@@ -60,7 +56,7 @@ const ChatHome: NextPage = () => {
         <AddChatFromFriend hidden={!openAddChat} />
         <ExistingChat
           hidden={openAddChat !== isNoChat}
-          onNoChat={isNoChatHandler}
+          onNoChat={setIsNoChat}
         />
 
         <IconButton
