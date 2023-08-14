@@ -1,8 +1,9 @@
-import { Flex, Text} from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useEmit from "~/hooks/useEmit";
 import KamuYakin from "../PopupChat/KamuYakin";
 import BerhasilRequest from "../PopupChat/BerhasilRequest";
+import { AskRevealStatus } from "~/server/types/message";
 
 export const AnonMenu = ({
   setOpen,
@@ -25,13 +26,13 @@ export const AnonMenu = ({
 
   const handleAskReveal = () => {
     setBerhasilRequest(true);
-    askReveal.mutate({ agree: true });
+    askReveal.mutate({ state: AskRevealStatus.ASK });
   };
 
   const closeAll = () => {
     setKamuYakin(false);
     setBerhasilRequest(false);
-  }
+  };
 
   return (
     <>
@@ -162,7 +163,9 @@ export const AnonMenu = ({
             {isKamuYakin && (
               <KamuYakin setOpen={setKamuYakin} setSender={setSender} />
             )}
-            {isBerhasilRequest && <BerhasilRequest setOpen={setBerhasilRequest} />}
+            {isBerhasilRequest && (
+              <BerhasilRequest setOpen={setBerhasilRequest} />
+            )}
           </Flex>
         </Flex>
       </Flex>
