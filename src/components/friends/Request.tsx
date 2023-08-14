@@ -75,7 +75,7 @@ const Request = ({flexRef}:{
             })
         })
       }
-      {data && data!.pages[0]!.nextCursor != undefined ? 
+      {data && data.pages[0]!.nextCursor != undefined ? 
         <Button  onClick={() => setTotal(total + 10)}>
           See more
         </Button>
