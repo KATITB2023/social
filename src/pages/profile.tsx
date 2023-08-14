@@ -46,7 +46,7 @@ export default function ProfilePage() {
   }
   if (!selfProfile) return <Layout title="Profile"></Layout>;
   return (
-    <Layout title="Profile">
+    <Layout title={`Profile: ${selfProfile.name}`}>
       <BackgroundAndNavigationBar>
         <Flex
           flexDirection="column"

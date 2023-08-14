@@ -1,21 +1,27 @@
-import { Flex, Button } from '@chakra-ui/react'
-import MyFriendCard from '~/components/friends/MyFriendCard'
+import { Flex, Button } from "@chakra-ui/react";
+import MyFriendCard from "~/components/friends/MyFriendCard";
 import { api } from "~/utils/api";
-import { useRef,useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from "react";
+import Layout from "~/layout";
 
 const Friends = () => {
   const cursor = 1 as number;
   const [total, setTotal] = useState<number>(10);
   const getDataRequest = api.friend.friendList.useQuery({
-    status:'FRIEND',
+    status: "FRIEND",
     cursor,
-    limit: total
-  })
+    limit: total,
+  });
 
   return (
-    <Flex flexDirection='column' gap='2' justifyContent='center' alignItems='center' >
-      {
-        getDataRequest.data?.data?.map((item, index) => {
+    <Layout title="Friends">
+      <Flex
+        flexDirection="column"
+        gap="2"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {getDataRequest.data?.data?.map((item, index) => {
           return (
             <MyFriendCard
               image={item.image ?? undefined}
@@ -24,18 +30,16 @@ const Friends = () => {
               id={item.id}
               key={index}
             />
-          )
-        })
-      }
-      {getDataRequest.data && getDataRequest.data?.nextCursor != undefined ? 
-        <Button  onClick={() => setTotal(total + 10)}>
-          See more
-        </Button>
-        : 
-        <></>
-      }
-    </Flex>
-  )
-}
+          );
+        })}
+        {getDataRequest.data && getDataRequest.data?.nextCursor != undefined ? (
+          <Button onClick={() => setTotal(total + 10)}>See more</Button>
+        ) : (
+          <></>
+        )}
+      </Flex>
+    </Layout>
+  );
+};
 
-export default Friends
+export default Friends;
