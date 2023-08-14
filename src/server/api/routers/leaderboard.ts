@@ -1,6 +1,11 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { z } from "zod";
 import { type Leaderboard } from "~/server/types/leaderboard";
+import { TRPCError } from "@trpc/server";
 
 export const leaderboardRouter = createTRPCRouter({
   getLeaderboard: publicProcedure
@@ -68,4 +73,39 @@ export const leaderboardRouter = createTRPCRouter({
         totalPage: Math.ceil(totalCount._count.userId / input.limit),
       };
     }),
+  getSelfLeaderboard: protectedProcedure.query(
+    async ({ ctx }): Promise<Leaderboard> => {
+      const result = await ctx.prisma.$queryRaw<
+        { userId: string; point: number; position: number }[]
+      >`WITH ranking AS (
+                                                  SELECT "userId", point,
+                                                         row_number() over (ORDER BY point desc, name ) position
+                                                  FROM "Profile"
+                                              )
+                                              SELECT * FROM ranking WHERE "userId" = uuid(${ctx.session.user.id})`;
+
+      const selfPos = result[0];
+
+      if (!selfPos) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Self position not found",
+        });
+      }
+
+      const user = await ctx.prisma.profile.findFirstOrThrow({
+        where: { userId: ctx.session.user.id },
+        include: { user: true },
+      });
+
+      return {
+        userId: user.userId,
+        name: user.name,
+        profileImage: user.image,
+        point: user.point,
+        rank: selfPos.position,
+        nim: user.user.nim,
+      };
+    }
+  ),
 });
