@@ -31,7 +31,7 @@ const ChatHome: NextPage = () => {
   }
 
   return (
-    <Layout title="Home">
+    <Layout title="Chat">
       <Flex
         h="100vh"
         direction="column"
@@ -51,6 +51,7 @@ const ChatHome: NextPage = () => {
             isTyping={false}
             isAnon={false}
             handleClick={() => setOpenAddChat(!openAddChat)}
+            profileClick={() => undefined}
           />
         )}
         {/* </Box> */}

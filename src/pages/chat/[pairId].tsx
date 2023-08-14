@@ -152,7 +152,8 @@ const Chat: NextPage = () => {
             image={userPair?.image}
             isTyping={currentlyTyping}
             isAnon={false}
-            handleClick={() => router.back()}
+            handleClick={() => void router.back()}
+            profileClick={() => void router.push(`/friend-profile/${pairId}`)}
           />
           <Divider />
 
