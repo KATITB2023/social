@@ -358,10 +358,7 @@ export const friendRouter = createTRPCRouter({
         (input.nim && ctx.session.user.nim === input.nim)
       ) {
         // request user's own profile
-        throw new TRPCError({
-          message: "Cannot request user's own profile",
-          code: "BAD_REQUEST",
-        });
+        return null;
       }
 
       if (input.pin || input.userId || input.nim) {
@@ -388,10 +385,7 @@ export const friendRouter = createTRPCRouter({
 
         // user is not found
         if (!profile) {
-          throw new TRPCError({
-            message: "Profile not found",
-            code: "BAD_REQUEST",
-          });
+          return null;
         }
 
         // user is found

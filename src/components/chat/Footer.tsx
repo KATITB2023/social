@@ -1,5 +1,5 @@
 import { Flex, Image, Text, Textarea } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ResizeTextarea from "react-textarea-autosize";
 import useEmit from "~/hooks/useEmit";
 import { AnonMenu } from "./AnonMenu";
@@ -22,6 +22,7 @@ const Footer = ({
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
+  const lastIsTyping = useRef<number>(0);
   const isTyping = useEmit(clientEvent);
   const [anonMenuOpen, setAnonMenuOpen] = useState(false);
 
@@ -42,7 +43,11 @@ const Footer = ({
       handleSubmit(text);
     }
 
-    isTyping.mutate({ receiverId });
+    const now = new Date();
+    if (now.getTime() - lastIsTyping.current > 1000) {
+      isTyping.mutate({ receiverId });
+      lastIsTyping.current = now.getTime();
+    }
   };
 
   const onKeyUpCustom: React.KeyboardEventHandler<HTMLTextAreaElement> = (
