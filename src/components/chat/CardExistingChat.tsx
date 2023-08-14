@@ -21,18 +21,16 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   time,
   path,
 }) => {
+  const timeLocal = dayjs(time).tz("Asia/Jakarta");
+  const nowDay = dayjs(now).tz("Asia/Jakarta");
+  const sameDay = nowDay.isSame(timeLocal, "day");
 
-  const timeLocal = dayjs.utc(time).local();
-  const nowDay = dayjs(now)
-  const timeDay = dayjs(time)
-  const sameDay = nowDay.isSame(timeDay, "day")
-
-  const outputDate1 = timeLocal.format("HH.mm")
-  const outputDate2 = timeLocal.format("DD/MM/YY")
+  const outputDate1 = timeLocal.format("HH.mm");
+  const outputDate2 = timeLocal.format("DD/MM/YY");
 
   return (
     <CardHomeChat path={path}>
-      <Flex p="0" m="0" direction="row" alignItems='center' >
+      <Flex p="0" m="0" direction="row" alignItems="center">
         <Avatar
           name={name}
           src={src}
@@ -42,7 +40,7 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
           fontSize="sm"
           mr="1rem"
         />
-        <Flex direction="column" justify="center" align="flex-start"  >
+        <Flex direction="column" justify="center" align="flex-start">
           <Text
             color="yellow.5"
             fontSize={"16px"}
