@@ -60,9 +60,10 @@ exports.env = createEnv({
       // SMTP_PORTL must be a positive integer
       z.number().int().positive().min(1)
     ),
+    SESSION_COOKIE_DOMAIN: z.string().default("localhost"),
     SMTP_USER: z.string().min(1),
     SMTP_PASS: z.string().min(1),
-    WS_PORT: z.coerce.number().int().positive().default(3001)
+    WS_PORT: z.coerce.number().int().positive().default(3001),
   },
 
   /**
@@ -98,7 +99,8 @@ exports.env = createEnv({
     SMTP_PORT: process.env.SMTP_PORT,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
-    WS_PORT: process.env.WS_PORT
+    WS_PORT: process.env.WS_PORT,
+    SESSION_COOKIE_DOMAIN: process.env.SESSION_COOKIE_DOMAIN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
