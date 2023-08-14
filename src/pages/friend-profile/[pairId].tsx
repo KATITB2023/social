@@ -14,6 +14,7 @@ import ProfilePage, {
 } from "../profile";
 import Layout from "~/layout";
 import LoadingScreen from "~/components/LoadingScreen";
+import { useEffect } from "react";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -39,6 +40,12 @@ export default function FriendProfilePage() {
         // console.error("Error while removing friend:", error);
       });
   };
+
+  useEffect(() => {
+    void api.friend.incrementVisitCounter
+      .useMutation()
+      .mutateAsync({ userId: pairId });
+  }, []);
 
   const student = profileQuery.data;
 
