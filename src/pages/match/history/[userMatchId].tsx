@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { type Message } from "@prisma/client";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { Flex } from "@chakra-ui/react";
@@ -28,8 +28,9 @@ const ChatHistory: NextPage = () => {
     }
   );
 
-  const profileData = api.messageAnonymous.matchInfo.useQuery({userMatchId}).data;
-
+  const profileData = api.messageAnonymous.matchInfo.useQuery({
+    userMatchId,
+  }).data;
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -78,7 +79,7 @@ const ChatHistory: NextPage = () => {
             image={profileData?.profileImage}
             isTyping={currentlyTyping}
             isAnon={true}
-            handleClick={() => void router.push("/chat")}
+            handleClick={() => void router.push("/match/history")}
           />
           <Divider />
 
