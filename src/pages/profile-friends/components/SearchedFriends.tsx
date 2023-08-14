@@ -1,21 +1,33 @@
 import { Flex, Text } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import MyFriendCard from '~/components/friends/MyFriendCard'
+import AddFriendCard from '~/components/friends/AddFriendCard'
 import { api } from "~/utils/api";
 import type { UserProfile } from "~/server/types/user-profile";
+import { type FRIENDSHIP_STATUS } from "~/server/types/friendship";
+
+type searchFriendByPin = {
+  status: FRIENDSHIP_STATUS | undefined;
+    profile: {
+      nim: string;
+      name: string;
+      bio: string;
+      image: string | null;
+      id: string;
+  };
+}
 
 export const SearchedFriends = (props:{
     searchQuery: string
   }) => {
-    const [filteredData, setFilteredData] = useState<UserProfile[]|[] >([])
+    const [filteredData, setFilteredData] = useState<searchFriendByPin | null>(null)
     const filter = props.searchQuery
-    const result = api.friend.searchUsers.useQuery({
+    const result = api.friend.searchUsersByPin.useQuery({
       query:filter
     })
 
     useEffect(() => {
-      if (result.data) {
-        setFilteredData(result.data as UserProfile[])
+      if(result.data) {
+        setFilteredData(result.data)
       }
     }, [result])
 
@@ -23,18 +35,18 @@ export const SearchedFriends = (props:{
       <>
         <Text fontWeight='semibold' color='white' fontSize='H4'>My Friends</Text>
         <Flex flexDirection='column' justifyContent='center' alignItems='center' gap='2'>
-          {
-            filteredData
-            .filter(item => item.status === 'FRIEND') // Filter items with status FRIEND
-            .map((item, index) => (
-              <MyFriendCard
-                image={item.image ?? undefined}
-                name={item.name}
-                status={item.bio}
-                key={index}
-              />
-            ))
+          {filteredData?.profile.id != undefined ? 
+            <AddFriendCard
+              image={filteredData.profile.image ?? undefined}
+              name={filteredData.profile.name}
+              bio={filteredData.profile.bio}
+              key={filteredData.profile.id}
+              id={filteredData.profile.id}
+              statusFriend={filteredData.status ? filteredData.status : "NOT_FRIEND"}
+            /> :
+            <h1>Tidak ditemukan</h1>
           }
+          
         </Flex>
       </>
     )
