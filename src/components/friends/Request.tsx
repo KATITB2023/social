@@ -18,7 +18,7 @@ const Request = ({flexRef}:{
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-  console.log(data)
+
   useEffect(() => {
     const flexElement = FlexRef.current
 
