@@ -10,6 +10,7 @@ interface CardExistingChatProps {
   now: Date;
   time: Date;
   path: string;
+  isSender: boolean,
 }
 
 const CardExistingChat: React.FC<CardExistingChatProps> = ({
@@ -20,6 +21,7 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
   now,
   time,
   path,
+  isSender
 }) => {
   const timeLocal = dayjs(time).tz("Asia/Jakarta");
   const nowDay = dayjs(now).tz("Asia/Jakarta");
@@ -49,9 +51,10 @@ const CardExistingChat: React.FC<CardExistingChatProps> = ({
           >
             {name}
           </Text>
+          
           <Text
             pt="3px"
-            color="yellow.3"
+            color={isSender ? "green.5" : "yellow.3"}
             fontSize={"10px"}
             overflow={"hidden"}
             maxH="2.5rem"
