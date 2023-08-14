@@ -1,20 +1,18 @@
 import { loadEnvConfig } from "@next/env";
-
-// Load environment variables from .env before doing anything else
-loadEnvConfig(process.cwd());
-
 import { env } from "~/env.cjs";
 import http from "http";
 import next from "next";
 import { Server } from "socket.io";
 import parser from "socket.io-msgpack-parser";
 import { parse } from "url";
-import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import {
   getAdapter,
   setupSocket,
   type SocketServer,
 } from "~/server/socket/setup";
+
+// Load environment variables from .env before doing anything else
+loadEnvConfig(process.cwd());
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = process.env.NODE_ENV !== "production";
