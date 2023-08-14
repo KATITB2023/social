@@ -1,17 +1,36 @@
-import { 
-    Card, 
-    Flex, 
-    Box, 
-    Text, 
-    Button, 
-    IconButton 
-} from "@chakra-ui/react";
-
+import { Card, Flex, Box, Text, Button, IconButton } from "@chakra-ui/react";
 import { MdOutlineCancel } from "react-icons/md";
+import { useDisclosure } from "@chakra-ui/react";
+import DeleteFriendPopUp from "~/components/friends/DeleteFriendPopUp";
+import NewFriendPopUp from "~/components/friends/NewFriendPopUp";
+import { api } from "~/utils/api";
+import { useRouter } from "next/navigation";
 
-export default function RequestFriendCard() {
-    return (
-    <Card
+export default function RequestFriendCard(props: {
+  name: string;
+  image?: string;
+  bio: string;
+  id: string;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpen2,
+    onOpen: onOpen2,
+    onClose: onClose2,
+  } = useDisclosure();
+  const accept = api.friend.addFriend.useMutation();
+  const handleAccept = async () => {
+    onOpen2();
+    await accept.mutateAsync({
+      userId: props.id,
+    });
+  };
+
+  return (
+    <>
+      <DeleteFriendPopUp id={props.id} onClose={onClose} isOpen={isOpen} />
+      <NewFriendPopUp onClose={onClose2} isOpen={isOpen2} />
+      <Card
         display="flex"
         flexDirection="row"
         justifyContent="space-between"
@@ -63,6 +82,7 @@ export default function RequestFriendCard() {
                 border="0.2px solid #8D47E5"
                 boxShadow="0px 4px 30px #EABFFF"
                 borderRadius="50%"
+                {...(props.image && { backgroundImage: `url(${props.image})` })}
                 />
                 {/* Ellipse 2 */}
                 <Box
@@ -86,7 +106,7 @@ export default function RequestFriendCard() {
             >
                 {/* Tulip */}
                 <Text
-                width="30px"
+                width="100%"
                 height="19px"
                 size="B5"
                 lineHeight="20px"
@@ -94,21 +114,27 @@ export default function RequestFriendCard() {
                 alignItems="flex-end"
                 fontWeight={700}
                 color="#FFFFFF"
+                noOfLines={1}
                 >
-                Tulip
+                {
+                    props.name
+                }
                 </Text>
 
             {/* "yuk berteman!!" */}
             <Text
-                width="127px"
+                width="100%"
                 height="14px"
                 size="A"
                 lineHeight="16px"
                 display="flex"
                 alignItems="flex-end"
                 color="#FFFFFF"
+                noOfLines={1}
                 >
-                yuk berteman!!
+                {
+                    props.bio
+                }
                 </Text>
             </Flex>
             </Flex>
@@ -134,6 +160,7 @@ export default function RequestFriendCard() {
                 gap={12}
                 bg="#FFFC83"
                 borderRadius="12px"
+                onClick={()=>{void handleAccept()}}
             >
                 {/* Label */}
                 <Text
@@ -162,9 +189,11 @@ export default function RequestFriendCard() {
                 size='24px'
                 _hover={{ bg: "transparent" }}
                 icon={<MdOutlineCancel />}
+                onClick={onOpen}
                 />
             </Flex>
         </Flex>
     </Card>
+    </>
   );
 }
