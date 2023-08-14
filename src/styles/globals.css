@@ -12,3 +12,8 @@
   font-family: "SomarRounded-Regular";
   src: url("/fonts/SomarRounded-Regular.ttf");
 }
+
+.ReactCrop__child-wrapper {
+  width: 100%;
+  height: 100%;
+}

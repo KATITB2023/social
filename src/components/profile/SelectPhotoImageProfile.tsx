@@ -12,6 +12,7 @@ import React, { useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { sanitizeURL, uploadFile } from "~/utils/file";
 import ImageCropDrawer from "./ImageCropDrawer";
+import { getSquaredImage } from "./cropimage";
 
 export const SelectPhotoImageProfile = ({
   open,
@@ -38,10 +39,11 @@ export const SelectPhotoImageProfile = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function onImageChange(file: FileList) {
+  async function onImageChange(file: FileList) {
     if (file[0]) {
+      const image = await getSquaredImage(URL.createObjectURL(file[0]));
       onOpen();
-      setImageSelected(file[0]);
+      setImageSelected(image);
     }
   }
 
@@ -241,7 +243,7 @@ export const SelectPhotoImageProfile = ({
                         );
 
                         if (validExtensions.includes("." + fileExtension)) {
-                          onImageChange(files);
+                          void onImageChange(files);
                         } else {
                           toast({
                             title: `Invalid image extension : .${fileExtension}`,
