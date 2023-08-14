@@ -184,7 +184,7 @@ export const AnonMenu = ({
               <BerhasilRequest setOpen={setBerhasilRequest} />
             )}
             {isEhAdaApaNih && <EhAdaApaNih setOpen={setEhAdaApaNih}/>}
-            {isPeraturan && <Peraturan /> }
+            {isPeraturan && <Peraturan setOpen={setPeraturan}/> }
           </Flex>
         </Flex>
       </Flex>

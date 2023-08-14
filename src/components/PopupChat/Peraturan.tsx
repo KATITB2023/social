@@ -1,7 +1,11 @@
 import React from "react";
 import { Flex, Text, Button } from "@chakra-ui/react";
 
-export const Peraturan = () => {
+export const Peraturan = ({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <Flex
       bg={"#1F1F2E"}
@@ -25,14 +29,14 @@ export const Peraturan = () => {
       </Text>
       <Flex bg={"white"} p={3}>
         <Text color={"black"} borderRadius={"4px"} whiteSpace={"pre-line"}>
-      {`1. Tidak boleh melakukan harassment
+          {`1. Tidak boleh melakukan harassment
         2. Tidak boleh melakukan chat yang inappropriate
         3. Tidak boleh menyinggung SARA
         4. Menggunakan bahasa yang baik dan sopan
       `}
         </Text>
       </Flex>
-      <Button bg={"yellow.5"}>
+      <Button bg={"yellow.5"} onClick={() => setOpen(false)}>
         {" "}
         <Text color={"purple.2"} fontWeight={"bold"}>
           {" "}
