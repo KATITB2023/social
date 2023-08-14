@@ -57,7 +57,7 @@ const ProfileFriendsPage: NextPage = () => {
           alignItems="center"
           gap="20px"
         >
-          <TextInput placeholder="Tambahkan teman dengan pin!" value={searchQuery} onChange={handleChange}/> 
+          <TextInput placeholder="Add friends with pin!" value={searchQuery} onChange={handleChange}/> 
           {
             searchQuery != '' && (
               <IconButton
