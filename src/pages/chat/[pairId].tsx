@@ -133,12 +133,10 @@ const Chat: NextPage = () => {
       <Flex
         w="100%"
         h="100vh"
-        maxWidth={"500px"}
-        pos={"fixed"}
         backgroundImage="/components/chat_page/chat_bg.png"
         backgroundSize={"cover"}
         backgroundRepeat={"no-repeat"}
-        overflowY={"hidden"}
+        overflow={"hidden"}
       >
         {/* Room chat */}
         <Flex
@@ -147,6 +145,7 @@ const Chat: NextPage = () => {
           flexDir="column"
           justifyContent={"space-between"}
           zIndex={1}
+          overflow={"hidden"}
         >
           <Header
             name={userPair ? userPair.name : ""}
