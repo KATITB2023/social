@@ -149,7 +149,7 @@ export const friendRouter = createTRPCRouter({
       const friendStatus = getFriendStatus(friendships, currUser.id);
       if(users) {
         return {
-          status: friendStatus[users!.user.id],
+          status: friendStatus[users?.user.id],
           profile: {
             nim: users?.user.nim,
             name: users?.name,
@@ -162,11 +162,11 @@ export const friendRouter = createTRPCRouter({
         return {
           status: undefined,
           profile: {
-            nim: users?.user.nim,
-            name: users?.name,
-            bio: users?.bio,
-            image: users?.image,
-            id: users?.user.id
+            nim: undefined,
+            name: undefined,
+            bio: undefined,
+            image: undefined,
+            id: undefined
           },
         };
       }

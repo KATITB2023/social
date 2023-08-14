@@ -184,7 +184,7 @@ const toast = useToast();
             gap="6px"
             bg="#FFFC83"
             borderRadius="12px"
-            onClick={() => handleClickAddFriend()}
+            onClick={() => void handleClickAddFriend()}
             >
                 <Icon
                 width="12px"
