@@ -101,7 +101,7 @@ const LeaderboardPage = () => {
   const getDataSelfLeaderboard = api.leaderboard.getSelfLeaderboard.useQuery();
   const students = getDataLeaderboard.data;
   const selfData = getDataSelfLeaderboard.data;
-
+  console.log(selfData)
   if (!students) {
     return <NotFound />;
   }
@@ -235,7 +235,7 @@ const LeaderboardPage = () => {
                 name={selfData!.name}
                 nim={selfData!.nim}
                 image={selfData?.profileImage || "/defaultprofpict.svg"}
-                ranking={selfData!.rank}
+                ranking={selfData!.rank.toString()}
                 points={selfData!.point}
             />
         </Box>
