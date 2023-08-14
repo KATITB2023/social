@@ -14,7 +14,6 @@ export const getFriendStatus = (
       friendship.userInitiatorId === userId
         ? friendship.userReceiverId
         : friendship.userInitiatorId;
-    console.log(friendship);
     if (friendship.accepted) {
       statusMap[id] = "FRIEND";
     } else {

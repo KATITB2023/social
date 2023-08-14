@@ -1,17 +1,15 @@
-import { 
-    Card, 
-    Flex, 
-    Box, 
-    Text, 
-    Button, 
-    Icon 
-} from "@chakra-ui/react";
-
+import { Card, Flex, Box, Text, Button, Icon } from "@chakra-ui/react";
+import Link from "next/link";
 import { MdOutlineChatBubbleOutline } from "react-icons/md";
 
-export default function MyFriendCard() {
+export default function MyFriendCard(props: {
+  name: string;
+  image?: string;
+  bio: string;
+  id: string;
+}) {
   return (
-  <Card
+    <Card
     display="flex"
     flexDirection="row"
     justifyContent="space-between"
@@ -58,6 +56,7 @@ export default function MyFriendCard() {
               border="0.2px solid #8D47E5"
               boxShadow="0px 4px 30px #EABFFF"
               borderRadius="50%"
+              {...(props.image && { backgroundImage: `url(${props.image})` })}
             />
             <Box
               position="absolute"
@@ -79,7 +78,7 @@ export default function MyFriendCard() {
           height="33px"
         >
             <Text
-              width="30px"
+              width="100%"
               height="19px"
               size="B5"
               lineHeight="20px"
@@ -87,56 +86,66 @@ export default function MyFriendCard() {
               alignItems="flex-end"
               fontWeight={700}
               color="#FFFFFF"
+              noOfLines={1}
             >
-            Tulip
+            {
+              // Ambil Kata terdepan
+              props.name
+            }
             </Text>
 
            <Text
-              width="127px"
+              width="100%"
               height="14px"
               size="A"
               lineHeight="16px"
               display="flex"
               alignItems="flex-end"
               color="#FFFFFF"
+              noOfLines={1}
             >
-            yuk berteman!!
+            {
+              props.bio
+            }
             </Text>
         </Flex>
         </Flex>
-        <Button
-          display="flex"
-          flexDirection="row"
-          justifyContent="center"
-          alignItems="center"
-          padding="4px 16px"
-          width="86px"
-          height="23px"
-          gap="12px"
-          bg="#FFFC83"
-          borderRadius="12px"
-        >
-            <Icon
-              width="12px"
-              height="12px"
-              color="#4909B3"
-              as={MdOutlineChatBubbleOutline}
-            >
-            </Icon>
-            {/* Label */}
-            <Text
-              width="30px"
-              height="15px"
-              size="A"
-              fontStyle="normal"
-              fontWeight={1000}
-              lineHeight="15px"
-              color="#4909B3"
-            >
-            CHAT
-            </Text>
-        </Button>
+        <Link href={`chat/${props.id}`}>
+          <Button
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            padding="4px 16px"
+            width="86px"
+            height="23px"
+            gap="12px"
+            bg="#FFFC83"
+            borderRadius="12px"
+          >
+              <Icon
+                width="12px"
+                height="12px"
+                color="#4909B3"
+                as={MdOutlineChatBubbleOutline}
+              >
+              </Icon>
+              {/* Label */}
+              <Text
+                width="30px"
+                height="15px"
+                size="A"
+                fontStyle="normal"
+                fontWeight={1000}
+                lineHeight="15px"
+                color="#4909B3"
+              >
+              CHAT
+              </Text>
+          </Button>
+        </Link>
     </Flex>
   </Card>
+
   );
 }

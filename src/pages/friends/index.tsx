@@ -2,49 +2,14 @@ import { NextPage } from "next";
 import React, { useEffect,useState,useRef } from "react";
 import {  Flex, IconButton,} from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
-import Menu from "~/components/friends/Menu";
-import Friends from "~/components/friends/Friends";
-import Request from "~/components/friends/Request";
-import Link from "next/link";
-import { useSearchParams } from 'next/navigation'
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
 import Layout from "~/layout";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { SearchedFriends } from "~/components/friends/SearchedFriends";
-
-
-const MenuList = (param:{
-  totalRequest:number
-  ref: React.MutableRefObject<HTMLDivElement | null>
-}) => {
-  const params = useSearchParams()
-  const [state, setState] = useState<string>(params.get('status') ?? 'my-friends')
-  useEffect (() => {
-    setState(params.get('status') ?? 'my-friends')
-}, [params])
-  return (
-    <>
-      <Flex flexDirection="row" justifyContent="center" alignItems='center' gap="40px">
-      <Menu isActive={state=='my-friends'} onClick={()=>{setState('my-friends')}}>
-        <Link href='?status=my-friends' >My Friends</Link>
-      </Menu>
-      <Menu waiting={param.totalRequest} isActive={state=='request'} onClick={()=>{setState('request')}}>
-        <Link href='?status=request' >Request</Link>
-      </Menu>
-    </Flex>
-    {
-        state === 'my-friends' ? (
-            <Friends/>
-        ) : (
-            <Request flexRef={param.ref}/>
-        )
-    }
-    </>
-  )
-}
+import SearchedFriends from "~/components/friends/SearchedFriends";
+import MenuList from "~/components/friends/MenuList";
 
 const ProfileFriendsPage: NextPage = () => {
   const sessionStatus = useSession();
@@ -76,7 +41,7 @@ const ProfileFriendsPage: NextPage = () => {
     return <Layout title="Profile Friends"></Layout>;
   }
   const totalRequest = requestData.data.length;
-
+  console.log(requestData.data.length)
   return (
     <BackgroundAndNavigationBar>
       <Flex
@@ -92,7 +57,7 @@ const ProfileFriendsPage: NextPage = () => {
           alignItems="center"
           gap="20px"
         >
-          <TextInput placeholder="search friend" value={searchQuery} onChange={handleChange}/> 
+          <TextInput placeholder="Tambahkan teman dengan pin!" value={searchQuery} onChange={handleChange}/> 
           {
             searchQuery != '' && (
               <IconButton
@@ -111,7 +76,7 @@ const ProfileFriendsPage: NextPage = () => {
           }  
         </Flex>
         {
-          searchQuery == '' ? (
+          searchQuery == '' && requestData.data ? (
             <MenuList totalRequest={totalRequest} ref={flexRef}/>
           ) : (
             <SearchedFriends searchQuery={searchQuery} />

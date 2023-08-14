@@ -16,7 +16,7 @@ type searchFriendByPin = {
   };
 }
 
-export const SearchedFriends = (props:{
+const SearchedFriends = (props:{
     searchQuery: string
   }) => {
     const [filteredData, setFilteredData] = useState<searchFriendByPin | null>(null)
@@ -51,3 +51,5 @@ export const SearchedFriends = (props:{
       </>
     )
   }
+
+  export default SearchedFriends;
