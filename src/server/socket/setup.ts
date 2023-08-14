@@ -18,7 +18,6 @@ import {
   findMatchEvent,
 } from "~/server/socket/events/queue";
 import type { ServerEventsResolver } from "~/server/socket/helper";
-import { setupScheduleSocket } from "~/server/socket/schedule";
 import { type AskRevealStatus, type UserQueue } from "~/server/types/message";
 
 /**
@@ -148,7 +147,6 @@ export type SocketClientInServer<AuthRequired = false> = Socket<
 >;
 
 export function setupSocket(io: SocketServer) {
-  setupScheduleSocket(io);
   io.use((socket, next) => {
     getSession({ req: socket.request })
       .then((session) => {
