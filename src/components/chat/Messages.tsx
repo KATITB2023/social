@@ -73,6 +73,7 @@ const Messages = ({
       flexDir={"column-reverse"}
       overflowY={"scroll"}
       p="3"
+      mb="16vh"
       sx={{
         "::-webkit-scrollbar": {
           width: "11px",
