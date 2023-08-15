@@ -33,6 +33,8 @@ export default function ProfilePicture({
         onClick={onOpen}
         overflow="hidden"
         position={"relative"}
+        border={"5px black solid"}
+        boxShadow={"0px 0px 10px 1px #FFFFFF"}
       >
         {isImageLoading && <Spinner />}
         <Image
@@ -40,9 +42,11 @@ export default function ProfilePicture({
           src={src}
           alt="Profile Picture"
           width={size}
-          hidden={isImageLoading}
           height={size}
+          hidden={isImageLoading}
           position={"absolute"}
+          objectFit={"cover"}
+          objectPosition={"center"}
           inset={0}
         />
       </Button>
