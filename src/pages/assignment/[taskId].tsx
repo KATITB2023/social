@@ -115,7 +115,7 @@ export default function SubmissionPage() {
             mt="30px"
             mb="3px"
           >
-            Soal 01
+            Deskripsi Tugas
           </Text>
           <Text textAlign={"justify"}>
             <div dangerouslySetInnerHTML={{ __html: assignmentData.description ? assignmentData.description : '' }} />
