@@ -10,6 +10,7 @@ interface FooterProps {
   isAnon: boolean;
   isAnonRevealed: boolean;
   setSender: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  partnerId : string;
 }
 
 const Footer = ({
@@ -18,6 +19,7 @@ const Footer = ({
   isAnon,
   isAnonRevealed,
   setSender,
+  partnerId,
 }: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
@@ -164,6 +166,7 @@ const Footer = ({
           setOpen={setAnonMenuOpen}
           setSender={setSender!}
           isRevealed={isAnonRevealed}
+          partnerId={partnerId}
         />
       )}
     </Flex>

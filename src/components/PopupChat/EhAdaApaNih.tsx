@@ -3,8 +3,10 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 
 const EhAdaApaNih = ({
   setOpen,
+  onSubmit,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit : (text: string) => void;
 }) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -15,7 +17,8 @@ const EhAdaApaNih = ({
   };
 
   const handleSubmit = () => {
-
+    onSubmit(text);
+    setText("");
     setOpen(false);
   }
 

@@ -6,21 +6,25 @@ import BerhasilRequest from "../PopupChat/BerhasilRequest";
 import EhAdaApaNih from "../PopupChat/EhAdaApaNih";
 import { AskRevealStatus } from "~/server/types/message";
 import { Peraturan } from "../PopupChat/Peraturan";
+import { api } from "~/utils/api";
 
 export const AnonMenu = ({
   setOpen,
   setSender,
   isRevealed,
+  partnerId,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSender: React.Dispatch<React.SetStateAction<boolean>>;
   isRevealed: boolean;
+  partnerId: string;
 }) => {
   const askReveal = useEmit("askReveal");
   const [isKamuYakin, setKamuYakin] = useState(false);
   const [isBerhasilRequest, setBerhasilRequest] = useState(false);
   const [isEhAdaApaNih, setEhAdaApaNih] = useState(false);
   const [isPeraturan, setPeraturan] = useState(false);
+  const reportMutation = api.message.reportUser.useMutation();
 
   const handleEndMatch = () => {
     setKamuYakin(true);
@@ -34,16 +38,16 @@ export const AnonMenu = ({
 
   const handleReport = () => {
     setEhAdaApaNih(true);
-  }
+  };
 
   const handleRules = () => {
     setPeraturan(true);
-  }
+  };
 
   const closeAll = () => {
     setKamuYakin(false);
     setBerhasilRequest(false);
-    setEhAdaApaNih(false);  
+    setEhAdaApaNih(false);
     setPeraturan(false);
   };
 
@@ -150,7 +154,9 @@ export const AnonMenu = ({
       <Flex
         position={"fixed"}
         display={
-          (isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isPeraturan) ? "block" : "none"
+          isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isPeraturan
+            ? "block"
+            : "none"
         }
         w={"100vw"}
         h={"100vh"}
@@ -183,8 +189,18 @@ export const AnonMenu = ({
             {isBerhasilRequest && (
               <BerhasilRequest setOpen={setBerhasilRequest} />
             )}
-            {isEhAdaApaNih && <EhAdaApaNih setOpen={setEhAdaApaNih}/>}
-            {isPeraturan && <Peraturan setOpen={setPeraturan}/> }
+            {isEhAdaApaNih && (
+              <EhAdaApaNih
+                setOpen={setEhAdaApaNih}
+                onSubmit={(text) => {
+                  reportMutation.mutateAsync({
+                    message: text,
+                    userId : partnerId,
+                  })
+                }}
+              />
+            )}
+            {isPeraturan && <Peraturan setOpen={setPeraturan} />}
           </Flex>
         </Flex>
       </Flex>
