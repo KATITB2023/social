@@ -192,8 +192,8 @@ export const AnonMenu = ({
             {isEhAdaApaNih && (
               <EhAdaApaNih
                 setOpen={setEhAdaApaNih}
-                onSubmit={(text) => {
-                  reportMutation.mutateAsync({
+                onSubmit={ (text) => {
+                  void reportMutation.mutateAsync({
                     message: text,
                     userId : partnerId,
                   })
