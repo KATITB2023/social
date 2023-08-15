@@ -7,9 +7,9 @@ import { Redis } from "~/server/redis";
 import {
   anonTypingEvent,
   anonymousMessageEvent,
+  askRevealEvent,
   isTypingEvent,
   messageEvent,
-  askRevealEvent,
 } from "~/server/socket/events/message";
 import {
   cancelMatchEvent,
@@ -18,8 +18,7 @@ import {
   findMatchEvent,
 } from "~/server/socket/events/queue";
 import type { ServerEventsResolver } from "~/server/socket/helper";
-import { setupScheduleSocket } from "~/server/socket/schedule";
-import { type UserQueue } from "~/server/types/message";
+import { type AskRevealStatus, type UserQueue } from "~/server/types/message";
 
 /**
  * @description server events are events that are emmited from the client to the server.
@@ -73,12 +72,12 @@ export type ClientToServerEvents = ServerEventsResolver<typeof serverEvents>;
  */
 export type ServerToClientEvents = {
   hello: (name: string) => void;
-  whoIsTyping: (data: string[]) => void;
-  anonIsTyping: (data: string[]) => void;
+  whoIsTyping: (data: string) => void;
+  anonIsTyping: (data: string) => void;
   add: (post: Message) => void;
   match: (match: UserMatch) => void;
   endMatch: (match: UserMatch) => void;
-  askReveal: (match: UserMatch, askReveal: boolean) => void;
+  askReveal: (match: UserMatch, askReveal: AskRevealStatus) => void;
 };
 
 interface InterServerEvents {
@@ -148,7 +147,6 @@ export type SocketClientInServer<AuthRequired = false> = Socket<
 >;
 
 export function setupSocket(io: SocketServer) {
-  setupScheduleSocket(io);
   io.use((socket, next) => {
     getSession({ req: socket.request })
       .then((session) => {

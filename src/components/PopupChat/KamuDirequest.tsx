@@ -1,22 +1,19 @@
 import React from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import { type UserMatch } from "@prisma/client";
 import useEmit from "~/hooks/useEmit";
+import { AskRevealStatus } from "~/server/types/message";
 
 const KamuDirequest = ({
   setOpen,
-  match
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  match : UserMatch | null;
 }) => {
-
   const askReveal = useEmit("askReveal");
-  const handleAskReveal = (choice: boolean) => {
-    if (match) {
-      askReveal.mutate({ agree: choice });
-      setOpen(false);
-    }
+  const handleAskReveal = (accept: boolean) => {
+    askReveal.mutate({
+      state: accept ? AskRevealStatus.ACCEPTED : AskRevealStatus.REJECTED,
+    });
+    setOpen(false);
   };
 
   return (
@@ -42,7 +39,7 @@ const KamuDirequest = ({
         lineHeight="100%" /* 32px */
         letterSpacing="-0.32px"
       >
-        Kamu 
+        Kamu
         <br />
         direquest
         <br />

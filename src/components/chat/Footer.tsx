@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Flex, Textarea, Image, Text } from "@chakra-ui/react";
+import { Flex, Image, Text, Textarea } from "@chakra-ui/react";
+import React, { useRef, useState } from "react";
 import ResizeTextarea from "react-textarea-autosize";
 import useEmit from "~/hooks/useEmit";
 import { AnonMenu } from "./AnonMenu";
@@ -8,14 +8,21 @@ interface FooterProps {
   onSubmit: (text: string) => void;
   receiverId: string;
   isAnon: boolean;
-  isAnonRevealed : boolean,
-  setSender : React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  isAnonRevealed: boolean;
+  setSender: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
-const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: FooterProps) => {
+const Footer = ({
+  onSubmit,
+  receiverId,
+  isAnon,
+  isAnonRevealed,
+  setSender,
+}: FooterProps) => {
   const [enterToPostMessage, setEnterToPostMessage] = useState(true);
   const [text, setText] = useState<string>("");
   const clientEvent = isAnon ? "anonTyping" : "isTyping";
+  const lastIsTyping = useRef<number>(0);
   const isTyping = useEmit(clientEvent);
   const [anonMenuOpen, setAnonMenuOpen] = useState(false);
 
@@ -36,7 +43,11 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
       handleSubmit(text);
     }
 
-    isTyping.mutate({ typing: true, receiverId });
+    const now = new Date();
+    if (now.getTime() - lastIsTyping.current > 1000) {
+      isTyping.mutate({ receiverId });
+      lastIsTyping.current = now.getTime();
+    }
   };
 
   const onKeyUpCustom: React.KeyboardEventHandler<HTMLTextAreaElement> = (
@@ -47,7 +58,7 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
 
   const onBlurCustom: React.FocusEventHandler<HTMLTextAreaElement> = () => {
     setEnterToPostMessage(true);
-    isTyping.mutate({ typing: false, receiverId });
+    isTyping.mutate({ receiverId });
   };
 
   return (
@@ -60,7 +71,6 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
       paddingY={"15px"}
       borderTopLeftRadius={"10px"}
       borderTopRightRadius={"10px"}
-      position={"relative"}
       gap={"10px"}
       boxShadow={"0px 4px 30px white"}
     >
@@ -85,7 +95,10 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
             setAnonMenuOpen(!anonMenuOpen);
           }}
         >
-          <Image src="/components/anon_chat_page/anon_menu.png" alt="Anon_Menu"/>
+          <Image
+            src="/components/anon_chat_page/anon_menu.png"
+            alt="Anon_Menu"
+          />
           <Text color={"black"} size={"B4"} fontWeight={400}>
             {" "}
             Menu{" "}
@@ -115,14 +128,14 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         sx={{
           "::-webkit-scrollbar": {
             width: "11px",
-            position : "absolute",
-            right : "5px"
+            position: "absolute",
+            right: "5px",
           },
           "::-webkit-scrollbar-track": {
             background: "#2F2E2E",
             borderRadius: "5px",
-            marginY : "10px",
-            marginRight : "10px"
+            marginY: "10px",
+            marginRight: "10px",
           },
           "::-webkit-scrollbar-thumb": {
             background: "purple.2",
@@ -146,7 +159,13 @@ const Footer = ({ onSubmit, receiverId, isAnon, isAnonRevealed, setSender }: Foo
         }}
       />
 
-      {isAnon && anonMenuOpen && <AnonMenu setOpen={setAnonMenuOpen} setSender={setSender!} isRevealed={isAnonRevealed}/>}
+      {isAnon && anonMenuOpen && (
+        <AnonMenu
+          setOpen={setAnonMenuOpen}
+          setSender={setSender!}
+          isRevealed={isAnonRevealed}
+        />
+      )}
     </Flex>
   );
 };

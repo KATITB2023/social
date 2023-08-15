@@ -5,7 +5,7 @@ interface CardProps {
   name: string;
   nim: string;
   image: string | null;
-  ranking: number;
+  ranking: string;
   points: number;
 }
 const CardLeaderboardSelf = ({
@@ -15,10 +15,9 @@ const CardLeaderboardSelf = ({
   ranking,
   points,
 }: CardProps) => {
-
   return (
     <Flex
-      w="80%"
+      w="90%"
       h="61px"
       position="relative"
       borderRadius="12px"

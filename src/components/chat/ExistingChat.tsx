@@ -1,26 +1,27 @@
 import { Box, Spinner, VStack } from "@chakra-ui/react";
-import CardExistingChat from "./CardExistingChat";
-import { api } from "~/utils/api";
-import { useEffect, useRef, useState } from "react";
+import type { Message } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
 import useSubscription from "~/hooks/useSubscription";
 import type { NonAnonChatHeader } from "~/server/types/message";
-import type { Message } from "@prisma/client";
+import { api } from "~/utils/api";
+import CardExistingChat from "./CardExistingChat";
 
 interface existingChatProps {
   hidden: boolean;
   onNoChat: (status: boolean) => void;
 }
 
-const updatePaging = (
+const updatePaging = async (
   pagingArray: NonAnonChatHeader[],
   message: Message,
-  id: string,
-  name: string,
-  image: string | null,
-  sender: boolean
-): NonAnonChatHeader[] => {
+  sender: boolean,
+  getUserData: (
+    id: string
+  ) => Promise<{ id: string; name: string; image: string | null }>
+): Promise<NonAnonChatHeader[]> => {
   let unread = 0;
+  let user: { id: string; name: string; image: string | null } | null = null;
   for (let i = 0; i < pagingArray.length; i++) {
     if (
       (pagingArray[i]?.lastMessage.senderId === message.senderId &&
@@ -33,58 +34,69 @@ const updatePaging = (
         unread += 1;
       }
       pagingArray.splice(i, 1);
+      const currentUser = pagingArray[i]?.user;
+      if (currentUser) {
+        user = {
+          id: currentUser.id,
+          name: currentUser.name,
+          image: currentUser.profileImage,
+        };
+      }
       break;
     }
+  }
+  if (!user) {
+    const userData = await getUserData(
+      sender ? message.receiverId : message.senderId
+    );
+    if (userData) {
+      user = {
+        id: userData.id,
+        name: userData.name,
+        image: userData.image,
+      };
+    }
+  }
+  if (!user) {
+    throw new Error("User not found");
   }
   const newItem: NonAnonChatHeader = {
     lastMessage: message,
     user: {
-      id: id,
-      name: name,
-      profileImage: image,
+      id: user.id,
+      name: user.name,
+      profileImage: user.image,
     },
     unreadMessageCount: unread,
   };
-  // console.log('test')
-  // console.log(unread)
   pagingArray.unshift(newItem);
-  return pagingArray;
+  return [...pagingArray];
 };
 
-const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
+const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat}) => {
   const { data: session } = useSession({ required: true });
-  // const utils = createTRPCContext();
   const vStackRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [hardData, setHardData] = useState<NonAnonChatHeader[]>([]);
-  
+  const client = api.useContext();
 
-  const { data, isFetching, fetchNextPage, hasNextPage, refetch } =
+  const { data, isFetching, fetchNextPage, hasNextPage, isLoading } =
     api.message.chatHeader.useInfiniteQuery(
       {
         limit: 10,
       },
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
-  const [userIdFetched, setUserIdFetched] = useState<string>("");
-  const getUserProfile = api.friend.getOtherUserProfile.useQuery(
-    {
-      userId: userIdFetched,
-    },
-    {
-      enabled: userIdFetched !== "",
-    }
-  );
-
-  const [newMessage, setNewMessage] = useState<Message>();
-
   const today = new Date();
   useEffect(() => {
-    today.setHours(0, 0, 0, 0);
-    onNoChat(data?.pages[0]?.data.length === 0);
-    void refetch();
-    // console.log('refetch when moundted again')
-  }, []);
+    if (!isLoading) {
+      onNoChat(
+        hardData.length === 0 &&
+          data?.pages.length === 1 &&
+          data?.pages[0]?.data.length === 0
+      );
+    }
+  }, [isLoading, hardData.length, onNoChat, data?.pages]);
 
   useEffect(() => {
     let newHardData: NonAnonChatHeader[] = [];
@@ -96,7 +108,6 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
       }
     }
     setHardData(newHardData);
-    // console.log('refetch when data changed')
   }, [data]);
 
   useEffect(() => {
@@ -138,26 +149,6 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
     };
   }, [hasNextPage]);
 
-  useEffect(() => {
-    // let ignore = false;
-
-    if (getUserProfile.data && newMessage ) {
-      setHardData((prevData) => {
-        const updatedPage = updatePaging(
-          prevData,
-          newMessage,
-          getUserProfile.data?.id ?? "",
-          getUserProfile.data?.name ?? "",
-          getUserProfile.data?.image ?? null,
-          newMessage.senderId === session?.user.id
-        );
-        console.log("masuk");
-        return updatedPage;
-      });
-    }
-    // return () => {ignore = true};
-  }, [newMessage, getUserProfile.data]);
-
   useSubscription(
     "add",
     (post) => {
@@ -166,13 +157,35 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
           post.senderId === session?.user.id) &&
         post.userMatchId === null
       ) {
-        setUserIdFetched(
-          post.receiverId === session?.user.id ? post.senderId : post.receiverId
-        );
-        setNewMessage(post);
+        void updatePaging(
+          hardData,
+          post,
+          post.senderId === session?.user.id,
+          async (id) => {
+            const userData = client.friend.getOtherUserProfile.getData({
+              userId: id,
+            });
+            if (userData) {
+              return userData;
+            }
+            const data = await client.friend.getOtherUserProfile.fetch({
+              userId: id,
+            });
+            if (!data) {
+              throw new Error("User not found");
+            }
+            return data;
+          }
+        )
+          .then((newData) => {
+            setHardData(newData);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
-    [session]
+    [session?.user.id, hardData]
   );
 
   return (
@@ -208,6 +221,7 @@ const ExistingChat: React.FC<existingChatProps> = ({ hidden, onNoChat }) => {
             count={item.unreadMessageCount}
             now={today}
             time={item.lastMessage.createdAt}
+            isSender={item.lastMessage.senderId === session?.user.id}
           />
         );
       })}

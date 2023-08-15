@@ -1,8 +1,11 @@
-import { Flex, Text} from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useEmit from "~/hooks/useEmit";
 import KamuYakin from "../PopupChat/KamuYakin";
 import BerhasilRequest from "../PopupChat/BerhasilRequest";
+import EhAdaApaNih from "../PopupChat/EhAdaApaNih";
+import { AskRevealStatus } from "~/server/types/message";
+import { Peraturan } from "../PopupChat/Peraturan";
 
 export const AnonMenu = ({
   setOpen,
@@ -16,8 +19,9 @@ export const AnonMenu = ({
   const askReveal = useEmit("askReveal");
   const [isKamuYakin, setKamuYakin] = useState(false);
   const [isBerhasilRequest, setBerhasilRequest] = useState(false);
+  const [isEhAdaApaNih, setEhAdaApaNih] = useState(false);
+  const [isPeraturan, setPeraturan] = useState(false);
 
-  // End Match Handling
   const handleEndMatch = () => {
     setKamuYakin(true);
     setSender(true);
@@ -25,13 +29,23 @@ export const AnonMenu = ({
 
   const handleAskReveal = () => {
     setBerhasilRequest(true);
-    askReveal.mutate({ agree: true });
+    askReveal.mutate({ state: AskRevealStatus.ASK });
   };
+
+  const handleReport = () => {
+    setEhAdaApaNih(true);
+  }
+
+  const handleRules = () => {
+    setPeraturan(true);
+  }
 
   const closeAll = () => {
     setKamuYakin(false);
     setBerhasilRequest(false);
-  }
+    setEhAdaApaNih(false);  
+    setPeraturan(false);
+  };
 
   return (
     <>
@@ -45,6 +59,7 @@ export const AnonMenu = ({
         top={0}
         left={0}
         zIndex={1}
+        cursor={"pointer"}
         onClick={() => setOpen(false)}
       />
 
@@ -101,7 +116,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
-          // onClick={() => {}}
+          onClick={handleReport}
         >
           <Text> &#128680; &nbsp; Laporkan Teman </Text>
         </Flex>
@@ -125,7 +140,7 @@ export const AnonMenu = ({
           p={1.5}
           borderRadius={20}
           _hover={{ bgColor: "#4D5668" }}
-          // onClick={() => {}}
+          onClick={handleRules}
         >
           <Text> &#128220; &nbsp; Peraturan </Text>
         </Flex>
@@ -134,7 +149,9 @@ export const AnonMenu = ({
       {/* For Popup */}
       <Flex
         position={"fixed"}
-        display={isKamuYakin || isBerhasilRequest ? "block" : "none"}
+        display={
+          (isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isPeraturan) ? "block" : "none"
+        }
         w={"100vw"}
         h={"100vh"}
         top={0}
@@ -155,14 +172,19 @@ export const AnonMenu = ({
             h={"100vh"}
             bg={"black"}
             opacity={0.7}
-            onClick={() => closeAll}
+            onClick={closeAll}
+            cursor={"pointer"}
           />
 
           <Flex zIndex={4}>
             {isKamuYakin && (
               <KamuYakin setOpen={setKamuYakin} setSender={setSender} />
             )}
-            {isBerhasilRequest && <BerhasilRequest setOpen={setBerhasilRequest} />}
+            {isBerhasilRequest && (
+              <BerhasilRequest setOpen={setBerhasilRequest} />
+            )}
+            {isEhAdaApaNih && <EhAdaApaNih setOpen={setEhAdaApaNih}/>}
+            {isPeraturan && <Peraturan setOpen={setPeraturan}/> }
           </Flex>
         </Flex>
       </Flex>

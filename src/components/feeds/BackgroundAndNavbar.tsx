@@ -10,7 +10,7 @@ function BackgroundAndNavbar({ children }: PropsWithChildren) {
         position="relative"
         height="100%"
         overflow={"hidden"}
-        backgroundImage={"/feeds_bg.svg"}
+        backgroundImage={"/feeds_bg.png"}
         backgroundSize={"cover"}
         backgroundPosition={"center"}
         backgroundRepeat={"no-repeat"}

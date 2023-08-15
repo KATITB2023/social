@@ -8,12 +8,15 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
+  Image,
   Text,
   useToast,
 } from "@chakra-ui/react";
 import { TRPCClientError } from "@trpc/client";
-import React, { useEffect, useState } from "react";
-import Cropper from "react-easy-crop";
+import React, { useEffect, useRef, useState } from "react";
+import type { Crop, PixelCrop } from "react-image-crop";
+import { ReactCrop, centerCrop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import getCroppedImg from "~/components/profile/cropimage";
 import ProfilePicture from "./ProfilePicture";
 
@@ -22,20 +25,26 @@ interface ImageCropProps {
   onCancel: () => void;
 }
 
-interface CropPosition {
-  x: number;
-  y: number;
-}
-
-interface CropDimension {
-  width: number;
-  height: number;
-}
-
 interface useDisclosureType {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+}
+
+function centerAspectCrop(mediaWidth: number, mediaHeight: number) {
+  return centerCrop(
+    makeAspectCrop(
+      {
+        unit: "%",
+        width: 90,
+      },
+      1,
+      mediaWidth,
+      mediaHeight
+    ),
+    mediaWidth,
+    mediaHeight
+  );
 }
 
 export default function ImageCropDrawer({
@@ -51,15 +60,12 @@ export default function ImageCropDrawer({
     nim: string;
     updateImage: (file: File) => Promise<void>;
   }) {
-  const [zoom, setZoom] = useState<number>(1);
-  const [crop, setCrop] = useState<CropPosition>({ x: 0, y: 0 });
-  const aspect = { value: 1 / 1, text: "1/1" };
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<
-    CropPosition & CropDimension
-  >({ x: 0, y: 0, width: 0, height: 0 });
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
 
   const [currPreview, setCurrPreview] = useState<File | undefined>();
   const [imageURL, setImageURL] = useState<string>("");
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (imageFile) {
@@ -73,25 +79,19 @@ export default function ImageCropDrawer({
     }
   }, [imageFile]);
 
-  const onCropChange = (crop: CropPosition) => {
-    setCrop(crop);
-  };
-
-  const onZoomChange = (zoom: number) => {
-    setZoom(zoom);
-  };
-
-  const onCropComplete = (
-    _: unknown,
-    croppedAreaPixels: CropPosition & CropDimension
-  ) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  };
+  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    const { width, height } = e.currentTarget;
+    setCrop(centerAspectCrop(width, height));
+  }
 
   const toast = useToast();
   async function updateCurrPreview() {
+    if (!imageRef.current || !completedCrop) return;
     try {
-      const currPreviewFile = await getCroppedImg(imageURL, croppedAreaPixels);
+      const currPreviewFile = await getCroppedImg(
+        imageRef.current,
+        completedCrop
+      );
       setCurrPreview(currPreviewFile);
     } catch (e: unknown) {
       if (!(e instanceof TRPCClientError)) throw e;
@@ -127,17 +127,17 @@ export default function ImageCropDrawer({
                 Crop Image
               </Heading>
               <Button
-                  onClick={() => {
-                    onCancel();
-                    setCurrPreview(undefined);
-                  }}
-                  alignSelf="flex-end"
-                  backgroundColor="pink.3"
-                >
-                  <Text size="B3" color="white">
-                    Cancel
-                  </Text>
-                </Button>
+                onClick={() => {
+                  onCancel();
+                  setCurrPreview(undefined);
+                }}
+                alignSelf="flex-end"
+                backgroundColor="pink.3"
+              >
+                <Text size="B3" color="white">
+                  Cancel
+                </Text>
+              </Button>
             </Flex>
           </DrawerHeader>
           <DrawerBody>
@@ -147,25 +147,26 @@ export default function ImageCropDrawer({
                 position="relative"
                 width={"50%"}
                 aspectRatio={"1 / 1"}
+                background={"black"}
               >
-                <Cropper
-                  image={imageURL}
-                  zoom={zoom}
+                <ReactCrop
                   crop={crop}
-                  aspect={aspect.value}
-                  onCropChange={onCropChange}
-                  onZoomChange={onZoomChange}
-                  onCropComplete={onCropComplete}
-                  style={{
-                    containerStyle: {
-                      height: "100%",
-                      width: "100%",
-                      overflow: "hidden",
-                      background: "#000",
-                    },
-                    cropAreaStyle: { minHeight: "100%", minWidth: "100%" },
-                  }}
-                />
+                  onChange={(_, percentCrop) => setCrop(percentCrop)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  aspect={1 / 1}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Image
+                    ref={imageRef}
+                    src={imageURL}
+                    alt="crop"
+                    objectFit={"contain"}
+                    objectPosition={"center"}
+                    width={"100%"}
+                    height={"100%"}
+                    onLoad={onImageLoad}
+                  />
+                </ReactCrop>
               </Flex>
               <Button
                 onClick={() => {
@@ -180,7 +181,7 @@ export default function ImageCropDrawer({
                 {currPreview && (
                   <ProfilePicture
                     src={URL.createObjectURL(currPreview)}
-                    size="164px"
+                    size={164}
                     br="full"
                   />
                 )}
@@ -191,8 +192,6 @@ export default function ImageCropDrawer({
                   onClick={() => {
                     onClose();
                     void updateImage(currPreview);
-                    setZoom(1);
-                    setCrop({ x: 0, y: 0 });
                     setCurrPreview(undefined);
                   }}
                   backgroundColor={"yellow.5"}

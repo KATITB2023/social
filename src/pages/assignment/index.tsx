@@ -241,7 +241,7 @@ export const TugasDailyQuest: React.FC<TugasDailyQuestProps> = ({
               Deadline
             </Text>
             <Text color="#ffffff" fontFamily="body" fontSize="12px">
-              : {deadline.toLocaleDateString()}
+              : {deadline.toLocaleString("id-ID", { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
             </Text>
           </Flex>
           <Button

@@ -1,14 +1,23 @@
 import React, { useState, useRef } from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
 
-function EhAdaApaNih() {
+const EhAdaApaNih = ({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleInputChange = (event : React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
     adjustTextAreaHeight();
   };
+
+  const handleSubmit = () => {
+
+    setOpen(false);
+  }
 
   const adjustTextAreaHeight = () => {
     if (textAreaRef.current) {
@@ -65,7 +74,9 @@ function EhAdaApaNih() {
             rows={1}
             placeholder="| Ketik Laporanmu di sini."
             value={text}
-            onChange={(e) => {handleInputChange(e)}}
+            onChange={(e) => {
+              handleInputChange(e);
+            }}
             style={{
               height: "auto",
               overflowY: "hidden",
@@ -82,7 +93,6 @@ function EhAdaApaNih() {
               lineHeight: "150%" /* 24px */,
               resize: "none",
             }}
-            
           />
         </Flex>
         <Button
@@ -97,6 +107,7 @@ function EhAdaApaNih() {
           borderRadius="12px"
           background="yellow.5"
           cursor="pointer"
+          onClick={handleSubmit}
         >
           <Text
             color="purple.4"
@@ -124,6 +135,7 @@ function EhAdaApaNih() {
           borderColor="yellow.5"
           background="gray.600"
           cursor="pointer"
+          onClick={() => setOpen(false)}
         >
           <Text
             color="yellow.5"
@@ -139,6 +151,6 @@ function EhAdaApaNih() {
       </Flex>
     </Flex>
   );
-}
+};
 
 export default EhAdaApaNih;

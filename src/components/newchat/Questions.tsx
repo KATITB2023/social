@@ -1,10 +1,10 @@
-import QuestionBox from "./Box";
-import Eclipse from "./Eclipse";
-import MatchButton from "./Button";
-import { Text, Box, ButtonGroup, Image} from "@chakra-ui/react";
-import React from "react";
+import { Box, Button, ButtonGroup, Image, Text } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { ChatTopic } from "~/server/types/message";
+import QuestionBox from "./Box";
+import MatchButton from "./Button";
+import Eclipse from "./Eclipse";
 
 type FirstQuestionProps = {
   handlePageChange: (page: number) => void;
@@ -147,7 +147,8 @@ export const SecondQuestion: React.FC<SecondQuestionProps> = ({
         >
           {chatTopics.map((item) => {
             return (
-              <Box
+              <Button
+                variant={"unstyled"}
                 width={"154px"}
                 minHeight={"55px"}
                 paddingX={"20px"}
@@ -175,7 +176,7 @@ export const SecondQuestion: React.FC<SecondQuestionProps> = ({
                 >
                   {item}
                 </Text>
-              </Box>
+              </Button>
             );
           })}
         </Box>
@@ -238,14 +239,15 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
         justifyContent={"start"}
       >
         <Box width={"100%"} position="relative" cursor={"pointer"}>
-          <Image
-            src="BackButton.svg"
-            alt="Back Button"
+          <Button
+            onClick={() => handlePageChange(2)}
+            variant="unstyled"
             position={"absolute"}
             top={0}
             left={0}
-            onClick={() => handlePageChange(2)}
-          />
+          >
+            <Image src="BackButton.svg" alt="Back Button" />
+          </Button>
         </Box>
         <Box marginTop={2}>
           <Eclipse num="3" />
@@ -261,6 +263,7 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
           </Text>
           <Box display={"flex"} flexDirection={"column"} gap={"20px"}>
             <Box
+              role="button"
               border={"2px solid #FFFC83"}
               backgroundColor={!isFindingFriend ? "yellow.5" : "gray.600"}
               color={!isFindingFriend ? "purple.2" : "yellow.5"}
@@ -272,8 +275,8 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               alignSelf={"center"}
               cursor={"pointer"}
               onClick={() => setIsFindingFriend(false)}
-              _hover = {{
-                bg: isFindingFriend && "gray.500"
+              _hover={{
+                bg: isFindingFriend && "gray.500",
               }}
             >
               <Text
@@ -286,6 +289,7 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               </Text>
             </Box>
             <Box
+              role="button"
               border={"2px solid #FFFC83"}
               backgroundColor={isFindingFriend ? "yellow.5" : "gray.600"}
               color={isFindingFriend ? "purple.2" : "yellow.5"}
@@ -297,8 +301,8 @@ export const ThirdQuestion: React.FC<ThirdQuestionProps> = ({
               alignSelf={"center"}
               onClick={() => setIsFindingFriend(true)}
               cursor={"pointer"}
-              _hover = {{
-                bg: !isFindingFriend && "gray.500"
+              _hover={{
+                bg: !isFindingFriend && "gray.500",
               }}
             >
               <Text
