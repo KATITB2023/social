@@ -309,6 +309,11 @@ const Room: NextPage = () => {
                   isAnon={true}
                   isAnonRevealed={profileData !== undefined && match.isRevealed}
                   setSender={setSender}
+                  partnerId={
+                    match.firstUserId === session?.user.id
+                      ? match.secondUserId
+                      : match.firstUserId
+                  }
                 />
               </Flex>
             </Flex>
