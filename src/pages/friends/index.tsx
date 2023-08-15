@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";

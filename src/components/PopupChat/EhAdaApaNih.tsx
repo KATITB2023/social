@@ -4,9 +4,13 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 const EhAdaApaNih = ({
   setOpen,
   onSubmit,
+  setOpenNextPopup,
+  setSender,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit : (text: string) => void;
+  setOpenNextPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setSender: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -20,8 +24,9 @@ const EhAdaApaNih = ({
     onSubmit(text);
     setText("");
     setOpen(false);
+    setOpenNextPopup(true);
+    setSender(true);
   }
-
   const adjustTextAreaHeight = () => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
@@ -138,7 +143,7 @@ const EhAdaApaNih = ({
           borderColor="yellow.5"
           background="gray.600"
           cursor="pointer"
-          onClick={() => setOpen(false)}
+          onClick={() => {setOpen(false); setSender(false)}}
         >
           <Text
             color="yellow.5"

@@ -29,7 +29,6 @@ import {
   MdPersonAddAlt,
 } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FUTUREFLAG } from "~/constant";
 import { api } from "~/utils/api";
 
 type PairDrawerButton = {

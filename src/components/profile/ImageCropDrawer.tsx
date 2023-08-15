@@ -51,7 +51,6 @@ export default function ImageCropDrawer({
   imageFile,
   onCancel,
   isOpen,
-  onOpen,
   onClose,
   updateImage,
 }: ImageCropProps &

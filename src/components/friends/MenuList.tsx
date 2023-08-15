@@ -3,8 +3,8 @@ import Friends from "~/components/friends/Friends";
 import Request from "~/components/friends/Request";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect,useState,useRef } from "react";
-import {  Flex, IconButton,} from "@chakra-ui/react";
+import React, { useEffect,useState } from "react";
+import {  Flex } from "@chakra-ui/react";
 
 const MenuList = (param:{
     totalRequest:number
