@@ -64,7 +64,7 @@ export default function SubmissionPage() {
         }
         setIsDownloading(false);
       })
-      .catch((e) => {
+      .catch(() => {
         setIsDownloading(false);
       });
   };

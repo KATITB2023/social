@@ -5,8 +5,6 @@ import {
   VStack,
   Flex,
   Heading,
-  Text,
-  Button,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -27,7 +25,6 @@ import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { ChatTopic } from "~/server/types/message";
-import Link from "next/link";
 import PopUp from "~/components/PopupChat/PopUp";
 
 export const getServerSideProps = withSession({ force: true });

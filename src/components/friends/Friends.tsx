@@ -1,7 +1,7 @@
 import { Flex, Button } from "@chakra-ui/react";
 import MyFriendCard from "~/components/friends/MyFriendCard";
 import { api } from "~/utils/api";
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "~/layout";
 
 const Friends = () => {

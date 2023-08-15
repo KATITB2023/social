@@ -11,10 +11,7 @@ import { FUTUREFLAG } from "~/constant";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import ProfilePage, {
-  BackgroundAndNavigationBar,
-  ProfilePicture,
-} from "../profile";
+import { BackgroundAndNavigationBar, ProfilePicture } from "../profile";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -41,13 +38,12 @@ export default function FriendProfilePage() {
 
   const addFriendExecutor = () => {
     addFriend
-    .mutateAsync({
-      userId: pairId,
-    })
-    .catch(() => undefined)
+      .mutateAsync({
+        userId: pairId,
+      })
+      .catch(() => undefined);
     window.location.reload();
   };
-
 
   useEffect(() => {
     incrementVisit.mutate({ userId: pairId });

@@ -7,6 +7,7 @@ import EhAdaApaNih from "../PopupChat/EhAdaApaNih";
 import { AskRevealStatus } from "~/server/types/message";
 import { Peraturan } from "../PopupChat/Peraturan";
 import { api } from "~/utils/api";
+import SatSetSatSet from "../PopupChat/SatSetSatSet";
 
 export const AnonMenu = ({
   setOpen,
@@ -24,11 +25,11 @@ export const AnonMenu = ({
   const [isBerhasilRequest, setBerhasilRequest] = useState(false);
   const [isEhAdaApaNih, setEhAdaApaNih] = useState(false);
   const [isPeraturan, setPeraturan] = useState(false);
+  const [isSatSet, setSatSet] = useState(false);
   const reportMutation = api.message.reportUser.useMutation();
 
   const handleEndMatch = () => {
     setKamuYakin(true);
-    setSender(true);
   };
 
   const handleAskReveal = () => {
@@ -122,7 +123,7 @@ export const AnonMenu = ({
           _hover={{ bgColor: "#4D5668" }}
           onClick={handleReport}
         >
-          <Text> &#128680; &nbsp; Laporkan Teman </Text>
+          <Text> &#128680; &nbsp; Stop dan Laporkan Teman </Text>
         </Flex>
 
         {!isRevealed && (
@@ -154,7 +155,7 @@ export const AnonMenu = ({
       <Flex
         position={"fixed"}
         display={
-          isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isPeraturan
+          isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isSatSet || isPeraturan
             ? "block"
             : "none"
         }
@@ -193,13 +194,17 @@ export const AnonMenu = ({
               <EhAdaApaNih
                 setOpen={setEhAdaApaNih}
                 onSubmit={ (text) => {
+                  setSatSet(true);
                   void reportMutation.mutateAsync({
                     message: text,
                     userId : partnerId,
-                  })
+                  });
                 }}
+                setOpenNextPopup={setSatSet}
+                setSender={setSender}
               />
             )}
+            {isSatSet && <SatSetSatSet setOpen={setSatSet} />}
             {isPeraturan && <Peraturan setOpen={setPeraturan} />}
           </Flex>
         </Flex>
