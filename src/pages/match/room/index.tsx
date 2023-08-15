@@ -23,6 +23,7 @@ import { withSession } from "~/server/auth/withSession";
 import { AskRevealStatus } from "~/server/types/message";
 import { api } from "~/utils/api";
 import { Peraturan } from "~/components/PopupChat/Peraturan";
+import PopupWithBlackOverlay from "~/components/profile/PopupWithBlackOverlay";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -319,55 +320,24 @@ const Room: NextPage = () => {
             </Flex>
           </Flex>
 
-          {/* For Popup */}
-          <Flex
-            position={"fixed"}
-            display={
+          <PopupWithBlackOverlay
+            open={
               isYahTemanmu ||
               isYayTemanmu ||
               isTemanmuMenolak ||
               isKamuDirequest ||
               isPeraturan
-                ? "block"
-                : "none"
             }
-            w={"100vw"}
-            h={"100vh"}
-            top={0}
-            left={0}
-            zIndex={3}
+            setOpen={() => closeAll()}
           >
-            <Flex
-              position={"relative"}
-              w={"full"}
-              h={"full"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              {/* Black overlay */}
-              <Flex
-                position={"absolute"}
-                w={"100vw"}
-                h={"100vh"}
-                bg={"black"}
-                opacity={0.7}
-                cursor={"pointer"}
-                onClick={closeAll}
-              />
-
-              <Flex zIndex={4}>
-                {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
-                {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu} />}
-                {isTemanmuMenolak && (
-                  <TemanmuMenolak setOpen={setTemanmuMenolak} />
-                )}
-                {isKamuDirequest && (
-                  <KamuDirequest setOpen={setKamuDirequest} />
-                )}
-                {isPeraturan && <Peraturan setOpen={setPeraturan} />}
-              </Flex>
-            </Flex>
-          </Flex>
+            <>
+              {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
+              {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu} />}
+              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak} />}
+              {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} />}
+              {isPeraturan && <Peraturan setOpen={setPeraturan} />}
+            </>
+          </PopupWithBlackOverlay>
         </>
       )}
     </Layout>

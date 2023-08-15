@@ -8,6 +8,7 @@ import { AskRevealStatus } from "~/server/types/message";
 import { Peraturan } from "../PopupChat/Peraturan";
 import { api } from "~/utils/api";
 import SatSetSatSet from "../PopupChat/SatSetSatSet";
+import PopupWithBlackOverlay from "../profile/PopupWithBlackOverlay";
 
 export const AnonMenu = ({
   setOpen,
@@ -151,64 +152,41 @@ export const AnonMenu = ({
         </Flex>
       </Flex>
 
-      {/* For Popup */}
-      <Flex
-        position={"fixed"}
-        display={
-          isKamuYakin || isBerhasilRequest || isEhAdaApaNih || isSatSet || isPeraturan
-            ? "block"
-            : "none"
+      <PopupWithBlackOverlay
+        open={
+          isKamuYakin ||
+          isBerhasilRequest ||
+          isEhAdaApaNih ||
+          isSatSet ||
+          isPeraturan
         }
-        w={"100vw"}
-        h={"100vh"}
-        top={0}
-        left={0}
-        zIndex={3}
+        setOpen={() => closeAll()}
       >
-        <Flex
-          position={"relative"}
-          w={"full"}
-          h={"full"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          {/* Black overlay */}
-          <Flex
-            position={"absolute"}
-            w={"100vw"}
-            h={"100vh"}
-            bg={"black"}
-            opacity={0.7}
-            onClick={closeAll}
-            cursor={"pointer"}
-          />
-
-          <Flex zIndex={4}>
-            {isKamuYakin && (
-              <KamuYakin setOpen={setKamuYakin} setSender={setSender} />
-            )}
-            {isBerhasilRequest && (
-              <BerhasilRequest setOpen={setBerhasilRequest} />
-            )}
-            {isEhAdaApaNih && (
-              <EhAdaApaNih
-                setOpen={setEhAdaApaNih}
-                onSubmit={ (text) => {
-                  setSatSet(true);
-                  void reportMutation.mutateAsync({
-                    message: text,
-                    userId : partnerId,
-                  });
-                }}
-                setOpenNextPopup={setSatSet}
-                setSender={setSender}
-              />
-            )}
-            {isSatSet && <SatSetSatSet setOpen={setSatSet} />}
-            {isPeraturan && <Peraturan setOpen={setPeraturan} />}
-          </Flex>
-        </Flex>
-      </Flex>
+        <>
+          {isKamuYakin && (
+            <KamuYakin setOpen={setKamuYakin} setSender={setSender} />
+          )}
+          {isBerhasilRequest && (
+            <BerhasilRequest setOpen={setBerhasilRequest} />
+          )}
+          {isEhAdaApaNih && (
+            <EhAdaApaNih
+              setOpen={setEhAdaApaNih}
+              onSubmit={(text) => {
+                setSatSet(true);
+                void reportMutation.mutateAsync({
+                  message: text,
+                  userId: partnerId,
+                });
+              }}
+              setOpenNextPopup={setSatSet}
+              setSender={setSender}
+            />
+          )}
+          {isSatSet && <SatSetSatSet setOpen={setSatSet} />}
+          {isPeraturan && <Peraturan setOpen={setPeraturan} />}
+        </>
+      </PopupWithBlackOverlay>
     </>
   );
 };
