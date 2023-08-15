@@ -15,6 +15,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
+import { NavbarLoginPage } from "~/components/NavbarLoginPage";
 import { api } from "~/utils/api";
 
 type childrenOnlyProps = {
@@ -35,7 +36,7 @@ function Navbar2({ children }: childrenOnlyProps) {
           <LoginBackground />
         </Flex>
         <Flex flexDirection="column" h={"full"} w={"full"}>
-          <Navbar />
+          <NavbarLoginPage />
           {children}
         </Flex>
       </Box>

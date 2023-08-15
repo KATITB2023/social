@@ -28,6 +28,7 @@ import {
   MdOutlinePersonOutline,
   MdPersonAddAlt,
 } from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { FUTUREFLAG } from "~/constant";
 import { api } from "~/utils/api";
 
@@ -130,6 +131,11 @@ const Navbar = () => {
       route: "/chat",
     },
     {
+      icon: MdPersonAddAlt,
+      text: "Friends",
+      route: "/friends",
+    },
+    {
       icon: MdOutlinePersonOutline,
       text: "Profile",
       route: "/profile",
@@ -183,7 +189,7 @@ const Navbar = () => {
         position={"fixed"}
         insetX={0}
         zIndex={1}
-        backgroundImage="url('/navbarbg.svg')"
+        backgroundImage="url('/navbarbg.png')"
         backgroundSize={"cover"}
         maxWidth={"450px"}
         w={"90%"}
@@ -237,24 +243,15 @@ const Navbar = () => {
           zIndex="2"
           alignItems={"center"}
         >
-          {FUTUREFLAG && (
-            <Icon
-              cursor={"pointer"}
-              color="white"
-              as={MdPersonAddAlt}
-              height="30px"
-              width="30px"
-              marginRight="10px"
-            />
-          )}
-          <Button variant={"unstyled"} onClick={onOpen}>
-            <Image
-              alt="Hamburger menu"
-              cursor={"pointer"}
-              src="/hamburgermenu.svg"
-              height="30px"
-              width="30px"
-            />
+          <Button
+            variant={"unstyled"}
+            onClick={onOpen}
+            border={"2px white solid"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <GiHamburgerMenu size={"25px"} />
           </Button>
         </Flex>
       </Flex>
@@ -277,35 +274,37 @@ const Navbar = () => {
               zIndex="3"
             >
               {selfProfile && (
-                <Flex
-                  flexDir={"row"}
-                  gap={3}
-                  alignItems={"center"}
-                  mb={5}
-                  w={"full"}
-                >
-                  <Box
-                    minW={"60px"}
-                    minH={"60px"}
-                    backgroundImage={
-                      selfProfile.image
-                        ? selfProfile.image
-                        : "/defaultprofpict.svg"
-                    }
-                    backgroundPosition={"center"}
-                    backgroundSize={"cover"}
-                    borderRadius={"full"}
-                    border={"2px white solid"}
-                  />
-                  <Text
-                    fontSize={"20px"}
-                    fontWeight={"bold"}
-                    color={"yellow.5"}
-                    noOfLines={2}
+                <Link href={"/profile"}>
+                  <Flex
+                    flexDir={"row"}
+                    gap={3}
+                    alignItems={"center"}
+                    mb={5}
+                    w={"full"}
                   >
-                    {selfProfile.name}
-                  </Text>
-                </Flex>
+                    <Box
+                      minW={"60px"}
+                      minH={"60px"}
+                      backgroundImage={
+                        selfProfile.image
+                          ? selfProfile.image
+                          : "/defaultprofpict.svg"
+                      }
+                      backgroundPosition={"center"}
+                      backgroundSize={"cover"}
+                      borderRadius={"full"}
+                      border={"2px white solid"}
+                    />
+                    <Text
+                      fontSize={"20px"}
+                      fontWeight={"bold"}
+                      color={"yellow.5"}
+                      noOfLines={2}
+                    >
+                      {selfProfile.name}
+                    </Text>
+                  </Flex>
+                </Link>
               )}
 
               {DrawerArray.map((tuple: PairDrawerButton, idx: number) => {

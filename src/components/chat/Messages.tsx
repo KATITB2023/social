@@ -9,6 +9,7 @@ interface MessagesProps {
   hasNextPage?: boolean;
   isFetchingNextPage: boolean;
   fetchNextPage: () => void;
+  isFinished: boolean;
 }
 
 const Messages = ({
@@ -16,6 +17,7 @@ const Messages = ({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
+  isFinished,
 }: MessagesProps) => {
   const { data: session } = useSession({ required: true });
   const [lastMessageRef, setLastMessageRef] = useState<HTMLDivElement | null>(
@@ -66,12 +68,19 @@ const Messages = ({
     }
   }, [lastMessageRef, messages[0]?.senderId, session?.user.id]);
 
+  const lastMessageDate = messages[messages.length - 1]?.createdAt
+    .getDate()
+    .toString();
+  const lastMessageMonth = messages[messages.length - 1]
+    ? (messages[messages.length - 1]!.createdAt.getMonth() + 1).toString()
+    : "0";
+
   return (
     <Flex
       w={"full"}
       h={"full"}
       flexDir={"column-reverse"}
-      overflowY={"scroll"}
+      overflowY={"auto"}
       p="3"
       sx={{
         "::-webkit-scrollbar": {
@@ -88,6 +97,44 @@ const Messages = ({
       }}
       ref={containerRef}
     >
+      {/* Description for chat history */}
+      {isFinished && messages.length > 0 && (
+        <Flex
+          maxW={"75%"}
+          bgColor={"whiteAlpha.400"}
+          mx={"auto"}
+          px={4}
+          py={1}
+          borderRadius={"full"}
+          mt={4}
+        >
+          {messages[messages.length - 1] && (
+            <Text textAlign={"center"}>
+              Pembicaraan berakhir pada {lastMessageDate}
+              {"/"}
+              {lastMessageMonth}
+            </Text>
+          )}
+        </Flex>
+      )}
+
+      {isFinished && messages.length === 0 && (
+        <Flex
+          maxW={"75%"}
+          bgColor={"whiteAlpha.400"}
+          mx={"auto"}
+          px={4}
+          py={1}
+          borderRadius={"full"}
+          mt={4}
+        >
+          <Text textAlign={"center"}>
+            {" "}
+            Tidak ada pembicaraan pada ruangan ini.{" "}
+          </Text>
+        </Flex>
+      )}
+
       {messages.map((item, idx) => {
         if (item.senderId === session?.user.id) {
           const date = dayjs(item.createdAt).tz("Asia/Jakarta");

@@ -1,16 +1,16 @@
-import type { GetServerSidePropsContext } from "next";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { type UserRole } from "@prisma/client";
+import { compare } from "bcrypt";
+import type { GetServerSidePropsContext } from "next";
 import {
-  type NextAuthOptions,
+  getServerSession,
   type DefaultSession,
   type DefaultUser,
-  getServerSession,
+  type NextAuthOptions,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcrypt";
-import { type UserRole } from "@prisma/client";
-import { prisma } from "~/server/db";
 import { env } from "~/env.cjs";
+import { prisma } from "~/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: env.SESSION_MAXAGE,
   },
   callbacks: {
-    session: async ({ session, token, trigger }) => {
+    session: ({ session, token }) => {
       const payload = {
         ...session,
         user: {
@@ -59,18 +59,6 @@ export const authOptions: NextAuthOptions = {
           role: token.role,
         },
       };
-
-      if (trigger === "update") {
-        const profile = await prisma.profile.findUnique({
-          where: {
-            userId: session.user.id,
-          },
-        });
-
-        payload.user.name = profile?.name;
-        payload.user.email = profile?.email;
-        payload.user.image = profile?.image;
-      }
 
       return payload;
     },
@@ -83,6 +71,21 @@ export const authOptions: NextAuthOptions = {
     },
   },
   adapter: PrismaAdapter(prisma),
+  cookies: {
+    sessionToken: {
+      name:
+        env.NODE_ENV === "development"
+          ? "next-auth.session-token"
+          : "__Secure-next-auth.session-token",
+      options: {
+        domain: env.SESSION_COOKIE_DOMAIN,
+        httpOnly: true,
+        maxAge: env.SESSION_MAXAGE,
+        path: "/",
+        secure: true,
+      },
+    },
+  },
   providers: [
     /**
      * ...add more providers here.

@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import parser from "socket.io-msgpack-parser";
 import { env } from "~/env.cjs";
-import { currentlyTypingSchedule } from "~/server/socket/schedule";
 import type { SocketServer } from "~/server/socket/setup";
 import { getAdapter, setupSocket } from "~/server/socket/setup";
 
@@ -30,14 +29,14 @@ void (() => {
   console.log(`WebSocket Server listening on ws://localhost:${port}`);
 
   // Start Schedule
-  currentlyTypingSchedule.start();
+  // currentlyTypingSchedule.start();
 
   // On SIGTERM
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
     // Stop Schedule
-    currentlyTypingSchedule.stop();
+    // currentlyTypingSchedule.stop();
 
     // Close WebSocket Server
     io.close();

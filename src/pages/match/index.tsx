@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Image, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  VStack,
+  Flex,
+  Heading,
+  Text,
+  Button,
+} from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -19,6 +27,8 @@ import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { ChatTopic } from "~/server/types/message";
+import Link from "next/link";
+import PopUp from "~/components/PopupChat/PopUp";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -33,6 +43,25 @@ const Match: NextPage = () => {
   const [foundMatch, setFoundMatch] = useState<boolean>(false);
   const router = useRouter();
   useSession({ required: true });
+  const [loadingSeconds, setLoadingSeconds] = useState(0);
+  const [notFoundPopUp, setNotFoundPopUp] = useState(false);
+
+  useEffect(() => {
+    if (loadingSeconds > 0) {
+      const timer = setInterval(
+        () => setLoadingSeconds(loadingSeconds - 1),
+        1000
+      );
+      return () => clearInterval(timer);
+    } else {
+      if (isLoading) {
+        cancelEmit.mutate({});
+        setNotFoundPopUp(true);
+      } else {
+        return () => undefined;
+      }
+    }
+  }, [loadingSeconds]);
 
   const checkEmit = useEmit("checkMatch", {
     onSuccess: (data) => {
@@ -48,6 +77,7 @@ const Match: NextPage = () => {
   });
   const queueEmit = useEmit("findMatch");
   const cancelEmit = useEmit("cancelMatch");
+
   useEffect(() => {
     checkEmit.mutate({});
     return () => {
@@ -60,6 +90,7 @@ const Match: NextPage = () => {
   const findMatch = () => {
     if (!queued.current && needQueue && !foundMatch) {
       setIsLoading(true);
+      setLoadingSeconds(60);
       queueEmit.mutate({
         isAnonymous: isAnonymous,
         isFindingFriend: isFindingFriend,
@@ -77,8 +108,64 @@ const Match: NextPage = () => {
   const handlePageChange = (page: number) => {
     setQuestionPage(page);
   };
+
+  const handleNotFound = () => {
+    setIsLoading(false);
+    setLoadingSeconds(0);
+    void router.push("/chat");
+  };
+
   if (isLoading) {
-    return <LoadingScreen />;
+    return (
+      <Flex position={"relative"} w={"full"}>
+        <LoadingScreen />
+        <Flex mx={"auto"} position={"absolute"} bottom={10} right={10}>
+          <Heading color={"yellow.5"} size={"H3"}>
+            {" "}
+            {loadingSeconds}{" "}
+          </Heading>
+        </Flex>
+
+        {/* For NotFoundPopup */}
+        <Flex
+          position={"fixed"}
+          display={notFoundPopUp ? "block" : "none"}
+          w={"100vw"}
+          h={"100vh"}
+          top={0}
+          left={0}
+          zIndex={3}
+        >
+          <Flex
+            position={"relative"}
+            w={"full"}
+            h={"full"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            {/* Black overlay */}
+            <Flex
+              position={"absolute"}
+              w={"100vw"}
+              h={"100vh"}
+              bg={"black"}
+              opacity={0.7}
+              onClick={handleNotFound}
+            />
+
+            <Flex zIndex={4}>
+              <PopUp
+                content1="Maaf,"
+                content2="tidak ada yang"
+                content3="mau ngobrol"
+                content4="dengan kamu. :("
+                setOpen={handleNotFound}
+              />
+            </Flex>
+          </Flex>
+        </Flex>
+      </Flex>
+    );
   }
 
   if (!FUTUREFLAG) {

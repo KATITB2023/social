@@ -15,6 +15,8 @@ export default function FeedsPage() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const bottomView = useInView(bottomRef);
 
+  const rankdata = api.leaderboard.getSelfLeaderboard.useQuery();
+
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     api.feed.getFeeds.useInfiniteQuery(
       {},

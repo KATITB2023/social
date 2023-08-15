@@ -1,16 +1,15 @@
 import {
-  type ResponsiveValue,
-  useDisclosure,
-  Image,
+  Button,
   Modal,
-  ModalOverlay,
-  ModalContent,
   ModalCloseButton,
-  Box,
+  ModalContent,
+  ModalOverlay,
   Spinner,
-  Flex,
+  useDisclosure,
+  type ResponsiveValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import Image from "../Image";
 
 export default function ProfilePicture({
   src = "/defaultprofpict.svg",
@@ -25,37 +24,40 @@ export default function ProfilePicture({
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
   return (
     <>
-      <Box
+      <Button
+        variant={"unstyled"}
         alignSelf="center"
         borderRadius={br}
         width={size}
         height={size}
         onClick={onOpen}
         overflow="hidden"
+        position={"relative"}
       >
-        <Flex justifyContent="center" alignItems="center">
-          {isImageLoading && <Spinner />}
-
-          <Image
-            onLoad={() => setIsImageLoading(false)}
-            src={src}
-            alt="Profile Picture"
-            width="100%"
-            hidden={isImageLoading}
-            height="100&"
-          />
-        </Flex>
-      </Box>
+        {isImageLoading && <Spinner />}
+        <Image
+          onLoadingComplete={() => setIsImageLoading(false)}
+          src={src}
+          alt="Profile Picture"
+          width={size}
+          hidden={isImageLoading}
+          height={size}
+          position={"absolute"}
+          inset={0}
+        />
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent backgroundColor="black" justifyContent="space-evenly">
-          <ModalCloseButton size="24px" mx="24px" my="24px" />
+          <ModalCloseButton size="24px" mx="24px" my="24px" zIndex={10} />
           <Image
             src={src}
             alt="Profile Picture"
             borderRadius={0}
             boxSize="100%"
+            layout="fill"
+            objectFit={"contain"}
           />
         </ModalContent>
       </Modal>

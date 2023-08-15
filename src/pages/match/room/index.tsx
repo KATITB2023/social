@@ -20,7 +20,9 @@ import useEmit from "~/hooks/useEmit";
 import useSubscription from "~/hooks/useSubscription";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
+import { AskRevealStatus } from "~/server/types/message";
 import { api } from "~/utils/api";
+import { Peraturan } from "~/components/PopupChat/Peraturan";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -29,19 +31,23 @@ const Room: NextPage = () => {
   const { data: session } = useSession({ required: true });
   const [match, setMatch] = useState<UserMatch | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const client = api.useContext();
+  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
 
   const [isSender, setSender] = useState(false);
   const [isYahTemanmu, setYahTemanmu] = useState(false);
   const [isYayTemanmu, setYayTemanmu] = useState(false);
   const [isTemanmuMenolak, setTemanmuMenolak] = useState(false);
   const [isKamuDirequest, setKamuDirequest] = useState(false);
+  const [isPeraturan, setPeraturan] = useState(true);
 
   const closeAll = () => {
     setYahTemanmu(false);
     setYayTemanmu(false);
     setTemanmuMenolak(false);
     setKamuDirequest(false);
+    setPeraturan(false);
   };
 
   const updateMessageIsRead = api.message.updateIsReadByMatchId.useMutation();
@@ -91,7 +97,6 @@ const Room: NextPage = () => {
       enabled: !!match?.id,
     }
   );
-  console.log(match?.id);
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -138,6 +143,7 @@ const Room: NextPage = () => {
         post.userMatchId === match.id
       ) {
         addMessages([post]);
+        setCurrentlyTyping(false);
         if (match && session && post.receiverId === session.user.id) {
           try {
             updateOneMessageIsRead.mutate({ messageId: post.id });
@@ -148,19 +154,19 @@ const Room: NextPage = () => {
     [match, messageQuery]
   );
 
-  const [currentlyTyping, setCurrentlyTyping] = useState<boolean>(false);
-
   useSubscription(
     "anonIsTyping",
     (data) => {
       if (match) {
-        if (
-          data.includes(match.firstUserId) ||
-          data.includes(match.secondUserId)
-        ) {
+        if (data === match.firstUserId || data === match.secondUserId) {
           setCurrentlyTyping(true);
-        } else {
-          setCurrentlyTyping(false);
+          if (timeoutRef.current !== null) {
+            clearTimeout(timeoutRef.current);
+          }
+          timeoutRef.current = setTimeout(
+            () => setCurrentlyTyping(false),
+            1000
+          );
         }
       }
     },
@@ -188,15 +194,13 @@ const Room: NextPage = () => {
 
   useSubscription(
     "askReveal",
-    (data, askReveal) => {
+    (data, status) => {
       if (match) {
-        if (askReveal) {
+        if (status === AskRevealStatus.ASK) {
+          setKamuDirequest(true);
+        } else if (status === AskRevealStatus.ACCEPTED) {
           setMatch(data);
-          if (data.isRevealed) {
-            setYayTemanmu(true);
-          } else {
-            setKamuDirequest(true);
-          }
+          setYayTemanmu(true);
         } else {
           setTemanmuMenolak(true);
         }
@@ -260,18 +264,29 @@ const Room: NextPage = () => {
             >
               <Header
                 name={
-                  profileData !== undefined && match.isRevealed
+                  profileData && match.isRevealed
                     ? profileData.name
                     : "Anonymous"
                 }
                 image={
-                  profileData !== undefined && match.isRevealed
+                  profileData && match.isRevealed
                     ? profileData.image
                     : undefined
                 }
                 isTyping={currentlyTyping}
                 isAnon={true}
                 handleClick={() => void router.push("/chat")}
+                profileClick={() =>
+                  profileData
+                    ? void router.push(
+                        `/friend-profile/${
+                          match.firstUserId === session?.user.id
+                            ? match.secondUserId
+                            : match.firstUserId
+                        }`
+                      )
+                    : undefined
+                }
               />
               <Divider />
 
@@ -281,17 +296,18 @@ const Room: NextPage = () => {
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 fetchNextPage={fetchNextPage}
                 isFetchingNextPage={isFetchingNextPage}
+                isFinished={false}
               />
 
               <Divider />
               <Flex>
                 <Footer
-                  onSubmit={(text) => messageEmit.mutate({ message: text })}
+                  onSubmit={(text) => {
+                    messageEmit.mutate({ message: text });
+                  }}
                   receiverId={match.id}
                   isAnon={true}
-                  isAnonRevealed={
-                    profileData !== undefined && match.isRevealed ? true : false
-                  }
+                  isAnonRevealed={profileData !== undefined && match.isRevealed}
                   setSender={setSender}
                 />
               </Flex>
@@ -305,7 +321,8 @@ const Room: NextPage = () => {
               isYahTemanmu ||
               isYayTemanmu ||
               isTemanmuMenolak ||
-              isKamuDirequest
+              isKamuDirequest ||
+              isPeraturan
                 ? "block"
                 : "none"
             }
@@ -329,7 +346,8 @@ const Room: NextPage = () => {
                 h={"100vh"}
                 bg={"black"}
                 opacity={0.7}
-                onClick={() => closeAll}
+                cursor={"pointer"}
+                onClick={closeAll}
               />
 
               <Flex zIndex={4}>
@@ -339,8 +357,9 @@ const Room: NextPage = () => {
                   <TemanmuMenolak setOpen={setTemanmuMenolak} />
                 )}
                 {isKamuDirequest && (
-                  <KamuDirequest setOpen={setKamuDirequest} match={match} />
+                  <KamuDirequest setOpen={setKamuDirequest} />
                 )}
+                {isPeraturan && <Peraturan setOpen={setPeraturan} />}
               </Flex>
             </Flex>
           </Flex>

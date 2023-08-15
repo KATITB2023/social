@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createEvent } from "../helper";
-import { currentlyTyping, askingReveal } from "../state";
 import { type RoomChat } from "@prisma/client";
+import { AskRevealStatus } from "~/server/types/message";
 
 export const messageEvent = createEvent(
   {
@@ -58,11 +58,6 @@ export const messageEvent = createEvent(
 
     ctx.io.to([message.senderId, message.receiverId]).emit("add", message);
 
-    delete currentlyTyping[ctx.client.data.session.user.id];
-    ctx.io
-      .to(message.receiverId)
-      .emit("whoIsTyping", Object.keys(currentlyTyping));
-
     return message;
   }
 );
@@ -99,36 +94,21 @@ export const anonymousMessageEvent = createEvent(
   }
 );
 
-const modifyCurrentlyTyping = (isTyping: boolean, userId: string) => {
-  if (!isTyping) {
-    delete currentlyTyping[userId];
-  } else {
-    currentlyTyping[userId] = {
-      lastTyped: new Date(),
-    };
-  }
-};
-
 export const isTypingEvent = createEvent(
   {
     name: "isTyping",
-    input: z.object({ typing: z.boolean(), receiverId: z.string().uuid() }),
+    input: z.object({ receiverId: z.string().uuid() }),
     authRequired: true,
   },
   ({ ctx, input }) => {
     const user = ctx.client.data.session.user;
-    modifyCurrentlyTyping(input.typing, user.id);
-
-    ctx.io
-      .to([input.receiverId])
-      .emit("whoIsTyping", Object.keys(currentlyTyping));
+    ctx.io.to([input.receiverId]).emit("whoIsTyping", user.id);
   }
 );
 
 export const anonTypingEvent = createEvent(
   {
     name: "anonTyping",
-    input: z.object({ typing: z.boolean() }),
     authRequired: true,
   },
   ({ ctx, input }) => {
@@ -139,16 +119,15 @@ export const anonTypingEvent = createEvent(
 
     const receiverId =
       match.firstUserId === user.id ? match.secondUserId : match.firstUserId;
-    modifyCurrentlyTyping(input.typing, user.id);
 
-    ctx.io.to([receiverId]).emit("anonIsTyping", Object.keys(currentlyTyping));
+    ctx.io.to([receiverId]).emit("anonIsTyping", user.id);
   }
 );
 
 export const askRevealEvent = createEvent(
   {
     name: "askReveal",
-    input: z.object({ agree: z.boolean() }),
+    input: z.object({ state: z.nativeEnum(AskRevealStatus) }),
     authRequired: true,
   },
   async ({ ctx, input }) => {
@@ -163,27 +142,27 @@ export const askRevealEvent = createEvent(
         ? currentMatch.secondUserId
         : currentMatch.firstUserId;
 
-    if (askingReveal.has(receiverId)) {
-      if (input.agree) {
-        const match = await ctx.prisma.userMatch.update({
-          where: {
-            id: currentMatch.id,
-          },
-          data: {
-            isRevealed: true,
-          },
-        });
+    if (input.state === AskRevealStatus.ASK) {
+      ctx.io
+        .to([receiverId])
+        .emit("askReveal", currentMatch, AskRevealStatus.ASK);
+    } else if (input.state === AskRevealStatus.ACCEPTED) {
+      const match = await ctx.prisma.userMatch.update({
+        where: {
+          id: currentMatch.id,
+        },
+        data: {
+          isRevealed: true,
+        },
+      });
 
-        ctx.io.to([userId, receiverId]).emit("askReveal", match, true);
-      } else {
-        ctx.io.to([receiverId]).emit("askReveal", currentMatch, false);
-      }
-
-      askingReveal.delete(receiverId);
+      ctx.io
+        .to([userId, receiverId])
+        .emit("askReveal", match, AskRevealStatus.ACCEPTED);
     } else {
-      askingReveal.add(userId);
-
-      ctx.io.to([receiverId]).emit("askReveal", currentMatch, true);
+      ctx.io
+        .to([receiverId])
+        .emit("askReveal", currentMatch, AskRevealStatus.REJECTED);
     }
   }
 );

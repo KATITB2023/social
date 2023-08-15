@@ -36,10 +36,11 @@ export default function SubmissionPage() {
   });
   const assignmentData = inputAssignmentData.data;
   const filePath = assignmentData?.filePath;
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   if (!assignmentData) {
     return <LoadingScreen />;
-  }
+  } 
 
   const inputSubmissionData: id = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
@@ -55,12 +56,16 @@ export default function SubmissionPage() {
         const fileName = url.split("/").pop();
         const aTag = document.createElement("a");
         aTag.href = blobURL;
-        if (fileName){
+        if (fileName) {
           aTag.setAttribute("download", fileName);
           document.body.appendChild(aTag);
           aTag.click();
           aTag.remove();
         }
+        setIsDownloading(false);
+      })
+      .catch((e) => {
+        setIsDownloading(false);
       });
   };
 
@@ -89,7 +94,13 @@ export default function SubmissionPage() {
             </Text>
             <Text> : </Text>
             <Text color="#ffffff" fontFamily="body" fontSize="12px">
-              {assignmentData.endTime.toLocaleDateString()}
+              {assignmentData.endTime.toLocaleString("id-ID", {
+                year: "numeric",
+                month: "2-digit",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </Text>
           </HStack>
           <Heading color="yellow.4" alignSelf="left">
@@ -104,9 +115,11 @@ export default function SubmissionPage() {
             mt="30px"
             mb="3px"
           >
-            Soal 01
+            Deskripsi Tugas
           </Text>
-          <Text textAlign={"justify"}>{assignmentData.description}</Text>
+          <Text textAlign={"justify"}>
+            <div dangerouslySetInnerHTML={{ __html: assignmentData.description ? assignmentData.description : '' }} />
+          </Text>
           {filePath && (
             <Button
               w={"50%"}
@@ -119,10 +132,12 @@ export default function SubmissionPage() {
                 color: "yellow.5",
               }}
               onClick={() => {
+                setIsDownloading(true);
                 downloadFile(filePath);
               }}
+              disabled={isDownloading}
             >
-              Download Panduan
+              {isDownloading ? "Downloading" : "Download Panduan"}
             </Button>
           )}
           <FileUpload {...inputSubmissionData} />

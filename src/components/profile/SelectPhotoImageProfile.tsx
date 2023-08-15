@@ -12,6 +12,7 @@ import React, { useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { sanitizeURL, uploadFile } from "~/utils/file";
 import ImageCropDrawer from "./ImageCropDrawer";
+import { getSquaredImage } from "./cropimage";
 
 export const SelectPhotoImageProfile = ({
   open,
@@ -38,10 +39,11 @@ export const SelectPhotoImageProfile = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function onImageChange(file: FileList) {
+  async function onImageChange(file: FileList) {
     if (file[0]) {
+      const image = await getSquaredImage(URL.createObjectURL(file[0]));
       onOpen();
-      setImageSelected(file[0]);
+      setImageSelected(image);
     }
   }
 
@@ -83,7 +85,22 @@ export const SelectPhotoImageProfile = ({
 
   async function updateImage(file: File) {
     if (!file) return;
-    const url = sanitizeURL(`https://cdn.oskmitb.com/${nim}`);
+    console.log(file);
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Failed",
+        status: "error",
+        description: "Ukuran gambar maksimal 5MB.",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+    const extension = file.name.split(".").pop();
+    const url =
+      sanitizeURL(`https://cdn.oskmitb.com/${nim}`) +
+      (extension ? `.${extension}` : "");
     try {
       setIsUpdating(true);
       await uploadFile(url, file, (progressEvent) => {
@@ -216,6 +233,7 @@ export const SelectPhotoImageProfile = ({
                     ref={inputRef}
                     onChange={(e) => {
                       const files = e.target.files;
+                      console.log(files);
                       if (files && files[0]) {
                         const fileName = files[0].name.toLowerCase();
                         const validExtensions = [".png", ".jpeg", ".jpg"];
@@ -225,7 +243,7 @@ export const SelectPhotoImageProfile = ({
                         );
 
                         if (validExtensions.includes("." + fileExtension)) {
-                          onImageChange(files);
+                          void onImageChange(files);
                         } else {
                           toast({
                             title: `Invalid image extension : .${fileExtension}`,
@@ -235,8 +253,8 @@ export const SelectPhotoImageProfile = ({
                             isClosable: true,
                             position: "top",
                           });
-                          e.target.value = "";
                         }
+                        e.target.value = "";
                       }
                     }}
                   />

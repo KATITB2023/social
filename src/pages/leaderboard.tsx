@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Text, Image, Heading } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -6,12 +6,12 @@ import CardLeaderboardTop3 from "~/components/leaderboard/CardLeaderboardTop3";
 import CardLeaderboardSelf from "~/components/leaderboard/CardLeaderboardSelf";
 import CardLeaderboardParticipant from "~/components/leaderboard/CardLeaderboardParticipant";
 import Footer from "~/components/Footer";
-import NotFound from "./404";
 import { api } from "~/utils/api";
 import Layout from "~/layout";
 import { FUTUREFLAG } from "~/constant";
 import ComingSoon from "~/components/screen/ComingSoon";
 import { withSession } from "~/server/auth/withSession";
+import LoadingScreen from "~/components/LoadingScreen";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -26,8 +26,6 @@ interface LeaderboardData {
   rank: number;
   nim: string;
 }
-
-const participantsPerPage = 18;
 
 const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
   const dataTop3 = [];
@@ -55,7 +53,7 @@ const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
           key={paraData?.userId || "-"}
           name={paraData?.name || "-"}
           nim={paraData?.nim || "-"}
-          ranking={index === 0 ? 1 : paraData?.rank || 0}
+          ranking={paraData ? paraData.rank : 999}
           image={paraData?.profileImage || "/defaultprofpict.svg"}
           points={paraData?.point || 0}
           marginTop1={index === 0 || index === 2 ? "30px" : "-25px"}
@@ -67,31 +65,28 @@ const LeaderboardTop3: React.FC<LeaderboardProps> = ({ data }) => {
 
 interface LeaderboardParticipantProps {
   data: LeaderboardData[];
-  currentPage: number;
+  id: string;
 }
 
 const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
   data,
+  id,
 }) => {
-  const dataRest = [];
-  for (let i = 3; i < data.length; i++) {
-    if (data[i]) {
-      dataRest.push(data[i]);
-    }
-  }
   return (
     <Flex alignContent="center" maxH="1353px" flexDirection="column" gap="15px">
-      {dataRest.map((item) => {
-        return (
-          <CardLeaderboardParticipant
-            key={item?.userId || "-"}
-            name={item?.name || "-"}
-            nim={item?.nim || "-"}
-            ranking={item?.rank || 0}
-            image={item?.profileImage || "/defaultprofpict.svg"}
-            points={item?.point || 0}
-          />
-        );
+      {data.map((item) => {
+        if (item.userId != id) {
+          return (
+            <CardLeaderboardParticipant
+              key={item?.userId || "-"}
+              name={item?.name || "-"}
+              nim={item?.nim || "-"}
+              ranking={item?.rank || 0}
+              image={item?.profileImage || "/defaultprofpict.svg"}
+              points={item?.point || 0}
+            />
+          );
+        }
       })}
     </Flex>
   );
@@ -100,34 +95,27 @@ const LeaderboardParticipant: React.FC<LeaderboardParticipantProps> = ({
 const LeaderboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession({ required: true });
-  const cursor = 1 as number;
-  const limit = 40 as number;
+  const limit = 20 as number;
   const getDataLeaderboard = api.leaderboard.getLeaderboard.useQuery({
-    cursor,
+    cursor: currentPage,
     limit,
   });
-
+  const getDataSelfLeaderboard = api.leaderboard.getSelfLeaderboard.useQuery();
   const students = getDataLeaderboard.data;
-  if (!students) {
-    return <NotFound />;
+  const selfData = getDataSelfLeaderboard.data;
+  if (!students || !session || !selfData) {
+    return <LoadingScreen />;
   }
-  if (!session) {
-    return <NotFound />;
-  }
+
   const id = session?.user.id;
 
-  const totalParticipants = students.data.length;
-  const totalPages = Math.ceil(totalParticipants / participantsPerPage);
+  const totalPages = students.totalPage;
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
 
-  const paginatedData = students.data.slice(
-    (currentPage - 1) * participantsPerPage,
-    currentPage * participantsPerPage
-  );
   const getPageButtons = () => {
     const pageButtons = [];
     const maxVisiblePages = 5;
@@ -234,30 +222,20 @@ const LeaderboardPage = () => {
           </Heading>
         </Box>
 
-        <LeaderboardTop3 data={students.data} />
+        {currentPage == 1 ? <LeaderboardTop3 data={students.data} /> : <></>}
 
         <Box mb={8}>
-          {students.data.map((item, i) => {
-            if (item.userId === id) {
-              return (
-                <CardLeaderboardSelf
-                  key={i}
-                  name={item.name}
-                  nim={item.nim}
-                  image={item?.profileImage || "/defaultprofpict.svg"}
-                  ranking={item.rank}
-                  points={item.point}
-                />
-              );
-            }
-            return null;
-          })}
+          <CardLeaderboardSelf
+            key={id}
+            name={selfData.name}
+            nim={selfData.nim}
+            image={selfData?.profileImage || "/defaultprofpict.svg"}
+            ranking={selfData.rank.toString()}
+            points={selfData.point}
+          />
         </Box>
 
-        <LeaderboardParticipant
-          data={paginatedData}
-          currentPage={currentPage}
-        />
+        <LeaderboardParticipant data={students.data} id={id} />
 
         <Container
           width={
@@ -328,7 +306,7 @@ const LeaderboardPage = () => {
               }}
             />
           </Flex>
-         </Container>
+        </Container>
 
         <Footer />
       </Box>

@@ -24,6 +24,7 @@ export const authRouter = createTRPCRouter({
         },
         select: {
           userId: true,
+          name: true,
         },
       });
 
@@ -58,6 +59,7 @@ export const authRouter = createTRPCRouter({
             resetURL={encodeURI(
               `${env.NEXT_PUBLIC_API_URL}/reset-password?userId=${profile.userId}&token=${resetToken}`
             )}
+            name={profile.name}
           />
         ),
       });
