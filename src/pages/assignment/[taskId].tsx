@@ -40,7 +40,7 @@ export default function SubmissionPage() {
 
   if (!assignmentData) {
     return <LoadingScreen />;
-  }
+  } 
 
   const inputSubmissionData: id = {
     isSubmitted: assignmentData.submissionStatus === "SUBMITTED",
@@ -117,7 +117,9 @@ export default function SubmissionPage() {
           >
             Soal 01
           </Text>
-          <Text textAlign={"justify"}>{assignmentData.description}</Text>
+          <Text textAlign={"justify"}>
+            <div dangerouslySetInnerHTML={{ __html: assignmentData.description ? assignmentData.description : '' }} />
+          </Text>
           {filePath && (
             <Button
               w={"50%"}
