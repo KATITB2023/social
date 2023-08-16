@@ -82,7 +82,7 @@ const Match: NextPage = () => {
   const findMatch = () => {
     if (!queued.current && needQueue && !foundMatch) {
       setIsLoading(true);
-      setLoadingSeconds(5);
+      setLoadingSeconds(30);
       queueEmit.mutate({
         isAnonymous: isAnonymous,
         isFindingFriend: isFindingFriend,
@@ -124,10 +124,8 @@ const Match: NextPage = () => {
           setOpen={() => handleNotFound()}
         >
           <PopUp
-            content1="Maaf,"
-            content2="tidak ada yang"
-            content3="mau ngobrol"
-            content4="dengan kamu. :("
+            content1="Belum ada pasangan yang cocok untuk kamu saat ini."
+            content2={"Silakan coba lagi"}
             setOpen={handleNotFound}
           />
         </PopupWithBlackOverlay>
