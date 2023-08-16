@@ -17,7 +17,7 @@ export const leaderboardRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const profileData = await ctx.prisma.profile.findMany({
-        orderBy: [{ point: "desc" }],
+        orderBy: [{ point: "desc" }, { name: "asc" }],
         take: input.limit,
         skip: (input.cursor - 1) * input.limit,
         include: {
@@ -25,23 +25,22 @@ export const leaderboardRouter = createTRPCRouter({
         },
       });
 
-      const leaderboardData: Leaderboard[] = [];
       const baseRank = (input.cursor - 1) * input.limit;
 
       const totalCount = await ctx.prisma.profile.aggregate({
         _count: { userId: true },
       });
 
-      profileData.forEach((profile, index) => {
-        leaderboardData.push({
+      const leaderboardData: Leaderboard[] = profileData.map(
+        (profile, index) => ({
           userId: profile.userId,
           name: profile.name,
           profileImage: profile.image,
           point: profile.point,
-          rank: baseRank + index + 1,
+          rank: baseRank + 1 + index,
           nim: profile.user.nim,
-        });
-      });
+        })
+      );
 
       return {
         data: leaderboardData,
@@ -50,39 +49,38 @@ export const leaderboardRouter = createTRPCRouter({
         totalPage: Math.ceil(totalCount._count.userId / input.limit),
       };
     }),
-  getSelfLeaderboard: protectedProcedure.query(
-    async ({ ctx }): Promise<Leaderboard> => {
-      const result = await ctx.prisma.$queryRaw<
-        { userId: string; point: number; position: number }[]
-      >`WITH ranking AS (
-                                                  SELECT "userId", point,
-                                                         row_number() over (ORDER BY point desc, name ) position
-                                                  FROM "Profile"
-                                              )
-                                              SELECT * FROM ranking WHERE "userId" = uuid(${ctx.session.user.id})`;
 
-      const selfPos = result[0];
+  getSelfLeaderboard: protectedProcedure.query(async ({ ctx }) => {
+    const result = await ctx.prisma.$queryRaw<
+      { userId: string; point: number; position: number }[]
+    >`with "ranking" as (
+        select "userId", "point",
+            row_number() over (order by "point" desc, "name" asc ) as "position"
+        from "Profile"
+    )
+    select * from "ranking" where "userId" = uuid(${ctx.session.user.id})`;
 
-      if (!selfPos) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Self position not found",
-        });
-      }
+    const selfPos = result[0];
 
-      const user = await ctx.prisma.profile.findFirstOrThrow({
-        where: { userId: ctx.session.user.id },
-        include: { user: true },
+    if (!selfPos) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Self position not found",
       });
-
-      return {
-        userId: user.userId,
-        name: user.name,
-        profileImage: user.image,
-        point: user.point,
-        rank: Number(selfPos.position) + 1,
-        nim: user.user.nim,
-      };
     }
-  ),
+
+    const user = await ctx.prisma.profile.findFirstOrThrow({
+      where: { userId: ctx.session.user.id },
+      include: { user: true },
+    });
+
+    return {
+      userId: user.userId,
+      name: user.name,
+      profileImage: user.image,
+      point: user.point,
+      rank: Number(selfPos.position),
+      nim: user.user.nim,
+    };
+  }),
 });
