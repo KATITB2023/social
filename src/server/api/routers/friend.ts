@@ -15,6 +15,26 @@ const ACCEPTED_FRIENDSHIP_STATUS = [
 ] as const;
 
 export const friendRouter = createTRPCRouter({
+  friendCount: protectedProcedure.query(async ({ ctx }) => {
+    const agg = await ctx.prisma.friendship.aggregate({
+      where: {
+        OR: [
+          {
+            userInitiatorId: ctx.session.user.id,
+          },
+          {
+            userReceiverId: ctx.session.user.id,
+          },
+        ],
+        accepted: true,
+      },
+      _count: {
+        userInitiatorId: true,
+      },
+    });
+
+    return agg._count.userInitiatorId;
+  }),
   searchUsers: protectedProcedure
     .input(
       z.object({
