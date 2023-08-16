@@ -53,35 +53,35 @@ export const SelectPhotoImageProfile = ({
     setImageSelected(undefined);
   }
 
-  async function deleteProfile() {
-    try {
-      setIsUpdating(true);
-      const res = await profileMutaion.mutateAsync({
-        image: undefined,
-      });
-      toast({
-        title: "Success",
-        status: "success",
-        description: res.message,
-        duration: 2000,
-        isClosable: true,
-        position: "top",
-      });
-    } catch (e: unknown) {
-      if (!(e instanceof TRPCClientError)) throw e;
-      toast({
-        title: "Failed",
-        status: "error",
-        description: e.message,
-        duration: 2000,
-        isClosable: true,
-        position: "top",
-      });
-    }
+  // async function deleteProfile() {
+  //   try {
+  //     setIsUpdating(true);
+  //     const res = await profileMutaion.mutateAsync({
+  //       image: undefined,
+  //     });
+  //     toast({
+  //       title: "Success",
+  //       status: "success",
+  //       description: res.message,
+  //       duration: 2000,
+  //       isClosable: true,
+  //       position: "top",
+  //     });
+  //   } catch (e: unknown) {
+  //     if (!(e instanceof TRPCClientError)) throw e;
+  //     toast({
+  //       title: "Failed",
+  //       status: "error",
+  //       description: e.message,
+  //       duration: 2000,
+  //       isClosable: true,
+  //       position: "top",
+  //     });
+  //   }
 
-    setIsUpdating(false);
-    setOpen(false);
-  }
+  //   setIsUpdating(false);
+  //   setOpen(false);
+  // }
 
   async function updateImage(file: File) {
     if (!file) return;

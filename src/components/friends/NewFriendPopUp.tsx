@@ -9,7 +9,6 @@ import {
     ModalCloseButton,
   } from "@chakra-ui/react";
   import { MdDone } from "react-icons/md";
-  import { api } from "~/utils/api";
   import { useRouter } from "next/navigation";
   
   export default function NewFriendPopUp(props: {

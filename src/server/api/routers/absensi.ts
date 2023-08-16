@@ -71,22 +71,6 @@ export const absensiRouter = createTRPCRouter({
     .input(z.object({ eventId: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       // Error jika absen lebih dari 1 kali
-      const student = ctx.session.user;
-
-      const findRecord = await ctx.prisma.attendanceRecord.findFirst({
-        where: {
-          eventId: input.eventId,
-          studentId: student.id,
-        },
-      });
-
-      if (findRecord !== null && findRecord.status !== "TIDAK_HADIR") {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Sudah Melakukan Absensi!",
-        });
-      }
-
       // Validasi waktu absen
       const currentTime = new Date();
       const getEventData = await ctx.prisma.attendanceEvent.findFirst({
@@ -114,32 +98,29 @@ export const absensiRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.attendanceRecord.upsert({
-        where: {
-          studentId_eventId: {
-            eventId: input.eventId,
-            studentId: student.id,
-          },
-        },
-        create: {
-          date: new Date(),
-          status: Status.HADIR,
-          student: {
-            connect: {
-              id: student?.id,
+      try {
+        await ctx.prisma.attendanceRecord.create({
+          data: {
+            date: currentTime,
+            status: Status.HADIR,
+            student: {
+              connect: {
+                id: ctx.session.user.id,
+              },
+            },
+            event: {
+              connect: {
+                id: input.eventId,
+              },
             },
           },
-          event: {
-            connect: {
-              id: input.eventId,
-            },
-          },
-        },
-        update: {
-          date: new Date(),
-          status: Status.HADIR,
-        },
-      });
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Gagal melakukan absensi!",
+        });
+      }
 
       return "Absen Tercatat!";
     }),

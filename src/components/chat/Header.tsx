@@ -67,7 +67,7 @@ const Header = ({
                 color={"yellow.4"}
                 fontSize="lg"
                 fontWeight={700}
-                noOfLines={2}
+                noOfLines={1}
               >
                 {name}
               </Text>

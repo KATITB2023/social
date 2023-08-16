@@ -52,17 +52,11 @@ export default function MyFriendCard(props: {
               border="0.2px solid #8D47E5"
               boxShadow="0px 4px 30px #EABFFF"
               borderRadius="50%"
-              {...(props.image && { backgroundImage: `url(${props.image})` })}
-            />
-            <Box
-              position="absolute"
-              width="7px"
-              height="7px"
-              borderRadius="50%"
-              left="25px"
-              top="28px"
-              boxShadow="0px 4px 30px rgba(0, 0, 0, 0.25)"
-              bg="#FFFC83"
+              backgroundPosition={"center"}
+              backgroundSize={"cover"}
+              backgroundImage={
+                props.image ? `url(${props.image})` : "/defaultprofpict.svg"
+              }
             />
           </Box>
 

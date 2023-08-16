@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
 import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
@@ -32,7 +32,8 @@ const ProfileFriendsPage: NextPage = () => {
     cursor,
     limit,
   });
-
+  const getFriendData = api.friend.friendCount.useQuery();
+  const totalFriends = getFriendData.data;
   const requestData = getRequestData.data;
   if (!requestData) {
     return <Layout title="Profile Friends"></Layout>;
@@ -74,7 +75,7 @@ const ProfileFriendsPage: NextPage = () => {
             )}
           </Flex>
           {searchQuery == "" && requestData.data ? (
-            <MenuList totalRequest={totalRequest} ref={flexRef} />
+            <MenuList totalFriends={totalFriends ? totalFriends:0} totalRequest={totalRequest} ref={flexRef} />
           ) : (
             <SearchedFriends searchQuery={searchQuery} />
           )}
