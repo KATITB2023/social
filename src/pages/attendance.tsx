@@ -168,10 +168,10 @@ const validTime = (startTime: Date, endTime: Date) => {
 };
 
 const EventCard = ({
-  event,
+  eventData,
   status: initialStatus,
 }: {
-  event: AttendanceEvent;
+  eventData: AttendanceEvent;
   status: Status | null;
 }) => {
   const [currentStatus, setCurrentStatus] = useState<Status>(() =>
@@ -180,7 +180,7 @@ const EventCard = ({
 
   const toast = useToast();
   const absenMutation = api.absensi.submitAbsensi.useMutation();
-  const canAttend = validTime(event.startTime, event.endTime);
+  const canAttend = validTime(eventData.startTime, eventData.endTime);
 
   const handleAttend = async (eventId: string) => {
     try {
@@ -220,14 +220,14 @@ const EventCard = ({
     >
       <Flex flexDir="column" gap="8px">
         <Heading size="SH5" color="yellow.4">
-          {event.title}
+          {eventData.title}
         </Heading>
         <Flex alignItems="center">
           <Text size="B5" fontWeight="bold">
             Waktu
           </Text>
           <Text size="B5">
-            &nbsp;: {getTwoTime(event.startTime, event.endTime)}
+            &nbsp;: {eventData.startTime.getDay()}/{eventData.startTime.getMonth()}/{eventData.startTime.getFullYear()}
           </Text>
         </Flex>
       </Flex>
@@ -263,10 +263,10 @@ const EventCard = ({
         <StatusButton
           bg="yellow.5"
           text="Tandai Hadir"
-          onClick={() => void handleAttend(event.id)}
+          onClick={() => void handleAttend(eventData.id)}
           isDisabled={absenMutation.isLoading}
         />
-      ) : dayjs().isBefore(event.startTime) ? (
+      ) : dayjs().isBefore(eventData.startTime) ? (
         <StatusButton bg="yellow.5" text="Belum Dibuka" isDisabled={true} />
       ) : (
         <StatusButton
@@ -322,7 +322,7 @@ const AttendListPage = () => {
                   {eventsByDay.get(item)!.map((eventsInDay, index) => (
                     <EventCard
                       key={index}
-                      event={eventsInDay.event}
+                      eventData={eventsInDay.event}
                       status={eventsInDay.status}
                     />
                   ))}
