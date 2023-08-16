@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Box } from "@chakra-ui/react";
 import React from "react";
 
 interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -10,7 +10,7 @@ interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
 const Menu = ({ children, isActive, waiting }: MenuProps) => {
   return (
     <Flex
-      width="6rem"
+      width="7rem"
       paddingBottom="6px"
       justifyContent="center"
       gap="2"
@@ -26,24 +26,24 @@ const Menu = ({ children, isActive, waiting }: MenuProps) => {
       >
         {children}
       </Text>
-        <Text
-          borderRadius="full"
-          bgColor="#E8553E"
-          color="yellow.5"
-          width="fit-content"
-          height="fit-content"
-          minWidth="20px"
-          minHeight="20px"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          fontSize="14px"
-          hidden={waiting === 0 || waiting === undefined}
-        >
-          {waiting}
-        </Text>
+      <Box
+        borderRadius="full"
+        bgColor="#E8553E"
+        color="yellow.5"
+        width="fit-content"
+        height="fit-content"
+        minWidth="25px"
+        minHeight="25px"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        fontSize="14px"
+        hidden={waiting === 0 || waiting === undefined}
+      >
+        <Text margin={"3px"}>{waiting}</Text>
+      </Box>
     </Flex>
   );
 };
 
-export default Menu
+export default Menu;
