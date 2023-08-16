@@ -114,32 +114,29 @@ export const absensiRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.attendanceRecord.upsert({
-        where: {
-          studentId_eventId: {
-            eventId: input.eventId,
-            studentId: student.id,
-          },
-        },
-        create: {
-          date: new Date(),
-          status: Status.HADIR,
-          student: {
-            connect: {
-              id: student?.id,
+      try {
+        await ctx.prisma.attendanceRecord.create({
+          data: {
+            date: new Date(),
+            status: Status.HADIR,
+            student: {
+              connect: {
+                id: student?.id,
+              },
+            },
+            event: {
+              connect: {
+                id: input.eventId,
+              },
             },
           },
-          event: {
-            connect: {
-              id: input.eventId,
-            },
-          },
-        },
-        update: {
-          date: new Date(),
-          status: Status.HADIR,
-        },
-      });
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Gagal melakukan absensi!",
+        });
+      }
 
       return "Absen Tercatat!";
     }),
