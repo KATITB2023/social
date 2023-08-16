@@ -222,14 +222,14 @@ const EventCard = ({
         <Heading size="SH5" color="yellow.4">
           {eventData.title}
         </Heading>
-        <Flex alignItems="center">
-          <Text size="B5" fontWeight="bold">
+        {/* <Flex alignItems="center"> */}
+          {/* <Text size="B5" fontWeight="bold">
             Waktu
           </Text>
           <Text size="B5">
             &nbsp;: {eventData.startTime.getDay()}/{eventData.startTime.getMonth()}/{eventData.startTime.getFullYear()}
-          </Text>
-        </Flex>
+          </Text> */}
+        {/* </Flex> */}
       </Flex>
       <Spacer />
       {currentStatus === "HADIR" ? (
