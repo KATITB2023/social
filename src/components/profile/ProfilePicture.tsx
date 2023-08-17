@@ -15,10 +15,12 @@ export default function ProfilePicture({
   src = "/defaultprofpict.svg",
   size = "100%",
   br = "full",
+  disableBorder,
 }: {
   src?: string;
   size?: ResponsiveValue<number | string>;
   br?: ResponsiveValue<number | string>;
+  disableBorder?: boolean;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
@@ -33,7 +35,7 @@ export default function ProfilePicture({
         onClick={onOpen}
         overflow="hidden"
         position={"relative"}
-        border={"5px black solid"}
+        border={!disableBorder ? "5px black solid" : ""}
         boxShadow={"0px 0px 10px 1px #FFFFFF"}
       >
         {isImageLoading && <Spinner />}

@@ -1,5 +1,5 @@
-import { Flex, Text, Box, Card } from "@chakra-ui/react";
-import React from "react";
+import { Box, Card, Flex, Text } from "@chakra-ui/react";
+import ProfilePicture from "../profile/ProfilePicture";
 
 interface CardProps {
   name: string;
@@ -16,7 +16,6 @@ const CardLeaderboardParticipant = ({
   ranking,
   points,
 }: CardProps) => {
-
   return (
     <Flex
       w="90%"
@@ -41,27 +40,11 @@ const CardLeaderboardParticipant = ({
         bgGradient="linear-gradient(340deg, #2B0792 0%, rgba(221, 179, 248, 0.71) 93.23%, rgba(234, 191, 255, 0.60) 100%);"
       />
 
-      <Flex
-        zIndex={0}
-        w={"70%"}
-        flexDir={"row"}
-        alignItems={"center"}
-        gap={3}
-      >
+      <Flex zIndex={0} w={"70%"} flexDir={"row"} alignItems={"center"} gap={3}>
         <Text size="B2" color="white" fontWeight="600">
           #{ranking}
         </Text>
-
-        <Box
-          minW={"45px"}
-          minH={"45px"}
-          maxW={"45px"}
-          maxH={"45px"}
-          backgroundImage={image ? image : undefined}
-          backgroundPosition={"center"}
-          backgroundSize={"cover"}
-          borderRadius={"full"}
-        />
+        <ProfilePicture src={image ?? undefined} size={45} disableBorder />
 
         <Box
           position="relative"
