@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import React, { useState, useRef } from "react";
 import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
-import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Layout from "~/layout";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -45,7 +45,7 @@ const ProfileFriendsPage: NextPage = () => {
 
   return (
     <Layout title="Friends">
-      <BackgroundAndNavigationBar>
+      <BackgroundAndNavbar bg="/profile_bg.png">
         <Flex
           flexDirection="column"
           justifyContent="space-between"
@@ -80,7 +80,7 @@ const ProfileFriendsPage: NextPage = () => {
             <SearchedFriends searchQuery={searchQuery} />
           )}
         </Flex>
-      </BackgroundAndNavigationBar>
+      </BackgroundAndNavbar>
     </Layout>
   );
 };

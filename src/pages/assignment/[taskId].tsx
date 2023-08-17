@@ -71,7 +71,7 @@ export default function SubmissionPage() {
 
   return (
     <Layout title={"Submission"}>
-      <BackgroundAndNavbar>
+      <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"
           justifyContent="space-between"
