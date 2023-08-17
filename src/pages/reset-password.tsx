@@ -15,15 +15,12 @@ import type { PropsWithChildren } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import LoginBackground from "~/components/login/login-background";
 import Navbar from "~/components/Navbar";
-import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
 
 interface FormValues {
   newPassword: string;
   confirmPassword: string;
 }
-
-export const getServerSideProps = withSession({ force: true });
 
 function Navbar2({ children }: PropsWithChildren) {
   return (
