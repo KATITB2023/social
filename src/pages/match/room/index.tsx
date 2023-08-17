@@ -23,7 +23,7 @@ import { withSession } from "~/server/auth/withSession";
 import { AskRevealStatus } from "~/server/types/message";
 import { api } from "~/utils/api";
 import { Peraturan } from "~/components/PopupChat/Peraturan";
-import PopupWithBlackOverlay from "~/components/profile/PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "~/components/PopupWithBlackOverlay";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -333,7 +333,9 @@ const Room: NextPage = () => {
             <>
               {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
               {isYayTemanmu && <YayTemanmu setOpen={setYayTemanmu} />}
-              {isTemanmuMenolak && <TemanmuMenolak setOpen={setTemanmuMenolak} />}
+              {isTemanmuMenolak && (
+                <TemanmuMenolak setOpen={setTemanmuMenolak} />
+              )}
               {isKamuDirequest && <KamuDirequest setOpen={setKamuDirequest} />}
               {isPeraturan && <Peraturan setOpen={setPeraturan} />}
             </>

@@ -8,7 +8,7 @@ import { AskRevealStatus } from "~/server/types/message";
 import { Peraturan } from "../PopupChat/Peraturan";
 import { api } from "~/utils/api";
 import SatSetSatSet from "../PopupChat/SatSetSatSet";
-import PopupWithBlackOverlay from "../profile/PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 
 export const AnonMenu = ({
   setOpen,

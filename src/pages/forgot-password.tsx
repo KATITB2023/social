@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import Footer from "~/components/Footer";
 import LoginBackground from "~/components/login/login-background";
-import Navbar from "~/components/Navbar";
 import { NavbarLoginPage } from "~/components/NavbarLoginPage";
 import { api } from "~/utils/api";
 

@@ -20,7 +20,7 @@ import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { ChatTopic } from "~/server/types/message";
 import PopUp from "~/components/PopupChat/PopUp";
-import PopupWithBlackOverlay from "~/components/profile/PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "~/components/PopupWithBlackOverlay";
 
 export const getServerSideProps = withSession({ force: true });
 

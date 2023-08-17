@@ -227,7 +227,7 @@ const EventCard = ({
             Waktu
           </Text>
           <Text size="B5">
-            &nbsp;: {eventData.startTime.getDay()}/{eventData.startTime.getMonth()}/{eventData.startTime.getFullYear()}
+            &nbsp;: {dayjs(eventData.startTime).format('DD/MM/YYYY')}
           </Text>
         </Flex>
       </Flex>
