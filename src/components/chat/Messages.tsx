@@ -110,9 +110,7 @@ const Messages = ({
         >
           {messages[messages.length - 1] && (
             <Text textAlign={"center"}>
-              Pembicaraan berakhir pada {lastMessageDate}
-              {"/"}
-              {lastMessageMonth}
+              Pembicaraan berakhir pada {dayjs(messages[messages.length - 1]?.createdAt).format("DD/MM/YYYY")}
             </Text>
           )}
         </Flex>
