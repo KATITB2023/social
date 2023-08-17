@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Wrap } from "@chakra-ui/react";
 import { useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
@@ -7,6 +7,7 @@ import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+import { ViewCard } from "~/components/showcase/ViewCard";
 
 export const getServerSideProps = withSession({ force: true });
 
