@@ -4,13 +4,13 @@ import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { Center, Heading } from "@chakra-ui/react";
 
-export default function BSOInfo() {
+export default function HimpunanInfo() {
   return (
-    <Layout title="BSO: {Nama BSO}">
+    <Layout title="Himpunan: {Nama Himpunan}">
       <BackgroundAndNavbar bg="/background.png">
         <Center>
           {" "}
-          <Heading> Info BSO </Heading>{" "}
+          <Heading> Info Himpunan </Heading>{" "}
         </Center>
       </BackgroundAndNavbar>
       <Footer />

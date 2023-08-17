@@ -28,7 +28,7 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "src/pages/showcase/ukm/[rumpunId]"  ],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true,
