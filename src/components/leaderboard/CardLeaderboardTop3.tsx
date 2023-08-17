@@ -1,5 +1,5 @@
-import { Box, Flex, Text, Image } from "@chakra-ui/react";
-import React from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import ProfilePicture from "../profile/ProfilePicture";
 
 interface CardProps {
   name: string;
@@ -71,15 +71,10 @@ const CardLeaderboardTop3 = ({
           bgColor="yellow.5"
           opacity="100%"
         >
-          <Image
-            w="59px"
-            h="59px"
-            borderRadius="full"
-            objectPosition="center"
-            objectFit="cover"
-            top="0"
+          <ProfilePicture
             src={image != null ? image : undefined}
-            alt={`Image ${name}`}
+            size={59}
+            disableBorder
           />
           <Flex
             position="absolute"
