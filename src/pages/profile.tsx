@@ -13,7 +13,7 @@ import { useState } from "react";
 
 import { MdCameraAlt, MdPersonPin } from "react-icons/md";
 
-import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import EditPasswordModal from "~/components/profile/EditPasswordModal";
 import LabelValueContainer from "~/components/profile/LabelValueContainer";
 import ProfilePicture from "~/components/profile/ProfilePicture";
@@ -47,7 +47,7 @@ export default function ProfilePage() {
   if (!selfProfile) return <Layout title="Profile"></Layout>;
   return (
     <Layout title={`Profile: ${selfProfile.name}`}>
-      <BackgroundAndNavigationBar>
+      <BackgroundAndNavbar bg="/profile_bg.png">
         <Flex
           flexDirection="column"
           justifyContent="space-between"
@@ -80,7 +80,7 @@ export default function ProfilePage() {
             nim={selfProfile.nim}
           />
         </Flex>
-      </BackgroundAndNavigationBar>
+      </BackgroundAndNavbar>
     </Layout>
   );
 }
@@ -194,5 +194,3 @@ function ProfileInfo({ info }: { info: SelfProfile }) {
     </Box>
   );
 }
-
-export { BackgroundAndNavigationBar, ProfilePicture };

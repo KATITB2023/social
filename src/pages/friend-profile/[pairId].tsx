@@ -11,7 +11,8 @@ import { FUTUREFLAG } from "~/constant";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import { BackgroundAndNavigationBar, ProfilePicture } from "../profile";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import ProfilePicture from "~/components/profile/ProfilePicture";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -64,7 +65,7 @@ export default function FriendProfilePage() {
   }
   return (
     <Layout title={`Profile: ${student.name}`}>
-      <BackgroundAndNavigationBar>
+      <BackgroundAndNavbar bg="/profile_bg.png">
         <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
 
           {/* Friends Profile  */}
@@ -188,7 +189,7 @@ export default function FriendProfilePage() {
             <div />
           )}
         </Flex>
-      </BackgroundAndNavigationBar>
+      </BackgroundAndNavbar>
     </Layout>
   );
 }

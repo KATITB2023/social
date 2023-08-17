@@ -1,30 +1,10 @@
 import React, { type PropsWithChildren } from "react";
-import { Box, Flex, Heading, Image} from "@chakra-ui/react";
-import Navbar from "~/components/Navbar";
+import { Flex, Heading, Image} from "@chakra-ui/react";
+import BackgroundAndNavbar from "./BackgroundAndNavbar";
 
-function BackgroundAndNavbar({ children }: PropsWithChildren) {
-  return (
-    <Box position="relative" minHeight="100vh" height="100%" w={"full"}>
-      <Image
-        src="/components/anon_chat_page/anon_match_bg.png"
-        alt="background"
-        height="100%"
-        zIndex="-1"
-        position="absolute"
-        objectFit="cover"
-        minWidth="100%"
-        width="100%"
-      />
-      <Flex flexDirection="column">
-        <Navbar />
-        {children}
-      </Flex>
-    </Box>
-  );
-}
 const LoadingScreen = ({ title }: { title?: string }) => {
   return (
-    <BackgroundAndNavbar>
+    <BackgroundAndNavbar bg="/background.png">
       <Flex
         flexDirection="column"
         justifyContent="space-between"

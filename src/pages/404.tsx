@@ -6,7 +6,7 @@ import Layout from "~/layout";
 const NotFound = () => {
   return (
     <Layout title={"Not found"}>
-      <BackgroundAndNavbar>
+      <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"
           justifyContent="center"
