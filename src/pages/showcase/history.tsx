@@ -5,9 +5,9 @@ import Layout from "~/layout";
 import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
-export default function BSOPage() {
+export default function HistoryPage() {
   return (
-    <Layout title="Badan Semi Otonom">
+    <Layout title="Riwayat Pengunjungan">
       <BackgroundAndNavbar bg="/background.png">
         <Wrap justify={"space-evenly"}>
           <ViewCard

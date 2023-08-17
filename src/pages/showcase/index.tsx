@@ -5,24 +5,29 @@ import { Flex, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import Layout from "~/layout";
 import Navbar from "~/components/Navbar";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
 export const getServerSideProps = withSession({ force: true });
 
 export default function ShowcasePage() {
   return (
     <Layout title="Showcase">
-      <Navbar/>
-      <Flex>
-        <Link href={"/showcase/ukm"}>
-          <Button> UKM </Button>
-        </Link>
-        <Link href={"/showcase/bso"}>
-          <Button> BSO </Button>
-        </Link>
-        <Link href={"/showcase/himpunan"}>
-          <Button> Himpunan </Button>
-        </Link>
-      </Flex>
+      <BackgroundAndNavbar bg="/background.png">
+        <Flex>
+          <Link href={"/showcase/ukm"}>
+            <Button> UKM </Button>
+          </Link>
+          <Link href={"/showcase/bso"}>
+            <Button> BSO </Button>
+          </Link>
+          <Link href={"/showcase/himpunan"}>
+            <Button> Himpunan </Button>
+          </Link>
+          <Link href={"/showcase/history"}>
+            <Button> Riwayat Pengunjungan </Button>
+          </Link>
+        </Flex>
+      </BackgroundAndNavbar>
       <Footer />
     </Layout>
   );
