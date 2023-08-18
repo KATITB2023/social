@@ -21,9 +21,9 @@ export default function AddFriendCard(props: {
 }) {
   const toast = useToast();
   const addFriend = api.friend.addFriend.useMutation();
-  const handleClickAddFriend = async () => {
+  const handleClickAddFriend = () => {
     try {
-      const result = await addFriend.mutateAsync({
+      addFriend.mutate({
         userId: props.id,
       });
 

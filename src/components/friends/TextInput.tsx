@@ -1,4 +1,9 @@
-import { InputGroup, InputLeftElement, Input, InputProps } from "@chakra-ui/react";
+import {
+  InputGroup,
+  InputLeftElement,
+  Input,
+  type InputProps,
+} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React from "react";
 
@@ -6,15 +11,10 @@ interface TextInputProps extends InputProps {
   placeholder: string;
 }
 
-const TextInput = ({
-  ...props
-}:TextInputProps) => {
+const TextInput = ({ ...props }: TextInputProps) => {
   return (
     <InputGroup>
-      <InputLeftElement
-        pointerEvents="none"
-        color='white'
-      >
+      <InputLeftElement pointerEvents="none" color="white">
         <Search2Icon />
       </InputLeftElement>
       <Input

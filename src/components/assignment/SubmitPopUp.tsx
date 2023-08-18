@@ -51,31 +51,21 @@ const SubmitPopUp = ({
         assignmentId: taskId,
         filePath: sanitizedFileName,
       });
-      
-      if (result === "Tugas berhasil dikumpulkan") {
-        toast({
-          title: "Tugas berhasil dikumpulkan.",
-          status: "success",
-          duration: 1000,
-          isClosable: true,
-          position: "top",
-        });
-        submittingFile(false);
 
-        // Refresh halaman
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
-      } else {
-        toast({
-          title: "Gagal mengirim tugas",
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-          position: "top",
-        });
-        submittingFile(false);
-      }
+      toast({
+        title: result,
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+      });
+
+      submittingFile(false);
+
+      // Refresh halaman
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (error) {
       toast({
         title: "Gagal mengirim tugas",

@@ -1,4 +1,4 @@
-import { Box, Flex, Wrap } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";

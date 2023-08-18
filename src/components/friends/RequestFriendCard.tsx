@@ -19,9 +19,9 @@ export default function RequestFriendCard(props: {
     onClose: onClose2,
   } = useDisclosure();
   const accept = api.friend.addFriend.useMutation();
-  const handleAccept = async () => {
+  const handleAccept = () => {
     onOpen2();
-    await accept.mutateAsync({
+    accept.mutate({
       userId: props.id,
     });
   };
