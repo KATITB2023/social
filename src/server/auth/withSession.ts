@@ -12,7 +12,7 @@ type WithSessionParams<T extends boolean> = {
   handler?: (
     ctx: GetServerSidePropsContext,
     session: T extends true ? Session : Session | null
-  ) => Promise<GetServerSidePropsResult<any>>;
+  ) => Promise<GetServerSidePropsResult<object>>;
 };
 
 export function withSession<T extends boolean>({

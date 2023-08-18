@@ -14,7 +14,6 @@ import { MdQuestionMark } from "react-icons/md";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 
-
 export default function DeleteFriendPopUp(props: {
   onClose: () => void;
   isOpen: boolean;
@@ -22,11 +21,14 @@ export default function DeleteFriendPopUp(props: {
 }) {
   const router = useRouter();
   const deleteFriend = api.friend.removeFriend.useMutation();
-  const handleDelete = async () => {
+
+  const handleDelete = () => {
     props.onClose();
-    await deleteFriend.mutateAsync({
+
+    deleteFriend.mutate({
       userId: props.id,
     });
+
     router.refresh();
   };
 
@@ -136,7 +138,9 @@ export default function DeleteFriendPopUp(props: {
               height="48px"
               background="#E8553E"
               borderRadius="12px"
-              onClick={()=>{void handleDelete()}}
+              onClick={() => {
+                void handleDelete();
+              }}
             >
               <Text
                 width="53px"

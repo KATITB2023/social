@@ -174,7 +174,7 @@ export const AnonMenu = ({
               setOpen={setEhAdaApaNih}
               onSubmit={(text) => {
                 setSatSet(true);
-                void reportMutation.mutateAsync({
+                reportMutation.mutate({
                   message: text,
                   userId: partnerId,
                 });

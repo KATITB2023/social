@@ -24,9 +24,10 @@ export const ViewCard = ({
       <Link href={route}>
         <Image
           src={image}
-          position={"absolute"}
-          objectFit={"cover"}
-          objectPosition={"center"}
+          position="absolute"
+          objectFit="cover"
+          objectPosition="center"
+          alt=""
         />
       </Link>
 

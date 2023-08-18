@@ -168,7 +168,7 @@ export const assignmentRouter = createTRPCRouter({
           },
         });
 
-        if (prevAssgnScore.score !== null) {
+        if (prevAssgnScore.score) {
           const updatedPoint = prevUserPoint.point - prevAssgnScore.score;
 
           // Update user's point

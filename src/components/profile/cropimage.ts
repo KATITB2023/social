@@ -5,7 +5,7 @@ const TO_RADIANS = Math.PI / 180;
 type HTMLImageElementLoadable = HTMLImageElement & {
   addEventListener: (
     type: "load" | "error",
-    listener: ((this: HTMLImageElement, ev: Event) => any) | null,
+    listener: ((this: HTMLImageElement, ev: Event) => void) | null,
     options?: boolean | AddEventListenerOptions
   ) => void;
 };

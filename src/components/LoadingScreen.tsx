@@ -1,5 +1,5 @@
-import React, { type PropsWithChildren } from "react";
-import { Flex, Heading, Image} from "@chakra-ui/react";
+import React from "react";
+import { Flex, Heading, Image } from "@chakra-ui/react";
 import BackgroundAndNavbar from "./BackgroundAndNavbar";
 
 const LoadingScreen = ({ title }: { title?: string }) => {

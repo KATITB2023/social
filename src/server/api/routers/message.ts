@@ -304,8 +304,8 @@ export const messageRouter = createTRPCRouter({
           isRead: true,
         },
       });
-      return true;
     }),
+
   updateIsReadByMatchId: protectedProcedure
     .input(
       z.object({
@@ -324,9 +324,7 @@ export const messageRouter = createTRPCRouter({
         where: whereCondition,
       });
 
-      if (!message) {
-        return false;
-      }
+      if (!message) return;
 
       await ctx.prisma.message.updateMany({
         where: whereCondition,
@@ -334,7 +332,6 @@ export const messageRouter = createTRPCRouter({
           isRead: true,
         },
       });
-      return true;
     }),
   updateOneIsRead: protectedProcedure
     .input(

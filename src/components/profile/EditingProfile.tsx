@@ -54,7 +54,7 @@ export default function EditingProfile({
         position: "top",
       });
       setIsEditMode(false);
-    } catch (e: unknown) {
+    } catch (e) {
       if (!(e instanceof TRPCClientError)) throw e;
       toast({
         title: "Failed",

@@ -111,7 +111,7 @@ export const anonTypingEvent = createEvent(
     name: "anonTyping",
     authRequired: true,
   },
-  ({ ctx, input }) => {
+  ({ ctx }) => {
     const user = ctx.client.data.session.user;
     const match = ctx.client.data.match;
 

@@ -1,6 +1,5 @@
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Footer from "~/components/Footer";
-import ComingSoon from "~/components/screen/ComingSoon";
 import { withSession } from "~/server/auth/withSession";
 import { Center, Heading } from "@chakra-ui/react";
 

@@ -77,10 +77,7 @@ export default function EditPasswordModal(props: {
     reset();
   };
 
-  const editPassword: SubmitHandler<FormValues> = async (
-    data: FormValues,
-    event
-  ) => {
+  const editPassword: SubmitHandler<FormValues> = (data: FormValues, event) => {
     event?.preventDefault();
 
     if (data.newPassword !== data.confirmPassword) {
@@ -91,11 +88,11 @@ export default function EditPasswordModal(props: {
     }
 
     try {
-      await editPassMutation.mutateAsync({
+      editPassMutation.mutate({
         oldPassword: data.oldPassword,
         newPassword: data.newPassword,
       });
-    } catch (error: unknown) {
+    } catch (error) {
       if (!(error instanceof TRPCClientError)) throw error;
 
       handleError(error.message);

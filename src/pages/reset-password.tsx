@@ -75,7 +75,7 @@ const ResetPasswordForm = () => {
     });
   };
 
-  const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
+  const onSubmit: SubmitHandler<FormValues> = (data, event) => {
     try {
       event?.preventDefault();
 
@@ -108,7 +108,7 @@ const ResetPasswordForm = () => {
       }
 
       // Call procedure to send email
-      await resetPasswordMutation.mutateAsync({
+      resetPasswordMutation.mutate({
         userId,
         token,
         newPassword: data.newPassword,
