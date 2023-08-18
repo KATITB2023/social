@@ -32,8 +32,9 @@ const ProfileFriendsPage: NextPage = () => {
     cursor,
     limit,
   });
-  const getFriendData = api.friend.friendCount.useQuery();
-  const totalFriends = getFriendData.data;
+  const getFriendData = api.profile.getUserProfile.useQuery();
+  const totalFriends = getFriendData.data?.friendCount;
+  
   const requestData = getRequestData.data;
 
   if (!requestData) {
