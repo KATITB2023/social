@@ -156,11 +156,11 @@ const StatusButton = ({
 };
 
 // UTILS FUNCTION
-const getTwoTime = (startDate: Date, endDate: Date) => {
-  const startTime = dayjs(startDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
-  const endTime = dayjs(endDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
-  return `${startTime} - ${endTime}`;
-};
+// const getTwoTime = (startDate: Date, endDate: Date) => {
+//   const startTime = dayjs(startDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
+//   const endTime = dayjs(endDate).tz("Asia/Jakarta").format("DD/MM HH:mm");
+//   return `${startTime} - ${endTime}`;
+// };
 
 const validTime = (startTime: Date, endTime: Date) => {
   const now = dayjs();
@@ -227,7 +227,7 @@ const EventCard = ({
             Waktu
           </Text>
           <Text size="B5">
-            &nbsp;: {dayjs(eventData.startTime).format('DD/MM/YYYY')}
+            &nbsp;: {dayjs(eventData.startTime).format("DD/MM/YYYY")}
           </Text>
         </Flex>
       </Flex>
@@ -297,10 +297,12 @@ const AttendListPage = () => {
         record,
         status,
       };
-      if (eventsByDay.has(day)) {
-        const temp = eventsByDay.get(day)!;
+
+      const absenStatuses = eventsByDay.get(day);
+
+      if (absenStatuses) {
         eventsByDay.delete(day);
-        eventsByDay.set(day, temp.concat([absenStatus]));
+        eventsByDay.set(day, absenStatuses);
       } else {
         eventsByDay.set(day, [absenStatus]);
       }
@@ -310,7 +312,7 @@ const AttendListPage = () => {
   return (
     <Layout title={"Attendance"}>
       <BackgroundAndNavbar>
-        <Container bgImage="url('attendancelist_background.svg')" pb={"10"}>
+        <Container pb="10">
           <Flex flexDir="column">
             <Heading size="H4" color="yellow.400" mx="auto" mt="5%">
               ATTENDANCE LIST
@@ -319,7 +321,7 @@ const AttendListPage = () => {
               {Array.from(eventsByDay.keys()).map((item) => (
                 <Flex key={item} flexDir="column" gap="20px" mt="44px">
                   <Heading size="SH4">{item.toUpperCase()}</Heading>
-                  {eventsByDay.get(item)!.map((eventsInDay, index) => (
+                  {eventsByDay.get(item)?.map((eventsInDay, index) => (
                     <EventCard
                       key={index}
                       eventData={eventsInDay.event}
