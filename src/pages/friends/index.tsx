@@ -32,8 +32,9 @@ const ProfileFriendsPage: NextPage = () => {
     cursor,
     limit,
   });
-  const getFriendData = api.friend.friendCount.useQuery();
-  const totalFriends = getFriendData.data;
+  const getFriendData = api.profile.getUserProfile.useQuery();
+  const totalFriends = getFriendData.data?.friendCount;
+  
   const requestData = getRequestData.data;
   if (!requestData) {
     return <Layout title="Profile Friends"></Layout>;
@@ -75,7 +76,11 @@ const ProfileFriendsPage: NextPage = () => {
             )}
           </Flex>
           {searchQuery == "" && requestData.data ? (
-            <MenuList totalFriends={totalFriends ? totalFriends:0} totalRequest={totalRequest} ref={flexRef} />
+            <MenuList
+              totalFriends={totalFriends ? totalFriends : 0}
+              totalRequest={totalRequest}
+              ref={flexRef}
+            />
           ) : (
             <SearchedFriends searchQuery={searchQuery} />
           )}
