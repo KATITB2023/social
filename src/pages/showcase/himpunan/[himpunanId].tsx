@@ -13,7 +13,6 @@ export default function HimpunanInfo() {
           <Heading> Info Himpunan </Heading>{" "}
         </Center>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }

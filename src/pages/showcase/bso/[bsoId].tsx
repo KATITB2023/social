@@ -13,7 +13,6 @@ export default function BSOInfo() {
           <Heading> Info BSO </Heading>{" "}
         </Center>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
