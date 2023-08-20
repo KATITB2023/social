@@ -32,7 +32,6 @@ export default function BSOPage() {
           />
         </Wrap>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
