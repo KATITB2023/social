@@ -32,7 +32,6 @@ export default function UKMPage() {
           />
         </Wrap>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }

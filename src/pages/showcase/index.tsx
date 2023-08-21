@@ -28,7 +28,6 @@ export default function ShowcasePage() {
           </Link>
         </Flex>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
