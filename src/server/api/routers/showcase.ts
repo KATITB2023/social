@@ -149,4 +149,24 @@ export const showcaseRouter = createTRPCRouter({
 
       return units;
     }),
+
+  getAllMerchandise: publicProcedure.query(async ({ ctx }) => {
+    const merchandise = await ctx.prisma.merchandise.findMany();
+
+    return merchandise;
+  }),
+
+  getMerchandiseCheckoutHistory: protectedProcedure.query(async ({ ctx }) => {
+    const merchandiseCheckoutHistory =
+      await ctx.prisma.merchandiseCheckout.findMany({
+        where: {
+          studentId: ctx.session.user.id,
+        },
+        include: {
+          MerchandiseRequest: true,
+        },
+      });
+
+    return merchandiseCheckoutHistory;
+  }),
 });
