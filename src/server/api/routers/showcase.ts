@@ -1,8 +1,52 @@
 import { Lembaga, type UnitProfile } from "@prisma/client";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const showcaseRouter = createTRPCRouter({
+  getAllUnits: publicProcedure.query(async ({ ctx }) => {
+    const units = await ctx.prisma.unitProfile.findMany();
+
+    return units;
+  }),
+
+  getAllUnitsGrouped: publicProcedure.query(async ({ ctx }) => {
+    const units = await ctx.prisma.unitProfile.findMany();
+
+    const groupedUnits = units.reduce((groups, unit) => {
+      const lembaga = unit.lembaga;
+
+      if (!groups[lembaga]) {
+        groups[lembaga] = [unit];
+      } else {
+        groups[lembaga].push(unit);
+      }
+
+      return groups;
+    }, {} as Record<Lembaga, UnitProfile[]>);
+
+    return groupedUnits;
+  }),
+
+  getUnitsByLembaga: publicProcedure
+    .input(
+      z.object({
+        lembaga: z.nativeEnum(Lembaga),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const units = await ctx.prisma.unitProfile.findMany({
+        where: {
+          lembaga: input.lembaga,
+        },
+      });
+
+      return units;
+    }),
+
   getAllVisitedUnits: protectedProcedure.query(async ({ ctx }) => {
     // Quite a complex query, but it's the best I can do
     // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
