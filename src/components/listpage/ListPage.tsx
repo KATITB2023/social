@@ -118,7 +118,7 @@ export default function ListPage({
         <TextInput placeholder="Search..." />
         <Grid
           width="100%"
-          height="569px"
+          height="520px"
           columnGap={`${gridgappx}px`}
           rowGap={`${gridgappx * 3}px`}
           overflow={"auto"}
@@ -132,7 +132,12 @@ export default function ListPage({
             return (
               <>
                 <Center key={each.name}>
-                  <ViewCard title={each.name} image={each.image} route="/" />
+                  <ViewCard
+                    title={each.name}
+                    image={each.image}
+                    route="/"
+                    width="75%"
+                  />
                 </Center>
               </>
             );
