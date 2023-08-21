@@ -1,3 +1,4 @@
+import { Button, Image } from "@chakra-ui/react";
 import Card from "./TemporaryCard";
 
 /**
@@ -80,5 +81,12 @@ const defaultData = [
   },
 ];
 export default function ListUnitPage() {
-  return <Card></Card>;
+  return (
+    <>
+      <Button>
+        <Image src="backbutton-logo.svg" alt="<"></Image>
+      </Button>
+      <Card></Card>
+    </>
+  );
 }
