@@ -75,12 +75,18 @@ interface ListPageProps {
 export default function ListPage({
   title,
   description,
-  withbackbutton = true,
+  withbackbutton = false,
 }: ListPageProps) {
   const data = defaultData;
   return (
     <>
-      <Flex alignItems={"center"} flexDirection={"column"} mx="25px" gap="25px">
+      <Flex
+        alignItems={"center"}
+        flexDirection={"column"}
+        mx="25px"
+        gap="25px"
+        mt="20px"
+      >
         {withbackbutton && (
           <Button bgColor={"transparent"}>
             <Image src="backbutton-logo.svg" alt="<"></Image>
@@ -90,9 +96,11 @@ export default function ListPage({
           <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5">
             {title}
           </Heading>
-          <Text wordBreak={"break-word"} width="60%" align={"center"}>
-            {description}
-          </Text>
+          {description && (
+            <Text wordBreak={"break-word"} width="60%" align={"center"}>
+              {description}
+            </Text>
+          )}
         </Flex>
         <TextInput placeholder="Search..." />
         <Grid
