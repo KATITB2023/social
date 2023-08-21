@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Image, Heading, Text } from "@chakra-ui/react";
+import { Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
 export const ViewCard = ({
@@ -54,11 +54,18 @@ export const ViewCard = ({
         </Heading>
 
         <Link href={route}>
-          <Flex aspectRatio={2 / 1} borderRadius={"8px"} w={"full"}>
-            <Text bg={"yellow.5"} color={"purple.2"} fontSize={"12px"}>
+          <Button
+            display={"flex"}
+            borderRadius={"8px"}
+            bg={"yellow.5"}
+            w={"full"}
+            h={"full"}
+            py={1}
+          >
+            <Text color={"purple.2"} fontSize={"12px"} >
               Explore
             </Text>
-          </Flex>
+          </Button>
         </Link>
       </Flex>
     </Flex>
