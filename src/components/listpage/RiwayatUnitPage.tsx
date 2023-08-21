@@ -1,8 +1,3 @@
-import { Box, Button, Flex, Grid, Heading, Image } from "@chakra-ui/react";
-import Card from "./TemporaryCard";
-import TextInput from "../friends/TextInput";
-import Navbar from "../Navbar";
-import Footer from "../Footer";
 import BackgroundAndNavbar from "../BackgroundAndNavbar";
 import ListPage from "./ListPage";
 

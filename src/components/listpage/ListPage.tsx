@@ -16,6 +16,7 @@ export const defaultData = [
   {
     image: "",
     name: "LFM",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
@@ -95,7 +96,7 @@ export default function ListPage({
       >
         {withbackbutton && (
           <Button bgColor={"transparent"}>
-            <Image src="backbutton-logo.svg" alt="<"></Image>
+            <Image src="/backbutton-logo.svg" alt="<" />
           </Button>
         )}
 
@@ -136,9 +137,21 @@ export default function ListPage({
           gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
         > */}
 
-        <Wrap justify={"space-evenly"} w={"full"} maxH={"700px"} overflow={"auto"}>
+        <Wrap
+          justify={"space-evenly"}
+          w={"full"}
+          maxH={"700px"}
+          overflow={"auto"}
+        >
           {data.map((each) => {
-            return <ViewCard key={each.name} title={each.name} image={each.image} route="/" />;
+            return (
+              <ViewCard
+                key={each.name}
+                title={each.name}
+                image={each.image}
+                route={`/showcase/ukm/${each.name}`}
+              />
+            );
           })}
         </Wrap>
 
