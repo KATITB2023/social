@@ -25,6 +25,33 @@ export const showcaseRouter = createTRPCRouter({
       })
       .filter((unitProfile): unitProfile is UnitProfile => {
         return unitProfile !== null;
+      });
+
+    return units;
+  }),
+
+  getAllVisitedUnitsGrouped: protectedProcedure.query(async ({ ctx }) => {
+    // Quite a complex query, but it's the best I can do
+    // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
+    const unitVisitations = await ctx.prisma.unitVisit.findMany({
+      where: {
+        studentId: ctx.session.user.id,
+      },
+      include: {
+        unit: {
+          include: {
+            unitProfile: true,
+          },
+        },
+      },
+    });
+
+    const units = unitVisitations
+      .map((unitVisitation) => {
+        return unitVisitation.unit.unitProfile;
+      })
+      .filter((unitProfile): unitProfile is UnitProfile => {
+        return unitProfile !== null;
       })
       .reduce((groups, unit) => {
         const lembaga = unit.lembaga;
