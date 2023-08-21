@@ -4,6 +4,7 @@ import TextInput from "../friends/TextInput";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import BackgroundAndNavbar from "../BackgroundAndNavbar";
+import ListPage from "./ListPage";
 
 /**
  * to do:
@@ -30,102 +31,14 @@ import BackgroundAndNavbar from "../BackgroundAndNavbar";
  *
  * (coming soon)
  */
-const defaultData = [
-  {
-    image: "",
-    name: "LFM",
-  },
-  {
-    image: "",
-    name: "URO",
-  },
-  {
-    image: "",
-    name: "8EH",
-  },
-  {
-    image: "",
-    name: "KSEP1",
-  },
-  {
-    image: "",
-    name: "KSEP2",
-  },
-  {
-    image: "",
-    name: "KSEP3",
-  },
-  {
-    image: "",
-    name: "KSEP4",
-  },
-  {
-    image: "",
-    name: "KSEP5",
-  },
-  {
-    image: "",
-    name: "KSEP6",
-  },
-  {
-    image: "",
-    name: "KSEP7",
-  },
-  {
-    image: "",
-    name: "KSEP8",
-  },
-  {
-    image: "",
-    name: "KSEP9",
-  },
-  {
-    image: "",
-    name: "KSEP10",
-  },
-];
 
-const gridgappx = 10;
 export default function ListUnitPage() {
-  const data = defaultData;
   return (
     <BackgroundAndNavbar bg="background-bsoukmhimp.svg">
-      <Flex
-        alignItems={"center"}
-        flexDirection={"column"}
-        mx="25px"
-        gap="25px"
-        flex="1"
-      >
-        <Button bgColor={"transparent"}>
-          <Image src="backbutton-logo.svg" alt="<"></Image>
-        </Button>
-        <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5">
-          UKM
-        </Heading>
-        <TextInput placeholder="Search..." />
-        <Grid
-          width="100%"
-          height="569px"
-          gap={`${gridgappx}px`}
-          overflow={"auto"}
-          gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${gridgappx / 3}px) calc(${
-            100 / 3
-          }% - ${gridgappx / 3}px) calc(${100 / 3}% - ${gridgappx / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${gridgappx / 3}px)`}
-        >
-          {data.map((each) => {
-            return (
-              <>
-                <Box bgColor={"navy.1"} key={each.name}>
-                  <Card name={each.name} image={each.image} />
-                </Box>
-              </>
-            );
-          })}
-        </Grid>
-      </Flex>
+      <ListPage
+        title="UKM"
+        description="Berikut ini adalah daftar UKM yang telah kamu kunjungi"
+      />
     </BackgroundAndNavbar>
   );
 }
