@@ -71,10 +71,12 @@ interface ListPageProps {
   title: string;
   description?: string;
   withbackbutton?: boolean;
+  additionTitle?: string;
 }
 export default function ListPage({
   title,
   description,
+  additionTitle,
   withbackbutton = false,
 }: ListPageProps) {
   const data = defaultData;
@@ -96,6 +98,15 @@ export default function ListPage({
           <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5">
             {title}
           </Heading>
+          {additionTitle && (
+            <Heading
+              size="H4"
+              textShadow="0px 4px 30px #72D8BA"
+              color="yellow.5"
+            >
+              {additionTitle}
+            </Heading>
+          )}
           {description && (
             <Text wordBreak={"break-word"} width="60%" align={"center"}>
               {description}
