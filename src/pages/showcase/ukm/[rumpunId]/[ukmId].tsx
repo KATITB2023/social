@@ -13,7 +13,6 @@ export default function UKMInfo() {
           <Heading> Info UKM </Heading>{" "}
         </Center>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }

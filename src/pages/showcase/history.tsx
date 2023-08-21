@@ -32,7 +32,6 @@ export default function HistoryPage() {
           />
         </Wrap>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
