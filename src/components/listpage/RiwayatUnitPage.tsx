@@ -32,12 +32,13 @@ import ListPage from "./ListPage";
  * (coming soon)
  */
 
-export default function ListUnitPage() {
+export default function RiwayatUnitPage() {
   return (
-    <BackgroundAndNavbar bg="background-bsoukmhimp.svg">
+    <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
       <ListPage
         title="UKM"
         description="Berikut ini adalah daftar UKM yang telah kamu kunjungi"
+        withbackbutton={true}
       />
     </BackgroundAndNavbar>
   );

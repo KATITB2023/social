@@ -1,4 +1,4 @@
-import ListUnitPage from "~/components/listunit/ListUnitPage";
+import ListUnitPage from "~/components/listpage/ListUnitPage";
 
 export default function ListUnit() {
   return <ListUnitPage></ListUnitPage>;
