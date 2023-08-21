@@ -25,7 +25,60 @@ import Card from "./TemporaryCard";
  *
  * (coming soon)
  */
-
+const defaultData = [
+  {
+    image: "",
+    name: "LFM",
+  },
+  {
+    image: "",
+    name: "URO",
+  },
+  {
+    image: "",
+    name: "8EH",
+  },
+  {
+    image: "",
+    name: "KSEP1",
+  },
+  {
+    image: "",
+    name: "KSEP2",
+  },
+  {
+    image: "",
+    name: "KSEP3",
+  },
+  {
+    image: "",
+    name: "KSEP4",
+  },
+  {
+    image: "",
+    name: "KSEP5",
+  },
+  {
+    image: "",
+    name: "KSEP6",
+  },
+  {
+    image: "",
+    name: "KSEP7",
+  },
+  {
+    image: "",
+    name: "KSEP8",
+  },
+  {
+    image: "",
+    name: "KSEP9",
+  },
+  {
+    image: "",
+    name: "KSEP10",
+  },
+];
 export default function ListUnitPage() {
   return <Card></Card>;
 }
