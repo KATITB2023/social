@@ -13,7 +13,6 @@ export default function MerchandisePage() {
           <Heading>Merchandise</Heading>
         </Center>
       </BackgroundAndNavbar>
-      <Footer />
     </>
   );
 }

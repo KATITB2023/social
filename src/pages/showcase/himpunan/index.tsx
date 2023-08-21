@@ -32,7 +32,6 @@ export default function HimpunanPage() {
           />
         </Wrap>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
