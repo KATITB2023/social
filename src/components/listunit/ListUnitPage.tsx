@@ -1,5 +1,7 @@
 import { Button, Heading, Image } from "@chakra-ui/react";
 import Card from "./TemporaryCard";
+import SearchBar from "./SearchBar";
+import TextInput from "../friends/TextInput";
 
 /**
  * to do:
@@ -89,6 +91,7 @@ export default function ListUnitPage() {
       <Heading size="H4" textShadow="0px 4px 30px #72D8BA">
         OSKM
       </Heading>
+      <TextInput placeholder="Search..." />
       <Card></Card>
     </>
   );
