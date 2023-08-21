@@ -119,14 +119,15 @@ export default function ListPage({
         <Grid
           width="100%"
           height="520px"
-          columnGap={`${gridgappx}px`}
-          rowGap={`${gridgappx * 3}px`}
+          rowGap={`${gridgappx * 2}px`}
           overflow={"auto"}
           gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${gridgappx * 2}px) calc(${
+          gridTemplateRows={`calc(${100 / 3}% - ${
+            (gridgappx * 4) / 3
+          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
             100 / 3
-          }% - ${gridgappx * 2}px) calc(${100 / 3}% - ${gridgappx * 2}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${gridgappx * 2}px)`}
+          }% - ${(gridgappx * 4) / 3}px)`}
+          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
         >
           {data.map((each) => {
             return (
@@ -136,7 +137,7 @@ export default function ListPage({
                     title={each.name}
                     image={each.image}
                     route="/"
-                    width="75%"
+                    width="70%"
                   />
                 </Center>
               </>
