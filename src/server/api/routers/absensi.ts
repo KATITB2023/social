@@ -15,13 +15,12 @@ export const absensiRouter = createTRPCRouter({
       status: Status | null;
       day: string;
     }[] = [];
-    const student = ctx.session.user;
 
     const getEventData = await ctx.prisma.attendanceEvent.findMany({
       include: {
         record: {
           where: {
-            studentId: student.id,
+            studentId: ctx.session.user.id,
           },
         },
       },
