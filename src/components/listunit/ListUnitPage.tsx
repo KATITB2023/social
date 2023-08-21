@@ -1,4 +1,4 @@
-import BackgroundAndNavbar from "../BackgroundAndNavbar";
+import Card from "./TemporaryCard";
 
 /**
  * to do:
@@ -27,9 +27,5 @@ import BackgroundAndNavbar from "../BackgroundAndNavbar";
  */
 
 export default function ListUnitPage() {
-  return (
-    <BackgroundAndNavbar bg="background-bsoukmhimp.svg">
-      ...
-    </BackgroundAndNavbar>
-  );
+  return <Card></Card>;
 }
