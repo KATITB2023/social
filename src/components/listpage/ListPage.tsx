@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Flex,
   Grid,
   Heading,
@@ -9,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import Card from "./TemporaryCard";
+import { ViewCard } from "../showcase/ViewCard";
 
 const defaultData = [
   {
@@ -117,20 +119,21 @@ export default function ListPage({
         <Grid
           width="100%"
           height="569px"
-          gap={`${gridgappx}px`}
+          columnGap={`${gridgappx}px`}
+          rowGap={`${gridgappx * 3}px`}
           overflow={"auto"}
           gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${gridgappx / 3}px) calc(${
+          gridTemplateRows={`calc(${100 / 3}% - ${gridgappx * 2}px) calc(${
             100 / 3
-          }% - ${gridgappx / 3}px) calc(${100 / 3}% - ${gridgappx / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${gridgappx / 3}px)`}
+          }% - ${gridgappx * 2}px) calc(${100 / 3}% - ${gridgappx * 2}px)`}
+          gridAutoRows={`calc(${100 / 3}% - ${gridgappx * 2}px)`}
         >
           {data.map((each) => {
             return (
               <>
-                <Box bgColor={"navy.1"} key={each.name}>
-                  <Card name={each.name} image={each.image} />
-                </Box>
+                <Center key={each.name}>
+                  <ViewCard title={each.name} image={each.image} route="/" />
+                </Center>
               </>
             );
           })}

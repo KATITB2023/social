@@ -13,7 +13,7 @@ export const ViewCard = ({
 }) => {
   return (
     <Flex
-      w={"45%"}
+      h={"100%"}
       maxW={"200px"}
       borderRadius={"26px"}
       aspectRatio={3 / 4}
@@ -23,7 +23,7 @@ export const ViewCard = ({
     >
       <Link href={route}>
         <Image
-          src={image}
+          src={image || "/base.png"}
           position="absolute"
           objectFit="cover"
           objectPosition="center"
@@ -62,7 +62,7 @@ export const ViewCard = ({
             h={"full"}
             py={1}
           >
-            <Text color={"purple.2"} fontSize={"12px"} >
+            <Text color={"purple.2"} fontSize={"12px"}>
               Explore
             </Text>
           </Button>
