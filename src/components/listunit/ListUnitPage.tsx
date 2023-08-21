@@ -1,7 +1,8 @@
-import { Button, Heading, Image } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, Heading, Image } from "@chakra-ui/react";
 import Card from "./TemporaryCard";
-import SearchBar from "./SearchBar";
 import TextInput from "../friends/TextInput";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 /**
  * to do:
@@ -82,17 +83,68 @@ const defaultData = [
     name: "KSEP10",
   },
 ];
+
+const gridgappx = 10;
 export default function ListUnitPage() {
+  const data = defaultData;
   return (
     <>
-      <Button>
-        <Image src="backbutton-logo.svg" alt="<"></Image>
-      </Button>
-      <Heading size="H4" textShadow="0px 4px 30px #72D8BA">
-        OSKM
-      </Heading>
-      <TextInput placeholder="Search..." />
-      <Card></Card>
+      <Box
+        position="relative"
+        height="100%"
+        minH={"100vh"}
+        overflow={"hidden"}
+        backgroundImage={"background-bsoukmhimp.svg"}
+        backgroundSize={"cover"}
+        backgroundPosition={"center"}
+        backgroundRepeat={"no-repeat"}
+        pb={10}
+      >
+        <Flex flexDirection="column" height="100vh">
+          <Navbar />
+          <Flex
+            alignItems={"center"}
+            flexDirection={"column"}
+            mx="25px"
+            gap="25px"
+            flex="1"
+          >
+            <Button bgColor={"transparent"}>
+              <Image src="backbutton-logo.svg" alt="<"></Image>
+            </Button>
+            <Heading
+              size="H4"
+              textShadow="0px 4px 30px #72D8BA"
+              color="yellow.5"
+            >
+              UKM
+            </Heading>
+            <TextInput placeholder="Search..." />
+            <Grid
+              width="100%"
+              height="569px"
+              gap={`${gridgappx}px`}
+              overflow={"auto"}
+              gridTemplateColumns={"1fr 1fr"}
+              gridTemplateRows={`calc(${100 / 3}% - ${gridgappx / 3}px) calc(${
+                100 / 3
+              }% - ${gridgappx / 3}px) calc(${100 / 3}% - ${gridgappx / 3}px)`}
+              gridAutoRows={`calc(${100 / 3}% - ${gridgappx / 3}px)`}
+            >
+              {data.map((each) => {
+                return (
+                  <>
+                    <Box bgColor={"navy.1"} key={each.name}>
+                      <Card name={each.name} image={each.image} />
+                    </Box>
+                  </>
+                );
+              })}
+            </Grid>
+          </Flex>
+        </Flex>
+      </Box>
+      <Footer />
     </>
   );
 }
