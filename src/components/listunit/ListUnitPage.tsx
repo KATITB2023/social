@@ -1,4 +1,4 @@
-import { Button, Image } from "@chakra-ui/react";
+import { Button, Heading, Image } from "@chakra-ui/react";
 import Card from "./TemporaryCard";
 
 /**
@@ -86,6 +86,9 @@ export default function ListUnitPage() {
       <Button>
         <Image src="backbutton-logo.svg" alt="<"></Image>
       </Button>
+      <Heading size="H4" textShadow="0px 4px 30px #72D8BA">
+        OSKM
+      </Heading>
       <Card></Card>
     </>
   );
