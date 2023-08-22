@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "~/server/api/trpc";
-import { messageRouter } from "./routers/message";
+import { messageRouter } from "~/server/api/routers/message";
 import { authRouter } from "~/server/api/routers/auth";
 import { friendRouter } from "~/server/api/routers/friend";
 import { profileRouter } from "~/server/api/routers/profile";
@@ -8,6 +8,7 @@ import { anonymousMessageRouter } from "~/server/api/routers/anon-message";
 import { assignmentRouter } from "~/server/api/routers/assignment";
 import { feedRouter } from "~/server/api/routers/feeds";
 import { leaderboardRouter } from "~/server/api/routers/leaderboard";
+import { showcaseRouter } from "~/server/api/routers/showcase";
 
 /**
  * This is the primary router for your server.
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   assignment: assignmentRouter,
   feed: feedRouter,
   leaderboard: leaderboardRouter,
+  showcase: showcaseRouter,
 });
 
 // export type definition of API
