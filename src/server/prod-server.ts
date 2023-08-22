@@ -10,6 +10,7 @@ import {
   setupSocket,
   type SocketServer,
 } from "~/server/socket/setup";
+import { updatePinPerUnitSchedule } from "~/server/cron-job/update-pin-per-unit";
 
 // Load environment variables from .env before doing anything else
 loadEnvConfig(process.cwd());
@@ -53,7 +54,7 @@ void app.prepare().then(() => {
   io.listen(env.WS_PORT);
 
   // Start Schedule
-  // currentlyTypingSchedule.start();
+  updatePinPerUnitSchedule.start();
 
   console.log(
     `Server listening at http://localhost:${port} as ${
@@ -65,7 +66,7 @@ void app.prepare().then(() => {
     console.log("SIGTERM");
 
     // Stop schedule
-    // currentlyTypingSchedule.stop();
+    updatePinPerUnitSchedule.stop();
   });
 
   server.listen(port);

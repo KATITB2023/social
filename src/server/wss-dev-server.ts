@@ -1,8 +1,12 @@
 import { Server } from "socket.io";
 import parser from "socket.io-msgpack-parser";
 import { env } from "~/env.cjs";
-import type { SocketServer } from "~/server/socket/setup";
-import { getAdapter, setupSocket } from "~/server/socket/setup";
+import {
+  type SocketServer,
+  getAdapter,
+  setupSocket,
+} from "~/server/socket/setup";
+import { updatePinPerUnitSchedule } from "~/server/cron-job/update-pin-per-unit";
 
 void (() => {
   const port = parseInt(process.env.PORT || "3001", 10);
@@ -29,14 +33,14 @@ void (() => {
   console.log(`WebSocket Server listening on ws://localhost:${port}`);
 
   // Start Schedule
-  // currentlyTypingSchedule.start();
+  updatePinPerUnitSchedule.start();
 
   // On SIGTERM
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
     // Stop Schedule
-    // currentlyTypingSchedule.stop();
+    updatePinPerUnitSchedule.stop();
 
     // Close WebSocket Server
     io.close();
