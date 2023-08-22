@@ -11,7 +11,7 @@ export const ViewCard = ({
   image: string;
   title: string;
   route: string;
-  width: string | number;
+  width?: string | number;
 }) => {
   return (
     <Flex
