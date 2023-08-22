@@ -14,6 +14,7 @@ function BackgroundAndNavbar({
     <>
       <Box
         position="relative"
+        height={"100%"}
         minH={"100vh"}
         overflow={"hidden"}
         backgroundImage={bg}
