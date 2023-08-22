@@ -138,7 +138,7 @@ export default function ListPage({
 
         <Wrap justify={"space-evenly"} w={"full"} maxH={"700px"} overflow={"auto"}>
           {data.map((each) => {
-            return <ViewCard title={each.name} image={each.image} route="/" />;
+            return <ViewCard key={each.name} title={each.name} image={each.image} route="/" />;
           })}
         </Wrap>
 
