@@ -6,14 +6,17 @@ export const ViewCard = ({
   image,
   title,
   route,
+  width = "45%"
 }: {
   image: string;
   title: string;
   route: string;
+  width: string | number;
 }) => {
   return (
     <Flex
-      w={"45%"}
+      w={width}
+      minW={"100px"}
       maxW={"200px"}
       borderRadius={"26px"}
       aspectRatio={3 / 4}
