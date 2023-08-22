@@ -7,7 +7,6 @@ import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import UkmMerchPage from "./merchandise/ukm-merch";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -36,8 +35,7 @@ export default function FeedsPage() {
 
   return (
     <Layout title={"Beranda"}>
-      <UkmMerchPage/>
-      {/* <BackgroundAndNavbar bg="/feeds_bg.png">
+      <BackgroundAndNavbar bg="/feeds_bg.png">
         <Box>
           <Flex flexDirection={"column"} justifyContent={"center"}>
             {data?.pages
@@ -58,7 +56,7 @@ export default function FeedsPage() {
             <div ref={bottomRef}></div>
           </Flex>
         </Box>
-      </BackgroundAndNavbar> */}
+      </BackgroundAndNavbar>
     </Layout>
   );
 }
