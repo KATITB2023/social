@@ -9,10 +9,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
-import Card from "./TemporaryCard";
+import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
 
-const defaultData = [
+export const defaultData = [
   {
     image: "",
     name: "LFM",
@@ -67,7 +67,7 @@ const defaultData = [
   },
 ];
 
-const gridgappx = 10;
+// const gridgappx = 10;
 
 interface ListPageProps {
   title: string;
@@ -75,6 +75,7 @@ interface ListPageProps {
   withbackbutton?: boolean;
   additionTitle?: string;
 }
+
 export default function ListPage({
   title,
   description,
@@ -85,9 +86,10 @@ export default function ListPage({
   return (
     <>
       <Flex
+        w={"full"}
         alignItems={"center"}
         flexDirection={"column"}
-        mx="25px"
+        px={"25px"}
         gap="25px"
         mt="20px"
       >
@@ -96,6 +98,8 @@ export default function ListPage({
             <Image src="backbutton-logo.svg" alt="<"></Image>
           </Button>
         )}
+
+        {/* Page title */}
         <Flex alignItems={"center"} flexDirection={"column"}>
           <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5">
             {title}
@@ -115,8 +119,10 @@ export default function ListPage({
             </Text>
           )}
         </Flex>
+
         <TextInput placeholder="Search..." />
-        <Grid
+
+        {/* <Grid
           width="100%"
           height="520px"
           rowGap={`${gridgappx * 2}px`}
@@ -128,22 +134,15 @@ export default function ListPage({
             100 / 3
           }% - ${(gridgappx * 4) / 3}px)`}
           gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
-        >
+        > */}
+
+        <Wrap justify={"space-evenly"} w={"full"} maxH={"700px"} overflow={"auto"}>
           {data.map((each) => {
-            return (
-              <>
-                <Center key={each.name}>
-                  <ViewCard
-                    title={each.name}
-                    image={each.image}
-                    route="/"
-                    width="70%"
-                  />
-                </Center>
-              </>
-            );
+            return <ViewCard title={each.name} image={each.image} route="/" />;
           })}
-        </Grid>
+        </Wrap>
+
+        {/* </Grid> */}
       </Flex>
     </>
   );
