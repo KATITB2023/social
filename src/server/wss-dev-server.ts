@@ -1,15 +1,18 @@
+import { loadEnvConfig } from "@next/env";
 import { Server } from "socket.io";
 import parser from "socket.io-msgpack-parser";
-import { env } from "~/env.cjs";
 import {
   type SocketServer,
   getAdapter,
   setupSocket,
 } from "~/server/socket/setup";
-import { updatePinPerUnitSchedule } from "~/server/cron-job/update-pin-per-unit";
+import { env } from "~/env.cjs";
+
+// Load environment variables from .env before doing anything else
+loadEnvConfig(process.cwd());
 
 void (() => {
-  const port = parseInt(process.env.PORT || "3001", 10);
+  const port = env.PORT;
 
   const io: SocketServer = new Server(port, {
     cors: {
@@ -32,15 +35,13 @@ void (() => {
 
   console.log(`WebSocket Server listening on ws://localhost:${port}`);
 
-  // Start Schedule
-  updatePinPerUnitSchedule.start();
+  // Start Schedule if Exist
 
   // On SIGTERM
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
-    // Stop Schedule
-    updatePinPerUnitSchedule.stop();
+    // Stop Schedule if Exist
 
     // Close WebSocket Server
     io.close();

@@ -9,6 +9,12 @@ exports.env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    PORT: z.preprocess(
+      // If PORT is not set, set it to 3000
+      (str) => (str ? +str : 3000),
+      // PORT must be a positive integer
+      z.number().int().positive().min(1)
+    ),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     NEXTAUTH_SECRET:
@@ -82,6 +88,7 @@ exports.env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    PORT: process.env.PORT,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,

@@ -1,22 +1,21 @@
 import { loadEnvConfig } from "@next/env";
-import { env } from "~/env.cjs";
 import http from "http";
+import { parse } from "url";
 import next from "next";
 import { Server } from "socket.io";
 import parser from "socket.io-msgpack-parser";
-import { parse } from "url";
 import {
   getAdapter,
   setupSocket,
   type SocketServer,
 } from "~/server/socket/setup";
-import { updatePinPerUnitSchedule } from "~/server/cron-job/update-pin-per-unit";
+import { env } from "~/env.cjs";
 
 // Load environment variables from .env before doing anything else
 loadEnvConfig(process.cwd());
 
-const port = parseInt(process.env.PORT || "3000", 10);
-const dev = process.env.NODE_ENV !== "production";
+const port = env.PORT;
+const dev = env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -53,20 +52,18 @@ void app.prepare().then(() => {
 
   io.listen(env.WS_PORT);
 
-  // Start Schedule
-  updatePinPerUnitSchedule.start();
+  // Start Schedule if Exist
 
   console.log(
     `Server listening at http://localhost:${port} as ${
-      dev ? "development" : process.env.NODE_ENV
+      dev ? "development" : env.NODE_ENV
     }`
   );
 
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
-    // Stop schedule
-    updatePinPerUnitSchedule.stop();
+    // Stop schedule if Exist
   });
 
   server.listen(port);
