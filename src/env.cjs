@@ -64,7 +64,7 @@ exports.env = createEnv({
       // If SMTP_PORTL is not set, set it to 587
       (str) => (str ? +str : 587),
       // SMTP_PORTL must be a positive integer
-      z.number().int().positive()
+      z.number().positive().min(0).max(1)
     ),
     SESSION_COOKIE_DOMAIN: z.string().default("localhost"),
     SMTP_USER: z.string().min(1),
