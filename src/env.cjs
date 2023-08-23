@@ -48,8 +48,8 @@ exports.env = createEnv({
     SAMPLER_RATIO: z.preprocess(
       // If SAMPLER_RATIO is not set, set it to 1
       (str) => (str ? +str : 1),
-      // SAMPLER_RATIO must be a positive number
-      z.number().int().positive()
+      // SAMPLER_RATIO must be a positive number (float)
+      z.number().positive().min(0).max(1)
     ),
     TYPING_TIMEOUT: z.preprocess(
       // If TYPING_TIMEOUT is not set, set it to 1000 ms
@@ -64,7 +64,7 @@ exports.env = createEnv({
       // If SMTP_PORTL is not set, set it to 587
       (str) => (str ? +str : 587),
       // SMTP_PORTL must be a positive integer
-      z.number().positive().min(0).max(1)
+      z.number().int().positive()
     ),
     SESSION_COOKIE_DOMAIN: z.string().default("localhost"),
     SMTP_USER: z.string().min(1),
