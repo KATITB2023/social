@@ -12,7 +12,7 @@ import { env } from "~/env.cjs";
 loadEnvConfig(process.cwd());
 
 void (() => {
-  const port = env.PORT;
+  const port = env.WS_PORT;
 
   const io: SocketServer = new Server(port, {
     cors: {

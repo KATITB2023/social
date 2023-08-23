@@ -63,7 +63,7 @@ void app.prepare().then(() => {
   process.on("SIGTERM", () => {
     console.log("SIGTERM");
 
-    // Stop schedule if Exist
+    // Stop Schedule if Exist
   });
 
   server.listen(port);
