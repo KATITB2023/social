@@ -451,4 +451,20 @@ export const showcaseRouter = createTRPCRouter({
       orderBy: [{ createdAt: "desc" }],
     });
   }),
+  getUnitById: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.prisma.unitProfile.findFirst({
+        where: { userId: input.id },
+      });
+
+      if (result === null) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Unit profile not found",
+        });
+      }
+
+      return result;
+    }),
 });
