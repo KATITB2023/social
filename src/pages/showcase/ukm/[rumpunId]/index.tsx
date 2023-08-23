@@ -32,7 +32,6 @@ export default function RumpunUKMPage() {
           />
         </Wrap>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }

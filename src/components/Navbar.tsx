@@ -189,7 +189,7 @@ const Navbar = () => {
         top={navbarPos}
         position={"fixed"}
         insetX={0}
-        zIndex={1}
+        zIndex={3}
         backgroundImage="url('/navbarbg.png')"
         backgroundSize={"cover"}
         maxWidth={"450px"}
@@ -226,7 +226,7 @@ const Navbar = () => {
           borderRadius="50px"
         />
 
-        <Box zIndex="2">
+        <Box zIndex="1">
           <Link href={"/"}>
             <Image
               objectFit="cover"
@@ -241,7 +241,6 @@ const Navbar = () => {
           flex="1"
           flexDir="row"
           justifyContent="end"
-          zIndex="2"
           alignItems={"center"}
         >
           <Button
@@ -272,7 +271,6 @@ const Navbar = () => {
               paddingY="40px"
               paddingX="20px"
               flexDir="column"
-              zIndex="3"
             >
               {selfProfile && (
                 <Link href={"/profile"}>

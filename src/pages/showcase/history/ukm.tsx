@@ -5,9 +5,9 @@ import Layout from "~/layout";
 import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
-export default function HimpunanPage() {
+export default function HistoryUKMPage() {
   return (
-    <Layout title="Himpunan">
+    <Layout title="Riwayat Pengunjungan UKM">
       <BackgroundAndNavbar bg="/background.png">
         <Wrap justify={"space-evenly"}>
           <ViewCard
