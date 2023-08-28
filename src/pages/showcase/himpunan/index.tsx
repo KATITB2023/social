@@ -12,7 +12,7 @@ export default function HimpunanPage() {
   return (
     <Layout title="Himpunan">
       <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
-        <ListPage title="Himpunan" />
+        <ListPage title="Himpunan" withbackbutton={true}/>
       </BackgroundAndNavbar>
     </Layout>
   );

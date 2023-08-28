@@ -11,6 +11,8 @@ import {
 import TextInput from "../friends/TextInput";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
+import {useRouter} from "next/router";
+import Link from "next/link";
 
 export const defaultData = [
   {
@@ -84,25 +86,28 @@ export default function ListPage({
   withbackbutton = false,
 }: ListPageProps) {
   const data = defaultData;
+  const router = useRouter();
+
   return (
     <>
       <Flex
         w={"full"}
         alignItems={"center"}
         flexDirection={"column"}
+        position={"relative"}
         px={"25px"}
         gap="25px"
-        mt="20px"
+        pt="50px"
       >
         {withbackbutton && (
-          <Button bgColor={"transparent"}>
-            <Image src="/backbutton-logo.svg" alt="<" />
-          </Button>
+            <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
+              <Image src="/backbutton-logo.svg" alt="Back button"/>
+            </Button>
         )}
 
         {/* Page title */}
         <Flex alignItems={"center"} flexDirection={"column"}>
-          <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5">
+          <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
             {title}
           </Heading>
           {additionTitle && (
@@ -142,6 +147,19 @@ export default function ListPage({
           w={"full"}
           maxH={"700px"}
           overflow={"auto"}
+          sx={{
+            "::-webkit-scrollbar": {
+              width: "5px",
+            },
+            "::-webkit-scrollbar-track": {
+              display: "none",
+              background: "rgb(68,70,84)",
+            },
+            "::-webkit-scrollbar-thumb": {
+              background: "rgba(217,217,227,.8)",
+              borderRadius: "full",
+            },
+          }}
         >
           {data.map((each) => {
             return (

@@ -27,12 +27,12 @@ import ListPage from "./ListPage";
  * (coming soon)
  */
 
-export default function RiwayatUnitPage() {
+export default function RiwayatUnitPage({ title }: { title: string }) {
   return (
     <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
       <ListPage
-        title="UKM"
-        description="Berikut ini adalah daftar UKM yang telah kamu kunjungi"
+        title={title}
+        description={`Berikut ini adalah daftar ${title} yang telah kamu kunjungi`}
         withbackbutton={true}
       />
     </BackgroundAndNavbar>

@@ -64,15 +64,22 @@ export const leaderboardRouter = createTRPCRouter({
 
     if (!selfPos) {
       throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
+        code: "NOT_FOUND",
         message: "Self position not found",
       });
     }
 
-    const user = await ctx.prisma.profile.findFirstOrThrow({
+    const user = await ctx.prisma.profile.findUnique({
       where: { userId: ctx.session.user.id },
       include: { user: true },
     });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
 
     return {
       userId: user.userId,

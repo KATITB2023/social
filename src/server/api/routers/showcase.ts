@@ -213,7 +213,7 @@ export const showcaseRouter = createTRPCRouter({
   getAllUnits: publicProcedure
     .input(
       z.object({
-        searchValue: z.string().default(""),
+        searchValue: z.string().optional(),
         lembaga: z.nativeEnum(Lembaga).optional(),
         group: z.string().optional(),
       })
@@ -256,16 +256,16 @@ export const showcaseRouter = createTRPCRouter({
       });
 
       return units.reduce((groups, unit) => {
-        const lembaga = unit[input.by];
+        const value = unit[input.by];
 
-        if (!lembaga) {
+        if (!value) {
           return groups;
         }
 
-        if (!groups[lembaga]) {
-          groups[lembaga] = [unit];
+        if ("lembaga" in groups) {
+          groups.lembaga.push(unit);
         } else {
-          groups[lembaga]?.push(unit);
+          groups.lembaga = [unit];
         }
 
         return groups;
@@ -277,7 +277,7 @@ export const showcaseRouter = createTRPCRouter({
     .input(
       z.object({
         lembaga: z.nativeEnum(Lembaga).optional(),
-        searchValue: z.string().default(""),
+        searchValue: z.string().optional(),
         limit: z.number().int().gt(0).optional(),
       })
     )
@@ -320,7 +320,7 @@ export const showcaseRouter = createTRPCRouter({
   getAllMerchandise: publicProcedure
     .input(
       z.object({
-        searchValue: z.string().default(""),
+        searchValue: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -353,7 +353,7 @@ export const showcaseRouter = createTRPCRouter({
   getUnitById: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
-      const result = await ctx.prisma.unitProfile.findFirst({
+      const result = await ctx.prisma.unitProfile.findUnique({
         where: { userId: input.id },
       });
 
@@ -364,10 +364,12 @@ export const showcaseRouter = createTRPCRouter({
         });
       }
 
-      const visitation = await ctx.prisma.unitVisit.findFirst({
+      const visitation = await ctx.prisma.unitVisit.findUnique({
         where: {
-          unitId: result.userId,
-          studentId: ctx.session.user.id,
+          studentId_unitId: {
+            studentId: ctx.session.user.id,
+            unitId: input.id,
+          },
         },
       });
 

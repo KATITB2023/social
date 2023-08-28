@@ -3,11 +3,11 @@ import { Flex } from "@chakra-ui/react";
 export default function PopupWithBlackOverlay({
   children,
   open,
-  setOpen,
+  setClose,
 }: {
   children: string | JSX.Element | JSX.Element[];
   open: boolean;
-  setOpen: () => void;
+  setClose: () => void;
 }) {
   return (
     <Flex
@@ -33,7 +33,7 @@ export default function PopupWithBlackOverlay({
           h={"100vh"}
           bg={"black"}
           opacity={0.7}
-          onClick={setOpen}
+          onClick={setClose}
           cursor={"pointer"}
         />
 
