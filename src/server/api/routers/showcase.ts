@@ -110,6 +110,7 @@ export const showcaseRouter = createTRPCRouter({
             id: {
               in: ids,
             },
+            isPublished: true,
           },
         });
 
@@ -212,6 +213,8 @@ export const showcaseRouter = createTRPCRouter({
     .input(
       z.object({
         searchValue: z.string().default(""),
+        lembaga: z.nativeEnum(Lembaga).optional(),
+        group: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -221,6 +224,8 @@ export const showcaseRouter = createTRPCRouter({
             contains: input.searchValue,
             mode: "insensitive",
           },
+          group: input.group,
+          lembaga: input.lembaga,
         },
         orderBy: {
           name: "asc",
@@ -232,6 +237,7 @@ export const showcaseRouter = createTRPCRouter({
   getAllUnitsGrouped: publicProcedure
     .input(
       z.object({
+        by: z.enum(["lembaga", "group"]),
         searchValue: z.string(),
       })
     )
@@ -249,45 +255,26 @@ export const showcaseRouter = createTRPCRouter({
       });
 
       return units.reduce((groups, unit) => {
-        const lembaga = unit.lembaga;
+        const lembaga = unit[input.by];
+
+        if (lembaga === null) {
+          return groups;
+        }
 
         if (!groups[lembaga]) {
           groups[lembaga] = [unit];
         } else {
-          groups[lembaga].push(unit);
+          groups[lembaga]?.push(unit);
         }
 
         return groups;
-      }, {} as Record<Lembaga, UnitProfile[]>);
+      }, {} as Record<string, UnitProfile[]>);
     }),
-
-  // Menampilkan seluruh unit sebagai array biasa yang difilter berdasarkan lembaga
-  getUnitsByLembaga: publicProcedure
-    .input(
-      z.object({
-        lembaga: z.nativeEnum(Lembaga),
-        searchValue: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.unitProfile.findMany({
-        where: {
-          lembaga: input.lembaga,
-          name: {
-            contains: input.searchValue,
-            mode: "insensitive",
-          },
-        },
-        orderBy: {
-          name: "asc",
-        },
-      });
-    }),
-
   // Menampilkan seluruh unit yang telah dikunjungi sebagai array biasa
   getAllVisitedUnits: protectedProcedure
     .input(
       z.object({
+        lembaga: z.nativeEnum(Lembaga).optional(),
         searchValue: z.string().default(""),
         limit: z.number().int().gt(0).optional(),
       })
@@ -304,6 +291,7 @@ export const showcaseRouter = createTRPCRouter({
                 contains: input.searchValue,
                 mode: "insensitive",
               },
+              lembaga: input.lembaga,
             },
           },
         },
@@ -325,100 +313,6 @@ export const showcaseRouter = createTRPCRouter({
           return unitProfile !== null;
         });
     }),
-
-  // Menampilan seluruh unit yang telah dikunjungi sebagai key-value pair dengan key lembaga dan value array unit
-  getAllVisitedUnitsGrouped: protectedProcedure
-    .input(
-      z.object({
-        searchValue: z.string().default(""),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      // Quite a complex query, but it's the best I can do
-      // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
-      const unitVisitations = await ctx.prisma.unitVisit.findMany({
-        where: {
-          studentId: ctx.session.user.id,
-          unit: {
-            unitProfile: {
-              name: {
-                contains: input.searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-        },
-        include: {
-          unit: {
-            include: {
-              unitProfile: true,
-            },
-          },
-        },
-      });
-
-      return unitVisitations
-        .map((unitVisitation) => {
-          return unitVisitation.unit.unitProfile;
-        })
-        .filter((unitProfile): unitProfile is UnitProfile => {
-          return unitProfile !== null;
-        })
-        .reduce((groups, unit) => {
-          const lembaga = unit.lembaga;
-
-          if (!groups[lembaga]) {
-            groups[lembaga] = [unit];
-          } else {
-            groups[lembaga].push(unit);
-          }
-
-          return groups;
-        }, {} as Record<Lembaga, UnitProfile[]>);
-    }),
-
-  // Menampilkan seluruh unit yang telah dikunjungi sebagai array biasa yang difilter berdasarkan lembaga
-  getVisitedUnitsByLembaga: protectedProcedure
-    .input(
-      z.object({
-        lembaga: z.nativeEnum(Lembaga),
-        searchValue: z.string().default(""),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      // Quite a complex query, but it's the best I can do
-      // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
-      const unitVisitations = await ctx.prisma.unitVisit.findMany({
-        where: {
-          studentId: ctx.session.user.id,
-          unit: {
-            unitProfile: {
-              lembaga: input.lembaga,
-              name: {
-                contains: input.searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-        },
-        include: {
-          unit: {
-            include: {
-              unitProfile: true,
-            },
-          },
-        },
-      });
-
-      return unitVisitations
-        .map((unitVisitation) => {
-          return unitVisitation.unit.unitProfile;
-        })
-        .filter((unitProfile): unitProfile is UnitProfile => {
-          return unitProfile !== null;
-        });
-    }),
-
   // Menampilkan seluruh merchandise sebagai array biasa
   getAllMerchandise: publicProcedure
     .input(
@@ -433,6 +327,7 @@ export const showcaseRouter = createTRPCRouter({
             contains: input.searchValue,
             mode: "insensitive",
           },
+          isPublished: true,
         },
         orderBy: [{ name: "desc" }],
       });
@@ -451,7 +346,7 @@ export const showcaseRouter = createTRPCRouter({
       orderBy: [{ createdAt: "desc" }],
     });
   }),
-  getUnitById: publicProcedure
+  getUnitById: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
       const result = await ctx.prisma.unitProfile.findFirst({
@@ -465,6 +360,31 @@ export const showcaseRouter = createTRPCRouter({
         });
       }
 
-      return result;
+      const visitation = await ctx.prisma.unitVisit.findFirst({
+        where: {
+          unitId: result.userId,
+          studentId: ctx.session.user.id,
+        },
+      });
+
+      return {
+        visited: visitation !== null,
+        ...result,
+      };
+    }),
+  getGroups: publicProcedure
+    .input(z.object({ lembaga: z.nativeEnum(Lembaga) }))
+    .query(async ({ ctx, input }) => {
+      return (
+        await ctx.prisma.unitProfile.findMany({
+          distinct: ["group"],
+          where: {
+            lembaga: input.lembaga,
+            group: {
+              not: null,
+            },
+          },
+        })
+      ).map((e) => e.group) as string[];
     }),
 });
