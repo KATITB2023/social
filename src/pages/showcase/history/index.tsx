@@ -132,7 +132,7 @@ export default function HistoryPage() {
       dots: true,
       infinite: true,
       speed: 500,
-      // autoplay: true,
+      autoplay: true,
       autoplaySpeed: 4000,
       slidesToShow: itemsPerPage,
       slidesToScroll: itemsPerPage,
