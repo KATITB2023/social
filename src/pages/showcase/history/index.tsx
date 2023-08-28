@@ -4,9 +4,9 @@ import { ViewCard } from "~/components/showcase/ViewCard";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
-export default function RumpunUKMPage() {
+export default function HistoryPage() {
   return (
-    <Layout title="Rumpun: {Nama Rumpun}">
+    <Layout title="Riwayat Pengunjungan">
       <BackgroundAndNavbar bg="/background.png">
         <Wrap justify={"space-evenly"}>
           <ViewCard

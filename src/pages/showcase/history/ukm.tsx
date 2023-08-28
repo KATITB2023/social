@@ -2,12 +2,11 @@ import React from "react";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "~/components/showcase/ViewCard";
 import Layout from "~/layout";
-import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 
-export default function HistoryPage() {
+export default function HistoryUKMPage() {
   return (
-    <Layout title="Riwayat Pengunjungan">
+    <Layout title="Riwayat Pengunjungan UKM">
       <BackgroundAndNavbar bg="/background.png">
         <Wrap justify={"space-evenly"}>
           <ViewCard
