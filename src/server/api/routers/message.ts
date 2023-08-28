@@ -144,7 +144,7 @@ export const messageRouter = createTRPCRouter({
 
         if (!otherUser.profile) {
           throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
+            code: "NOT_FOUND",
             message: "Other user profile not found",
           });
         }
