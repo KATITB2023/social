@@ -328,7 +328,7 @@ const Room: NextPage = () => {
               isKamuDirequest ||
               isPeraturan
             }
-            setOpen={() => closeAll()}
+            setClose={() => closeAll()}
           >
             <>
               {isYahTemanmu && <YahTemanmu setMatch={setMatch} />}
