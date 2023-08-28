@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "~/layout";
-import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { Center, Heading } from "@chakra-ui/react";
 

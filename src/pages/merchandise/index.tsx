@@ -1,5 +1,4 @@
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import Footer from "~/components/Footer";
 import { withSession } from "~/server/auth/withSession";
 import { Center, Heading } from "@chakra-ui/react";
 import Layout from "~/layout";
