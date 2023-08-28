@@ -18,7 +18,7 @@ export const NavbarLoginPage = () => {
           top={0}
           position={"fixed"}
           insetX={0}
-          zIndex={1}
+          zIndex={3}
           background="url('/navbarbg.png')"
           backgroundSize={"cover"}
           maxWidth={"450px"}
@@ -60,7 +60,7 @@ export const NavbarLoginPage = () => {
             objectPosition="center"
             src="/Vector.svg"
             alt="OSKM ITB"
-            zIndex="2"
+            zIndex="1"
           />
         </Flex>
       </>
