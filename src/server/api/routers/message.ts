@@ -230,11 +230,11 @@ export const messageRouter = createTRPCRouter({
           OR: [
             {
               firstUserId: reportedUser.id,
-              secondUserId: ctx.session?.user.id,
+              secondUserId: ctx.session.user.id,
               endedAt: null,
             },
             {
-              firstUserId: ctx.session?.user.id,
+              firstUserId: ctx.session.user.id,
               secondUserId: reportedUser.id,
               endedAt: null,
             },

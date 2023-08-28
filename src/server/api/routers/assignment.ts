@@ -12,7 +12,7 @@ export const assignmentRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const assignment = await ctx.prisma.assignment.findFirst({
+      const assignment = await ctx.prisma.assignment.findUnique({
         where: {
           id: input.assignmentId,
         },
@@ -26,10 +26,12 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      const submission = await ctx.prisma.assignmentSubmission.findFirst({
+      const submission = await ctx.prisma.assignmentSubmission.findUnique({
         where: {
-          studentId: ctx.session.user.id,
-          assignmentId: input.assignmentId,
+          studentId_assignmentId: {
+            studentId: ctx.session.user.id,
+            assignmentId: input.assignmentId,
+          },
         },
       });
 
@@ -111,7 +113,7 @@ export const assignmentRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const assignment = await ctx.prisma.assignment.findFirst({
+      const assignment = await ctx.prisma.assignment.findUnique({
         where: {
           id: input.assignmentId,
         },
@@ -136,10 +138,12 @@ export const assignmentRouter = createTRPCRouter({
 
       // Check existing submission
       const isSubmissionExists =
-        await ctx.prisma.assignmentSubmission.findFirst({
+        await ctx.prisma.assignmentSubmission.findUnique({
           where: {
-            studentId: ctx.session.user.id,
-            assignmentId: input.assignmentId,
+            studentId_assignmentId: {
+              studentId: ctx.session.user.id,
+              assignmentId: input.assignmentId,
+            },
           },
         });
 
