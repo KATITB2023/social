@@ -60,9 +60,9 @@ export default function HistoryPage() {
     style,
     onClick,
   }: {
-    className? : string;
-    style? : React.CSSProperties;
-    onClick? : React.MouseEventHandler<HTMLDivElement>;
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
   }) {
     // const { className, style, onClick } = props;
     return (
@@ -79,9 +79,9 @@ export default function HistoryPage() {
     style,
     onClick,
   }: {
-    className? : string;
-    style? : React.CSSProperties;
-    onClick? : React.MouseEventHandler<HTMLDivElement>;
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
   }) {
     // const { className, style, onClick } = props;
     return (
@@ -132,7 +132,7 @@ export default function HistoryPage() {
       dots: true,
       infinite: true,
       speed: 500,
-      autoplay: true,
+      // autoplay: true,
       autoplaySpeed: 4000,
       slidesToShow: itemsPerPage,
       slidesToScroll: itemsPerPage,
@@ -164,7 +164,15 @@ export default function HistoryPage() {
     return (
       <Slider {...settings}>
         {React.Children.map(children, (child, index) => (
-          <Box key={index} w="100%" mt="20px" maxW={"200px"} h="200px">
+          <Box
+            key={index}
+            w="100%"
+            mt="20px"
+            h="200px"
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             {child}
           </Box>
         ))}
@@ -210,19 +218,21 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          <SliderWrapper>
-            <CustomSlider>
-              {dataUKM6.map((item, index) => (
+          {/* <SliderWrapper> */}
+          <CustomSlider>
+            {ukmItems.map((item, index) => (
+              <Flex mx={"5px"}>
                 <ViewCard
                   key={index}
                   image={item!.image}
                   title={item!.title}
                   route={item!.route}
-                  width={"90%"}
+                  width={"100%"}
                 />
-              ))}
-            </CustomSlider>
-          </SliderWrapper>
+              </Flex>
+            ))}
+          </CustomSlider>
+          {/* </SliderWrapper> */}
 
           <Flex
             flexDirection="row"
@@ -239,19 +249,21 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          <SliderWrapper>
-            <CustomSlider>
-              {bsoItems.map((item, index) => (
+          {/* <SliderWrapper> */}
+          <CustomSlider>
+            {bsoItems.map((item, index) => (
+              <Flex mx={"5px"}>
                 <ViewCard
                   key={index}
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
-                  width={"90%"}
+                  image={item!.image}
+                  title={item!.title}
+                  route={item!.route}
+                  width={"100%"}
                 />
-              ))}
-            </CustomSlider>
-          </SliderWrapper>
+              </Flex>
+            ))}
+          </CustomSlider>
+          {/* </SliderWrapper> */}
 
           <Flex
             flexDirection="row"
@@ -268,19 +280,21 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          <SliderWrapper>
-            <CustomSlider>
-              {himpunanItems.map((item, index) => (
+          {/* <SliderWrapper> */}
+          <CustomSlider>
+            {himpunanItems.map((item, index) => (
+              <Flex mx={"5px"}>
                 <ViewCard
                   key={index}
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
-                  width={"90%"}
+                  image={item!.image}
+                  title={item!.title}
+                  route={item!.route}
+                  width={"100%"}
                 />
-              ))}
-            </CustomSlider>
-          </SliderWrapper>
+              </Flex>
+            ))}
+          </CustomSlider>
+          {/* </SliderWrapper> */}
         </Flex>
       </BackgroundAndNavbar>
     </Layout>
