@@ -221,12 +221,11 @@ export default function HistoryPage() {
           {/* <SliderWrapper> */}
           <CustomSlider>
             {ukmItems.map((item, index) => (
-              <Flex mx={"5px"}>
+              <Flex mx={"5px"} key={index}>
                 <ViewCard
-                  key={index}
-                  image={item!.image}
-                  title={item!.title}
-                  route={item!.route}
+                  image={item.image}
+                  title={item.title}
+                  route={item.route}
                   width={"100%"}
                 />
               </Flex>
@@ -252,12 +251,11 @@ export default function HistoryPage() {
           {/* <SliderWrapper> */}
           <CustomSlider>
             {bsoItems.map((item, index) => (
-              <Flex mx={"5px"}>
+              <Flex mx={"5px"} key={index}>
                 <ViewCard
-                  key={index}
-                  image={item!.image}
-                  title={item!.title}
-                  route={item!.route}
+                  image={item.image}
+                  title={item.title}
+                  route={item.route}
                   width={"100%"}
                 />
               </Flex>
@@ -283,12 +281,11 @@ export default function HistoryPage() {
           {/* <SliderWrapper> */}
           <CustomSlider>
             {himpunanItems.map((item, index) => (
-              <Flex mx={"5px"}>
+              <Flex mx={"5px"} key={index}>
                 <ViewCard
-                  key={index}
-                  image={item!.image}
-                  title={item!.title}
-                  route={item!.route}
+                  image={item.image}
+                  title={item.title}
+                  route={item.route}
                   width={"100%"}
                 />
               </Flex>
