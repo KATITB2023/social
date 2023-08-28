@@ -18,8 +18,8 @@ export const showcaseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const UNIT_VISIT_REWARD_POINTS = 100;
 
-      await ctx.prisma.$transaction(async (client) => {
-        const unitVisit = await client.unitVisit.findUnique({
+      await ctx.prisma.$transaction(async (tx) => {
+        const unitVisit = await tx.unitVisit.findUnique({
           where: {
             studentId_unitId: {
               studentId: ctx.session.user.id,
@@ -28,32 +28,30 @@ export const showcaseRouter = createTRPCRouter({
           },
         });
 
-        if (unitVisit === null) {
+        if (!unitVisit)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "User already visited this unit",
           });
-        }
 
-        const unit = await client.unitProfile.findFirst({
+        const unit = await tx.unitProfile.findUnique({
           where: { userId: input.unitId, pin: input.pin },
         });
 
-        if (unit === null) {
+        if (!unit)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Invalid or expired code",
           });
-        }
 
-        await client.unitVisit.create({
+        await tx.unitVisit.create({
           data: {
             studentId: ctx.session.user.id,
             unitId: input.unitId,
           },
         });
 
-        await client.unitReward.create({
+        await tx.unitReward.create({
           data: {
             studentId: ctx.session.user.id,
             unitId: input.unitId,
@@ -61,7 +59,7 @@ export const showcaseRouter = createTRPCRouter({
           },
         });
 
-        await client.profile.update({
+        await tx.profile.update({
           where: {
             userId: ctx.session.user.id,
           },
@@ -72,7 +70,7 @@ export const showcaseRouter = createTRPCRouter({
           },
         });
 
-        await client.unitProfile.update({
+        await tx.unitProfile.update({
           where: {
             userId: unit.userId,
           },
@@ -89,6 +87,7 @@ export const showcaseRouter = createTRPCRouter({
         reward: UNIT_VISIT_REWARD_POINTS,
       };
     }),
+
   checkoutMerchandise: protectedProcedure
     .input(
       z.object({
@@ -102,23 +101,23 @@ export const showcaseRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.$transaction(async (client) => {
+      await ctx.prisma.$transaction(async (tx) => {
         const ids = input.items.map((i) => i.merchandiseId);
-        // check stock enough
-        const merch = await client.merchandise.findMany({
+        // Check stock enough
+        const merch = await tx.merchandise.findMany({
           where: {
             id: {
               in: ids,
             },
+            isPublished: true,
           },
         });
 
-        if (merch.length !== ids.length) {
+        if (merch.length !== ids.length)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Some item are not found",
           });
-        }
 
         const merchMap = new Map<string, Merchandise>();
 
@@ -126,92 +125,97 @@ export const showcaseRouter = createTRPCRouter({
           merchMap.set(m.id, m);
         });
 
-        let pointsNeeded = 0;
+        let coinsNeeded = 0;
 
         // check stock
-        input.items.forEach((i) => {
-          const m = merchMap.get(i.merchandiseId);
+        input.items.forEach((item) => {
+          const merch = merchMap.get(item.merchandiseId);
 
           // this is guaranteed
-          if (m) {
-            if (m.stock < i.amount) {
+          if (merch) {
+            if (merch.stock < item.amount)
               throw new TRPCError({
                 code: "BAD_REQUEST",
                 message: "Some merchandise are out of stock",
               });
-            }
-            pointsNeeded = pointsNeeded + m.price * i.amount;
+            coinsNeeded += merch.price * item.amount;
           } else {
             throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
+              code: "NOT_FOUND",
               message: "Merch not found",
             });
           }
         });
 
-        const userProfile = await client.profile.findUniqueOrThrow({
+        const userProfile = await tx.profile.findUniqueOrThrow({
           where: { userId: ctx.session.user.id },
         });
 
-        // check coint
-        if (userProfile.coin < pointsNeeded) {
+        // check coin
+        if (userProfile.coin < coinsNeeded)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "User coin is not enough",
           });
-        }
 
         // checkout every item
-        for (const i of input.items) {
-          const m = merchMap.get(i.merchandiseId);
+        for (const item of input.items) {
+          const merch = merchMap.get(item.merchandiseId);
 
           // this is guaranteed
-          if (m) {
-            await client.merchandise.update({
-              where: { id: m.id },
-              data: { stock: { decrement: i.amount } },
+          if (merch) {
+            await tx.merchandise.update({
+              where: { id: merch.id },
+              data: { stock: { decrement: item.amount } },
             });
 
-            const merchCheckout = await client.merchandiseCheckout.create({
+            const merchCheckout = await tx.merchandiseCheckout.create({
               data: {
                 studentId: ctx.session.user.id,
-                amount: i.amount * m.price,
+                amount: item.amount * merch.price,
               },
             });
 
-            await client.merchandiseRequest.create({
+            await tx.merchandiseRequest.create({
               data: {
                 studentId: ctx.session.user.id,
-                merchId: m.id,
+                merchId: merch.id,
                 merchCheckoutId: merchCheckout.id,
-                quantity: i.amount,
+                quantity: item.amount,
               },
             });
           } else {
             throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
+              code: "NOT_FOUND",
               message: "Merch not found",
             });
           }
         }
 
-        await client.profile.update({
+        await tx.profile.update({
           where: {
             userId: ctx.session.user.id,
           },
           data: {
             coin: {
-              decrement: pointsNeeded,
+              decrement: coinsNeeded,
             },
           },
         });
       });
+
+      return {
+        message: "Checkout success",
+      };
     }),
+
   // Menampilkan seluruh unit sebagai array biasa
   getAllUnits: publicProcedure
     .input(
       z.object({
         searchValue: z.string().default(""),
+        lembaga: z.nativeEnum(Lembaga).optional(),
+        group: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -221,6 +225,8 @@ export const showcaseRouter = createTRPCRouter({
             contains: input.searchValue,
             mode: "insensitive",
           },
+          group: input.group,
+          lembaga: input.lembaga,
         },
         orderBy: {
           name: "asc",
@@ -232,6 +238,7 @@ export const showcaseRouter = createTRPCRouter({
   getAllUnitsGrouped: publicProcedure
     .input(
       z.object({
+        by: z.enum(["lembaga", "group"]),
         searchValue: z.string(),
       })
     )
@@ -249,45 +256,27 @@ export const showcaseRouter = createTRPCRouter({
       });
 
       return units.reduce((groups, unit) => {
-        const lembaga = unit.lembaga;
+        const lembaga = unit[input.by];
+
+        if (!lembaga) {
+          return groups;
+        }
 
         if (!groups[lembaga]) {
           groups[lembaga] = [unit];
         } else {
-          groups[lembaga].push(unit);
+          groups[lembaga]?.push(unit);
         }
 
         return groups;
-      }, {} as Record<Lembaga, UnitProfile[]>);
-    }),
-
-  // Menampilkan seluruh unit sebagai array biasa yang difilter berdasarkan lembaga
-  getUnitsByLembaga: publicProcedure
-    .input(
-      z.object({
-        lembaga: z.nativeEnum(Lembaga),
-        searchValue: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.unitProfile.findMany({
-        where: {
-          lembaga: input.lembaga,
-          name: {
-            contains: input.searchValue,
-            mode: "insensitive",
-          },
-        },
-        orderBy: {
-          name: "asc",
-        },
-      });
+      }, {} as Record<string, UnitProfile[]>);
     }),
 
   // Menampilkan seluruh unit yang telah dikunjungi sebagai array biasa
   getAllVisitedUnits: protectedProcedure
     .input(
       z.object({
+        lembaga: z.nativeEnum(Lembaga).optional(),
         searchValue: z.string().default(""),
         limit: z.number().int().gt(0).optional(),
       })
@@ -304,6 +293,7 @@ export const showcaseRouter = createTRPCRouter({
                 contains: input.searchValue,
                 mode: "insensitive",
               },
+              lembaga: input.lembaga,
             },
           },
         },
@@ -315,99 +305,6 @@ export const showcaseRouter = createTRPCRouter({
           },
         },
         take: input.limit,
-      });
-
-      return unitVisitations
-        .map((unitVisitation) => {
-          return unitVisitation.unit.unitProfile;
-        })
-        .filter((unitProfile): unitProfile is UnitProfile => {
-          return unitProfile !== null;
-        });
-    }),
-
-  // Menampilan seluruh unit yang telah dikunjungi sebagai key-value pair dengan key lembaga dan value array unit
-  getAllVisitedUnitsGrouped: protectedProcedure
-    .input(
-      z.object({
-        searchValue: z.string().default(""),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      // Quite a complex query, but it's the best I can do
-      // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
-      const unitVisitations = await ctx.prisma.unitVisit.findMany({
-        where: {
-          studentId: ctx.session.user.id,
-          unit: {
-            unitProfile: {
-              name: {
-                contains: input.searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-        },
-        include: {
-          unit: {
-            include: {
-              unitProfile: true,
-            },
-          },
-        },
-      });
-
-      return unitVisitations
-        .map((unitVisitation) => {
-          return unitVisitation.unit.unitProfile;
-        })
-        .filter((unitProfile): unitProfile is UnitProfile => {
-          return unitProfile !== null;
-        })
-        .reduce((groups, unit) => {
-          const lembaga = unit.lembaga;
-
-          if (!groups[lembaga]) {
-            groups[lembaga] = [unit];
-          } else {
-            groups[lembaga].push(unit);
-          }
-
-          return groups;
-        }, {} as Record<Lembaga, UnitProfile[]>);
-    }),
-
-  // Menampilkan seluruh unit yang telah dikunjungi sebagai array biasa yang difilter berdasarkan lembaga
-  getVisitedUnitsByLembaga: protectedProcedure
-    .input(
-      z.object({
-        lembaga: z.nativeEnum(Lembaga),
-        searchValue: z.string().default(""),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      // Quite a complex query, but it's the best I can do
-      // Bisa diubah schema-nya, visitation diubah menjadi relasi antara user dengan unitProfile
-      const unitVisitations = await ctx.prisma.unitVisit.findMany({
-        where: {
-          studentId: ctx.session.user.id,
-          unit: {
-            unitProfile: {
-              lembaga: input.lembaga,
-              name: {
-                contains: input.searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-        },
-        include: {
-          unit: {
-            include: {
-              unitProfile: true,
-            },
-          },
-        },
       });
 
       return unitVisitations
@@ -433,6 +330,7 @@ export const showcaseRouter = createTRPCRouter({
             contains: input.searchValue,
             mode: "insensitive",
           },
+          isPublished: true,
         },
         orderBy: [{ name: "desc" }],
       });
@@ -451,20 +349,51 @@ export const showcaseRouter = createTRPCRouter({
       orderBy: [{ createdAt: "desc" }],
     });
   }),
-  getUnitById: publicProcedure
+
+  getUnitById: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
       const result = await ctx.prisma.unitProfile.findFirst({
         where: { userId: input.id },
       });
 
-      if (result === null) {
+      if (!result) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Unit profile not found",
         });
       }
 
-      return result;
+      const visitation = await ctx.prisma.unitVisit.findFirst({
+        where: {
+          unitId: result.userId,
+          studentId: ctx.session.user.id,
+        },
+      });
+
+      return {
+        visited: visitation !== null,
+        ...result,
+      };
+    }),
+
+  getGroups: publicProcedure
+    .input(z.object({ lembaga: z.nativeEnum(Lembaga) }))
+    .query(async ({ ctx, input }) => {
+      const unitProfiles = await ctx.prisma.unitProfile.findMany({
+        distinct: ["group"],
+        where: {
+          lembaga: input.lembaga,
+          group: {
+            not: null,
+          },
+        },
+      });
+
+      return unitProfiles
+        .map((e) => e.group)
+        .filter((e): e is string => {
+          return e !== null;
+        });
     }),
 });

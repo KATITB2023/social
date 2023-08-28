@@ -160,7 +160,7 @@ export const AnonMenu = ({
           isSatSet ||
           isPeraturan
         }
-        setOpen={() => closeAll()}
+        setClose={() => closeAll()}
       >
         <>
           {isKamuYakin && (
