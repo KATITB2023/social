@@ -14,35 +14,37 @@ export const RequestBerhasilPopup = ({
   return (
     <PopupWithBlackOverlay open={open} setClose={setClose}>
       <Flex
-        gap={"15px"}
-        flexDir={"column"}
-        bg={"purple.1"}
-        w={"90%"}
-        mx={"auto"}
-        maxW={"350px"}
-        position={"relative"}
+        gap="15px"
+        flexDir="column"
+        bg="purple.1"
+        w="90%"
+        mx="auto"
+        maxW="350px"
+        position="relative"
         p={10}
-        borderRadius={"24px"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        borderRadius="24px"
+        justifyContent="center"
+        alignItems="center"
       >
         <Image
-          cursor={"pointer"}
-          src={"/close.png"}
-          position={"absolute"}
+          cursor="pointer"
+          src="/close.png"
+          position="absolute"
           top={5}
           right={5}
           onClick={setClose}
+          alt="close"
         />
 
         <Image
-          src={"/check.svg"}
-          mt={"20px"}
-          bg={"green.3"}
-          w={"20%"}
-          aspectRatio={1 / 1}
+          src="/check.svg"
+          mt="20px"
+          bg="green.3"
+          w="20%"
+          aspectRatio={1}
           padding={3}
-          borderRadius={"full"}
+          borderRadius="full"
+          alt="check"
         />
         <Heading textAlign={"center"}> Request Berhasil!</Heading>
         <Text textAlign={"center"} opacity={"0.6"}>

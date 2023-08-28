@@ -75,7 +75,7 @@ export const authRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Ambil token dari userId
-      const getToken = await ctx.prisma.resetToken.findFirst({
+      const getToken = await ctx.prisma.resetToken.findUnique({
         select: {
           token: true,
           createdAt: true,
