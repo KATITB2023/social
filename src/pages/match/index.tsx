@@ -121,7 +121,7 @@ const Match: NextPage = () => {
         {/* For NotFoundPopup */}
         <PopupWithBlackOverlay
           open={notFoundPopUp}
-          setOpen={() => handleNotFound()}
+          setClose={() => handleNotFound()}
         >
           <PopUp
             content1="Belum ada pasangan yang cocok untuk kamu saat ini."
