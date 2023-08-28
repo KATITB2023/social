@@ -4,7 +4,6 @@ import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import ListUnitPage from "~/components/listpage/ListUnitPage";
 import ListPage from "~/components/listpage/ListPage";
 
-
 export default function UKMPage() {
   return (
     <Layout title="Unit Kegiatan Mahasiswa">

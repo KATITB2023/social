@@ -18,6 +18,7 @@ export const defaultData = [
   {
     image: "",
     name: "LFM",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
@@ -141,9 +142,34 @@ export default function ListPage({
           gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
         > */}
 
-        <Wrap justify={"space-evenly"} w={"full"} maxH={"700px"} overflow={"auto"}>
+        <Wrap
+          justify={"space-evenly"}
+          w={"full"}
+          maxH={"700px"}
+          overflow={"auto"}
+          sx={{
+            "::-webkit-scrollbar": {
+              width: "5px",
+            },
+            "::-webkit-scrollbar-track": {
+              display: "none",
+              background: "rgb(68,70,84)",
+            },
+            "::-webkit-scrollbar-thumb": {
+              background: "rgba(217,217,227,.8)",
+              borderRadius: "full",
+            },
+          }}
+        >
           {data.map((each) => {
-            return <ViewCard key={each.name} title={each.name} image={each.image} route="/" />;
+            return (
+              <ViewCard
+                key={each.name}
+                title={each.name}
+                image={each.image}
+                route={`/showcase/ukm/${each.name}`}
+              />
+            );
           })}
         </Wrap>
 
