@@ -1,14 +1,16 @@
 import React from "react";
-import { Wrap } from "@chakra-ui/react";
-import { ViewCard } from "~/components/showcase/ViewCard";
 import Layout from "~/layout";
-import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import RiwayatUnitPage from "~/components/listpage/RiwayatUnitPage";
+import { withSession } from "~/server/auth/withSession";
+import { useSession } from "next-auth/react";
+
+export const getServerSideProps = withSession({ force: true });
 
 export default function HistoryPage() {
+  useSession({ required: true });
   return (
     <Layout title="Riwayat Pengunjungan">
-        <RiwayatUnitPage/>
+      <RiwayatUnitPage />
     </Layout>
   );
 }
