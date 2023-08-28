@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from "@emotion/styled";
 import { useState, useRef } from "react";
+import Link from "next/link";
 
 export default function HistoryPage() {
   const ukmItems = [
@@ -54,8 +55,16 @@ export default function HistoryPage() {
 
   const itemsPerPage = 2;
 
-  function SampleNextArrow(props: any) {
-    const { className, style, onClick } = props;
+  function SampleNextArrow({
+    className,
+    style,
+    onClick,
+  }: {
+    className? : string;
+    style? : React.CSSProperties;
+    onClick? : React.MouseEventHandler<HTMLDivElement>;
+  }) {
+    // const { className, style, onClick } = props;
     return (
       <div
         className={className}
@@ -65,8 +74,16 @@ export default function HistoryPage() {
     );
   }
 
-  function SamplePrevArrow(props: any) {
-    const { className, style, onClick } = props;
+  function SamplePrevArrow({
+    className,
+    style,
+    onClick,
+  }: {
+    className? : string;
+    style? : React.CSSProperties;
+    onClick? : React.MouseEventHandler<HTMLDivElement>;
+  }) {
+    // const { className, style, onClick } = props;
     return (
       <div
         className={className}
@@ -115,6 +132,8 @@ export default function HistoryPage() {
       dots: true,
       infinite: true,
       speed: 500,
+      autoplay: true,
+      autoplaySpeed: 4000,
       slidesToShow: itemsPerPage,
       slidesToScroll: itemsPerPage,
       adaptiveHeight: true,
@@ -160,7 +179,7 @@ export default function HistoryPage() {
           w="80%"
           justifyContent="center"
           margin="auto"
-          mt="30px"
+          my="30px"
           flexDirection="column"
         >
           <Heading
@@ -185,23 +204,26 @@ export default function HistoryPage() {
             <Heading size="SH4" textColor="white" fontWeight="700">
               UKM
             </Heading>
-            <Text size="B3" textColor="yellow.5" fontWeight="700">
-              View all
-            </Text>
+            <Link href={"history/ukm"}>
+              <Text size="B3" textColor="yellow.5" fontWeight="700">
+                View all
+              </Text>
+            </Link>
           </Flex>
           <SliderWrapper>
             <CustomSlider>
               {dataUKM6.map((item, index) => (
                 <ViewCard
                   key={index}
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
+                  image={item!.image}
+                  title={item!.title}
+                  route={item!.route}
                   width={"90%"}
                 />
               ))}
             </CustomSlider>
           </SliderWrapper>
+
           <Flex
             flexDirection="row"
             justifyContent="space-between"
@@ -211,9 +233,11 @@ export default function HistoryPage() {
             <Heading size="SH4" textColor="white" fontWeight="700">
               BSO
             </Heading>
-            <Text size="B3" textColor="yellow.5" fontWeight="700">
-              View all
-            </Text>
+            <Link href={"history/bso"}>
+              <Text size="B3" textColor="yellow.5" fontWeight="700">
+                View all
+              </Text>
+            </Link>
           </Flex>
           <SliderWrapper>
             <CustomSlider>
@@ -228,6 +252,7 @@ export default function HistoryPage() {
               ))}
             </CustomSlider>
           </SliderWrapper>
+
           <Flex
             flexDirection="row"
             justifyContent="space-between"
@@ -237,9 +262,11 @@ export default function HistoryPage() {
             <Heading size="SH4" textColor="white" fontWeight="700">
               HIMPUNAN
             </Heading>
-            <Text size="B3" textColor="yellow.5" fontWeight="700">
-              View all
-            </Text>
+            <Link href={"history/himpunan"}>
+              <Text size="B3" textColor="yellow.5" fontWeight="700">
+                View all
+              </Text>
+            </Link>
           </Flex>
           <SliderWrapper>
             <CustomSlider>

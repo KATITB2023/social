@@ -26,7 +26,8 @@ export const ViewCard = ({
     >
       <Link href={route}>
         <Image
-          src={image}
+           w={"full"}
+           src={image || "/base.png"}
           position="absolute"
           objectFit="cover"
           objectPosition="center"
