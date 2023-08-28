@@ -64,6 +64,7 @@ export default function ShowcasePage() {
             textShadow="0px 4px 30px #72D8BA"
             fontWeight="300"
             fontSize="3xl"
+            textAlign={"center"}
           >
             ITB SHOWCASE
           </Heading>
@@ -179,7 +180,8 @@ export default function ShowcasePage() {
               textColor="purple.2"
               borderRadius="13px"
               h="40px"
-              fontWeight="700"
+              overflow={"hidden"}
+              fontWeight={700}
               _hover={{
                 boxShadow: "0px 5px 10px #FFBE3B",
               }}
@@ -233,6 +235,7 @@ export default function ShowcasePage() {
             textShadow="0px 4px 30px #72D8BA"
             fontWeight="300"
             fontSize="3xl"
+            textAlign={"center"}
           >
             UKM
           </Heading>
@@ -261,6 +264,7 @@ export default function ShowcasePage() {
             </Button>
           </Link>
         </Box>
+
         <Box
           display="flex"
           flexDirection="column"
@@ -304,6 +308,7 @@ export default function ShowcasePage() {
             textShadow="0px 4px 30px #72D8BA"
             fontWeight="300"
             fontSize="3xl"
+            textAlign={"center"}
           >
             BSO
           </Heading>
@@ -332,6 +337,7 @@ export default function ShowcasePage() {
             </Button>
           </Link>
         </Box>
+
         <Box
           display="flex"
           flexDirection="column"
@@ -357,6 +363,7 @@ export default function ShowcasePage() {
             textShadow="0px 4px 30px #72D8BA"
             fontWeight="300"
             fontSize="3xl"
+            textAlign={"center"}
           >
             HIMPUNAN
           </Heading>
@@ -385,17 +392,52 @@ export default function ShowcasePage() {
             </Button>
           </Link>
         </Box>
-        {/* <Link href={"/showcase/history"}>
-          <Button
-            borderRadius="12px"
-            backgroundColor="yellow.5"
-            paddingX="24px"
-            paddingY="8px"
-            textColor="purple.2"
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          marginTop="140px"
+          h="400px"
+          position={"relative"}
+        >
+          <Heading
+            size="H3"
+            color="yellow.5"
+            marginTop="45px"
+            marginBottom="20px"
+            textShadow="0px 4px 30px #72D8BA"
+            fontWeight="300"
+            fontSize="3xl"
+            textAlign={"center"}
           >
-            Explore
-          </Button>
-        </Link> */}
+            APA SAJA YANG SUDAH KAMU KUNJUNGI?
+          </Heading>
+          <Text
+            size="B4"
+            color="white"
+            textAlign="center"
+            w="80%"
+            marginBottom="40px"
+          >
+            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+          </Text>
+          <Link href={"/showcase/history"}>
+            <Button
+              borderRadius="12px"
+              backgroundColor="yellow.5"
+              paddingX="24px"
+              paddingY="8px"
+              textColor="purple.2"
+              _hover={{
+                boxShadow: "0px 5px 10px #FFBE3B",
+              }}
+            >
+              Explore
+            </Button>
+          </Link>
+        </Box>
       </BackgroundAndNavbar>
       <Footer />
     </Layout>
