@@ -20,6 +20,7 @@ export default function ShowcasePage() {
           alignItems="center"
           h="600px"
         >
+          {/* Background image */}
           <Image
             alt="/"
             src="/bintang-kuning-showcase.png"
@@ -58,6 +59,7 @@ export default function ShowcasePage() {
             objectFit="cover"
             objectPosition="center"
           ></Image>
+
           <Heading
             size="H3"
             color="yellow.5"
@@ -155,44 +157,58 @@ export default function ShowcasePage() {
               </Text>
             </Flex>
           </Box>
-          <Flex
-            flexDirection="row"
+
+          <Box
             w="90%"
-            justifyContent="space-between"
+            display={"block"}
+            position={"relative"}
+            flexDirection="row"
+            justifyContent={"space-between"}
             marginTop="10px"
           >
-            <Button
-              w="48%"
-              textColor="yellow.5"
-              backgroundColor="gray.600"
-              border="solid"
-              borderWidth="2px"
-              borderColor="yellow.5"
-              borderRadius="13px"
-              h="40px"
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-            >
-              Tutorial
-            </Button>
-            <Button
-              w="48%"
-              backgroundColor="yellow.5"
-              textColor="purple.2"
-              borderRadius="13px"
-              h="40px"
-              overflow={"hidden"}
-              fontWeight={700}
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-              zIndex="1"
-            >
-              Tukarkan Koinmu
-            </Button>
-          </Flex>
+            <Link href={"/"}>
+              <Button
+                w={"48%"}
+                textColor="yellow.5"
+                backgroundColor="gray.600"
+                border="solid"
+                borderWidth="2px"
+                borderColor="yellow.5"
+                borderRadius="13px"
+                h="40px"
+                position={"absolute"}
+                left={0}
+                _hover={{
+                  boxShadow: "0px 5px 10px #FFBE3B",
+                }}
+              >
+                Tutorial
+              </Button>
+            </Link>
+
+            <Link href={"/merchandise"}>
+              <Button
+                w={"48%"}
+                backgroundColor="yellow.5"
+                textColor="purple.2"
+                borderRadius="13px"
+                h="40px"
+                overflow={"hidden"}
+                position={"absolute"}
+                right={0}
+                fontWeight={700}
+                _hover={{
+                  boxShadow: "0px 5px 10px #FFBE3B",
+                }}
+                zIndex="1"
+                justifySelf={"end"}
+              >
+                Tukarkan Koinmu
+              </Button>
+            </Link>
+          </Box>
         </Box>
+
         <Box
           display="flex"
           flexDirection="column"
@@ -441,7 +457,6 @@ export default function ShowcasePage() {
           </Link>
         </Box>
       </BackgroundAndNavbar>
-      <Footer />
     </Layout>
   );
 }
