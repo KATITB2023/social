@@ -1,36 +1,18 @@
 import React from "react";
-import { Wrap } from "@chakra-ui/react";
-import { ViewCard } from "~/components/showcase/ViewCard";
 import Layout from "~/layout";
-import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import ListPage from "~/components/listpage/ListPage";
+import { withSession } from "~/server/auth/withSession";
+import { useSession } from "next-auth/react";
+
+export const getServerSideProps = withSession({ force: true });
 
 export default function HimpunanPage() {
+  useSession({ required: true });
   return (
     <Layout title="Himpunan">
-      <BackgroundAndNavbar bg="/background.png">
-        <Wrap justify={"space-evenly"}>
-          <ViewCard
-            image="/background.png"
-            title="Ini Nama Organisasi"
-            route={"/"}
-          />
-          <ViewCard
-            image="/background.png"
-            title="Ini Nama Organisasi"
-            route={"/"}
-          />
-          <ViewCard
-            image="/background.png"
-            title="Ini Nama Organisasi"
-            route={"/"}
-          />
-          <ViewCard
-            image="/background.png"
-            title="Ini Nama Organisasi"
-            route={"/"}
-          />
-        </Wrap>
+      <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
+        <ListPage title="Himpunan" withbackbutton={true}/>
       </BackgroundAndNavbar>
     </Layout>
   );

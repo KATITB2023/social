@@ -6,7 +6,7 @@ export const ViewCard = ({
   image,
   title,
   route,
-  width = "45%"
+  width = "45%",
 }: {
   image: string;
   title: string;
@@ -24,15 +24,18 @@ export const ViewCard = ({
       overflow={"hidden"}
       border={"1px white solid"}
     >
-      <Link href={route}>
+      {/* <Link href={route}> */}
+      <Flex>
         <Image
-          src={image}
+          w={"full"}
+          src={image || "/base.png"}
           position="absolute"
           objectFit="cover"
           objectPosition="center"
           alt=""
         />
-      </Link>
+      </Flex>
+      {/* </Link> */}
 
       <Flex
         bgColor={"#1D0263"}
@@ -65,7 +68,7 @@ export const ViewCard = ({
             h={"full"}
             py={1}
           >
-            <Text color={"purple.2"} fontSize={"12px"} >
+            <Text color={"purple.2"} fontSize={"12px"}>
               Explore
             </Text>
           </Button>

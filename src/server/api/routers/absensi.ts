@@ -72,7 +72,7 @@ export const absensiRouter = createTRPCRouter({
       // Error jika absen lebih dari 1 kali
       // Validasi waktu absen
       const currentTime = new Date();
-      const getEventData = await ctx.prisma.attendanceEvent.findFirst({
+      const getEventData = await ctx.prisma.attendanceEvent.findUnique({
         where: {
           id: input.eventId,
         },
