@@ -10,7 +10,7 @@ export default function HistoryPage() {
   useSession({ required: true });
   return (
     <Layout title="Riwayat Pengunjungan">
-      <RiwayatUnitPage />
+      <RiwayatUnitPage title="Riwayat Pengunjungan" />
     </Layout>
   );
 }
