@@ -1,9 +1,7 @@
 import {
   Box,
   Button,
-  Center,
   Flex,
-  Grid,
   Heading,
   Image,
   Spinner,
@@ -95,6 +93,7 @@ interface RiwayatPageProps {
   additionTitle?: string;
   lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
   withInfiniteScroll?: boolean;
+  limit?: number;
 }
 
 export default function RiwayatPage({
@@ -104,14 +103,16 @@ export default function RiwayatPage({
   withbackbutton = false,
   lembaga,
   withInfiniteScroll = false,
+  limit = 100,
 }: RiwayatPageProps) {
   const myRef = useRef<HTMLDivElement | null>(null);
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [queryEntered, setQueryEntered] = useState<string>("");
   const { data: fetchedData } = api.showcase.getAllVisitedUnits.useQuery({
-    searchValue: searchQuery,
-    lembaga,
+    searchValue: queryEntered,
+    limit,
   });
   const [data, setData] = useState<UnitProfile[] | undefined>(fetchedData);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -132,6 +133,9 @@ export default function RiwayatPage({
 
     setSpinnerIsVisible(false);
   }
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key == "Enter") setQueryEntered(searchQuery);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -215,6 +219,7 @@ export default function RiwayatPage({
             placeholder="Search..."
             value={searchQuery}
             onChange={handleChange}
+            onEnter={handleEnter}
           />
         </Flex>{" "}
       </>
