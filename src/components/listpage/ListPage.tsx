@@ -1,19 +1,9 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Grid,
-  Heading,
-  Image,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { type UnitProfile } from "@prisma/client";
 
@@ -103,56 +93,25 @@ export default function ListPage({
   withbackbutton = false,
   lembaga,
 }: ListPageProps) {
-  const myRef = useRef<HTMLDivElement | null>(null);
-
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [queryEntered, setQueryEntered] = useState<string>("");
   const { data: fetchedData } = api.showcase.getAllUnits.useQuery({
-    searchValue: searchQuery,
+    searchValue: queryEntered,
     lembaga,
   });
   const [data, setData] = useState<UnitProfile[] | undefined>(fetchedData);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [spinnerIsVisible, setSpinnerIsVisible] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  function handleInfiniteScroll() {
-    console.log("fetches more...");
-    const newData = defaultData;
-
-    setData((prev) => {
-      if (prev) return [...prev, ...newData];
-      return [...newData];
-    });
-
-    setSpinnerIsVisible(false);
-  }
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      setSpinnerIsVisible(entry?.isIntersecting ?? false);
-      if (spinnerIsVisible && fetchedData) {
-        handleInfiniteScroll();
-      }
-    });
-
-    if (!myRef.current) return;
-    observer.observe(myRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [myRef, spinnerIsVisible, fetchedData]);
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key == "Enter") setQueryEntered(searchQuery);
+  };
 
   useEffect(() => {
     setData(fetchedData);
-    if (fetchedData && fetchedData.length < 6) {
-      setHasMore(false);
-    }
   }, [fetchedData]);
 
   if (!fetchedData)
@@ -275,6 +234,7 @@ export default function ListPage({
           placeholder="Search..."
           value={searchQuery}
           onChange={handleChange}
+          onEnter={handleEnter}
         />
 
         {/* <Grid
@@ -310,22 +270,21 @@ export default function ListPage({
             },
           }}
         >
-          {data?.map((each) => {
-            return (
+          {data && data.length === 0 ? (
+            <>
+              <Text size="B3">
+                Nothing matches with your query: &quot;{queryEntered}&quot;.
+              </Text>
+            </>
+          ) : (
+            data?.map((each) => (
               <ViewCard
-                key={Number(Date.now()) + Math.random()}
-                // key will be changed later to each.name
+                key={each.name}
                 title={each.name}
                 image={each.image || ""}
                 route={`/showcase/ukm/${each.name}`}
               />
-            );
-          })}
-
-          {hasMore && (
-            <Box as="div" ref={myRef}>
-              <Spinner size="lg" />
-            </Box>
+            ))
           )}
         </Wrap>
       </Flex>
