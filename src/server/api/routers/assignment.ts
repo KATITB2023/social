@@ -12,7 +12,7 @@ export const assignmentRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const assignment = await ctx.prisma.assignment.findFirst({
+      const assignment = await ctx.prisma.assignment.findUnique({
         where: {
           id: input.assignmentId,
         },
@@ -26,10 +26,12 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      const submission = await ctx.prisma.assignmentSubmission.findFirst({
+      const submission = await ctx.prisma.assignmentSubmission.findUnique({
         where: {
-          studentId: ctx.session.user.id,
-          assignmentId: input.assignmentId,
+          studentId_assignmentId: {
+            studentId: ctx.session.user.id,
+            assignmentId: input.assignmentId,
+          },
         },
       });
 
@@ -103,6 +105,7 @@ export const assignmentRouter = createTRPCRouter({
         };
       });
     }),
+
   submitAssignment: protectedProcedure
     .input(
       z.object({
@@ -111,7 +114,7 @@ export const assignmentRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const assignment = await ctx.prisma.assignment.findFirst({
+      const assignment = await ctx.prisma.assignment.findUnique({
         where: {
           id: input.assignmentId,
         },
@@ -136,10 +139,12 @@ export const assignmentRouter = createTRPCRouter({
 
       // Check existing submission
       const isSubmissionExists =
-        await ctx.prisma.assignmentSubmission.findFirst({
+        await ctx.prisma.assignmentSubmission.findUnique({
           where: {
-            studentId: ctx.session.user.id,
-            assignmentId: input.assignmentId,
+            studentId_assignmentId: {
+              studentId: ctx.session.user.id,
+              assignmentId: input.assignmentId,
+            },
           },
         });
 
@@ -147,19 +152,28 @@ export const assignmentRouter = createTRPCRouter({
         // Update existing submission
 
         // Get latest assignment submission score
-        const prevAssgnScore =
-          await ctx.prisma.assignmentSubmission.findFirstOrThrow({
+        const prevAssgnScore = await ctx.prisma.assignmentSubmission.findUnique(
+          {
             where: {
-              studentId: ctx.session.user.id,
-              assignmentId: input.assignmentId,
+              studentId_assignmentId: {
+                studentId: ctx.session.user.id,
+                assignmentId: input.assignmentId,
+              },
             },
             select: {
               score: true,
             },
+          }
+        );
+
+        if (!prevAssgnScore)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Tugas sudah dinilai",
           });
 
         // Get latest user's point
-        const prevUserPoint = await ctx.prisma.profile.findFirstOrThrow({
+        const prevUserPoint = await ctx.prisma.profile.findUnique({
           where: {
             userId: ctx.session.user.id,
           },
@@ -167,6 +181,12 @@ export const assignmentRouter = createTRPCRouter({
             point: true,
           },
         });
+
+        if (!prevUserPoint)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Tugas sudah dinilai",
+          });
 
         if (prevAssgnScore.score) {
           const updatedPoint = prevUserPoint.point - prevAssgnScore.score;
