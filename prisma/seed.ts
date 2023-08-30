@@ -48,8 +48,6 @@ function main() {
           });
         })
       );
-
-      console.log(units);
     }
   );
 }

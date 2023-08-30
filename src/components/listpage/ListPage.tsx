@@ -13,6 +13,7 @@ import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import { api } from "~/utils/api";
 
 export const defaultData = [
   {
@@ -77,15 +78,17 @@ interface ListPageProps {
   description?: string;
   withbackbutton?: boolean;
   additionTitle?: string;
+  dataInput?: string[]
 }
 
 export default function ListPage({
   title,
   description,
   additionTitle,
+  dataInput,
   withbackbutton = false,
 }: ListPageProps) {
-  const data = defaultData;
+  const data = dataInput;
   const router = useRouter();
 
   return (
@@ -161,13 +164,13 @@ export default function ListPage({
             },
           }}
         >
-          {data.map((each) => {
+          {(data ?? []).map((each) => {
             return (
               <ViewCard
-                key={each.name}
-                title={each.name}
-                image={each.image}
-                route={`/showcase/ukm/${each.name}`}
+                key={each}
+                title={each}
+                image={each}
+                route={`/showcase/ukm/${each}`}
               />
             );
           })}
