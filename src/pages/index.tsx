@@ -55,7 +55,7 @@ export default function FeedsPage() {
               })}
             <div ref={bottomRef}></div>
           </Flex>
-        </Box>
+        </ Box>
       </BackgroundAndNavbar>
     </Layout>
   );
