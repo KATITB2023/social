@@ -52,7 +52,7 @@ export const ViewCard = ({
       >
         <Heading
           color={"white"}
-          fontSize={"1rem"}
+          fontSize={"14px"}
           noOfLines={1}
           textAlign={"center"}
         >

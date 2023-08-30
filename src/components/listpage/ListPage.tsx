@@ -186,7 +186,7 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt="50px"
+        pt={withbackbutton ? "50px" : "20px"}
       >
         {withbackbutton && (
           <Button
