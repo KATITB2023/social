@@ -1,4 +1,4 @@
-import { Heading, Flex, Text } from "@chakra-ui/react";
+import { Heading, Flex, Text, Image, Button } from "@chakra-ui/react";
 import React from "react";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import PointCard from "~/components/merchandise/PointCard";
@@ -6,12 +6,14 @@ import MerchandiseRequested from "~/components/requestMerchandise/RequestMerchan
 import Layout from "~/layout";
 import { MerchandiseRequest } from "~/server/types/merchandise";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 const RequestMerchandise = () => {
   const result = api.showcase.getMerchandiseCheckoutHistory.useQuery();
   const user = api.profile.getUserProfile.useQuery();
   const point = user.data?.point;
   const data = result.data as MerchandiseRequest[];
+  const router = useRouter();
 
   return (
     <Layout title="Request Merchandise">
@@ -24,7 +26,23 @@ const RequestMerchandise = () => {
           w={"90%"}
           marginX={"auto"}
           gap={"24px"}
+          position={"relative"}
+          pt={"40px"}
         >
+          <Button
+            onClick={() => router.back()}
+            bgColor={"transparent"}
+            position={"absolute"}
+            top={0}
+            left={0}
+            borderRadius={"full"}
+            width={10}
+            height={10}
+            padding={0}
+          >
+            <Image src="/backbutton-logo.svg" alt="Back button" />
+          </Button>
+
           <Flex
             display={"flex"}
             flexDir={"column"}
