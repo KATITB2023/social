@@ -7,6 +7,7 @@ import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+import { useState } from "react";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -14,8 +15,8 @@ export default function FeedsPage() {
   useSession({ required: true });
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const bottomView = useInView(bottomRef);
-
-  // const rankdata = api.leaderboard.getSelfLeaderboard.useQuery();
+  const [test, setTest] = useState(true);
+  
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     api.feed.getFeeds.useInfiniteQuery(
@@ -55,7 +56,7 @@ export default function FeedsPage() {
               })}
             <div ref={bottomRef}></div>
           </Flex>
-        </Box>
+        </ Box>
       </BackgroundAndNavbar>
     </Layout>
   );
