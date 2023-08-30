@@ -182,7 +182,7 @@ export default function HistoryPage() {
 
   return (
     <Layout title="Riwayat Pengunjungan">
-      <BackgroundAndNavbar bg="/background-history.svg">
+      <BackgroundAndNavbar bg="/background.png">
         <Flex
           w="80%"
           justifyContent="center"

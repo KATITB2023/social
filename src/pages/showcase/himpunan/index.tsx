@@ -11,7 +11,7 @@ export default function HimpunanPage() {
   useSession({ required: true });
   return (
     <Layout title="Himpunan">
-      <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
+      <BackgroundAndNavbar bg="/background.png">
         <ListPage title="Himpunan" withbackbutton={true}/>
       </BackgroundAndNavbar>
     </Layout>

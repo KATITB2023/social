@@ -54,14 +54,14 @@ export const PopupInputCode = ({
         </Text>
         <Box position="relative" width="100%" height="100%">
           <Image
-            src="Rectangle 1.svg"
+            src="/Rectangle 1.svg"
             width="100%"
             height="75%"
             position="absolute"
             zIndex="1"
           />
           <Image
-            src="Vector 2.svg"
+            src="/Vector 2.svg"
             width="100%"
             height="100%"
             position="relative"
@@ -69,7 +69,7 @@ export const PopupInputCode = ({
             style={{ transform: "translateY(-20px)" }}
           />
           <Image
-            src="Bulan 1 glow 1.svg"
+            src="/Bulan 1 glow 1.svg"
             width="100%"
             maxHeight="139px"
             position="absolute"
