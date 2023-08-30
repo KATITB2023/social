@@ -5,7 +5,7 @@ import {useRouter} from "next/router";
 export default function ListUnitPage() {
   const router = useRouter();
   return (
-    <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
+    <BackgroundAndNavbar bg="/background.png">
       <ListPage title={router.asPath.split("/").pop()!.toUpperCase()} withbackbutton={true}/>
     </BackgroundAndNavbar>
   );

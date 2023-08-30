@@ -29,7 +29,7 @@ import ListPage from "./ListPage";
 
 export default function RiwayatUnitPage({ title }: { title: string }) {
   return (
-    <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
+    <BackgroundAndNavbar bg="/background.png">
       <ListPage
         title={title}
         description={`Berikut ini adalah daftar ${title} yang telah kamu kunjungi`}
