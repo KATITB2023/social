@@ -7,11 +7,16 @@ import {
   Heading,
   Image,
   Text,
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionIcon,
+  AccordionPanel,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 export const defaultData = [
@@ -100,14 +105,29 @@ export default function ListPage({
         pt="50px"
       >
         {withbackbutton && (
-            <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
-              <Image src="/backbutton-logo.svg" alt="Back button"/>
-            </Button>
+          <Button
+            onClick={() => router.back()}
+            bgColor={"transparent"}
+            position={"absolute"}
+            top={0}
+            left={3}
+            borderRadius={"full"}
+            width={10}
+            height={10}
+            padding={0}
+          >
+            <Image src="/backbutton-logo.svg" alt="Back button" />
+          </Button>
         )}
 
         {/* Page title */}
         <Flex alignItems={"center"} flexDirection={"column"}>
-          <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
+          <Heading
+            size="H4"
+            textShadow="0px 4px 30px #72D8BA"
+            color="yellow.5"
+            textAlign={"center"}
+          >
             {title}
           </Heading>
           {additionTitle && (
@@ -161,16 +181,54 @@ export default function ListPage({
             },
           }}
         >
-          {data.map((each) => {
-            return (
-              <ViewCard
-                key={each.name}
-                title={each.name}
-                image={each.image}
-                route={`/showcase/ukm/${each.name}`}
-              />
-            );
-          })}
+          <Accordion width={'full'} defaultIndex={[0]} allowMultiple>
+            <AccordionItem marginBottom={2} border={'transparent'}>
+            {({ isExpanded }) => (
+            <>
+                <AccordionButton  _hover={{ bgColor: 'gray.600' }} paddingX={6} borderRadius={12} bgColor={'gray.600'}>
+                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
+                    FITB
+                  </Heading>
+                  <AccordionIcon color={"yellow.5"}/>
+                </AccordionButton>
+              <AccordionPanel pb={4}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </>
+          )}
+            </AccordionItem>
+            <AccordionItem marginBottom={2} border={'transparent'}>
+                <AccordionButton _hover={{ bgColor: 'gray.600' }} paddingX={6} borderRadius={12} bgColor={'gray.600'}>
+                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
+                    STEI
+                  </Heading>
+                  <AccordionIcon color={"yellow.5"}/>
+                </AccordionButton>
+              <AccordionPanel pb={4}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem marginBottom={2} border={'transparent'}>
+                <AccordionButton _hover={{ bgColor: 'gray.600' }} paddingX={6} borderRadius={12} bgColor={'gray.600'}>
+                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
+                    FTTM
+                  </Heading>
+                  <AccordionIcon color={"yellow.5"}/>
+                </AccordionButton>
+              <AccordionPanel pb={4}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </Wrap>
 
         {/* </Grid> */}
