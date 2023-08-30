@@ -13,6 +13,7 @@ import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import { api } from "~/utils/api";
 
 export const defaultData = [
   {
@@ -87,6 +88,8 @@ export default function ListPage({
 }: ListPageProps) {
   const data = defaultData;
   const router = useRouter();
+  const ukmdata = api.showcase.getGroups.useQuery({lembaga: 'UKM'}).data;
+  console.log(ukmdata)
 
   return (
     <>
@@ -97,7 +100,7 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt="50px"
+        pt={withbackbutton ? "50px" : "20px"}
       >
         {withbackbutton && (
             <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
