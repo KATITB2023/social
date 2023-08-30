@@ -6,15 +6,24 @@ import {
   Grid,
   Heading,
   Image,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { api } from "~/utils/api";
 
-export const defaultData = [
+interface EachCardType {
+  image: string;
+  name: string;
+  route: string; // Assuming RouterType is a custom type representing your router
+}
+
+export const defaultData: EachCardType[] = [
   {
     image: "",
     name: "LFM",
@@ -23,50 +32,57 @@ export const defaultData = [
   {
     image: "",
     name: "URO",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "8EH",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP1",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP2",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP3",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP4",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP5",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP6",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP7",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP8",
+    route: "showcase/ukm/lfm",
   },
   {
     image: "",
     name: "KSEP9",
-  },
-  {
-    image: "",
-    name: "KSEP10",
+    route: "showcase/ukm/lfm",
   },
 ];
 
@@ -77,6 +93,7 @@ interface ListPageProps {
   description?: string;
   withbackbutton?: boolean;
   additionTitle?: string;
+  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
 }
 
 export default function ListPage({
@@ -84,9 +101,48 @@ export default function ListPage({
   description,
   additionTitle,
   withbackbutton = false,
+  lembaga,
 }: ListPageProps) {
-  const data = defaultData;
+  const myRef = useRef<HTMLDivElement | null>(null);
+
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  // const { data } = api.showcase.getAllUnits.useQuery({
+  //   searchValue: searchQuery,
+  //   lembaga,
+  // });
+  const [data, setData] = useState(defaultData);
+  const [hasMore, setHasMore] = useState(true);
+  const [spinnerIsVisible, setSpinnerIsVisible] = useState<boolean>(false);
+  console.log("my spinner", spinnerIsVisible);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  function handleInfiniteScroll() {
+    console.log("fetches more...");
+    const newData = defaultData;
+    setData((prev) => [...prev, ...newData]);
+    setSpinnerIsVisible(false);
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      setSpinnerIsVisible(entry?.isIntersecting ?? false);
+      if (spinnerIsVisible) {
+        handleInfiniteScroll();
+      }
+    });
+
+    if (!myRef.current) return;
+    observer.observe(myRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [myRef, spinnerIsVisible]);
 
   return (
     <>
@@ -100,14 +156,29 @@ export default function ListPage({
         pt="50px"
       >
         {withbackbutton && (
-            <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
-              <Image src="/backbutton-logo.svg" alt="Back button"/>
-            </Button>
+          <Button
+            onClick={() => router.back()}
+            bgColor={"transparent"}
+            position={"absolute"}
+            top={0}
+            left={3}
+            borderRadius={"full"}
+            width={10}
+            height={10}
+            padding={0}
+          >
+            <Image src="/backbutton-logo.svg" alt="Back button" />
+          </Button>
         )}
 
         {/* Page title */}
         <Flex alignItems={"center"} flexDirection={"column"}>
-          <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
+          <Heading
+            size="H4"
+            textShadow="0px 4px 30px #72D8BA"
+            color="yellow.5"
+            textAlign={"center"}
+          >
             {title}
           </Heading>
           {additionTitle && (
@@ -126,7 +197,11 @@ export default function ListPage({
           )}
         </Flex>
 
-        <TextInput placeholder="Search..." />
+        <TextInput
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleChange}
+        />
 
         {/* <Grid
           width="100%"
@@ -146,7 +221,7 @@ export default function ListPage({
           justify={"space-evenly"}
           w={"full"}
           maxH={"700px"}
-          overflow={"auto"}
+          overflowY={"auto"}
           sx={{
             "::-webkit-scrollbar": {
               width: "5px",
@@ -161,16 +236,22 @@ export default function ListPage({
             },
           }}
         >
-          {data.map((each) => {
+          {data?.map((each) => {
             return (
               <ViewCard
-                key={each.name}
+                key={Number(Date.now()) + Math.random()}
+                // key will be changed later to each.name
                 title={each.name}
-                image={each.image}
+                image={each.image || ""}
                 route={`/showcase/ukm/${each.name}`}
               />
             );
           })}
+          {hasMore && (
+            <Box as="div" ref={myRef}>
+              <Spinner size="lg" />
+            </Box>
+          )}
         </Wrap>
 
         {/* </Grid> */}
