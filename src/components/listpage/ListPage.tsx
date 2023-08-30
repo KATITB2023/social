@@ -97,7 +97,7 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt="50px"
+        pt={withbackbutton ? "50px" : "20px"}
       >
         {withbackbutton && (
             <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
