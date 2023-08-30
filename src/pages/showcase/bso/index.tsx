@@ -14,7 +14,12 @@ export default function BSOPage() {
   return (
     <Layout title="Badan Semi Otonom">
       <BackgroundAndNavbar bg="/background.png">
-        <ListPage title="BSO" additionTitle="(BADAN SEMI OTONOM)" withbackbutton={true}/>
+        <ListPage
+          title="BSO"
+          additionTitle="(BADAN SEMI OTONOM)"
+          withbackbutton={true}
+          lembaga="BSO"
+        />
       </BackgroundAndNavbar>
     </Layout>
   );

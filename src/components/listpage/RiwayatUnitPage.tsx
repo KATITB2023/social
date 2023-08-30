@@ -34,6 +34,7 @@ export default function RiwayatUnitPage({ title }: { title: string }) {
         title={title}
         description={`Berikut ini adalah daftar ${title} yang telah kamu kunjungi`}
         withbackbutton={true}
+        lembaga="UKM"
       />
     </BackgroundAndNavbar>
   );
