@@ -5,11 +5,14 @@ import Link from "next/link";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
 
 export const getServerSideProps = withSession({ force: true });
 
 export default function ShowcasePage() {
   useSession({ required: true });
+  const profileQuery = api.profile.getUserProfile.useQuery();
+
   return (
     <Layout title="Showcase">
       <BackgroundAndNavbar bg="/showcase-bg.png">
@@ -153,7 +156,7 @@ export default function ShowcasePage() {
                 YOUR COINS
               </Heading>
               <Text color="green.5" size="B5" fontSize="22px">
-                99999999
+                {profileQuery.data?.coin}
               </Text>
             </Flex>
           </Box>
