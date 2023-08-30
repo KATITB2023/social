@@ -88,26 +88,28 @@ export const defaultData: UnitProfile[] = [
 
 // const gridgappx = 10;
 
-interface ListPageProps {
+interface RiwayatPageProps {
   title: string;
   description?: string;
   withbackbutton?: boolean;
   additionTitle?: string;
   lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+  withInfiniteScroll?: boolean;
 }
 
-export default function ListPage({
+export default function RiwayatPage({
   title,
   description,
   additionTitle,
   withbackbutton = false,
   lembaga,
-}: ListPageProps) {
+  withInfiniteScroll = false,
+}: RiwayatPageProps) {
   const myRef = useRef<HTMLDivElement | null>(null);
 
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const { data: fetchedData } = api.showcase.getAllUnits.useQuery({
+  const { data: fetchedData } = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: searchQuery,
     lembaga,
   });
@@ -278,18 +280,18 @@ export default function ListPage({
         />
 
         {/* <Grid
-          width="100%"
-          height="520px"
-          rowGap={`${gridgappx * 2}px`}
-          overflow={"auto"}
-          gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${
-            (gridgappx * 4) / 3
-          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
-            100 / 3
-          }% - ${(gridgappx * 4) / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
-        > */}
+            width="100%"
+            height="520px"
+            rowGap={`${gridgappx * 2}px`}
+            overflow={"auto"}
+            gridTemplateColumns={"1fr 1fr"}
+            gridTemplateRows={`calc(${100 / 3}% - ${
+              (gridgappx * 4) / 3
+            }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
+              100 / 3
+            }% - ${(gridgappx * 4) / 3}px)`}
+            gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
+          > */}
 
         <Wrap
           justify={"space-evenly"}
@@ -322,11 +324,12 @@ export default function ListPage({
             );
           })}
 
-          {hasMore && (
-            <Box as="div" ref={myRef}>
-              <Spinner size="lg" />
-            </Box>
-          )}
+          {hasMore &&
+            (withInfiniteScroll ? (
+              <Box as="div" ref={myRef}>
+                <Spinner size="lg" />
+              </Box>
+            ) : null)}
         </Wrap>
       </Flex>
     </>

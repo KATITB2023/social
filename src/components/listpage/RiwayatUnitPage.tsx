@@ -1,5 +1,5 @@
 import BackgroundAndNavbar from "../BackgroundAndNavbar";
-import ListPage from "./ListPage";
+import RiwayatPage from "./RiwayatPage";
 
 /**
  * to do:
@@ -30,11 +30,13 @@ import ListPage from "./ListPage";
 export default function RiwayatUnitPage({ title }: { title: string }) {
   return (
     <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
-      <ListPage
+      <RiwayatPage
         title={title}
         description={`Berikut ini adalah daftar ${title} yang telah kamu kunjungi`}
         withbackbutton={true}
         lembaga="UKM"
+        withInfiniteScroll={true}
+        limit={6}
       />
     </BackgroundAndNavbar>
   );
