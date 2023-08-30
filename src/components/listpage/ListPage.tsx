@@ -13,7 +13,6 @@ import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
 import {useRouter} from "next/router";
 import Link from "next/link";
-import { api } from "~/utils/api";
 
 export const defaultData = [
   {
@@ -88,8 +87,6 @@ export default function ListPage({
 }: ListPageProps) {
   const data = defaultData;
   const router = useRouter();
-  const ukmdata = api.showcase.getGroups.useQuery({lembaga: 'UKM'}).data;
-  console.log(ukmdata)
 
   return (
     <>
