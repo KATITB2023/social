@@ -1,10 +1,18 @@
 import React from "react";
+<<<<<<< HEAD
 import { Button, Flex, Heading, Icon, Link, Wrap } from "@chakra-ui/react";
 import { ViewCard } from "~/components/showcase/ViewCard";
+=======
+>>>>>>> 111c3f09cce2e52a2a86caf0602eb0e180d833bc
 import Layout from "~/layout";
-import Footer from "~/components/Footer";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+<<<<<<< HEAD
 import { ChevronLeftIcon } from "@chakra-ui/icons";
+import ListPage from "~/components/listpage/ListPage";
+=======
+import ListUnitPage from "~/components/listpage/ListUnitPage";
+import ListPage from "~/components/listpage/ListPage";
+>>>>>>> 111c3f09cce2e52a2a86caf0602eb0e180d833bc
 
 export default function UKMPage() {
   return (
@@ -48,6 +56,7 @@ export default function UKMPage() {
           />
         </Wrap>
         </Flex>
+        <ListPage title="RUMPUN UNIT KEGIATAN MAHASISWA" withbackbutton={true}/>
       </BackgroundAndNavbar>
     </Layout>
   );
