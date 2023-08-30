@@ -11,7 +11,6 @@ const MerchandiseRequested = ({ merch, status, quantity }: MerchandiseRequestedP
   return (
     <Flex
       flexDir={"row"}
-      // bgGradient={"linear(to-b,#7660B7 ,#CD62CF, #3A313D)"}
       background={"radial-gradient(151.92% 127.02% at 15.32% 21.04%, rgba(165, 239, 255, 0.20) 0%, rgba(110, 191, 244, 0.04) 77.08%, rgba(70, 144, 212, 0.00) 100%), linear-gradient(224deg, rgba(118, 96, 183, 0.93) 0%, rgba(205, 98, 207, 0.93) 46.35%, rgba(58, 49, 61, 0.93) 100%)"}
       w={"90%"}
       h={"94px"}
