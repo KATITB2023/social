@@ -1,21 +1,21 @@
 import React from "react";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import { Center, Flex, Heading, Image, Button} from "@chakra-ui/react";
+import { Center, Flex, Heading, Image, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
-
+import { useState } from "react";
+import { PopupInputCode } from "~/components/showcase/PopupInputCode";
 
 // Data Input
-const inputUKMData: { [key: string]: string | undefined} = {
+const inputUKMData: { [key: string]: string | undefined } = {
   nama: "LFM",
   logo: "/logo-ukm.png",
   usernametwitter: "@lfmitb",
   usernameinstagram: "@lfmitb",
   linktwitter: "https://twitter.com/lfmitb",
   linkinstagram: "https://www.instagram.com/lfmitb",
-  detail:
-`# **Deskripsi**
+  detail: `# **Deskripsi**
 LFM (Liga Film Mahasiswa) ITB bersedia menjadi media partner untuk kegiatan dan acara oleh lembaga ITB dan membuka tawaran untuk pelaksanaan workshop jika dibutuhkan dan sesuai dengan timeline. LFM ITB menyediakan kelas dan diskusi yang dapat diikuti oleh umum untuk memberikan pengetahuan seputar perfilman dan fotografi.
 
 # **Hari Jadi**
@@ -37,14 +37,13 @@ CC Barat
 `,
 };
 
-
-
 // Main Function
 export default function UKMInfo() {
   const router = useRouter();
+  const [visitPopup, setVisitPopup] = useState(false);
   return (
-    <Layout title={`UKM: ${inputUKMData.nama}`}>
-      <BackgroundAndNavbar bg="/background-bsoukmhimp.svg">
+    <Layout title={`UKM: ${inputUKMData.nama!}`}>
+      <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"
           justifyContent="space-between"
@@ -64,22 +63,17 @@ export default function UKMInfo() {
           />
           <Center>
             <Flex flexDirection="column">
-              <Heading 
+              <Heading
                 fontStyle="H3"
                 fontSize="170%"
                 color="yellow.5"
                 textShadow="0px 4px 30px #72D8BA"
                 textAlign="center"
                 mb="10%"
-              > 
+              >
                 {inputUKMData.nama}
               </Heading>
-              <Image
-                alt="Logo"
-                src={inputUKMData.logo}
-                sizes="10%"
-                mb="15%"
-              />
+              <Image alt="Logo" src={inputUKMData.logo} sizes="10%" mb="15%" />
               <Center>
                 <Button
                   padding="8px 24px"
@@ -92,7 +86,7 @@ export default function UKMInfo() {
                   width="80%"
                   height="relative"
                   color="#4909b3"
-                  onClick={() => router.push(`/404`)}
+                  onClick={() => setVisitPopup(true)}
                   mb="15%"
                 >
                   Tandai Kunjungan
@@ -100,42 +94,89 @@ export default function UKMInfo() {
               </Center>
             </Flex>
           </Center>
-          <div style={{ textAlign: 'justify' }}>
+          <Flex textAlign={"justify"} flexDir={"column"}>
             <ReactMarkdown
               components={{
-                h1: ({ node, ...props }) => <h1 style={{ fontFamily: "subheading", fontSize: "100%", marginBottom:"1%" }} {...props} />,
-                p: ({ node, ...props }) => <p style={{ fontFamily: "body", fontSize: "80%", marginBottom:"5%"}} {...props} />,
+                h1: ({ node, ...props }) => (
+                  <h1
+                    style={{
+                      fontFamily: "subheading",
+                      fontSize: "100%",
+                      marginBottom: "1%",
+                    }}
+                    {...props}
+                  />
+                ),
+                p: ({ node, ...props }) => (
+                  <div
+                    style={{
+                      fontFamily: "body",
+                      fontSize: "80%",
+                      marginBottom: "5%",
+                    }}
+                    {...props}
+                  />
+                ),
                 img: ({ node, ...props }) => {
                   if (props.alt === "instagram") {
                     return (
-                      <p style={{ color: "#FFE655"}}>
-                        <a href={inputUKMData.linkinstagram} style={{ display: "flex"}}>
-                          <Image alt={props.alt} src={props.src} mb="2%" {...props} />
+                      <div style={{ color: "#FFE655" }}>
+                        <a
+                          href={inputUKMData.linkinstagram}
+                          style={{ display: "flex" }}
+                        >
+                          <Image
+                            alt={props.alt}
+                            src={props.src}
+                            mb="2%"
+                            {...props}
+                          />
                           &nbsp; {inputUKMData.usernameinstagram}
                         </a>
-                      </p>
+                      </div>
                     );
                   } else if (props.alt === "Twitter") {
                     return (
-                      <p style={{ color: "#FFE655"}}>
-                        <a href={inputUKMData.linktwitter} style={{ display: "flex"}}>
-                          <Image alt={props.alt} src={props.src} mb="2%" {...props} />
+                      <div style={{ color: "#FFE655" }}>
+                        <a
+                          href={inputUKMData.linktwitter}
+                          style={{ display: "flex" }}
+                        >
+                          <Image
+                            alt={props.alt}
+                            src={props.src}
+                            mb="2%"
+                            {...props}
+                          />
                           &nbsp; {inputUKMData.usernametwitter}
                         </a>
-                      </p>
+                      </div>
                     );
                   }
                   // Handle image 'Foto Kegiatan'
                   return (
-                    <Image alt={props.alt} src={props.src} maxWidth="100%" height="auto" borderRadius="15px" mb="5%"{...props} />
+                    <Image
+                      alt={props.alt}
+                      src={props.src}
+                      maxWidth="100%"
+                      height="auto"
+                      borderRadius="15px"
+                      mb="5%"
+                      {...props}
+                    />
                   );
                 },
               }}
             >
-              {inputUKMData.detail}
+              {inputUKMData.detail!}
             </ReactMarkdown>
-          </div>
+          </Flex>
         </Flex>
+
+        <PopupInputCode
+          isOpen={visitPopup}
+          onClose={() => setVisitPopup(false)}
+        />
       </BackgroundAndNavbar>
     </Layout>
   );
