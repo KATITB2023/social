@@ -1,19 +1,22 @@
 import React from "react";
-import { Flex, Image, Heading, Text } from "@chakra-ui/react";
+import { Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
 export const ViewCard = ({
   image,
   title,
   route,
+  width = "45%",
 }: {
   image: string;
   title: string;
   route: string;
+  width?: string | number;
 }) => {
   return (
     <Flex
-      w={"45%"}
+      w={width}
+      minW={"100px"}
       maxW={"200px"}
       borderRadius={"26px"}
       aspectRatio={3 / 4}
@@ -21,15 +24,18 @@ export const ViewCard = ({
       overflow={"hidden"}
       border={"1px white solid"}
     >
-      <Link href={route}>
+      {/* <Link href={route}> */}
+      <Flex>
         <Image
-          src={image}
+          w={"full"}
+          src={image || "/base.png"}
           position="absolute"
           objectFit="cover"
           objectPosition="center"
           alt=""
         />
-      </Link>
+      </Flex>
+      {/* </Link> */}
 
       <Flex
         bgColor={"#1D0263"}
@@ -54,11 +60,18 @@ export const ViewCard = ({
         </Heading>
 
         <Link href={route}>
-          <Flex aspectRatio={2 / 1} borderRadius={"8px"} w={"full"}>
-            <Text bg={"yellow.5"} color={"purple.2"} fontSize={"12px"}>
+          <Button
+            display={"flex"}
+            borderRadius={"8px"}
+            bg={"yellow.5"}
+            w={"full"}
+            h={"full"}
+            py={1}
+          >
+            <Text color={"purple.2"} fontSize={"12px"}>
               Explore
             </Text>
-          </Flex>
+          </Button>
         </Link>
       </Flex>
     </Flex>
