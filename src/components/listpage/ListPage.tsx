@@ -1,24 +1,17 @@
 import {
-  Box,
   Button,
-  Center,
   Flex,
-  Grid,
   Heading,
   Image,
   Text,
   Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionIcon,
-  AccordionPanel,
-  GridItem,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
-import { Wrap } from "@chakra-ui/react";
-import { ViewCard } from "../showcase/ViewCard";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import Fakultas from "./Fakultas";
+import { api } from "~/utils/api";
+import { useState } from "react";
+import SearchedHMJ from "./SearchedHMJ";
 
 export const defaultData = [
   {
@@ -91,8 +84,15 @@ export default function ListPage({
   additionTitle,
   withbackbutton = false,
 }: ListPageProps) {
-  const data = defaultData;
   const router = useRouter();
+  const { data, isFetching } = api.showcase.getGroups.useQuery({
+    lembaga: "HMJ",
+  });
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
@@ -147,87 +147,23 @@ export default function ListPage({
           )}
         </Flex>
 
-        <TextInput placeholder="Search..." />
-
-        {/* <Grid
-          width="100%"
-          height="520px"
-          rowGap={`${gridgappx * 2}px`}
-          overflow={"auto"}
-          gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${
-            (gridgappx * 4) / 3
-          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
-            100 / 3
-          }% - ${(gridgappx * 4) / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
-        > */}
-
-        <Wrap
-          justify={"space-evenly"}
-          w={"full"}
-          maxH={"700px"}
-          overflow={"auto"}
-          sx={{
-            "::-webkit-scrollbar": {
-              width: "5px",
-            },
-            "::-webkit-scrollbar-track": {
-              display: "none",
-              background: "rgb(68,70,84)",
-            },
-            "::-webkit-scrollbar-thumb": {
-              background: "rgba(217,217,227,.8)",
-              borderRadius: "full",
-            },
-          }}
-        >
-          <Accordion
-            width={"full"}
-            paddingY={2}
-            defaultIndex={[0]}
-            allowMultiple
-          >
-            <AccordionItem marginX={2} marginBottom={2} border={"transparent"}>
-              <AccordionButton
-                _expanded={{
-                  boxShadow: "0 0 8px yellow",
-                }}
-                _hover={{ bgColor: "gray.600" }}
-                paddingX={6}
-                borderRadius={12}
-                bgColor={"gray.600"}
-              >
-                <Heading
-                  size={"H5"}
-                  textAlign={"left"}
-                  width={"full"}
-                  color={"yellow.5"}
-                >
-                  FITB
-                </Heading>
-                <AccordionIcon color={"yellow.5"} />
-              </AccordionButton>
-              <AccordionPanel pb={4}>
-                  {data.map((each) => {
-                    return (
-                        <ViewCard
-                        key= {each.name}
-                          width={"full"}
-                          title={each.name}
-                          image={each.image}
-                          route={`/showcase/ukm/${each.name}`}
-                        />
-                    );
-                  })}
-                <Grid gap={2} justifyItems={'center'} templateColumns="repeat(2,1fr)">
-                </Grid>
-              </AccordionPanel>
-            </AccordionItem>
+        <TextInput
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleChange}
+        />
+        {searchQuery == "" && data ? (
+          <Accordion width={"full"} paddingY={2} defaultIndex={[0]} allowMultiple>
+            {isFetching ? (
+              <Text align={"center"}>Loading ...</Text>
+            ) : (
+              data?.map((group, index) => <Fakultas key={index} title={group} />)
+            )}
           </Accordion>
-        </Wrap>
-
-        {/* </Grid> */}
+        ) :(
+          <SearchedHMJ searchQuery={searchQuery} />
+        )
+        }
       </Flex>
     </>
   );
