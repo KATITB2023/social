@@ -1,16 +1,12 @@
 import React from "react";
-import Layout from "~/layout";
-import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import { Center, Heading } from "@chakra-ui/react";
+import { OrganizationPage } from "~/components/showcase/OrganizationPage";
+import { useRouter } from "next/router";
 
+// Main Function
 export default function UKMInfo() {
+  const router = useRouter();
+  const organizationId = router.query.ukmId as string;
   return (
-    <Layout title={`UKM: {Nama UKM}`}>
-      <BackgroundAndNavbar bg="/background.png">
-        <Center>
-          <Heading color={"yellow.5"}> Info UKM </Heading>{" "}
-        </Center>
-      </BackgroundAndNavbar>
-    </Layout>
+    <OrganizationPage type={"UKM"} organizationId={organizationId}/>
   );
 }
