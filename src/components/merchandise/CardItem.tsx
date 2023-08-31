@@ -3,19 +3,44 @@ import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 import { Box, Flex, Text, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
 
-const CardItem = () => {
+interface CardItemInfo {
+  id: string;
+  image: string;
+  name: string;
+  price: number;
+  stock: number;
+  currentAmountItem: number;
+  changeAmountItem: React.Dispatch<React.SetStateAction<number>>;
+  currentSumCoinPrice: number;
+  changeSumCoinPrice: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const CardItem = ({
+  currentAmountItem,
+  changeAmountItem,
+  currentSumCoinPrice,
+  changeSumCoinPrice,
+  id,
+  image,
+  name,
+  price,
+  stock,
+}: CardItemInfo) => {
   const [berhasilPopup, setBerhasilPopup] = useState(false);
   const [requestQuota, setRequestQuota] = useState(0);
-  const [quota, setQuota] = useState(20);
   const handleIncrement = () => {
-    if (requestQuota < quota) {
+    if (requestQuota < stock) {
       setRequestQuota(requestQuota + 1);
+      changeAmountItem(currentAmountItem + 1);
+      changeSumCoinPrice(currentSumCoinPrice + price);
     }
   };
 
   const handleDecrement = () => {
     if (requestQuota > 0) {
       setRequestQuota(requestQuota - 1);
+      changeAmountItem(currentAmountItem - 1);
+      changeSumCoinPrice(currentSumCoinPrice - price);
     }
   };
   return (
@@ -40,9 +65,7 @@ const CardItem = () => {
           borderRadius={12}
           justifyContent={"center"}
         >
-          <Image
-            src="/components/merch/bigmug.png"
-          />
+          <Image src={image} alt={`Merchandise ${name} image`} />
           <Button
             position={"absolute"}
             top={0}
@@ -61,6 +84,7 @@ const CardItem = () => {
             />
           </Button>
         </Flex>
+
         <Flex
           flexDirection="column"
           justifyContent="flex-start"
@@ -75,7 +99,7 @@ const CardItem = () => {
             justifyContent="flex-start"
             alignItems="flex-start"
           >
-            Merch A
+            {name}
           </Text>
           <Text
             color="white"
@@ -84,17 +108,11 @@ const CardItem = () => {
             fontWeight="400"
             wordBreak="break-word"
           >
-            Sisa: {quota} pcs
+            Sisa: {stock} pcs
           </Text>
         </Flex>
-        <Flex
-          justifyContent="center"
-          alignItems="center"
-          gap={1}
-        >
-          <Image
-            src="/components/merch/coin.png"
-          />
+        <Flex justifyContent="center" alignItems="center" gap={1}>
+          <Image src="/components/merch/coin.png" />
           <Text
             color="#FFFC83"
             fontSize={12}
@@ -102,7 +120,7 @@ const CardItem = () => {
             fontWeight="700"
             wordBreak="break-word"
           >
-            300 Coins
+            {price} Coins
           </Text>
         </Flex>
         <Flex
@@ -115,7 +133,7 @@ const CardItem = () => {
             // h={"40%"}
             flex="1"
             p={4}
-            background={requestQuota !== 0?"#FFFC83":"#BFBFBF"}
+            background={requestQuota !== 0 ? "#FFFC83" : "#BFBFBF"}
             borderLeftRadius={12}
             borderRightRadius="0"
             flexDirection="column"
@@ -159,14 +177,14 @@ const CardItem = () => {
             // h={"40%"}
             flex="1"
             p={4}
-            background={requestQuota !== quota?"#FFFC83":"#BFBFBF"}
+            background={requestQuota !== stock ? "#FFFC83" : "#BFBFBF"}
             borderRightRadius={12}
             borderLeftRadius={0}
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
             gap={10}
-            isDisabled={requestQuota === quota}
+            isDisabled={requestQuota === stock}
             onClick={handleIncrement}
           >
             <Text
@@ -181,9 +199,11 @@ const CardItem = () => {
           </Button>
         </Flex>
         {/* Pop up image */}
-        {berhasilPopup &&
-          <PopupWithBlackOverlay open={berhasilPopup}
-            setClose={() => setBerhasilPopup(false)}>
+        {berhasilPopup && (
+          <PopupWithBlackOverlay
+            open={berhasilPopup}
+            setClose={() => setBerhasilPopup(false)}
+          >
             <Flex
               background="#FFFC83"
               w="90%"
@@ -195,9 +215,7 @@ const CardItem = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Image
-                src="/components/merch/bigmug.png"
-              />
+              <Image src="/components/merch/bigmug.png" />
               <Image
                 cursor="pointer"
                 src="/close.png"
@@ -209,10 +227,10 @@ const CardItem = () => {
               />
             </Flex>
           </PopupWithBlackOverlay>
-        }
+        )}
       </Box>
     </>
-  )
-}
+  );
+};
 
 export default CardItem;
