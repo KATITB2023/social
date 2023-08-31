@@ -207,13 +207,14 @@ export default function ListPage({
           )}
           {searchQuery === "" &&
             data?.map((each) => {
-              const route = lembaga === "UKM" ? `showcase/ukm/${title.toLowerCase()}/${each.name}` : `/showcase/${lembaga}/${each.name}`
+              const route = lembaga === "UKM" ? `${title.toLowerCase()}/${each.userId}` : `${each.name}`
               return (
                 <ViewCard
                   key={each.name}
                   title={each.name}
                   // image={each.image}
                   route={route}
+                  unitId={each.userId}
                 />
               );
             })}
