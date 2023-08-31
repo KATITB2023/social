@@ -27,10 +27,6 @@ export default function ListPage({
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [queryEntered, setQueryEntered] = useState<string>("");
-  const { data: fetchedData } = api.showcase.getAllUnits.useQuery({
-    searchValue: queryEntered,
-    lembaga,
-  });
   const [data, setData] = useState<UnitProfile[] | undefined>(dataUnit);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,11 +199,20 @@ export default function ListPage({
           }}
         >
           {searchQuery && (
-            <SearchedUnit searchQuery={searchQuery} group={title} />
+            <SearchedUnit
+              searchQuery={searchQuery}
+              lembaga={lembaga}
+              group={lembaga === "UKM" ? title : undefined}
+            />
           )}
           {searchQuery === "" &&
             data?.map((each) => {
-              const route = lembaga === "UKM" ? `${title.toLowerCase()}/${each.userId}` : `${each.name}`
+              const route =
+                lembaga === "UKM"
+                  ? `${title.toLowerCase()}/${each.userId}`
+                  : lembaga === "BSO"
+                  ? `bso/${each.userId}`
+                  : `${each.name}`;
               return (
                 <ViewCard
                   key={each.name}

@@ -57,6 +57,7 @@ export const OrganizationPage = ({
   const [visitedFail, setVisitedFail] = useState<boolean>(false);
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
   const unit = data as UnitProfileVisited;
+  console.log(unit,"Ini unit")
   return (
     <Layout title={`${type}:${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
