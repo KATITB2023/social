@@ -51,7 +51,7 @@ const SearchedHMJ = ({
                 width={"full"}
                 title={each.name}
                 image={each.image ?? ''}
-                route={`/showcase/ukm/${each.name}`}
+                route={`/showcase/himpunan/${each.userId}`}
               />
             );
           })}

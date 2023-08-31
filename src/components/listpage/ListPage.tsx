@@ -8,10 +8,10 @@ import {
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import { useRouter } from "next/router";
-import Fakultas from "./Fakultas";
 import { api } from "~/utils/api";
 import { useState } from "react";
-import SearchedHMJ from "./SearchedHMJ";
+import { Wrap } from "@chakra-ui/react";
+import { ViewCard } from "../showcase/ViewCard";
 
 export const defaultData = [
   {
@@ -103,7 +103,7 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt="50px"
+        pt={withbackbutton ? "50px" : "20px"}
       >
         {withbackbutton && (
           <Button
@@ -122,13 +122,8 @@ export default function ListPage({
         )}
 
         {/* Page title */}
-        <Flex alignItems={"center"} flexDirection={"column"}>
-          <Heading
-            size="H4"
-            textShadow="0px 4px 30px #72D8BA"
-            color="yellow.5"
-            textAlign={"center"}
-          >
+        <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
+          <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
             {title}
           </Heading>
           {additionTitle && (
@@ -136,6 +131,7 @@ export default function ListPage({
               size="H4"
               textShadow="0px 4px 30px #72D8BA"
               color="yellow.5"
+              textAlign={"center"}
             >
               {additionTitle}
             </Heading>
@@ -147,23 +143,54 @@ export default function ListPage({
           )}
         </Flex>
 
-        <TextInput
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleChange}
-        />
-        {searchQuery == "" && data ? (
-          <Accordion width={"full"} paddingY={2} defaultIndex={[0]} allowMultiple>
-            {isFetching ? (
-              <Text align={"center"}>Loading ...</Text>
-            ) : (
-              data?.map((group, index) => <Fakultas key={index} title={group} />)
-            )}
-          </Accordion>
-        ) :(
-          <SearchedHMJ searchQuery={searchQuery} />
-        )
-        }
+        <TextInput placeholder="Search..." />
+
+        {/* <Grid
+          width="100%"
+          height="520px"
+          rowGap={`${gridgappx * 2}px`}
+          overflow={"auto"}
+          gridTemplateColumns={"1fr 1fr"}
+          gridTemplateRows={`calc(${100 / 3}% - ${
+            (gridgappx * 4) / 3
+          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
+            100 / 3
+          }% - ${(gridgappx * 4) / 3}px)`}
+          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
+        > */}
+
+        <Wrap
+          justify={"space-evenly"}
+          w={"full"}
+          maxH={"700px"}
+          overflow={"auto"}
+          sx={{
+            "::-webkit-scrollbar": {
+              width: "5px",
+            },
+            "::-webkit-scrollbar-track": {
+              display: "none",
+              background: "rgb(68,70,84)",
+            },
+            "::-webkit-scrollbar-thumb": {
+              background: "rgba(217,217,227,.8)",
+              borderRadius: "full",
+            },
+          }}
+        >
+          {defaultData.map((each) => {
+            return (
+              <ViewCard
+                key={each.name}
+                title={each.name}
+                // image={each.image}
+                route={`/showcase/ukm/${each.name}`}
+              />
+            );
+          })}
+        </Wrap>
+
+        {/* </Grid> */}
       </Flex>
     </>
   );
