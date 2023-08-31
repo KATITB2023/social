@@ -14,10 +14,12 @@ import Layout from "~/layout";
 import TextInput from "~/components/merchandise/TextInput";
 import CardItem from "~/components/merchandise/CardItem";
 import RequestTab from "~/components/merchandise/RequestTab";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { Merchandise } from "~/server/types/merchandise";
+import { MdRefresh } from "react-icons/md";
+
 export const getServerSideProps = withSession({ force: true });
 
 const DummyMerchData: Merchandise[] = [
@@ -58,21 +60,41 @@ const DummyMerchData: Merchandise[] = [
   },
 ];
 
+type CartData = {
+  id: string;
+  requestAmount: number;
+};
+
 export default function MerchandisePage() {
   // const merchItem = api.showcase.getAllMerchandise.useQuery().data;
   // console.log(merchItem);
   const user = api.profile.getUserProfile.useQuery();
   const point = user.data?.point;
 
-  const [berhasilPopup, setBerhasilPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
   const [selectedItems, setSelectedItems] = useState(0);
-  const [sumCoinPrice, setSumCoinPrice] = useState(0);
+  const [cartArray, setCartArray] = useState<CartData[]>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
+
+
+  useEffect(() => {
+    var tempArr : CartData[] = new Array<CartData>(DummyMerchData.length);
+    for (let i: number = 0; i < DummyMerchData.length; i++) {
+      let temp: CartData = {
+        id: DummyMerchData[i]!.id,
+        requestAmount: 0,
+      };
+      tempArr[i] = temp;
+    }
+    setCartArray(tempArr);
+  }, []);
+
+  console.log(cartArray);
+
   return (
     <Layout title="Merchandise">
       <BackgroundAndNavbar bg="/background.png">
@@ -99,7 +121,7 @@ export default function MerchandisePage() {
                 Tukarkan koinmu dengan merchandise menarik!
               </Text>
             </Flex>
-            <Link href={"/request-merchandise"}>
+            <Flex flexDir={"column-reverse"} gap={2}>
               <Button
                 background={"#2f2e2e"}
                 borderRadius={12}
@@ -107,9 +129,24 @@ export default function MerchandisePage() {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <Image src="/components/merch/shopping_cart.svg" />
+                <MdRefresh width={"15px"} height={"15px"} color="yellow" />
               </Button>
-            </Link>
+              <Link href={"/request-merchandise"}>
+                <Button
+                  background={"#2f2e2e"}
+                  borderRadius={12}
+                  border={"1px #FFFC83 solid"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Image
+                    src="/components/merch/shopping_cart.svg"
+                    width={"15px"}
+                    height={"15px"}
+                  />
+                </Button>
+              </Link>
+            </Flex>
           </Flex>
           <Flex w={"85%"}>
             <TextInput
@@ -147,8 +184,8 @@ export default function MerchandisePage() {
                   key={each.id}
                   currentAmountItem={selectedItems}
                   changeAmountItem={setSelectedItems}
-                  currentSumCoinPrice={sumCoinPrice}
-                  changeSumCoinPrice={setSumCoinPrice}
+                  currentSumCoinPrice={priceSelectedItems}
+                  changeSumCoinPrice={setPriceSelectedItems}
                   id={each.id}
                   image={each.image}
                   name={each.name}
@@ -162,7 +199,7 @@ export default function MerchandisePage() {
             <RequestTab
               currentUserCoin={point!}
               itemAmount={selectedItems}
-              sumCoinPrice={sumCoinPrice}
+              sumCoinPrice={priceSelectedItems}
             />
           )}
         </Center>
