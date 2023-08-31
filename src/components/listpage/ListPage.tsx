@@ -12,6 +12,7 @@ import {
   AccordionItem,
   AccordionIcon,
   AccordionPanel,
+  GridItem,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
 import { Wrap } from "@chakra-ui/react";
@@ -181,74 +182,46 @@ export default function ListPage({
             },
           }}
         >
-          <Accordion width={'full'} paddingY={2} defaultIndex={[0]} allowMultiple>
-            <AccordionItem marginX={2} marginBottom={2} border={'transparent'}>
-                <AccordionButton 
-                _expanded={
-                  {
-                    boxShadow: "0 0 8px yellow",
-                  }
-                }
-
-                _hover={
-                  {bgColor: 'gray.600'}
-                } paddingX={6} borderRadius={12} bgColor={'gray.600'}>
-                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
-                    FTTM
-                  </Heading>
-                  <AccordionIcon color={"yellow.5"}/>
-                </AccordionButton>
+          <Accordion
+            width={"full"}
+            paddingY={2}
+            defaultIndex={[0]}
+            allowMultiple
+          >
+            <AccordionItem marginX={2} marginBottom={2} border={"transparent"}>
+              <AccordionButton
+                _expanded={{
+                  boxShadow: "0 0 8px yellow",
+                }}
+                _hover={{ bgColor: "gray.600" }}
+                paddingX={6}
+                borderRadius={12}
+                bgColor={"gray.600"}
+              >
+                <Heading
+                  size={"H5"}
+                  textAlign={"left"}
+                  width={"full"}
+                  color={"yellow.5"}
+                >
+                  FITB
+                </Heading>
+                <AccordionIcon color={"yellow.5"} />
+              </AccordionButton>
               <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem marginX={2} marginBottom={2} border={'transparent'}>
-                <AccordionButton 
-                _expanded={
-                  {
-                    boxShadow: "0 0 8px yellow",
-                  }
-                }
-
-                _hover={
-                  {bgColor: 'gray.600'}
-                } paddingX={6} borderRadius={12} bgColor={'gray.600'}>
-                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
-                    FITB
-                  </Heading>
-                  <AccordionIcon color={"yellow.5"}/>
-                </AccordionButton>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem marginX={2} marginBottom={2} border={'transparent'}>
-                <AccordionButton 
-                _expanded={
-                  {
-                    boxShadow: "0 0 8px yellow",
-                  }
-                }
-
-                _hover={
-                  {bgColor: 'gray.600'}
-                } paddingX={6} borderRadius={12} bgColor={'gray.600'}>
-                  <Heading size={'H5'} textAlign={'left'} width={'full'} color={'yellow.5'}>
-                    STEI
-                  </Heading>
-                  <AccordionIcon color={"yellow.5"}/>
-                </AccordionButton>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                  {data.map((each) => {
+                    return (
+                        <ViewCard
+                        key= {each.name}
+                          width={"full"}
+                          title={each.name}
+                          image={each.image}
+                          route={`/showcase/ukm/${each.name}`}
+                        />
+                    );
+                  })}
+                <Grid gap={2} justifyItems={'center'} templateColumns="repeat(2,1fr)">
+                </Grid>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
