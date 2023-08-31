@@ -55,7 +55,7 @@ export default function ShowcasePage() {
             right="0"
           ></Image>
           <Image
-            src="defaultprofpict.svg"
+            src="logo_showcase.png"
             alt="profile pic"
             borderRadius="full"
             width="40%"
