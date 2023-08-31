@@ -4,10 +4,12 @@ export default function PopupWithBlackOverlay({
   children,
   open,
   setClose,
+  opacity = 0.7,
 }: {
   children: string | JSX.Element | JSX.Element[];
   open: boolean;
   setClose: () => void;
+  opacity? : number;
 }) {
   return (
     <Flex
@@ -32,7 +34,7 @@ export default function PopupWithBlackOverlay({
           w={"100vw"}
           h={"100vh"}
           bg={"black"}
-          opacity={0.7}
+          opacity={opacity}
           onClick={setClose}
           cursor={"pointer"}
         />
