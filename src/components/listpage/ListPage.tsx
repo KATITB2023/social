@@ -1,18 +1,17 @@
 import {
-  Box,
   Button,
-  Center,
   Flex,
-  Grid,
   Heading,
   Image,
   Text,
+  Accordion,
 } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
+import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import { useState } from "react";
 import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
-import {useRouter} from "next/router";
-import Link from "next/link";
 
 export const defaultData = [
   {
@@ -85,8 +84,15 @@ export default function ListPage({
   additionTitle,
   withbackbutton = false,
 }: ListPageProps) {
-  const data = defaultData;
   const router = useRouter();
+  const { data, isFetching } = api.showcase.getGroups.useQuery({
+    lembaga: "HMJ",
+  });
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
@@ -97,16 +103,26 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt="50px"
+        pt={withbackbutton ? "50px" : "20px"}
       >
         {withbackbutton && (
-            <Button onClick={() => router.back()} bgColor={"transparent"} position={"absolute"} top={0} left={3} borderRadius={"full"} width={10} height={10} padding={0}>
-              <Image src="/backbutton-logo.svg" alt="Back button"/>
-            </Button>
+          <Button
+            onClick={() => router.back()}
+            bgColor={"transparent"}
+            position={"absolute"}
+            top={0}
+            left={3}
+            borderRadius={"full"}
+            width={10}
+            height={10}
+            padding={0}
+          >
+            <Image src="/backbutton-logo.svg" alt="Back button" />
+          </Button>
         )}
 
         {/* Page title */}
-        <Flex alignItems={"center"} flexDirection={"column"}>
+        <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
           <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
             {title}
           </Heading>
@@ -115,6 +131,7 @@ export default function ListPage({
               size="H4"
               textShadow="0px 4px 30px #72D8BA"
               color="yellow.5"
+              textAlign={"center"}
             >
               {additionTitle}
             </Heading>
@@ -161,12 +178,12 @@ export default function ListPage({
             },
           }}
         >
-          {data.map((each) => {
+          {defaultData.map((each) => {
             return (
               <ViewCard
                 key={each.name}
                 title={each.name}
-                image={each.image}
+                // image={each.image}
                 route={`/showcase/ukm/${each.name}`}
               />
             );
