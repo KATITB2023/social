@@ -83,13 +83,12 @@ export default function MerchandisePage() {
   };
 
   useEffect(() => {
-    var tempArr: CartData[] = new Array<CartData>(DummyMerchData.length);
-    for (let i: number = 0; i < DummyMerchData.length; i++) {
-      let temp: CartData = {
+    const tempArr: CartData[] = new Array<CartData>(DummyMerchData.length);
+    for (let i = 0; i < DummyMerchData.length; i++) {
+      tempArr[i] = {
         id: DummyMerchData[i]!.id,
         requestAmount: 0,
       };
-      tempArr[i] = temp;
     }
     setCartArray(tempArr);
   }, []);
@@ -109,7 +108,7 @@ export default function MerchandisePage() {
 
   const clearCart = () => {
     if (cartArray) {
-      for (let i: number = 0; i < cartArray.length; i++) {
+      for (let i = 0; i < cartArray.length; i++) {
         cartArray[i]!.requestAmount = 0;
       }
       setSelectedItems(0);
@@ -222,7 +221,7 @@ export default function MerchandisePage() {
           </Wrap>
           {selectedItems > 0 && (
             <RequestTab
-              currentUserCoin={point!}
+              currentUserCoin={point}
               itemAmount={selectedItems}
               sumCoinPrice={priceSelectedItems}
             />
