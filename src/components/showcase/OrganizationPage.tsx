@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { Center, Flex, Heading, Image, Button } from "@chakra-ui/react";
@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import { PopupInputCode } from "~/components/showcase/PopupInputCode";
+import { UnitProfile } from "@prisma/client";
+import { api } from "~/utils/api";
 
 // Data Input
 const dummyUKMData: { [key: string]: string | undefined } = {
@@ -46,8 +48,10 @@ export const OrganizationPage = ({
 }) => {
   const router = useRouter();
   const [visitPopup, setVisitPopup] = useState(false);
+  const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
+  const unit = data as UnitProfile;
   return (
-    <Layout title={`${type}: ${dummyUKMData.nama!}`}>
+    <Layout title={`${type}:${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"
@@ -76,33 +80,40 @@ export const OrganizationPage = ({
                 textAlign="center"
                 mb="10%"
               >
-                {dummyUKMData.nama}
+                {unit?.name}
               </Heading>
-              <Image alt="Logo" src={dummyUKMData.logo} sizes="10%" mb="15%" />
-              <Center>
-                <Button
-                  padding="8px 24px"
-                  justifyContent="center"
-                  alignItems="center"
-                  borderRadius="12px"
-                  background="yellow.5"
-                  fontFamily="subheading"
-                  fontSize="12px"
-                  width="80%"
-                  height="relative"
-                  color="#4909b3"
-                  onClick={() => setVisitPopup(true)}
-                  mb="15%"
-                >
-                  Tandai Kunjungan
-                </Button>
-              </Center>
+              <Image
+                alt="Logo"
+                src={unit ? unit.image : ""}
+                sizes="10%"
+                mb="15%"
+              />
+              {!unit?.visited && (
+                <Center>
+                  <Button
+                    padding="8px 24px"
+                    justifyContent="center"
+                    alignItems="center"
+                    borderRadius="12px"
+                    background="yellow.5"
+                    fontFamily="subheading"
+                    fontSize="12px"
+                    width="80%"
+                    height="relative"
+                    color="#4909b3"
+                    onClick={() => setVisitPopup(true)}
+                    mb="15%"
+                  >
+                    Tandai Kunjungan
+                  </Button>
+                </Center>
+              )}
             </Flex>
           </Center>
           <Flex textAlign={"justify"} flexDir={"column"}>
             <ReactMarkdown
               components={{
-                h1: ({ node, ...props }) => (
+                h1: ({ _, ...props }) => (
                   <h1
                     style={{
                       fontFamily: "subheading",
@@ -112,7 +123,7 @@ export const OrganizationPage = ({
                     {...props}
                   />
                 ),
-                p: ({ node, ...props }) => (
+                p: ({ _, ...props }) => (
                   <div
                     style={{
                       fontFamily: "body",
@@ -122,7 +133,7 @@ export const OrganizationPage = ({
                     {...props}
                   />
                 ),
-                img: ({ node, ...props }) => {
+                img: ({ _, ...props }) => {
                   if (props.alt === "instagram") {
                     return (
                       <div style={{ color: "#FFE655" }}>
@@ -173,7 +184,7 @@ export const OrganizationPage = ({
                 },
               }}
             >
-              {dummyUKMData.detail!}
+              {unit?.bio}
             </ReactMarkdown>
           </Flex>
         </Flex>
