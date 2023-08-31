@@ -4,7 +4,7 @@ import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import PointCard from "~/components/merchandise/PointCard";
 import MerchandiseRequested from "~/components/requestMerchandise/RequestMerchandise";
 import Layout from "~/layout";
-import { MerchandiseRequest } from "~/server/types/merchandise";
+import { type MerchandiseRequest } from "~/server/types/merchandise";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
