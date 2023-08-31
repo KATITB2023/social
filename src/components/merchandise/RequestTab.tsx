@@ -12,7 +12,6 @@ const Request = ({
   itemAmount: number;
   sumCoinPrice: number;
 }) => {
-  const [canBuy, setCanBuy] = useState(true);
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
 
@@ -76,26 +75,26 @@ const Request = ({
           padding={2}
           // background="linear-gradient(0deg, white 0%, white 100%)"
           background={
-            canBuy
+            (currentUserCoin >= sumCoinPrice)
               ? "linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF;"
               : "linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
           }
           borderRadius={12}
           overflow="hidden"
-          border={canBuy ? "0.46px #1C939A solid" : "0.46px #E8553E solid"}
+          border={(currentUserCoin >= sumCoinPrice) ? "0.46px #1C939A solid" : "0.46px #E8553E solid"}
           justifyContent="center"
           alignItems="center"
           gap={12}
           display="flex"
         >
           <Text
-            color={canBuy ? "#1C939A" : "#E8553E"}
+            color={(currentUserCoin >= sumCoinPrice) ? "#1C939A" : "#E8553E"}
             fontSize={10}
             fontFamily="SomarRounded-Regular"
             fontWeight="700"
             wordBreak="break-word"
           >
-            {canBuy ? "Koin mencukupi!" : "Koin tidak mencukupi!"}
+            {(currentUserCoin >= sumCoinPrice) ? "Koin mencukupi!" : "Koin tidak mencukupi!"}
           </Text>
         </Flex>
       </Flex>
@@ -107,7 +106,7 @@ const Request = ({
         fontWeight="400"
         wordBreak="break-word"
       >
-        {canBuy
+        {(currentUserCoin >= sumCoinPrice)
           ? "Silakan tukarkan dengan merchandise!"
           : "Silakan lakukan challenge di booth untuk tambahan koin!"}
       </Text>
@@ -121,7 +120,7 @@ const Request = ({
           {itemAmount} Barang
         </Text>
         <Text
-          color={canBuy ? "#C0EACA" : "#E8553E"}
+          color={(currentUserCoin >= sumCoinPrice) ? "#C0EACA" : "#E8553E"}
           fontSize={16}
           fontFamily="SomarRounded-Regular"
           fontWeight="700"
@@ -139,7 +138,7 @@ const Request = ({
         justifyContent="center"
         alignItems="center"
         gap={12}
-        isDisabled={!canBuy}
+        isDisabled={!(currentUserCoin >= sumCoinPrice)}
         onClick={() => setConfirmPopup(true)}
       >
         <Text
