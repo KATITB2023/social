@@ -2,10 +2,11 @@ import { Text, Flex, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
+import { RequestGagalPopup } from "./RequestGagalPopup";
 import { Merchandise } from "~/server/types/merchandise";
 
 type CartData = {
-  merchRequested:Merchandise;
+  merchRequested: Merchandise;
   requestAmount: number;
 };
 
@@ -15,10 +16,10 @@ const Request = ({
   sumCoinPrice,
   merch,
 }: {
-  currentUserCoin : number;
+  currentUserCoin: number;
   itemAmount: number;
-    sumCoinPrice: number;
-    merch: CartData[];
+  sumCoinPrice: number;
+  merch: CartData[];
 }) => {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
