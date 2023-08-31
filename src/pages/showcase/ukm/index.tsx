@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "~/layout";
+
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { Heading, Flex, Button, Image, Wrap } from "@chakra-ui/react";
 import { useRouter } from "next/router";
