@@ -1,17 +1,11 @@
 import React from "react";
-import Layout from "~/layout";
-import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import { Center, Heading } from "@chakra-ui/react";
+import { OrganizationPage } from "~/components/showcase/OrganizationPage";
+import { useRouter } from "next/router";
 
 export default function HimpunanInfo() {
+  const router = useRouter();
+  const organizationId = router.query.himpunanId as string;
   return (
-    <Layout title="Himpunan: {Nama Himpunan}">
-      <BackgroundAndNavbar bg="/background.png">
-        <Center>
-          {" "}
-          <Heading> Info Himpunan </Heading>{" "}
-        </Center>
-      </BackgroundAndNavbar>
-    </Layout>
+      <OrganizationPage type={"HMJ"} organizationId={organizationId} />
   );
 }
