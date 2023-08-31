@@ -106,7 +106,7 @@ export default function ListPage({
         )}
 
         {/* Page title */}
-        <Flex alignItems={"center"} flexDirection={"column"}>
+        <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
           <Heading size="H4" textShadow="0px 4px 30px #72D8BA" color="yellow.5" textAlign={"center"}>
             {title}
           </Heading>
@@ -115,6 +115,7 @@ export default function ListPage({
               size="H4"
               textShadow="0px 4px 30px #72D8BA"
               color="yellow.5"
+              textAlign={"center"}
             >
               {additionTitle}
             </Heading>
@@ -166,7 +167,7 @@ export default function ListPage({
               <ViewCard
                 key={each.name}
                 title={each.name}
-                image={each.image}
+                // image={each.image}
                 route={`/showcase/ukm/${each.name}`}
               />
             );
