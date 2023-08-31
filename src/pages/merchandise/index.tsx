@@ -5,16 +5,22 @@ import { Wrap, Center, Heading, Flex, Text, Button, Image } from "@chakra-ui/rea
 import Layout from "~/layout";
 import TextInput from "~/components/merchandise/TextInput";
 import CardItem from "~/components/merchandise/CardItem";
+import RequestTab from "~/components/merchandise/RequestTab";
 import { useState } from "react";
+import { api } from "~/utils/api";
 
 export const getServerSideProps = withSession({ force: true });
 
 export default function MerchandisePage() {
+  // const merchItem = api.showcase.getAllMerchandise.useQuery().data;
+  // console.log(merchItem);
+  const user = api.profile.getUserProfile.useQuery();
+  const point = user.data?.point;
+
   const [berhasilPopup, setBerhasilPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
   const [selectedItems, setSelectedItems] = useState(0);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
@@ -62,35 +68,37 @@ export default function MerchandisePage() {
             />
           </Flex>
           <Wrap
-            w={"85%"}
+            px={"7.5%"}
+            w={"full"}
             flexWrap={"wrap"}
             justify={"space-between"}
+            flexDirection={"column"}
+            maxH={"60vh"}
+            gap={"12px"}
+            overflowY={"auto"}
+            sx={{
+              "::-webkit-scrollbar": {
+                width: "11px",
+              },
+              "::-webkit-scrollbar-track": {
+                background: "#2F2E2E",
+                borderRadius: "5px",
+              },
+              "::-webkit-scrollbar-thumb": {
+                background: "white",
+                borderRadius: "5px",
+              },
+            }}
           >
             <CardItem/>
             <CardItem/>
+            <CardItem/>
+            <CardItem/>
+            <CardItem/>
           </Wrap>
+          {selectedItems > 0 &&
+            <RequestTab />}
         </Center>
-        <Flex
-          flexDir={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Heading>Merchandise</Heading>
-
-          {/* Ini diganti aja, disesuaikan sama pemanggilannya kapan */}
-          <Button onClick={() => setBerhasilPopup(true)}>
-            {" "}
-            Berhasil Request Popup{" "}
-          </Button>
-
-          {berhasilPopup && (
-            <RequestBerhasilPopup
-              open={berhasilPopup}
-              setClose={() => setBerhasilPopup(false)}
-              coinDecreased={900} // ini nanti diganti make angka yang bener
-            />
-          )}
-        </Flex>
       </BackgroundAndNavbar>
     </Layout>
   );
