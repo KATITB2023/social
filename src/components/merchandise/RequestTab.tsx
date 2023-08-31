@@ -2,15 +2,23 @@ import { Text, Flex, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
+import { Merchandise } from "~/server/types/merchandise";
+
+type CartData = {
+  merchRequested:Merchandise;
+  requestAmount: number;
+};
 
 const Request = ({
   currentUserCoin,
   itemAmount,
   sumCoinPrice,
+  merch,
 }: {
   currentUserCoin : number;
   itemAmount: number;
-  sumCoinPrice: number;
+    sumCoinPrice: number;
+    merch: CartData[];
 }) => {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
@@ -153,6 +161,9 @@ const Request = ({
       {confirmPopup && (
         <ConfirmRequestPopup
           open={confirmPopup}
+          merch={merch}
+          itemAmount={itemAmount}
+          sumCoinPrice={sumCoinPrice}
           setCloseWindow={() => setConfirmPopup(false)}
           onSubmit={handleSubmitRequest}
         />
@@ -161,8 +172,9 @@ const Request = ({
       {berhasilPopup && (
         <RequestBerhasilPopup
           open={berhasilPopup}
+
           setClose={() => setBerhasilPopup(false)}
-          coinDecreased={900}
+          coinDecreased={sumCoinPrice}
         />
       )}
     </Flex>

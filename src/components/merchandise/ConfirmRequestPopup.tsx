@@ -2,13 +2,25 @@ import React from "react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 import { Flex, Image, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import { Merchandise } from "~/server/types/merchandise";
+
+type CartData = {
+  merchRequested: Merchandise;
+  requestAmount: number;
+};
 
 export const ConfirmRequestPopup = ({
   open,
+  merch,
+  itemAmount,
+  sumCoinPrice,
   setCloseWindow,
   onSubmit,
 }: {
   open: boolean;
+    merch: CartData[];
+    itemAmount: number;
+    sumCoinPrice: number;
   setCloseWindow: () => void;
   onSubmit: () => void;
 }) => {
@@ -71,55 +83,62 @@ export const ConfirmRequestPopup = ({
             dan tidak dapat dibatalkan
           </Text>
         </Flex>
-        <Flex
-          w={"100%"}
-          flexDirection={"row"}
-          alignItems={"center"}
-          gap={"8px"}
-        >
-          <Flex
-            maxW={"30%"}
-            maxH={"20vh"}
-            justifyContent={"center"}
-            background="#FFFC83"
-            borderRadius={12}
-            px={"7.5px"}
-          >
-            <Image
-              src="/components/merch/mug.png"
-              //alt
-              maxW={"full"}
-              maxH={"full"}
-            />
-          </Flex>
 
-          {/* Item Request */}
-          <Flex w="65%" flexDir={"column"}>
-            {/* Kolom untuk nama item dan stock */}
-            <Flex w={"full"} flexDir={"row"} justifyContent={"space-between"}>
-              <Text
-                fontFamily={"SomarRounded-Bold"}
-                fontSize={"16px"}
-                textAlign={"center"}
+        {merch.map((each, idx) => {
+          if (each.requestAmount > 0) {
+            return (
+              <Flex
+                w={"100%"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                gap={"8px"}
               >
-                Merch A
-              </Text>
-              <Text fontFamily={"SomarRounded-Regular"} fontSize={"12px"}>
-                1 pcs
-              </Text>
-            </Flex>
-            {/* Kolom untuk jumlah coins */}
-            <Flex w={"full"} flexDirection={"row"} alignItems={"center"}>
-              <Image
-                src="/components/merch/coin.png"
-                width={"30px"}
-                height={"30px"}
-                alt="Koin"
-              />
-              <Text>300 Coins</Text>
-            </Flex>
-          </Flex>
-        </Flex>
+                <Flex
+                  maxW={"30%"}
+                  maxH={"20vh"}
+                  justifyContent={"center"}
+                  background="#FFFC83"
+                  borderRadius={12}
+                  px={"7.5px"}
+                >
+                  <Image
+                    src={each.merchRequested.image}
+                    //alt
+                    maxW={"full"}
+                    maxH={"full"}
+                  />
+                </Flex>
+
+                {/* Item Request */}
+                <Flex w="65%" flexDir={"column"}>
+
+                  <Flex w={"full"} flexDir={"row"} justifyContent={"space-between"}>
+                    <Text
+                      fontFamily={"SomarRounded-Bold"}
+                      fontSize={"16px"}
+                      textAlign={"center"}
+                    >
+                      {each.merchRequested.name}
+                    </Text>
+                    <Text fontFamily={"SomarRounded-Regular"} fontSize={"12px"}>
+                      {each.requestAmount} pcs
+                    </Text>
+                  </Flex>
+                  <Flex w={"full"} flexDirection={"row"} alignItems={"center"}>
+                    <Image
+                      src="/components/merch/coin.png"
+                      width={"30px"}
+                      height={"30px"}
+                      alt="Koin"
+                    />
+                    <Text>{each.merchRequested.price} Coins</Text>
+                  </Flex>
+                </Flex>
+              </Flex>
+            )
+          }
+          
+        })}
 
         {/* Request Button */}
         <Flex
@@ -136,7 +155,7 @@ export const ConfirmRequestPopup = ({
               fontFamily="SomarRounded-Regular"
               fontWeight="700"
             >
-              21 Barang
+              {itemAmount} Barang
             </Text>
             <Text
               color={"#C0EACA"}
@@ -145,7 +164,7 @@ export const ConfirmRequestPopup = ({
               fontWeight="700"
               wordBreak="break-word"
             >
-              6300 Coins
+              {sumCoinPrice} Coins
             </Text>
           </Flex>
           <Button
