@@ -84,6 +84,7 @@ interface ListPageProps {
   withbackbutton?: boolean;
   additionTitle?: string;
   lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+  dataUnit?: UnitProfile[] | undefined;
 }
 
 export default function ListPage({
@@ -92,6 +93,7 @@ export default function ListPage({
   additionTitle,
   withbackbutton = false,
   lembaga,
+  dataUnit,
 }: ListPageProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -100,7 +102,8 @@ export default function ListPage({
     searchValue: queryEntered,
     lembaga,
   });
-  const [data, setData] = useState<UnitProfile[] | undefined>(fetchedData);
+  console.log(dataUnit, "Ini data unit");
+  const [data, setData] = useState<UnitProfile[] | undefined>(dataUnit);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -111,10 +114,10 @@ export default function ListPage({
   };
 
   useEffect(() => {
-    setData(fetchedData);
-  }, [fetchedData]);
+    setData(dataUnit);
+  }, [dataUnit]);
 
-  if (!fetchedData)
+  if (!data)
     return (
       <>
         <Flex
@@ -205,7 +208,7 @@ export default function ListPage({
         )}
 
         {/* Page title */}
-        <Flex alignItems={"center"} flexDirection={"column"}>
+        <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
           <Heading
             size="H4"
             textShadow="0px 4px 30px #72D8BA"
@@ -219,6 +222,7 @@ export default function ListPage({
               size="H4"
               textShadow="0px 4px 30px #72D8BA"
               color="yellow.5"
+              textAlign={"center"}
             >
               {additionTitle}
             </Heading>
@@ -277,14 +281,16 @@ export default function ListPage({
               </Text>
             </>
           ) : (
-            data?.map((each) => (
-              <ViewCard
-                key={each.name}
-                title={each.name}
-                image={each.image || ""}
-                route={`/showcase/ukm/${each.name}`}
-              />
-            ))
+            data?.map((each) => {
+              return (
+                <ViewCard
+                  key={each.name}
+                  title={each.name}
+                  // image={each.image}
+                  route={`/showcase/ukm/${each.name}`}
+                />
+              );
+            })
           )}
         </Wrap>
       </Flex>
