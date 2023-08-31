@@ -17,8 +17,46 @@ import RequestTab from "~/components/merchandise/RequestTab";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import Link from "next/link";
-
+import { Merchandise } from "~/server/types/merchandise";
 export const getServerSideProps = withSession({ force: true });
+
+const DummyMerchData: Merchandise[] = [
+  {
+    id: "12345",
+    image: "/components/merch/bigmug.png",
+    name: "Merch 1",
+    price: 300,
+    stock: 20,
+  },
+  {
+    id: "11335",
+    image: "/components/merch/bigmug.png",
+    name: "Merch 2",
+    price: 500,
+    stock: 30,
+  },
+  {
+    id: "24345",
+    image: "/components/merch/bigmug.png",
+    name: "Merch 3",
+    price: 100,
+    stock: 0,
+  },
+  {
+    id: "55112",
+    image: "/components/merch/bigmug.png",
+    name: "Merch 4",
+    price: 250,
+    stock: 10,
+  },
+  {
+    id: "35213",
+    image: "/components/merch/bigmug.png",
+    name: "Merch 5",
+    price: 80,
+    stock: 5,
+  },
+];
 
 export default function MerchandisePage() {
   // const merchItem = api.showcase.getAllMerchandise.useQuery().data;
@@ -29,7 +67,9 @@ export default function MerchandisePage() {
   const [berhasilPopup, setBerhasilPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
-  const [selectedItems, setSelectedItems] = useState(1);
+  const [selectedItems, setSelectedItems] = useState(0);
+  const [sumCoinPrice, setSumCoinPrice] = useState(0);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
@@ -101,13 +141,30 @@ export default function MerchandisePage() {
               },
             }}
           >
-            <CardItem />
-            <CardItem />
-            <CardItem />
-            <CardItem />
-            <CardItem />
+            {DummyMerchData.map((each) => {
+              return (
+                <CardItem
+                  key={each.id}
+                  currentAmountItem={selectedItems}
+                  changeAmountItem={setSelectedItems}
+                  currentSumCoinPrice={sumCoinPrice}
+                  changeSumCoinPrice={setSumCoinPrice}
+                  id={each.id}
+                  image={each.image}
+                  name={each.name}
+                  price={each.price}
+                  stock={each.stock}
+                />
+              );
+            })}
           </Wrap>
-          {selectedItems > 0 && <RequestTab />}
+          {selectedItems > 0 && (
+            <RequestTab
+              currentUserCoin={point!}
+              itemAmount={selectedItems}
+              sumCoinPrice={sumCoinPrice}
+            />
+          )}
         </Center>
       </BackgroundAndNavbar>
     </Layout>

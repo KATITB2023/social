@@ -3,8 +3,15 @@ import { useState } from "react";
 import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
 
-
-const Request = () => {
+const Request = ({
+  currentUserCoin,
+  itemAmount,
+  sumCoinPrice,
+}: {
+  currentUserCoin : number;
+  itemAmount: number;
+  sumCoinPrice: number;
+}) => {
   const [canBuy, setCanBuy] = useState(true);
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
@@ -12,8 +19,8 @@ const Request = () => {
   const handleSubmitRequest = () => {
     setConfirmPopup(false);
     setBerhasilPopup(true);
-  }
-  
+  };
+
   return (
     <Flex
       position={"fixed"}
@@ -61,7 +68,7 @@ const Request = () => {
               fontWeight="700"
               wordBreak="break-word"
             >
-              3000
+              {currentUserCoin}
             </Text>
           </Flex>
         </Flex>
@@ -111,7 +118,7 @@ const Request = () => {
           fontFamily="SomarRounded-Regular"
           fontWeight="700"
         >
-          21 Barang
+          {itemAmount} Barang
         </Text>
         <Text
           color={canBuy ? "#C0EACA" : "#E8553E"}
@@ -120,7 +127,7 @@ const Request = () => {
           fontWeight="700"
           wordBreak="break-word"
         >
-          6300 Coins
+          {sumCoinPrice} Coins
         </Text>
       </Flex>
       <Button
