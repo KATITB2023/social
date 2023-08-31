@@ -7,11 +7,13 @@ export const ViewCard = ({
   title,
   route,
   width = "45%",
+  unitId
 }: {
   image? : string | null;
   title: string;
   route: string;
   width?: string | number;
+  unitId? : string | undefined
 }) => {
   return (
     <Flex
@@ -59,7 +61,7 @@ export const ViewCard = ({
           {title}
         </Heading>
 
-        <Link href={route}>
+        <Link href={`${route}`}>
           <Button
             display={"flex"}
             borderRadius={"8px"}

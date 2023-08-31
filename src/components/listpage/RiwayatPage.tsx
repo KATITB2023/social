@@ -1,51 +1,167 @@
-import { Button, Flex, Heading, Image, Text, Wrap } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Image,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
+import { Wrap } from "@chakra-ui/react";
 import { ViewCard } from "../showcase/ViewCard";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { api } from "~/utils/api";
 import { type UnitProfile } from "@prisma/client";
-import SearchedUnit from "./SearchedUnit";
 
-interface ListPageProps {
+export const defaultData: UnitProfile[] = [
+  {
+    userId: "",
+    name: "LFM",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP1",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP2",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP3",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP4",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSPE5",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+];
+
+// const gridgappx = 10;
+
+interface RiwayatPageProps {
   title: string;
   description?: string;
   withbackbutton?: boolean;
   additionTitle?: string;
   lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
-  dataUnit?: UnitProfile[] | undefined;
+  withInfiniteScroll?: boolean;
+  limit?: number;
 }
 
-export default function ListPage({
+export default function RiwayatPage({
   title,
   description,
   additionTitle,
   withbackbutton = false,
   lembaga,
-  dataUnit,
-}: ListPageProps) {
+  withInfiniteScroll = false,
+  limit = 100,
+}: RiwayatPageProps) {
+  const myRef = useRef<HTMLDivElement | null>(null);
+
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [queryEntered, setQueryEntered] = useState<string>("");
-  const { data: fetchedData } = api.showcase.getAllUnits.useQuery({
+  const { data: fetchedData } = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: queryEntered,
-    lembaga,
+    limit,
   });
-  const [data, setData] = useState<UnitProfile[] | undefined>(dataUnit);
+  const [data, setData] = useState<UnitProfile[] | undefined>(fetchedData);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [spinnerIsVisible, setSpinnerIsVisible] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
+  function handleInfiniteScroll() {
+    console.log("fetches more...");
+    const newData = defaultData;
+
+    setData((prev) => {
+      if (prev) return [...prev, ...newData];
+      return [...newData];
+    });
+
+    setSpinnerIsVisible(false);
+  }
   const handleEnter = (e: React.KeyboardEvent) => {
     if (e.key == "Enter") setQueryEntered(searchQuery);
   };
 
   useEffect(() => {
-    setData(dataUnit);
-  }, [dataUnit]);
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      setSpinnerIsVisible(entry?.isIntersecting ?? false);
+      if (spinnerIsVisible && fetchedData) {
+        handleInfiniteScroll();
+      }
+    });
 
-  if (!data)
+    if (!myRef.current) return;
+    observer.observe(myRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [myRef, spinnerIsVisible, fetchedData]);
+
+  useEffect(() => {
+    setData(fetchedData);
+    if (fetchedData && fetchedData.length < 6) {
+      setHasMore(false);
+    }
+  }, [fetchedData]);
+
+  if (!fetchedData)
     return (
       <>
         <Flex
@@ -103,6 +219,7 @@ export default function ListPage({
             placeholder="Search..."
             value={searchQuery}
             onChange={handleChange}
+            onEnter={handleEnter}
           />
         </Flex>{" "}
       </>
@@ -117,7 +234,7 @@ export default function ListPage({
         position={"relative"}
         px={"25px"}
         gap="25px"
-        pt={withbackbutton ? "50px" : "20px"}
+        pt="50px"
       >
         {withbackbutton && (
           <Button
@@ -136,7 +253,7 @@ export default function ListPage({
         )}
 
         {/* Page title */}
-        <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
+        <Flex alignItems={"center"} flexDirection={"column"}>
           <Heading
             size="H4"
             textShadow="0px 4px 30px #72D8BA"
@@ -150,7 +267,6 @@ export default function ListPage({
               size="H4"
               textShadow="0px 4px 30px #72D8BA"
               color="yellow.5"
-              textAlign={"center"}
             >
               {additionTitle}
             </Heading>
@@ -166,22 +282,21 @@ export default function ListPage({
           placeholder="Search..."
           value={searchQuery}
           onChange={handleChange}
-          onEnter={handleEnter}
         />
 
         {/* <Grid
-          width="100%"
-          height="520px"
-          rowGap={`${gridgappx * 2}px`}
-          overflow={"auto"}
-          gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${
-            (gridgappx * 4) / 3
-          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
-            100 / 3
-          }% - ${(gridgappx * 4) / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
-        > */}
+            width="100%"
+            height="520px"
+            rowGap={`${gridgappx * 2}px`}
+            overflow={"auto"}
+            gridTemplateColumns={"1fr 1fr"}
+            gridTemplateRows={`calc(${100 / 3}% - ${
+              (gridgappx * 4) / 3
+            }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
+              100 / 3
+            }% - ${(gridgappx * 4) / 3}px)`}
+            gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
+          > */}
 
         <Wrap
           justify={"space-evenly"}
@@ -202,22 +317,24 @@ export default function ListPage({
             },
           }}
         >
-          {searchQuery && (
-            <SearchedUnit searchQuery={searchQuery} group={title} />
-          )}
-          {searchQuery === "" &&
-            data?.map((each) => {
-              const route = lembaga === "UKM" ? `${title.toLowerCase()}/${each.userId}` : `${each.name}`
-              return (
-                <ViewCard
-                  key={each.name}
-                  title={each.name}
-                  // image={each.image}
-                  route={route}
-                  unitId={each.userId}
-                />
-              );
-            })}
+          {data?.map((each) => {
+            return (
+              <ViewCard
+                key={Number(Date.now()) + Math.random()}
+                // key will be changed later to each.name
+                title={each.name}
+                image={each.image || ""}
+                route={`/showcase/ukm/${each.name}`}
+              />
+            );
+          })}
+
+          {hasMore &&
+            (withInfiniteScroll ? (
+              <Box as="div" ref={myRef}>
+                <Spinner size="lg" />
+              </Box>
+            ) : null)}
         </Wrap>
       </Flex>
     </>

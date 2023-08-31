@@ -9,6 +9,7 @@ import React from "react";
 
 interface TextInputProps extends InputProps {
   placeholder: string;
+  onEnter?: (e: React.KeyboardEvent) => void;
 }
 
 const TextInput = ({ ...props }: TextInputProps) => {
@@ -38,6 +39,7 @@ const TextInput = ({ ...props }: TextInputProps) => {
         }}
         value={props.value}
         onChange={props.onChange}
+        onKeyDown={props.onEnter}
         placeholder={props.placeholder}
         _invalid={{
           borderColor: "red.300",

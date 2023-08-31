@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 export default function UKMInfo() {
   const router = useRouter();
   const organizationId = router.query.ukmId as string;
+  
   return (
     <OrganizationPage type={"UKM"} organizationId={organizationId}/>
   );

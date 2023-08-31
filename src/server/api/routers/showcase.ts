@@ -233,7 +233,21 @@ export const showcaseRouter = createTRPCRouter({
         },
       });
     }),
-
+  getUnitsByGroup : publicProcedure
+    .input(
+      z.object({
+        group : z.string()
+      })
+    )
+    .query(async ({ctx,input}) =>{
+      const units = await ctx.prisma.unitProfile.findMany({
+        where : {
+          lembaga : "UKM",
+          group : input.group
+        }
+      })
+      return units;
+    }),
   // Menampilan seluruh unit sebagai key-value pair dengan key lembaga dan value array unit
   getAllUnitsGrouped: publicProcedure
     .input(
