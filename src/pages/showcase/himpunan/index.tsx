@@ -35,7 +35,6 @@ export default function HimpunanPage() {
   return (
     <Layout title="Himpunan">
       <BackgroundAndNavbar bg="/background.png">
-        <ListPage title="Himpunan" withbackbutton={true} lembaga="HMJ"/>
         <Flex
           w={"full"}
           alignItems={"center"}
