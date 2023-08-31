@@ -9,6 +9,9 @@ import { PopupInputCode } from "~/components/showcase/PopupInputCode";
 import { UnitProfile } from "@prisma/client";
 import { api } from "~/utils/api";
 
+interface UnitProfileVisited extends UnitProfile {
+  visited: boolean;
+}
 // Data Input
 const dummyUKMData: { [key: string]: string | undefined } = {
   nama: "LFM",
@@ -49,7 +52,7 @@ export const OrganizationPage = ({
   const router = useRouter();
   const [visitPopup, setVisitPopup] = useState(false);
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
-  const unit = data as UnitProfile;
+  const unit = data as UnitProfileVisited;
   return (
     <Layout title={`${type}:${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
@@ -84,7 +87,7 @@ export const OrganizationPage = ({
               </Heading>
               <Image
                 alt="Logo"
-                src={unit ? unit.image : ""}
+                src={unit ? unit.image! : ""}
                 sizes="10%"
                 mb="15%"
               />

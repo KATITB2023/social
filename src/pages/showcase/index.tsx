@@ -15,7 +15,6 @@ export default function ShowcasePage() {
   useSession({ required: true });
   const profileQuery = api.profile.getUserProfile.useQuery();
   const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:10}).data;
-  console.log(visitedUnitArr)
 
   return (
     <Layout title="Showcase">
