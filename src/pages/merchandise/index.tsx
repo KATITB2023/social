@@ -42,7 +42,7 @@ const DummyMerchData: Merchandise[] = [
     image: "/components/merch/bigmug.png",
     name: "Merch 3",
     price: 100,
-    stock: 0,
+    stock: 1,
   },
   {
     id: "55112",
@@ -63,6 +63,7 @@ const DummyMerchData: Merchandise[] = [
 type CartData = {
   merchRequested:Merchandise;
   requestAmount: number;
+  index: number;
 };
 
 export default function MerchandisePage() {
@@ -71,7 +72,7 @@ export default function MerchandisePage() {
   const user = api.profile.getUserProfile.useQuery();
 
   // const point = user.data?.point;
-  const point = 1000;
+  const point = 100000;
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
@@ -88,6 +89,7 @@ export default function MerchandisePage() {
       tempArr[i] = {
         merchRequested: DummyMerchData[i]!,
         requestAmount: 0,
+        index: i,
       };
     }
     setCartArray(tempArr);
@@ -116,6 +118,7 @@ export default function MerchandisePage() {
     }
   };
 
+  // TODO: ganti dummy jd merch data asli
   const filteredMerchData = DummyMerchData.filter((merch) =>
     merch.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -205,6 +208,7 @@ export default function MerchandisePage() {
             }}
           >
             {filteredMerchData.map((each, idx) => {
+              const originalIdx = DummyMerchData.findIndex(item => item.id === each.id);
               return (
                 <CardItem
                   key={each.id}
@@ -217,8 +221,8 @@ export default function MerchandisePage() {
                   name={each.name}
                   price={each.price}
                   stock={each.stock}
-                  idx={idx}
-                  requestQuota={cartArray ? cartArray[idx]!.requestAmount : 0}
+                  idx={originalIdx}
+                  requestQuota={cartArray ? cartArray[originalIdx]!.requestAmount : 0}
                 />
               );
             })}
