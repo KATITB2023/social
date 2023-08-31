@@ -65,40 +65,39 @@ export default function HistoryPage() {
           my="30px"
           flexDirection="column"
         >
-          <Heading
-            textAlign="center"
-            size="H4"
-            fontWeight="400px"
-            color="yellow.5"
-          >
-            UKM, BSO, DAN HIMPUNAN YANG SUDAH DIKUNJUNGI
-          </Heading>
-
-          <Box mt="15px" mb="20px">
-            <TextInput placeholder="Search..." />
-          </Box>
-
           {(!ukmVisitedArr || ukmVisitedArr.length === 0) &&
           (!bsoVisitedArr || bsoVisitedArr.length === 0) &&
           (!hmjVisitedArr || hmjVisitedArr.length === 0) ? (
-
             <Flex
               justifyContent={"center"}
               alignItems={"center"}
               flexDir={"column"}
-              my={"15vh"}
+              my={"25vh"}
             >
               <Heading textAlign={"center"} textColor={"yellow.5"}>
                 {" "}
                 Waduh!{" "}
               </Heading>
-              <Text textAlign={"center"} fontSize={"16px"} >
+              <Text textAlign={"center"} fontSize={"16px"}>
                 Kamu belum mengunjungi UKM, BSO, maupun Himpunan manapun.
                 Silakan kunjungi halaman organisasi yang ingin kamu tuju!
               </Text>
             </Flex>
           ) : (
             <>
+              <Heading
+                textAlign="center"
+                size="H4"
+                fontWeight="400px"
+                color="yellow.5"
+              >
+                UKM, BSO, DAN HIMPUNAN YANG SUDAH DIKUNJUNGI
+              </Heading>
+
+              <Box mt="15px" mb="20px">
+                <TextInput placeholder="Search..." />
+              </Box>
+
               {ukmVisitedArr && ukmVisitedArr.length > 0 && (
                 <>
                   <Flex
