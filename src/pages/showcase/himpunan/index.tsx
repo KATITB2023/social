@@ -17,7 +17,6 @@ import {
 import TextInput from "~/components/friends/TextInput";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import ListPage from "~/components/listpage/ListPage";
 
 export const getServerSideProps = withSession({ force: true });
 

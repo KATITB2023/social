@@ -1,21 +1,20 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { type Dispatch, type SetStateAction, useState } from "react";
 import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 import { api } from "~/utils/api";
-import PopupVisitedCoin from "./PopupVisitedCoin";
 
 export const PopupInputCode = ({
   isOpen,
   onClose,
   unitId,
   setVisitedSuccess,
-  setVisitedFail
+  setVisitedFail,
 }: {
   isOpen: boolean;
   onClose: () => void;
   unitId: string;
-  setVisitedSuccess : Dispatch<SetStateAction<boolean>>;
-  setVisitedFail : Dispatch<SetStateAction<boolean>>;
+  setVisitedSuccess: Dispatch<SetStateAction<boolean>>;
+  setVisitedFail: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [isInputValid, setIsInputValid] = useState<boolean>(false);
