@@ -80,9 +80,8 @@ export default function MerchandisePage() {
     setSearchQuery(e.target.value);
   };
 
-
   useEffect(() => {
-    var tempArr : CartData[] = new Array<CartData>(DummyMerchData.length);
+    var tempArr: CartData[] = new Array<CartData>(DummyMerchData.length);
     for (let i: number = 0; i < DummyMerchData.length; i++) {
       let temp: CartData = {
         id: DummyMerchData[i]!.id,
@@ -93,7 +92,28 @@ export default function MerchandisePage() {
     setCartArray(tempArr);
   }, []);
 
-  console.log(cartArray);
+  console.log(cartArray)
+
+  const handleChangeItem = (change: number, idx: number) => {
+    if (cartArray) {
+      cartArray[idx]!.requestAmount += change;
+      setSelectedItems(selectedItems + 1);
+    }
+  };
+
+  const handleChangePrice = (change: number) => {
+    setPriceSelectedItems(priceSelectedItems + change);
+  };
+
+  const clearCart = () => {
+    if (cartArray) {
+      for (let i: number = 0; i < cartArray.length; i++) {
+        cartArray[i]!.requestAmount = 0;
+      }
+      setSelectedItems(0);
+      setPriceSelectedItems(0);
+    }
+  };
 
   return (
     <Layout title="Merchandise">
@@ -128,6 +148,7 @@ export default function MerchandisePage() {
                 border={"1px #FFFC83 solid"}
                 justifyContent={"center"}
                 alignItems={"center"}
+                onClick={clearCart}
               >
                 <MdRefresh width={"15px"} height={"15px"} color="yellow" />
               </Button>
@@ -178,19 +199,21 @@ export default function MerchandisePage() {
               },
             }}
           >
-            {DummyMerchData.map((each) => {
+            {DummyMerchData.map((each, idx) => {
               return (
                 <CardItem
                   key={each.id}
                   currentAmountItem={selectedItems}
-                  changeAmountItem={setSelectedItems}
+                  changeAmountItem={handleChangeItem}
                   currentSumCoinPrice={priceSelectedItems}
-                  changeSumCoinPrice={setPriceSelectedItems}
+                  changeSumCoinPrice={handleChangePrice}
                   id={each.id}
                   image={each.image}
                   name={each.name}
                   price={each.price}
                   stock={each.stock}
+                  idx={idx}
+                  requestQuota={cartArray ? cartArray[idx]!.requestAmount : 0}
                 />
               );
             })}
