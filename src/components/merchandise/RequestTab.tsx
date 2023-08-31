@@ -1,10 +1,19 @@
 import { Text, Flex, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
+import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
+
 
 const Request = () => {
   const [canBuy, setCanBuy] = useState(true);
   const [confirmPopup, setConfirmPopup] = useState(false);
+  const [berhasilPopup, setBerhasilPopup] = useState(false);
+
+  const handleSubmitRequest = () => {
+    setConfirmPopup(false);
+    setBerhasilPopup(true);
+  }
+  
   return (
     <Flex
       position={"fixed"}
@@ -23,8 +32,13 @@ const Request = () => {
       gap={2}
       zIndex={3}
     >
-      <Flex justifyContent="space-between" alignItems="center" gap={4} >
-        <Flex justifyContent="flex-start" alignItems="center" gap={8} display="flex">
+      <Flex justifyContent="space-between" alignItems="center" gap={4}>
+        <Flex
+          justifyContent="flex-start"
+          alignItems="center"
+          gap={8}
+          display="flex"
+        >
           <Text
             color="#FFFC83"
             fontSize={12}
@@ -34,13 +48,17 @@ const Request = () => {
           >
             Jumlah Koinmu
           </Text>
-          <Flex justifyContent="flex-start" alignItems="center" gap={4} display="flex">
+          <Flex
+            justifyContent="flex-start"
+            alignItems="center"
+            gap={4}
+            display="flex"
+          >
             <Text
               color="#FFFC83"
               fontSize={12}
               fontFamily="SomarRounded-Regular"
               fontWeight="700"
-
               wordBreak="break-word"
             >
               3000
@@ -50,25 +68,27 @@ const Request = () => {
         <Flex
           padding={2}
           // background="linear-gradient(0deg, white 0%, white 100%)"
-          background={canBuy ?
-            "linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF;" :
-            "linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"}
+          background={
+            canBuy
+              ? "linear-gradient(0deg, rgba(114, 216, 186, 0.50) 0%, rgba(114, 216, 186, 0.50) 100%), #FFF;"
+              : "linear-gradient(0deg, rgba(232, 85, 62, 0.50) 0%, rgba(232, 85, 62, 0.50) 100%), #FFF"
+          }
           borderRadius={12}
           overflow="hidden"
-          border={canBuy?'0.46px #1C939A solid':"0.46px #E8553E solid"}
+          border={canBuy ? "0.46px #1C939A solid" : "0.46px #E8553E solid"}
           justifyContent="center"
           alignItems="center"
           gap={12}
           display="flex"
         >
           <Text
-            color={canBuy?"#1C939A":"#E8553E"}
+            color={canBuy ? "#1C939A" : "#E8553E"}
             fontSize={10}
             fontFamily="SomarRounded-Regular"
             fontWeight="700"
             wordBreak="break-word"
           >
-            {canBuy?"Koin mencukupi!":"Koin tidak mencukupi!"}
+            {canBuy ? "Koin mencukupi!" : "Koin tidak mencukupi!"}
           </Text>
         </Flex>
       </Flex>
@@ -80,12 +100,11 @@ const Request = () => {
         fontWeight="400"
         wordBreak="break-word"
       >
-        {canBuy ?
-          "Silakan tukarkan dengan merchandise!" :
-          "Silakan lakukan challenge di booth untuk tambahan koin!"
-        } 
+        {canBuy
+          ? "Silakan tukarkan dengan merchandise!"
+          : "Silakan lakukan challenge di booth untuk tambahan koin!"}
       </Text>
-      <Flex justifyContent="space-between" alignItems="flex-start" gap={4} >
+      <Flex justifyContent="space-between" alignItems="flex-start" gap={4}>
         <Text
           color="white"
           fontSize={16}
@@ -95,7 +114,7 @@ const Request = () => {
           21 Barang
         </Text>
         <Text
-          color={canBuy?"#C0EACA":"#E8553E"}
+          color={canBuy ? "#C0EACA" : "#E8553E"}
           fontSize={16}
           fontFamily="SomarRounded-Regular"
           fontWeight="700"
@@ -114,7 +133,7 @@ const Request = () => {
         alignItems="center"
         gap={12}
         isDisabled={!canBuy}
-        onClick={()=>setConfirmPopup(true)}
+        onClick={() => setConfirmPopup(true)}
       >
         <Text
           color="#4909B3"
@@ -125,15 +144,22 @@ const Request = () => {
           Request
         </Text>
       </Button>
-      {confirmPopup &&
+      {confirmPopup && (
         <ConfirmRequestPopup
           open={confirmPopup}
           setCloseWindow={() => setConfirmPopup(false)}
+          onSubmit={handleSubmitRequest}
         />
-      }
+      )}
 
+      {berhasilPopup && (
+        <RequestBerhasilPopup
+          open={berhasilPopup}
+          setClose={() => setBerhasilPopup(false)}
+          coinDecreased={900}
+        />
+      )}
     </Flex>
-
   );
 };
 export default Request;
