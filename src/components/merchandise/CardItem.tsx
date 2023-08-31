@@ -9,10 +9,12 @@ interface CardItemInfo {
   name: string;
   price: number;
   stock: number;
+  idx: number;
+  requestQuota: number;
   currentAmountItem: number;
-  changeAmountItem: React.Dispatch<React.SetStateAction<number>>;
+  changeAmountItem: (change: number, idx: number) => void;
   currentSumCoinPrice: number;
-  changeSumCoinPrice: React.Dispatch<React.SetStateAction<number>>;
+  changeSumCoinPrice: (change: number) => void;
 }
 
 const CardItem = ({
@@ -25,22 +27,24 @@ const CardItem = ({
   name,
   price,
   stock,
+  idx,
+  requestQuota
 }: CardItemInfo) => {
   const [berhasilPopup, setBerhasilPopup] = useState(false);
-  const [requestQuota, setRequestQuota] = useState(0);
+  // const [requestQuota, setRequestQuota] = useState(0);
   const handleIncrement = () => {
     if (requestQuota < stock) {
-      setRequestQuota(requestQuota + 1);
-      changeAmountItem(currentAmountItem + 1);
-      changeSumCoinPrice(currentSumCoinPrice + price);
+      // setRequestQuota(requestQuota + 1);
+      changeAmountItem(1, idx);
+      changeSumCoinPrice(price);
     }
   };
 
   const handleDecrement = () => {
     if (requestQuota > 0) {
-      setRequestQuota(requestQuota - 1);
-      changeAmountItem(currentAmountItem - 1);
-      changeSumCoinPrice(currentSumCoinPrice - price);
+      // setRequestQuota(requestQuota - 1);
+      changeAmountItem(-1, idx);
+      changeSumCoinPrice(-price);
     }
   };
   return (
