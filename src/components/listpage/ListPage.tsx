@@ -1,83 +1,11 @@
-import { Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Image, Text, Wrap } from "@chakra-ui/react";
 import TextInput from "../friends/TextInput";
-import { Wrap } from "@chakra-ui/react";
-import { ViewCard } from "../showcase/ViewCard";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import { ViewCard } from "../showcase/ViewCard";
+import { useEffect, useState } from "react";
 import { type UnitProfile } from "@prisma/client";
 import SearchedUnit from "./SearchedUnit";
-
-export const defaultData: UnitProfile[] = [
-  {
-    userId: "",
-    name: "LFM",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-  {
-    userId: "",
-    name: "KSEP1",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-  {
-    userId: "",
-    name: "KSEP2",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-  {
-    userId: "",
-    name: "KSEP3",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-  {
-    userId: "",
-    name: "KSEP4",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-  {
-    userId: "",
-    name: "KSPE5",
-    lembaga: "UKM",
-    pin: "2112",
-    group: "keren",
-    image: "",
-    bio: "aku keren",
-    visitedCount: 0,
-    updatedAt: new Date(),
-  },
-];
-
-// const gridgappx = 10;
 
 interface ListPageProps {
   title: string;
@@ -279,12 +207,13 @@ export default function ListPage({
           )}
           {searchQuery === "" &&
             data?.map((each) => {
+              const route = lembaga === "UKM" ? `showcase/ukm/${title.toLowerCase()}/${each.name}` : `/showcase/${lembaga}/${each.name}`
               return (
                 <ViewCard
                   key={each.name}
                   title={each.name}
                   // image={each.image}
-                  route={`/showcase/ukm/${each.name}`}
+                  route={route}
                 />
               );
             })}
