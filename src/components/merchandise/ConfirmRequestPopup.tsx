@@ -83,7 +83,26 @@ export const ConfirmRequestPopup = ({
             dan tidak dapat dibatalkan
           </Text>
         </Flex>
-
+        <Flex
+        w={"full"}
+        justify={"space-between"}
+        flexDirection={"column"}
+        maxH={"35vh"}
+        gap={"12px"}
+        overflowY={"auto"}
+        sx={{
+          "::-webkit-scrollbar": {
+            width: "11px",
+          },
+          "::-webkit-scrollbar-track": {
+            background: "#2F2E2E",
+            borderRadius: "5px",
+          },
+          "::-webkit-scrollbar-thumb": {
+            background: "white",
+            borderRadius: "5px",
+          },
+        }}>
         {merch.map((each, idx) => {
           if (each.requestAmount > 0) {
             return (
@@ -111,7 +130,6 @@ export const ConfirmRequestPopup = ({
 
                 {/* Item Request */}
                 <Flex w="65%" flexDir={"column"}>
-
                   <Flex w={"full"} flexDir={"row"} justifyContent={"space-between"}>
                     <Text
                       fontFamily={"SomarRounded-Bold"}
@@ -139,6 +157,7 @@ export const ConfirmRequestPopup = ({
           }
           
         })}
+          </Flex>
 
         {/* Request Button */}
         <Flex
