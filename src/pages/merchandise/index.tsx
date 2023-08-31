@@ -69,7 +69,9 @@ export default function MerchandisePage() {
   // const merchItem = api.showcase.getAllMerchandise.useQuery().data;
   // console.log(merchItem);
   const user = api.profile.getUserProfile.useQuery();
-  const point = user.data?.point;
+
+  // const point = user.data?.point;
+  const point = 1000;
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
@@ -92,12 +94,12 @@ export default function MerchandisePage() {
     setCartArray(tempArr);
   }, []);
 
-  console.log(cartArray)
+  // console.log(cartArray)
 
   const handleChangeItem = (change: number, idx: number) => {
     if (cartArray) {
       cartArray[idx]!.requestAmount += change;
-      setSelectedItems(selectedItems + 1);
+      setSelectedItems(selectedItems + change);
     }
   };
 
