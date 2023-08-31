@@ -8,50 +8,141 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from "@emotion/styled";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
+import { type UnitProfile } from "@prisma/client";
 
-export default function HistoryPage() {
-  const ukmItems = [
-    { image: "/base.png", title: "1", route: "/" },
-    { image: "/base.png", title: "2", route: "/" },
-    { image: "/base.png", title: "3", route: "/" },
-    { image: "/base.png", title: "4", route: "/" },
-    { image: "/base.png", title: "5", route: "/" },
-    { image: "/base.png", title: "6", route: "/" },
-    { image: "/base.png", title: "7", route: "/" },
-    { image: "/base.png", title: "8", route: "/" },
-    { image: "/base.png", title: "7", route: "/" },
-    { image: "/base.png", title: "8", route: "/" },
-    { image: "/base.png", title: "7", route: "/" },
-    { image: "/base.png", title: "8", route: "/" },
-  ];
+export const defaultData: UnitProfile[] = [
+  {
+    userId: "",
+    name: "LFM",
+    lembaga: "HMJ",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP1",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP2",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP3",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSEP4",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+  {
+    userId: "",
+    name: "KSPE5",
+    lembaga: "UKM",
+    pin: "2112",
+    group: "keren",
+    image: "/base.png",
+    bio: "aku keren",
+    visitedCount: 0,
+    updatedAt: new Date(),
+  },
+];
+
+interface HistoryPageProps {
+  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+  limit: 100;
+}
+
+export default function HistoryPage({ lembaga, limit }: HistoryPageProps) {
+  const { data: session } = useSession({ required: true });
+
+  const [queryEntered, setQueryEntered] = useState<string>("");
+  const dataUKM = api.showcase.getAllVisitedUnits.useQuery({
+    lembaga: "UKM",
+    searchValue: queryEntered,
+    limit,
+  });
+  const getDataUKM = dataUKM.data;
+
+  const dataBSO = api.showcase.getAllVisitedUnits.useQuery({
+    lembaga: "BSO",
+    searchValue: queryEntered,
+    limit,
+  });
+  const getDataBSO = dataBSO.data;
+
+  const dataHimpunan = api.showcase.getAllVisitedUnits.useQuery({
+    lembaga: "HMJ",
+    searchValue: queryEntered,
+    limit,
+  });
+  const getDataHimpunan = dataHimpunan.data;
 
   let dataUKM6 = [];
-  if (ukmItems.length < 6) {
-    dataUKM6 = ukmItems;
-  } else {
-    for (let i = 0; i < 6; i++) {
-      dataUKM6.push(ukmItems[i]);
+  if (getDataUKM && getDataUKM.length > 0) {
+    if (getDataUKM.length < 6) {
+      dataUKM6 = getDataUKM;
+    } else {
+      for (let i = 0; i < 6; i++) {
+        dataUKM6.push(getDataUKM[i]);
+      }
     }
   }
-
-  const bsoItems = [
-    { image: "/base.png", title: "1", route: "/" },
-    { image: "/base.png", title: "2", route: "/" },
-    { image: "/base.png", title: "3", route: "/" },
-    { image: "/base.png", title: "4", route: "/" },
-    { image: "/base.png", title: "5", route: "/" },
-    { image: "/base.png", title: "6", route: "/" },
-  ];
-  const himpunanItems = [
-    { image: "/base.png", title: "LFM", route: "/" },
-    { image: "/base.png", title: "Radio kambing sejahtera", route: "/" },
-    { image: "/base.png", title: "tes", route: "/" },
-    { image: "/base.png", title: "Radio kambing sejahtera", route: "/" },
-    { image: "/base.png", title: "LPM3", route: "/" },
-    { image: "/base.png", title: "Si paling Berenang", route: "/" },
-  ];
+  let dataBSO6 = [];
+  if (getDataBSO && getDataBSO.length > 0) {
+    if (getDataBSO.length < 6) {
+      dataBSO6 = getDataBSO;
+    } else {
+      for (let i = 0; i < 6; i++) {
+        dataBSO6.push(getDataBSO[i]);
+      }
+    }
+  }
+  let dataHimpunan6 = [];
+  if (getDataHimpunan && getDataHimpunan.length > 0) {
+    if (getDataHimpunan.length < 6) {
+      dataHimpunan6 = getDataHimpunan;
+    } else {
+      for (let i = 0; i < 6; i++) {
+        dataHimpunan6.push(getDataHimpunan[i]);
+      }
+    }
+  }
 
   const itemsPerPage = 2;
 
@@ -64,7 +155,6 @@ export default function HistoryPage() {
     style?: React.CSSProperties;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
   }) {
-    // const { className, style, onClick } = props;
     return (
       <div
         className={className}
@@ -83,7 +173,6 @@ export default function HistoryPage() {
     style?: React.CSSProperties;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
   }) {
-    // const { className, style, onClick } = props;
     return (
       <div
         className={className}
@@ -92,33 +181,6 @@ export default function HistoryPage() {
       />
     );
   }
-
-  const SliderWrapper = styled("div")`
-    @media only screen and (width: 390px) {
-      .slick-slide {
-        margin: 0 1px;
-      }
-      .slick-list {
-        margin: 0 -5px;
-      }
-    }
-    @media only screen and (min-width: 390px) {
-      .slick-slide {
-        margin: 0 0px;
-      }
-      .slick-list {
-        margin: 0 -10px;
-      }
-    }
-    @media only screen and (min-width: 500px) {
-      .slick-slide {
-        margin: 0 2px;
-      }
-      .slick-list {
-        margin: 0 -15px;
-      }
-    }
-  `;
 
   interface CustomSliderProps {
     children: React.ReactNode;
@@ -132,7 +194,7 @@ export default function HistoryPage() {
       dots: true,
       infinite: true,
       speed: 500,
-      autoplay: true,
+      autoplay: false,
       autoplaySpeed: 4000,
       slidesToShow: itemsPerPage,
       slidesToScroll: itemsPerPage,
@@ -199,9 +261,9 @@ export default function HistoryPage() {
             UKM, BSO, DAN HIMPUNAN YANG SUDAH DIKUNJUNGI
           </Heading>
 
-          <Box mt="15px" mb="20px">
+          {/* <Box mt="15px" mb="20px">
             <TextInput placeholder="Search..." />
-          </Box>
+          </Box> */}
 
           <Flex
             flexDirection="row"
@@ -218,20 +280,23 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          {/* <SliderWrapper> */}
+
+          {/* defaultData bisa diganti jadi dataUKM6,dataBSO6 dan dataHimpunan6 */}
           <CustomSlider>
-            {ukmItems.map((item, index) => (
-              <Flex mx={"5px"} key={index}>
-                <ViewCard
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
-                  width={"100%"}
-                />
-              </Flex>
-            ))}
+            {defaultData?.map((item, index) => {
+              //dataUKM6
+              return (
+                <Flex mx={"5px"} key={index}>
+                  <ViewCard
+                    image={item?.image || "-"}
+                    title={item?.name || "-"}
+                    route={`/showcase/ukm/${item.name}`}
+                    width={"100%"}
+                  />
+                </Flex>
+              );
+            })}
           </CustomSlider>
-          {/* </SliderWrapper> */}
 
           <Flex
             flexDirection="row"
@@ -248,20 +313,24 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          {/* <SliderWrapper> */}
+
           <CustomSlider>
-            {bsoItems.map((item, index) => (
-              <Flex mx={"5px"} key={index}>
-                <ViewCard
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
-                  width={"100%"}
-                />
-              </Flex>
-            ))}
+            {defaultData.map(
+              (
+                item,
+                index // dataBSO6
+              ) => (
+                <Flex mx={"5px"} key={index}>
+                  <ViewCard
+                    image={item?.image || "-"}
+                    title={item?.name || "-"}
+                    route={`/showcase/ukm/${item.name}`}
+                    width={"100%"}
+                  />
+                </Flex>
+              )
+            )}
           </CustomSlider>
-          {/* </SliderWrapper> */}
 
           <Flex
             flexDirection="row"
@@ -278,20 +347,24 @@ export default function HistoryPage() {
               </Text>
             </Link>
           </Flex>
-          {/* <SliderWrapper> */}
+
           <CustomSlider>
-            {himpunanItems.map((item, index) => (
-              <Flex mx={"5px"} key={index}>
-                <ViewCard
-                  image={item.image}
-                  title={item.title}
-                  route={item.route}
-                  width={"100%"}
-                />
-              </Flex>
-            ))}
+            {defaultData.map(
+              (
+                item,
+                index // dataHimpunan6
+              ) => (
+                <Flex mx={"5px"} key={index}>
+                  <ViewCard
+                    image={item?.image || "-"}
+                    title={item?.name || "-"}
+                    route={`/showcase/ukm/${item.name}`}
+                    width={"100%"}
+                  />
+                </Flex>
+              )
+            )}
           </CustomSlider>
-          {/* </SliderWrapper> */}
         </Flex>
       </BackgroundAndNavbar>
     </Layout>
