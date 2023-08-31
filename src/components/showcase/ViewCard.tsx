@@ -3,12 +3,12 @@ import { Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
 export const ViewCard = ({
-  image = "/base.png",
+  image,
   title,
   route,
   width = "45%",
 }: {
-  image? : string;
+  image? : string | null;
   title: string;
   route: string;
   width?: string | number;
@@ -28,7 +28,7 @@ export const ViewCard = ({
       <Flex>
         <Image
           w={"full"}
-          src={image}
+          src={image || "/base.png"}
           position="absolute"
           objectFit="cover"
           objectPosition="center"
