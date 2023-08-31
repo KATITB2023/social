@@ -5,12 +5,9 @@ import ListPage from "~/components/listpage/ListPage";
 import { api } from "~/utils/api";
 
 export default function BSOPage() {
-  const data = api.showcase.getAllVisitedUnits.useQuery({
-    lembaga: "UKM",
-    searchValue: "ksep",
-    limit: 5,
+  const {data} = api.showcase.getAllUnits.useQuery({
+    lembaga: "BSO",
   });
-  console.log(data);
   return (
     <Layout title="Badan Semi Otonom">
       <BackgroundAndNavbar bg="/background.png">
@@ -19,6 +16,7 @@ export default function BSOPage() {
           additionTitle="(BADAN SEMI OTONOM)"
           withbackbutton={true}
           lembaga="BSO"
+          dataUnit={data}
         />
       </BackgroundAndNavbar>
     </Layout>

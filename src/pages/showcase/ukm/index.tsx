@@ -10,7 +10,6 @@ import { ViewCard } from "~/components/showcase/ViewCard";
 export default function UKMPage() {
   const router = useRouter();
   const rumpunData = api.showcase.getGroups.useQuery({lembaga : "UKM"}).data;
-  console.log(rumpunData)
   return (
     <Layout title="Unit Kegiatan Mahasiswa">
       <BackgroundAndNavbar bg="/background.png">
