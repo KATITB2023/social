@@ -61,13 +61,13 @@ const DummyMerchData: Merchandise[] = [
 ];
 
 type CartData = {
-  id: string;
+  merchRequested:Merchandise;
   requestAmount: number;
 };
 
 export default function MerchandisePage() {
-  // const merchItem = api.showcase.getAllMerchandise.useQuery().data;
-  // console.log(merchItem);
+  const merchItem = api.showcase.getAllMerchandise.useQuery({}).data;
+  console.log(merchItem);
   const user = api.profile.getUserProfile.useQuery();
 
   // const point = user.data?.point;
@@ -86,7 +86,7 @@ export default function MerchandisePage() {
     const tempArr: CartData[] = new Array<CartData>(DummyMerchData.length);
     for (let i = 0; i < DummyMerchData.length; i++) {
       tempArr[i] = {
-        id: DummyMerchData[i]!.id,
+        merchRequested: DummyMerchData[i]!,
         requestAmount: 0,
       };
     }
@@ -115,6 +115,10 @@ export default function MerchandisePage() {
       setPriceSelectedItems(0);
     }
   };
+
+  const filteredMerchData = DummyMerchData.filter((merch) =>
+    merch.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Layout title="Merchandise">
@@ -200,7 +204,7 @@ export default function MerchandisePage() {
               },
             }}
           >
-            {DummyMerchData.map((each, idx) => {
+            {filteredMerchData.map((each, idx) => {
               return (
                 <CardItem
                   key={each.id}
@@ -224,6 +228,7 @@ export default function MerchandisePage() {
               currentUserCoin={point}
               itemAmount={selectedItems}
               sumCoinPrice={priceSelectedItems}
+              merch={cartArray!}
             />
           )}
         </Center>
