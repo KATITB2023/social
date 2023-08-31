@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { type UnitProfile } from "@prisma/client";
+import SearchedUnit from "./SearchedUnit";
 
 export const defaultData: UnitProfile[] = [
   {
@@ -102,7 +103,6 @@ export default function ListPage({
     searchValue: queryEntered,
     lembaga,
   });
-  console.log(dataUnit, "Ini data unit");
   const [data, setData] = useState<UnitProfile[] | undefined>(dataUnit);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,13 +274,10 @@ export default function ListPage({
             },
           }}
         >
-          {data && data.length === 0 ? (
-            <>
-              <Text size="B3">
-                Nothing matches with your query: &quot;{queryEntered}&quot;.
-              </Text>
-            </>
-          ) : (
+          {searchQuery && (
+            <SearchedUnit searchQuery={searchQuery} group={title} />
+          )}
+          {searchQuery === "" &&
             data?.map((each) => {
               return (
                 <ViewCard
@@ -290,8 +287,7 @@ export default function ListPage({
                   route={`/showcase/ukm/${each.name}`}
                 />
               );
-            })
-          )}
+            })}
         </Wrap>
       </Flex>
     </>
