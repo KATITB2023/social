@@ -5,11 +5,18 @@ import Link from "next/link";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
+import { CardSlider } from "~/components/showcase/CardSlider";
+import { ViewCard } from "~/components/showcase/ViewCard";
 
 export const getServerSideProps = withSession({ force: true });
 
 export default function ShowcasePage() {
   useSession({ required: true });
+  const profileQuery = api.profile.getUserProfile.useQuery();
+  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:10}).data;
+  console.log(visitedUnitArr)
+
   return (
     <Layout title="Showcase">
       <BackgroundAndNavbar bg="/showcase-bg.png">
@@ -52,7 +59,7 @@ export default function ShowcasePage() {
             right="0"
           ></Image>
           <Image
-            src="defaultprofpict.svg"
+            src="logo_showcase.png"
             alt="profile pic"
             borderRadius="full"
             width="40%"
@@ -153,7 +160,7 @@ export default function ShowcasePage() {
                 YOUR COINS
               </Heading>
               <Text color="green.5" size="B5" fontSize="22px">
-                99999999
+                {profileQuery.data?.coin}
               </Text>
             </Flex>
           </Box>
@@ -431,16 +438,20 @@ export default function ShowcasePage() {
           >
             APA SAJA YANG SUDAH KAMU KUNJUNGI?
           </Heading>
-          <Text
-            size="B4"
-            color="white"
-            textAlign="center"
-            w="80%"
-            marginBottom="40px"
-          >
-            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
-          </Text>
+
+          <CardSlider>
+            {visitedUnitArr && visitedUnitArr.map((item, index) => (
+              <Flex mx={"5px"} key={index}>
+                <ViewCard
+                  image={item.image}
+                  title={item.name}
+                  route={item.userId}
+                  width={"100%"}
+                />
+              </Flex>
+            ))}
+          </CardSlider>
+
           <Link href={"/showcase/history"}>
             <Button
               borderRadius="12px"

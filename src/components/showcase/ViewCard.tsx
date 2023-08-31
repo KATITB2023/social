@@ -8,7 +8,7 @@ export const ViewCard = ({
   route,
   width = "45%",
 }: {
-  image: string;
+  image? : string | null;
   title: string;
   route: string;
   width?: string | number;
@@ -52,7 +52,7 @@ export const ViewCard = ({
       >
         <Heading
           color={"white"}
-          fontSize={"1rem"}
+          fontSize={"14px"}
           noOfLines={1}
           textAlign={"center"}
         >
