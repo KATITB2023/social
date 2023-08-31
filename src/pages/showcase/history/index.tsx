@@ -74,9 +74,9 @@ export default function HistoryPage() {
             UKM, BSO, DAN HIMPUNAN YANG SUDAH DIKUNJUNGI
           </Heading>
 
-          <Box mt="15px" mb="20px">
+{/*           <Box mt="15px" mb="20px">
             <TextInput placeholder="Search..." />
-          </Box>
+          </Box> */}
 
           {(!ukmVisitedArr || ukmVisitedArr.length === 0) &&
           (!bsoVisitedArr || bsoVisitedArr.length === 0) &&
