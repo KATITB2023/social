@@ -11,48 +11,48 @@ import { api } from "~/utils/api";
 export default function HistoryPage() {
   // DUMMY DATA
   // const ukmItems = [
-  //   { image: "/base.png", title: "1", route: "/" },
-  //   { image: "/base.png", title: "2", route: "/" },
-  //   { image: "/base.png", title: "3", route: "/" },
-  //   { image: "/base.png", title: "4", route: "/" },
-  //   { image: "/base.png", title: "5", route: "/" },
-  //   { image: "/base.png", title: "6", route: "/" },
-  //   { image: "/base.png", title: "7", route: "/" },
-  //   { image: "/base.png", title: "8", route: "/" },
-  //   { image: "/base.png", title: "7", route: "/" },
-  //   { image: "/base.png", title: "8", route: "/" },
-  //   { image: "/base.png", title: "7", route: "/" },
-  //   { image: "/base.png", title: "8", route: "/" },
+  //   { image: "/base.png", name: "1", userId: "/" },
+  //   { image: "/base.png", name: "2", userId: "/" },
+  //   { image: "/base.png", name: "3", userId: "/" },
+  //   { image: "/base.png", name: "4", userId: "/" },
+  //   { image: "/base.png", name: "5", userId: "/" },
+  //   { image: "/base.png", name: "6", userId: "/" },
+  //   { image: "/base.png", name: "7", userId: "/" },
+  //   { image: "/base.png", name: "8", userId: "/" },
+  //   { image: "/base.png", name: "7", userId: "/" },
+  //   { image: "/base.png", name: "8", userId: "/" },
+  //   { image: "/base.png", name: "7", userId: "/" },
+  //   { image: "/base.png", name: "8", userId: "/" },
   // ];
 
   // const bsoItems = [
-  //   { image: "/base.png", title: "1", route: "/" },
-  //   { image: "/base.png", title: "2", route: "/" },
-  //   { image: "/base.png", title: "3", route: "/" },
-  //   { image: "/base.png", title: "4", route: "/" },
-  //   { image: "/base.png", title: "5", route: "/" },
-  //   { image: "/base.png", title: "6", route: "/" },
+  //   { image: "/base.png", name: "1", userId: "/" },
+  //   { image: "/base.png", name: "2", userId: "/" },
+  //   { image: "/base.png", name: "3", userId: "/" },
+  //   { image: "/base.png", name: "4", userId: "/" },
+  //   { image: "/base.png", name: "5", userId: "/" },
+  //   { image: "/base.png", name: "6", userId: "/" },
   // ];
   // const himpunanItems = [
-  //   { image: "/base.png", title: "LFM", route: "/" },
-  //   { image: "/base.png", title: "Radio kambing sejahtera", route: "/" },
-  //   { image: "/base.png", title: "tes", route: "/" },
-  //   { image: "/base.png", title: "Radio kambing sejahtera", route: "/" },
-  //   { image: "/base.png", title: "LPM3", route: "/" },
-  //   { image: "/base.png", title: "Si paling Berenang", route: "/" },
+  //   { image: "/base.png", name: "LFM", userId: "/" },
+  //   { image: "/base.png", name: "Radio kambing sejahtera", userId: "/" },
+  //   { image: "/base.png", name: "tes", userId: "/" },
+  //   { image: "/base.png", name: "Radio kambing sejahtera", userId: "/" },
+  //   { image: "/base.png", name: "LPM3", userId: "/" },
+  //   { image: "/base.png", name: "Si paling Berenang", userId: "/" },
   // ];
 
   const ukmVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "UKM",
-    limit: 10,
+    limit: 5,
   }).data;
   const bsoVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "BSO",
-    limit: 10,
+    limit: 5,
   }).data;
   const hmjVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "HMJ",
-    limit: 10,
+    limit: 5,
   }).data;
 
   return (
@@ -60,7 +60,7 @@ export default function HistoryPage() {
       <BackgroundAndNavbar bg="/background.png">
         <Flex
           w="80%"
-          justifyContent="center"
+          justifyContent={"space-evenly"}
           margin="auto"
           my="30px"
           flexDirection="column"
@@ -77,14 +77,25 @@ export default function HistoryPage() {
           <Box mt="15px" mb="20px">
             <TextInput placeholder="Search..." />
           </Box>
+
           {(!ukmVisitedArr || ukmVisitedArr.length === 0) &&
           (!bsoVisitedArr || bsoVisitedArr.length === 0) &&
           (!hmjVisitedArr || hmjVisitedArr.length === 0) ? (
-            <Flex justifyContent={"center"} alignItems={"center"}>
-              <Heading textAlign={"center"}>
+
+            <Flex
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDir={"column"}
+              my={"15vh"}
+            >
+              <Heading textAlign={"center"} textColor={"yellow.5"}>
                 {" "}
-                Waduh! Kamu belum mengunjungi UKM, BSO, maupun Himpunan manapun!{" "}
+                Waduh!{" "}
               </Heading>
+              <Text textAlign={"center"} fontSize={"16px"} >
+                Kamu belum mengunjungi UKM, BSO, maupun Himpunan manapun.
+                Silakan kunjungi halaman organisasi yang ingin kamu tuju!
+              </Text>
             </Flex>
           ) : (
             <>

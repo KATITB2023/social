@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import styled from "@emotion/styled";
 
 const itemsPerPage = 2;
+const amountToScroll = 1;
 
 const SliderWrapper = styled("div")`
   @media only screen and (width: 390px) {
@@ -88,7 +89,7 @@ export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
     autoplay: true,
     autoplaySpeed: 4000,
     slidesToShow: itemsPerPage,
-    slidesToScroll: itemsPerPage,
+    slidesToScroll: amountToScroll,
     adaptiveHeight: true,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
@@ -98,7 +99,7 @@ export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
     },
     afterChange: (current: number) => setActiveSlide2(current),
     customPaging: function (i: number) {
-      if (i === activeSlide / 2) {
+      if (i === activeSlide / amountToScroll) {
         return (
           <Box mt="20px">
             <img src={`/Page_ellipse.svg`} />
