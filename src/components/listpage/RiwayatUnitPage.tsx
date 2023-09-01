@@ -83,19 +83,21 @@ export default function RiwayatUnitPage({ title }: { title: string }) {
                   <ViewCard
                     key={each.name}
                     title={each.name}
-                    // image={each.image}
-                    route={`/showcase/ukm/${each.name}`}
+                    image={each.image}
+                    route={
+                      title === "UKM"
+                        ? each.group
+                          ? `/showcase/ukm/${each.group}/${each.userId}`
+                          : "/"
+                        : `/showcase/${title.toLowerCase()}/${each.userId}`
+                    }
                   />
                 );
               })}
             </Wrap>
           </>
         ) : (
-          <Flex
-            flexDir={"column"}
-            mx={"auto"}
-            my={"25vh"}
-          >
+          <Flex flexDir={"column"} mx={"auto"} my={"25vh"}>
             <Heading color={"yellow.5"} textAlign={"center"}>
               {" "}
               Waduh!

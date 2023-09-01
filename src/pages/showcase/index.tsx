@@ -14,7 +14,8 @@ export const getServerSideProps = withSession({ force: true });
 export default function ShowcasePage() {
   useSession({ required: true });
   const profileQuery = api.profile.getUserProfile.useQuery();
-  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:10}).data;
+  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:5}).data;
+  // console.log(visitedUnitArr)
 
   return (
     <Layout title="Showcase">
@@ -57,8 +58,9 @@ export default function ShowcasePage() {
             top="190px"
             right="0"
           ></Image>
+
           <Image
-            src="logo_showcase.png"
+            src="/logo_showcase.png"
             alt="profile pic"
             borderRadius="full"
             width="40%"
@@ -422,7 +424,7 @@ export default function ShowcasePage() {
           flexDirection="column"
           alignItems="center"
           marginTop="140px"
-          h="400px"
+          h="full"
           position={"relative"}
         >
           <Heading
@@ -441,12 +443,13 @@ export default function ShowcasePage() {
           <CardSlider>
             {visitedUnitArr && visitedUnitArr.map((item, index) => (
               <Flex mx={"5px"} key={index}>
-                <ViewCard
+                {/* <ViewCard
                   image={item.image}
                   title={item.name}
                   route={item.userId}
                   width={"100%"}
-                />
+                /> */}
+                <Text> hehe </Text>
               </Flex>
             ))}
           </CardSlider>
