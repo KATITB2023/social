@@ -1,137 +1,53 @@
 import React from "react";
 import { useState, useRef } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Icon } from "@chakra-ui/react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from "@emotion/styled";
-
-const itemsPerPage = 2;
-const amountToScroll = 1;
-
-const SliderWrapper = styled("div")`
-  @media only screen and (width: 390px) {
-    .slick-slide {
-      margin: 0 1px;
-    }
-    .slick-list {
-      margin: 0 -5px;
-    }
-  }
-  @media only screen and (min-width: 390px) {
-    .slick-slide {
-      margin: 0 0px;
-    }
-    .slick-list {
-      margin: 0 -10px;
-    }
-  }
-  @media only screen and (min-width: 500px) {
-    .slick-slide {
-      margin: 0 2px;
-    }
-    .slick-list {
-      margin: 0 -15px;
-    }
-  }
-`;
-
-function SampleNextArrow({
-  className,
-  style,
-  onClick,
-}: {
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-}) {
-  // const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "none", background: "red" }}
-      onClick={onClick}
-    />
-  );
-}
-
-function SamplePrevArrow({
-  className,
-  style,
-  onClick,
-}: {
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-}) {
-  // const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "none", background: "green" }}
-      onClick={onClick}
-    />
-  );
-}
+import { api } from "~/utils/api";
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { ViewCard } from "./ViewCard";
 
 interface CustomSliderProps {
   children: React.ReactNode;
 }
 export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
-  const [oldSlide, setOldSlide] = useState(0);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [activeSlide2, setActiveSlide2] = useState(0);
-
+  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
+    searchValue: "",
+  }).data;
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
     autoplay: true,
     autoplaySpeed: 4000,
-    slidesToShow: itemsPerPage,
-    slidesToScroll: amountToScroll,
-    adaptiveHeight: true,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    beforeChange: (current: number, next: number) => {
-      setOldSlide(current);
-      setActiveSlide(next);
-    },
-    afterChange: (current: number) => setActiveSlide2(current),
-    customPaging: function (i: number) {
-      if (i === activeSlide / amountToScroll) {
-        return (
-          <Box mt="20px">
-            <img src={`/Page_ellipse.svg`} />
-          </Box>
-        );
-      } else {
-        return (
-          <Box mt="20px">
-            <img src={`/Rest_ellipse.svg`} />
-          </Box>
-        );
-      }
-    },
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 2,
   };
 
   return (
-    // <SliderWrapper>
+    <Box maxW={"100vw"} width={"full"} marginBottom={"2em"}>
       <Slider {...settings}>
-        {React.Children.map(children, (child, index) => (
-          <Box
-            key={index}
-            w="100%"
-            mt="20px"
-            h="200px"
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            {child}
-          </Box>
-        ))}
+        {visitedUnitArr?.map((unit) => {
+          const route =
+            unit.lembaga === "UKM"
+              ? `showcase/ukm/${unit.group ? unit.group : ""}/${unit.userId}`
+              : unit.lembaga === "HMJ"
+              ? `/showcase/himpunan/${unit.userId}`
+              : `showcase/${unit.lembaga.toLowerCase()}/${unit.userId}`;
+
+          return (
+            <ViewCard
+              image={unit.image}
+              title={unit.name}
+              route={route}
+              key={unit.userId}
+              unitId={unit.userId}
+            />
+          );
+        })}
       </Slider>
-    // </SliderWrapper>
+    </Box>
   );
 };

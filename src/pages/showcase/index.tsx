@@ -441,17 +441,7 @@ export default function ShowcasePage() {
           </Heading>
 
           <CardSlider>
-            {visitedUnitArr && visitedUnitArr.map((item, index) => (
-              <Flex mx={"5px"} key={index}>
-                {/* <ViewCard
-                  image={item.image}
-                  title={item.name}
-                  route={item.userId}
-                  width={"100%"}
-                /> */}
-                <Text> hehe </Text>
-              </Flex>
-            ))}
+            
           </CardSlider>
 
           <Link href={"/showcase/history"}>
