@@ -116,7 +116,7 @@ export const OrganizationPage = ({
           <Flex textAlign={"justify"} flexDir={"column"}>
             <ReactMarkdown
               components={{
-                h1: ({ _, ...props }) => (
+                h1: ({ node, ...props }) => (
                   <h1
                     style={{
                       fontFamily: "subheading",
@@ -126,7 +126,7 @@ export const OrganizationPage = ({
                     {...props}
                   />
                 ),
-                p: ({ _, ...props }) => (
+                p: ({ node, ...props }) => (
                   <div
                     style={{
                       fontFamily: "body",
@@ -136,7 +136,7 @@ export const OrganizationPage = ({
                     {...props}
                   />
                 ),
-                img: ({ _, ...props }) => {
+                img: ({ node, ...props }) => {
                   if (props.alt === "instagram") {
                     return (
                       <div style={{ color: "#FFE655" }}>
