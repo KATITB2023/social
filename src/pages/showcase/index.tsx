@@ -11,10 +11,74 @@ import { ViewCard } from "~/components/showcase/ViewCard";
 
 export const getServerSideProps = withSession({ force: true });
 
+const OrganizationSection = ({
+  children,
+  title,
+  description,
+  route,
+  height = "320px",
+}: {
+  children: string | JSX.Element | JSX.Element[];
+  title: string;
+  description?: string;
+  route: string;
+  height?: string | number;
+}) => {
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      marginTop="140px"
+      h={height}
+      position={"relative"}
+    >
+      <Heading
+        size="H3"
+        color="yellow.5"
+        marginTop="45px"
+        marginBottom="20px"
+        textShadow="0px 4px 30px #72D8BA"
+        fontWeight="300"
+        fontSize="3xl"
+        textAlign={"center"}
+      >
+        {title}
+      </Heading>
+      <Text
+        size="B4"
+        color="white"
+        textAlign="center"
+        w="80%"
+        marginBottom="40px"
+      >
+        {description}
+      </Text>
+      {children}
+      <Link href={route}>
+        <Button
+          borderRadius="12px"
+          backgroundColor="yellow.5"
+          paddingX="24px"
+          paddingY="8px"
+          textColor="purple.2"
+          _hover={{
+            boxShadow: "0px 5px 10px #FFBE3B",
+          }}
+        >
+          Explore
+        </Button>
+      </Link>
+    </Box>
+  );
+};
+
 export default function ShowcasePage() {
   useSession({ required: true });
   const profileQuery = api.profile.getUserProfile.useQuery();
-  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:5}).data;
+  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
+    limit: 5,
+  }).data;
   // console.log(visitedUnitArr)
 
   return (
@@ -104,7 +168,7 @@ export default function ShowcasePage() {
             left="0"
             opacity={"0.3"}
             zIndex="0"
-          ></Image>
+          />
           <Image
             alt="/"
             src="/spark-koin.png"
@@ -114,7 +178,8 @@ export default function ShowcasePage() {
             top="-170px"
             left="-50px"
             opacity={"0.5"}
-          ></Image>
+          />
+
           <Heading
             size="SH5"
             color="yellow.5"
@@ -126,6 +191,7 @@ export default function ShowcasePage() {
           >
             KUNJUNGI BOOTH DAN DAPATKAN HADIAH MENARIK!
           </Heading>
+
           <Box
             display="flex"
             flexDirection="row"
@@ -145,7 +211,7 @@ export default function ShowcasePage() {
               objectFit="cover"
               objectPosition="center"
               width="20%"
-            ></Image>
+            />
             <Flex
               flexDirection="column"
               justifyContent="center"
@@ -217,13 +283,12 @@ export default function ShowcasePage() {
           </Box>
         </Box>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          marginTop="140px"
-          h="400px"
-          position={"relative"}
+        <OrganizationSection
+          title="UKM"
+          description={
+            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+          }
+          route={"/showcase/ukm"}
         >
           <Image
             alt="/"
@@ -234,7 +299,7 @@ export default function ShowcasePage() {
             top="-160px"
             right="0"
             zIndex="0"
-          ></Image>
+          />
           <Image
             alt="/"
             src="/aura-ukm.png"
@@ -243,7 +308,7 @@ export default function ShowcasePage() {
             w="60%"
             top="-60px"
             left="0"
-          ></Image>
+          />
           <Image
             alt="/"
             src="/spark-ukm-button.png"
@@ -252,52 +317,15 @@ export default function ShowcasePage() {
             w="40%"
             bottom="90px"
             right="30px"
-          ></Image>
-          <Heading
-            size="H3"
-            color="yellow.5"
-            marginTop="45px"
-            marginBottom="20px"
-            textShadow="0px 4px 30px #72D8BA"
-            fontWeight="300"
-            fontSize="3xl"
-            textAlign={"center"}
-          >
-            UKM
-          </Heading>
-          <Text
-            size="B4"
-            color="white"
-            textAlign="center"
-            w="80%"
-            marginBottom="40px"
-          >
-            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
-          </Text>
-          <Link href={"/showcase/ukm"}>
-            <Button
-              borderRadius="12px"
-              backgroundColor="yellow.5"
-              paddingX="24px"
-              paddingY="8px"
-              textColor="purple.2"
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-            >
-              Explore
-            </Button>
-          </Link>
-        </Box>
+          />
+        </OrganizationSection>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          marginTop="140px"
-          h="400px"
-          position={"relative"}
+        <OrganizationSection
+          title="BSO"
+          description={
+            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+          }
+          route={"/showcase/bso"}
         >
           <Image
             alt="/"
@@ -307,7 +335,7 @@ export default function ShowcasePage() {
             w="30%"
             top="-40px"
             left="0"
-          ></Image>
+          />
           <Image
             alt="/"
             src="/aura-bso.png"
@@ -316,7 +344,7 @@ export default function ShowcasePage() {
             w="60%"
             top="-160px"
             right="30px"
-          ></Image>
+          />
           <Image
             alt="/"
             src="/spark-bso-himpunan.png"
@@ -325,52 +353,15 @@ export default function ShowcasePage() {
             w="50%"
             bottom="-200px"
             right="0"
-          ></Image>
-          <Heading
-            size="H3"
-            color="yellow.5"
-            marginTop="45px"
-            marginBottom="20px"
-            textShadow="0px 4px 30px #72D8BA"
-            fontWeight="300"
-            fontSize="3xl"
-            textAlign={"center"}
-          >
-            BSO
-          </Heading>
-          <Text
-            size="B4"
-            color="white"
-            textAlign="center"
-            w="80%"
-            marginBottom="40px"
-          >
-            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
-          </Text>
-          <Link href={"/showcase/bso"}>
-            <Button
-              borderRadius="12px"
-              backgroundColor="yellow.5"
-              paddingX="24px"
-              paddingY="8px"
-              textColor="purple.2"
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-            >
-              Explore
-            </Button>
-          </Link>
-        </Box>
+          />
+        </OrganizationSection>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          marginTop="140px"
-          h="400px"
-          position={"relative"}
+        <OrganizationSection
+          title="Himpunan"
+          description={
+            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+          }
+          route={"/showcase/himpunan"}
         >
           <Image
             alt="/"
@@ -380,85 +371,98 @@ export default function ShowcasePage() {
             w="40%"
             top="-170px"
             left="0"
-          ></Image>
-          <Heading
-            size="H3"
-            color="yellow.5"
-            marginTop="45px"
-            marginBottom="20px"
-            textShadow="0px 4px 30px #72D8BA"
-            fontWeight="300"
-            fontSize="3xl"
-            textAlign={"center"}
-          >
-            HIMPUNAN
-          </Heading>
-          <Text
-            size="B4"
-            color="white"
-            textAlign="center"
-            w="80%"
-            marginBottom="40px"
-          >
-            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
-          </Text>
-          <Link href={"/showcase/himpunan"}>
-            <Button
-              borderRadius="12px"
-              backgroundColor="yellow.5"
-              paddingX="24px"
-              paddingY="8px"
-              textColor="purple.2"
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-            >
-              Explore
-            </Button>
-          </Link>
-        </Box>
+          />
+          <Image
+            alt="/"
+            src="/spark-ukm-button.png"
+            position="absolute"
+            objectFit="cover"
+            w="40%"
+            bottom="90px"
+            right="30px"
+          />
+        </OrganizationSection>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          marginTop="140px"
-          h="full"
-          position={"relative"}
+        <OrganizationSection
+          title="Pusat"
+          description={
+            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+          }
+          route={"/showcase/pusat"}
         >
-          <Heading
-            size="H3"
-            color="yellow.5"
-            marginTop="45px"
-            marginBottom="20px"
-            textShadow="0px 4px 30px #72D8BA"
-            fontWeight="300"
-            fontSize="3xl"
-            textAlign={"center"}
-          >
-            APA SAJA YANG SUDAH KAMU KUNJUNGI?
-          </Heading>
+          <Image
+            alt="/"
+            src="/aura-bso.png"
+            position="absolute"
+            objectFit="cover"
+            w="60%"
+            top="-160px"
+            left="-80px"
+          />
+          <Image
+            alt="/"
+            src="/spark-ukm-button.png"
+            position="absolute"
+            objectFit="cover"
+            w="40%"
+            top="-30px"
+            left="30px"
+          />
+          <Image
+            alt="/"
+            src="/spark-bso-himpunan.png"
+            position="absolute"
+            objectFit={"cover"}
+            w="50%"
+            top="-200px"
+            right="0"
+          />
+        </OrganizationSection>
 
-          <CardSlider>
-            
-          </CardSlider>
+        <OrganizationSection
+          title="Pengmas"
+          description={
+            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+          }
+          route={"/showcase/pengmas"}
+        >
+          <Image
+            alt="/"
+            src="/aura-ukm.png"
+            position="absolute"
+            objectFit="cover"
+            w="60%"
+            top="-60px"
+            left="0"
+          />
+          <Image
+            alt="/"
+            src="/komet-listrik.png"
+            position="absolute"
+            objectFit="cover"
+            w="40%"
+            top="-160px"
+            right="0"
+            zIndex="0"
+          />
+          <Image
+            alt="/"
+            src="/spark-ukm-button.png"
+            position="absolute"
+            objectFit="cover"
+            w="40%"
+            bottom="90px"
+            right="30px"
+          />
+        </OrganizationSection>
 
-          <Link href={"/showcase/history"}>
-            <Button
-              borderRadius="12px"
-              backgroundColor="yellow.5"
-              paddingX="24px"
-              paddingY="8px"
-              textColor="purple.2"
-              _hover={{
-                boxShadow: "0px 5px 10px #FFBE3B",
-              }}
-            >
-              Explore
-            </Button>
-          </Link>
-        </Box>
+        <OrganizationSection
+          title="APA SAJA YANG SUDAH KAMU KUNJUNGI?"
+          route={"/showcase/history"}
+          height={"640px"}
+        >
+          <CardSlider />            
+        </OrganizationSection>
       </BackgroundAndNavbar>
     </Layout>
   );

@@ -18,10 +18,11 @@
   height: 100%;
 }
 
-.slick-slide{
+.slick-slide {
   align-items: center;
   justify-content: center;
 }
 .slick-initialized .slick-slide {
   display: flex !important;
 }
+

@@ -36,6 +36,10 @@ const SearchedUnit = ({ searchQuery, group, lembaga }: SearchedUnitProps) => {
               ? `${group ? group : ""}/${each.userId}`
               : lembaga === "BSO"
               ? `bso/${each.userId}`
+              : lembaga === "PUSAT"
+              ? `pusat/${each.userId}`
+              : lembaga === "PENGMAS"
+              ? `pengmas/${each.userId}`
               : `${each.name}`;
           return (
             <ViewCard

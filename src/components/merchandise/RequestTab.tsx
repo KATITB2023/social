@@ -23,12 +23,14 @@ const Request = ({
   sumCoinPrice,
   merch,
   onClearCart,
+  onPurchase,
 }: {
   currentUserCoin: number;
   itemAmount: number;
   sumCoinPrice: number;
   merch: CartData[];
   onClearCart : () => void;
+  onPurchase : () => void;
 }) => {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
@@ -50,6 +52,8 @@ const Request = ({
         }
       }
     await checkoutMutation.mutateAsync({items : finalCartArray})
+    void setBerhasilPopup(true);
+    void onPurchase();
     }
     catch {
       setGagalPopup(true);
@@ -64,11 +68,9 @@ const Request = ({
       if (merch[i]!.requestAmount > merch[i]!.merchRequested.stock){
         available = false;
       }
-      console.log(merch[i])
     }
     if (available && (currentUserCoin >= sumCoinPrice)){
       void handleIntegrateToDatabase(merch, user!);
-      setBerhasilPopup(true);
     } else {
       setGagalPopup(true);
     }

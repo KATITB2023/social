@@ -30,7 +30,8 @@ type CartData = {
 };
 
 export default function MerchandisePage() {
-  const merchData = api.showcase.getAllMerchandise.useQuery({}).data;
+  const merchQuery = api.showcase.getAllMerchandise.useQuery({});
+  const merchData = merchQuery.data;
   const user = api.profile.getUserProfile.useQuery();
 
   const coin = user.data?.coin;
@@ -40,10 +41,21 @@ export default function MerchandisePage() {
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
   const [selectedItems, setSelectedItems] = useState(0);
   const [cartArray, setCartArray] = useState<CartData[]>();
+  const [justPurchase, setJustPurchase] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
+  
+
+  useEffect(() => {
+    if (justPurchase){
+    void merchQuery.refetch();
+    void user.refetch();
+    setJustPurchase(false);
+    }
+  });
+
 
   useEffect(() => {
     const createCartArray = () => {
@@ -60,7 +72,7 @@ export default function MerchandisePage() {
         setCartArray(tempArr);
       }
     };
-    setTimeout(createCartArray, 100);
+    createCartArray();
   }, [merchData]);
 
   // console.log(cartArray);
@@ -214,6 +226,7 @@ export default function MerchandisePage() {
               sumCoinPrice={priceSelectedItems}
               merch={cartArray!}
               onClearCart={clearCart}
+              onPurchase={() => setJustPurchase(true)}
             />
           )}
         </Center>

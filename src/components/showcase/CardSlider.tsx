@@ -1,25 +1,20 @@
 import React from "react";
-import { useState, useRef } from "react";
 import { Box, Icon } from "@chakra-ui/react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import styled from "@emotion/styled";
 import { api } from "~/utils/api";
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { ViewCard } from "./ViewCard";
 
-interface CustomSliderProps {
-  children: React.ReactNode;
-}
-export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
+
+export const CardSlider= () => {
   const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: "",
   }).data;
   const settings = {
     dots: true,
     infinite: true,
-    autoplay: true,
+    // autoplay: true,
     autoplaySpeed: 4000,
     speed: 500,
     slidesToShow: 2,
@@ -27,7 +22,7 @@ export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
   };
 
   return (
-    <Box maxW={"100vw"} width={"full"} marginBottom={"2em"}>
+    <Box maxW={"100vw"} width={"full"} marginBottom={"2em"} h={"50%"}>
       <Slider {...settings}>
         {visitedUnitArr?.map((unit) => {
           const route =
@@ -39,6 +34,7 @@ export const CardSlider: React.FC<CustomSliderProps> = ({ children }) => {
 
           return (
             <ViewCard
+              width={"150px"}
               image={unit.image}
               title={unit.name}
               route={route}
