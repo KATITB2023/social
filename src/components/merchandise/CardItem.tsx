@@ -31,10 +31,8 @@ const CardItem = ({
   requestQuota,
 }: CardItemInfo) => {
   const [berhasilPopup, setBerhasilPopup] = useState(false);
-  // const [requestQuota, setRequestQuota] = useState(0);
   const handleIncrement = () => {
     if (requestQuota < stock) {
-      // setRequestQuota(requestQuota + 1);
       changeAmountItem(1, idx);
       changeSumCoinPrice(price);
     }
@@ -42,7 +40,6 @@ const CardItem = ({
 
   const handleDecrement = () => {
     if (requestQuota > 0) {
-      // setRequestQuota(requestQuota - 1);
       changeAmountItem(-1, idx);
       changeSumCoinPrice(-price);
     }
@@ -58,7 +55,7 @@ const CardItem = ({
         backgroundImage="linear-gradient(207deg, rgba(118.43, 95.94, 182.75, 0.93) 0%, rgba(204.99, 97.55, 207.19, 0.93) 46%, rgba(58.19, 48.70, 60.56, 0.93) 100%), radial-gradient(43.45% 36.33% at 31.24% 29.39%, rgba(164.69, 238.74, 255, 0.20) 0%, rgba(109.97, 190.80, 244.37, 0.04) 77%, rgba(69.95, 144.07, 212.50, 0) 100%)"
         flexDirection="column"
         justifyContent="flex-start"
-        alignItems="flex-start"
+        alignItems={'flex-start'}
         gap={3}
       >
         <Flex
@@ -68,10 +65,12 @@ const CardItem = ({
           background="#FFFC83"
           borderRadius={12}
           justifyContent={"center"}
+          aspectRatio={1/1}
         >
           <Image
             src={image || "/logo_showcase.png"}
             alt={`Merchandise ${name} image`}
+            objectFit={"contain"}
           />
           <Button
             position={"absolute"}
@@ -96,6 +95,7 @@ const CardItem = ({
           flexDirection="column"
           justifyContent="flex-start"
           alignItems="flex-start"
+          mt={3}
         >
           <Text
             color="#FFFC83"
@@ -130,23 +130,21 @@ const CardItem = ({
             {price} Coins
           </Text>
         </Flex>
+        
         <Flex
-          w={"100%"}
+          maxW={"100%"}
           h={"10%"}
-          justifyContent="flex-start"
-          alignItems="flex-start"
+          justifyContent="center"
+          alignItems="center"
+          mt={3}
         >
           <Button
-            // h={"40%"}
             flex="1"
-            p={4}
             background={requestQuota !== 0 ? "#FFFC83" : "#BFBFBF"}
             borderLeftRadius={12}
             borderRightRadius="0"
-            flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            gap={10}
             isDisabled={requestQuota === 0}
             onClick={handleDecrement}
           >
@@ -161,15 +159,12 @@ const CardItem = ({
             </Text>
           </Button>
           <Button
-            // h={"40%"}
             borderRadius={0}
             flex="1"
-            p={4}
             background="white"
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            gap={10}
           >
             <Text
               color="#0B0A0A"
@@ -181,16 +176,13 @@ const CardItem = ({
             </Text>
           </Button>
           <Button
-            // h={"40%"}
             flex="1"
-            p={4}
             background={requestQuota !== stock ? "#FFFC83" : "#BFBFBF"}
             borderRightRadius={12}
             borderLeftRadius={0}
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            gap={10}
             isDisabled={requestQuota === stock}
             onClick={handleIncrement}
           >
@@ -222,6 +214,7 @@ const CardItem = ({
               borderRadius="24px"
               justifyContent="center"
               alignItems="center"
+              aspectRatio={1/1}
             >
               <Image
                 src={image || "/logo_showcase.png"}

@@ -2,10 +2,10 @@ import { Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 
-interface PointCardProps {
-  point: number;
+interface CoinCardProps {
+  coin: number;
 }
-const PointCard = ({ point }: PointCardProps) => {
+const CoinCard = ({ coin }: CoinCardProps) => {
   return (
     <Flex
       width={"full"}
@@ -36,10 +36,10 @@ const PointCard = ({ point }: PointCardProps) => {
         >
           Your Coins
         </Text>
-        <Text>{point}</Text>
+        <Text>{coin}</Text>
       </Flex>
     </Flex>
   );
 };
 
-export default PointCard;
+export default CoinCard;

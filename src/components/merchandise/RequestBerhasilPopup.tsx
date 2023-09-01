@@ -1,18 +1,26 @@
 import React from "react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
-import { Flex, Image, Heading, Text } from "@chakra-ui/react";
+import { Flex, Image, Heading, Text, Box } from "@chakra-ui/react";
+import { MdCheck } from "react-icons/md";
 
 export const RequestBerhasilPopup = ({
   open,
   setClose,
   coinDecreased,
+  onClearCart,
 }: {
   open: boolean;
   setClose: () => void;
   coinDecreased: number;
+  onClearCart: () => void;
 }) => {
+  const handleClose = () => {
+    setClose();
+    onClearCart();
+  };
+
   return (
-    <PopupWithBlackOverlay open={open} setClose={setClose}>
+    <PopupWithBlackOverlay open={open} setClose={handleClose}>
       <Flex
         gap="15px"
         flexDir="column"
@@ -32,25 +40,26 @@ export const RequestBerhasilPopup = ({
           position="absolute"
           top={5}
           right={5}
-          onClick={setClose}
+          onClick={handleClose}
           alt="close"
         />
-
-        <Image
-          src="/check.svg"
-          mt="20px"
-          bg="green.3"
-          w="20%"
-          aspectRatio={1}
-          padding={3}
-          borderRadius="full"
-          alt="check"
-        />
+        <Box
+          borderRadius="36px"
+          background="green.3"
+          width="60px"
+          height="60px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          margin="20px auto"
+        >
+          <MdCheck size={36} color="#000000" opacity="50%" />
+        </Box>
         <Heading textAlign={"center"}> Request Berhasil!</Heading>
         <Text textAlign={"center"} opacity={"0.6"}>
           {" "}
           Koinmu berkurang sebanyak {coinDecreased}. Silakan kunjungi booth
-          merchandise untuk pengambilan <br /> (ﾉ◕ヮ◕)ﾉ*:･ﾟ
+          merchandise untuk pengambilan! <br /> (ﾉ◕ヮ◕)ﾉ*:･ﾟ
         </Text>
       </Flex>
     </PopupWithBlackOverlay>
