@@ -68,7 +68,7 @@ const RequestMerchandise = () => {
           <Flex
             flexDirection={"column"}
             w={"full"}
-            maxH={"60vh"}
+            maxH={"75vh"}
             gap={"12px"}
             overflowY={"auto"}
             sx={{

@@ -4,12 +4,18 @@ import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
 import { RequestGagalPopup } from "./RequestGagalPopup";
 import { Merchandise } from "@prisma/client";
+import { SelfProfile } from "~/server/types/user-profile";
 import { api } from "~/utils/api";
 
 type CartData = {
   merchRequested: Merchandise;
   requestAmount: number;
 };
+
+type CartItem = {
+  merchandiseId : string;
+  amount: number;
+}
 
 const Request = ({
   currentUserCoin,
@@ -29,6 +35,26 @@ const Request = ({
   const [gagalPopup, setGagalPopup] = useState(false);
 
   const checkoutMutation = api.showcase.checkoutMerchandise.useMutation();
+  const user = api.profile.getUserProfile.useQuery().data;
+
+  const handleIntegrateToDatabase = async (cart : CartData[], user: SelfProfile) => {
+    try {
+      const finalCartArray = new Array<CartItem>();
+      for (let i = 0; i < merch.length; i++){
+        if (merch[i]!.requestAmount > 0){
+          let temp : CartItem = {
+            merchandiseId : merch[i]!.merchRequested.id,
+            amount : merch[i]!.requestAmount,
+          }
+          finalCartArray.push(temp);
+        }
+      }
+    await checkoutMutation.mutateAsync({items : finalCartArray})
+    }
+    catch {
+      setGagalPopup(true);
+    }
+  }
 
   const handleSubmitRequest = () => {
     setConfirmPopup(false);
@@ -41,6 +67,7 @@ const Request = ({
       console.log(merch[i])
     }
     if (available && (currentUserCoin >= sumCoinPrice)){
+      handleIntegrateToDatabase(merch, user!);
       setBerhasilPopup(true);
     } else {
       setGagalPopup(true);

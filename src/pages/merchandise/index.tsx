@@ -31,7 +31,6 @@ type CartData = {
 
 export default function MerchandisePage() {
   const merchData = api.showcase.getAllMerchandise.useQuery({}).data;
-  // console.log(merchData);
   const user = api.profile.getUserProfile.useQuery();
 
   const coin = user.data?.coin;
@@ -166,7 +165,7 @@ export default function MerchandisePage() {
             flexWrap={"wrap"}
             justify={"space-between"}
             flexDirection={"column"}
-            maxH={"80vh"}
+            maxH={"75vh"}
             gap={"12px"}
             overflowY={"auto"}
             sx={{
