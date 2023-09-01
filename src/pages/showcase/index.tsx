@@ -145,8 +145,7 @@ export default function ShowcasePage() {
             ITB SHOWCASE
           </Heading>
           <Text size="B4" color="white" textAlign="center" w="80%">
-            Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+            ITB Showcase merupakan acara pameran unit kegiatan mahasiswa (UKM), himpunan mahasiswa jurusan (HMJ), badan semi otonom (BSO), organisasi pusat, serta pengabdian masyarakat (Pengmas).
           </Text>
         </Box>
         <Box
@@ -286,7 +285,7 @@ export default function ShowcasePage() {
         <OrganizationSection
           title="UKM"
           description={
-            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+            "Unit Kegiatan Mahasiswa adalah organisasi kemahasiswaan tingkat kampus yang bertujuan untuk mengembangkan minat, bakat, dan keahlian tertentu."
           }
           route={"/showcase/ukm"}
         >
@@ -323,7 +322,7 @@ export default function ShowcasePage() {
         <OrganizationSection
           title="BSO"
           description={
-            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+            "Badan Semi Otonom di ITB adalah lembaga yang dibentuk melalui keputusan dari Kabinet KM ITB yang berangkat dari program kerja Kabinet KM ITB yang dinilai oleh massa memiliki ketertarikan yang tinggi sehingga dikeluarkan daria badan Kabinet KM ITB agar tidak terpengaruh oleh dinamika Kabinet KM ITB dan tetap eksis keberadaannya."
           }
           route={"/showcase/bso"}
         >
@@ -359,7 +358,7 @@ export default function ShowcasePage() {
         <OrganizationSection
           title="Himpunan"
           description={
-            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+            "Himpunan Mahasiswa Jurusan di ITB adalah organisasi kemahasiswaan tingkat jurusan yang terbentuk atas dasar keilmuan yang sama."
           }
           route={"/showcase/himpunan"}
         >
@@ -386,7 +385,7 @@ export default function ShowcasePage() {
         <OrganizationSection
           title="Pusat"
           description={
-            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+            "Organisasi yang termasuk dalam organisasi-organisasi pusat."
           }
           route={"/showcase/pusat"}
         >
@@ -422,7 +421,7 @@ export default function ShowcasePage() {
         <OrganizationSection
           title="Pengmas"
           description={
-            "Ini deskripsi singkat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
+            "Pameran pengabdian masyarakat serta berbagai kegiatan lain dari mahasiswa ITB."
           }
           route={"/showcase/pengmas"}
         >
