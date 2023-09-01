@@ -1,9 +1,7 @@
 import React from "react";
-import { Flex, Text, Heading, Box, grid } from "@chakra-ui/react";
-import { ViewCard } from "~/components/showcase/ViewCard";
+import { Flex, Text, Heading} from "@chakra-ui/react";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import TextInput from "~/components/friends/TextInput";
 import Link from "next/link";
 import { CardSlider } from "~/components/showcase/CardSlider";
 import { api } from "~/utils/api";
@@ -12,15 +10,12 @@ export default function HistoryPage() {
 
   const ukmVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "UKM",
-    limit: 5,
   }).data;
   const bsoVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "BSO",
-    limit: 5,
   }).data;
   const hmjVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "HMJ",
-    limit: 5,
   }).data;
 
   return (
@@ -61,11 +56,6 @@ export default function HistoryPage() {
               >
                 UKM, BSO, DAN HIMPUNAN YANG SUDAH DIKUNJUNGI
               </Heading>
-
-              <Box mt="15px" mb="20px">
-                <TextInput placeholder="Search..." />
-              </Box>
-
               {ukmVisitedArr && ukmVisitedArr.length > 0 && (
                 <>
                   <Flex
@@ -83,7 +73,7 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider lembaga="UKM"/>
+                  <CardSlider lembaga="UKM" general={false}/>
                     
                 </>
               )}

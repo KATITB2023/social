@@ -4,18 +4,27 @@ import { useRouter } from "next/router";
 import TextInput from "../friends/TextInput";
 import { api } from "~/utils/api";
 import { ViewCard } from "../showcase/ViewCard";
+import { useState } from "react";
+import SearchedUnit from "./SearchedUnit";
+import { Lembaga, type UnitProfile } from "@prisma/client";
+import SearchedHistory from "./SearchedHistory";
 
-export default function RiwayatUnitPage({ title }: { title: string }) {
+export default function RiwayatUnitPage({ title, group }: { title: string, group?:string }) {
   const router = useRouter();
-  const historyData =
-    title === "UKM"
-      ? api.showcase.getAllVisitedUnits.useQuery({ lembaga: "UKM" }).data
-      : title === "Himpunan"
-      ? api.showcase.getAllVisitedUnits.useQuery({ lembaga: "HMJ" }).data
-      : title === "BSO"
-      ? api.showcase.getAllVisitedUnits.useQuery({ lembaga: "BSO" }).data
-      : undefined;
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [queryEntered, setQueryEntered] = useState<string>("");
+  const lembaga = title === "Himpunan" ? "HMJ" : (title as Lembaga);
+  const historyData = api.showcase.getAllVisitedUnits.useQuery({
+    lembaga: lembaga,
+  }).data;
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key == "Enter") setQueryEntered(searchQuery);
+  };
   return (
     <BackgroundAndNavbar bg="/background.png">
       <Flex
@@ -57,7 +66,11 @@ export default function RiwayatUnitPage({ title }: { title: string }) {
               </Text>
             </Flex>
 
-            <TextInput placeholder="Search..." />
+            <TextInput
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={handleChange}
+            />
 
             <Wrap
               justify={"space-evenly"}
@@ -78,22 +91,32 @@ export default function RiwayatUnitPage({ title }: { title: string }) {
                 },
               }}
             >
-              {historyData.map((each) => {
-                return (
-                  <ViewCard
-                    key={each.name}
-                    title={each.name}
-                    image={each.image}
-                    route={
-                      title === "UKM"
-                        ? each.group
-                          ? `/showcase/ukm/${each.group}/${each.userId}`
-                          : "/"
-                        : `/showcase/${title.toLowerCase()}/${each.userId}`
-                    }
-                  />
-                );
-              })}
+              {searchQuery && (
+                <SearchedHistory
+                  searchQuery={searchQuery}
+                  lembaga={lembaga}
+                />
+              )}
+              {searchQuery === "" &&
+                historyData?.map((each) => {
+                  let route = ""
+                  if(title === "UKM"){
+                    route = `/showcase/ukm/${each.group ? each.group : ""}/${each.userId}`
+                  }else if(title === "HMJ"){
+                    route = `/showcase/himpunan/${each.userId}`
+                  }else{
+                    console.log(title,'Ini title')
+                    route = `/showcase/${title.toLowerCase()}/${each.userId}`
+                  }
+                  return (
+                    <ViewCard
+                      key={each.name}
+                      title={each.name}
+                      image={each.image}
+                      route={route}
+                    />
+                  );
+                })}
             </Wrap>
           </>
         ) : (

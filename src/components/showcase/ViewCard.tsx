@@ -7,7 +7,7 @@ export const ViewCard = ({
   title,
   route,
   width = "45%",
-  unitId
+  unitId,
 }: {
   image? : string | null;
   title: string;
