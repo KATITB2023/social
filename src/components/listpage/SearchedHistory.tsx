@@ -1,17 +1,15 @@
 import { Text } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { api } from "~/utils/api";
-import { ViewCard } from "../showcase/ViewCard";
-import { UnitProfile } from "@prisma/client";
+import { Lembaga, type UnitProfile } from "@prisma/client";
+import { ViewCard } from "~/components/showcase/ViewCard";
 
 interface SearchedHistoryProps {
   searchQuery: string;
-  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+  lembaga?: Lembaga;
 }
-const SearchedHistory = ({
-  searchQuery,
-  lembaga,
-}: SearchedHistoryProps) => {
+
+const SearchedHistory = ({ searchQuery, lembaga }: SearchedHistoryProps) => {
   const [debouncedFilter, setDebouncedFilter] = useState(searchQuery);
   const { data, isFetching } = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: debouncedFilter,
@@ -32,15 +30,20 @@ const SearchedHistory = ({
       ) : data?.length === 0 ? (
         <Text align={"center"}>Tidak ada hasil yang sesuai ...</Text>
       ) : (
-        data?.map((each : UnitProfile) => {
+        data?.map((each: UnitProfile) => {
           let route = "";
-          if (lembaga === "UKM") {
-            route = `/showcase/ukm/${each.group ? each.group : ""}/${each.userId}`;
-          } else if (lembaga === "HMJ") {
+          if (lembaga === Lembaga.UKM) {
+            route = `/showcase/ukm/${each.group ? each.group : ""}/${
+              each.userId
+            }`;
+          } else if (lembaga === Lembaga.HMJ) {
             route = `/showcase/himpunan/${each.userId}`;
           } else {
-            route = `/showcase/${lembaga? lembaga.toLowerCase() : ""}/${each.userId}`;
+            route = `/showcase/${lembaga ? lembaga.toLowerCase() : ""}/${
+              each.userId
+            }`;
           }
+
           return (
             <ViewCard
               key={each.name}

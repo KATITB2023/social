@@ -1,6 +1,6 @@
 import React, { type Dispatch, type SetStateAction, useState } from "react";
 import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
-import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "~/components/PopupWithBlackOverlay";
 import { api } from "~/utils/api";
 
 export const PopupInputCode = ({
