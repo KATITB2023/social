@@ -1,6 +1,5 @@
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { withSession } from "~/server/auth/withSession";
-import { RequestBerhasilPopup } from "~/components/merchandise/RequestBerhasilPopup";
 import {
   Wrap,
   Center,
@@ -10,15 +9,15 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { api } from "~/utils/api";
+import Link from "next/link";
+import { type Merchandise } from "@prisma/client";
+import { MdRefresh } from "react-icons/md";
 import Layout from "~/layout";
 import TextInput from "~/components/merchandise/TextInput";
 import CardItem from "~/components/merchandise/CardItem";
 import RequestTab from "~/components/merchandise/RequestTab";
-import { useState, useEffect } from "react";
-import { api } from "~/utils/api";
-import Link from "next/link";
-import { Merchandise } from "@prisma/client";
-import { MdRefresh } from "react-icons/md";
 import CoinCard from "~/components/merchandise/CoinCard";
 
 export const getServerSideProps = withSession({ force: true });
@@ -33,9 +32,7 @@ export default function MerchandisePage() {
   const merchQuery = api.showcase.getAllMerchandise.useQuery({});
   const merchData = merchQuery.data;
   const user = api.profile.getUserProfile.useQuery();
-
   const coin = user.data?.coin;
-  // const coin = 100000;
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
@@ -46,20 +43,17 @@ export default function MerchandisePage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-  
 
   useEffect(() => {
-    if (justPurchase){
-    void merchQuery.refetch();
-    void user.refetch();
-    setJustPurchase(false);
+    if (justPurchase) {
+      void merchQuery.refetch();
+      void user.refetch();
+      setJustPurchase(false);
     }
   });
 
-
   useEffect(() => {
     const createCartArray = () => {
-      // console.log(merchData);
       if (merchData) {
         const tempArr: CartData[] = new Array<CartData>(merchData?.length);
         for (let i = 0; i < merchData?.length; i++) {
@@ -98,12 +92,9 @@ export default function MerchandisePage() {
     }
   };
 
-  // TODO: ganti dummy jd merch data asli
-  const filteredMerchData = merchData
-    ? merchData.filter((merch) =>
-        merch.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : undefined;
+  const filteredMerchData = merchData?.filter((merch) =>
+    merch.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Layout title="Merchandise">
@@ -154,6 +145,7 @@ export default function MerchandisePage() {
                     src="/components/merch/shopping_cart.svg"
                     width={"15px"}
                     height={"15px"}
+                    alt="Shopping cart"
                   />
                 </Button>
               </Link>
