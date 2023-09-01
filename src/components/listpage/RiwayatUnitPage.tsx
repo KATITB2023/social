@@ -104,7 +104,6 @@ export default function RiwayatUnitPage({ title, group }: { title: string, group
                   }else if(title === "HMJ"){
                     route = `/showcase/himpunan/${each.userId}`
                   }else{
-                    console.log(title,'Ini title')
                     route = `/showcase/${title.toLowerCase()}/${each.userId}`
                   }
                   return (

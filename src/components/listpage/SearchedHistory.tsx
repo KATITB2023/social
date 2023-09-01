@@ -41,7 +41,6 @@ const SearchedHistory = ({
           } else {
             route = `/showcase/${lembaga? lembaga.toLowerCase() : ""}/${each.userId}`;
           }
-          console.log(route, "INI ROUTE");
           return (
             <ViewCard
               key={each.name}

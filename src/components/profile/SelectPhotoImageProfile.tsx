@@ -85,7 +85,6 @@ export const SelectPhotoImageProfile = ({
 
   async function updateImage(file: File) {
     if (!file) return;
-    console.log(file);
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "Failed",
@@ -233,7 +232,6 @@ export const SelectPhotoImageProfile = ({
                     ref={inputRef}
                     onChange={(e) => {
                       const files = e.target.files;
-                      console.log(files);
                       if (files && files[0]) {
                         const fileName = files[0].name.toLowerCase();
                         const validExtensions = [".png", ".jpeg", ".jpg"];

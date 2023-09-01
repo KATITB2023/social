@@ -43,7 +43,6 @@ export const CardSlider = ({ lembaga }: CardSliderProps) => {
           }else{
             route = `/showcase/${unit.lembaga.toLowerCase()}/${unit.userId}`
           }
-          console.log(route,"Ini route")
           return (
             <ViewCard
               width={"130px"}
