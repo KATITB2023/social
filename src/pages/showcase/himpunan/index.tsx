@@ -17,7 +17,6 @@ import {
 import TextInput from "~/components/friends/TextInput";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import ListPage from "~/components/listpage/ListPage";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -35,7 +34,6 @@ export default function HimpunanPage() {
   return (
     <Layout title="Himpunan">
       <BackgroundAndNavbar bg="/background.png">
-        <ListPage title="Himpunan" withbackbutton={true} lembaga="HMJ"/>
         <Flex
           w={"full"}
           alignItems={"center"}

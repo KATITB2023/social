@@ -16,7 +16,6 @@ export const showcaseRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const UNIT_VISIT_REWARD_POINTS = 100;
 
       await ctx.prisma.$transaction(async (tx) => {
         const unitVisit = await tx.unitVisit.findUnique({
@@ -28,7 +27,7 @@ export const showcaseRouter = createTRPCRouter({
           },
         });
 
-        if (!unitVisit)
+        if (unitVisit)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "User already visited this unit",
@@ -51,25 +50,6 @@ export const showcaseRouter = createTRPCRouter({
           },
         });
 
-        await tx.unitReward.create({
-          data: {
-            studentId: ctx.session.user.id,
-            unitId: input.unitId,
-            reward: UNIT_VISIT_REWARD_POINTS,
-          },
-        });
-
-        await tx.profile.update({
-          where: {
-            userId: ctx.session.user.id,
-          },
-          data: {
-            coin: {
-              increment: UNIT_VISIT_REWARD_POINTS,
-            },
-          },
-        });
-
         await tx.unitProfile.update({
           where: {
             userId: unit.userId,
@@ -83,8 +63,7 @@ export const showcaseRouter = createTRPCRouter({
       });
 
       return {
-        message: `Visit success. You got ${UNIT_VISIT_REWARD_POINTS} coins`,
-        reward: UNIT_VISIT_REWARD_POINTS,
+        message: `Visit success`,
       };
     }),
 
@@ -233,19 +212,19 @@ export const showcaseRouter = createTRPCRouter({
         },
       });
     }),
-  getUnitsByGroup : publicProcedure
+  getUnitsByGroup: publicProcedure
     .input(
       z.object({
-        group : z.string()
+        group: z.string(),
       })
     )
-    .query(async ({ctx,input}) =>{
+    .query(async ({ ctx, input }) => {
       const units = await ctx.prisma.unitProfile.findMany({
-        where : {
-          lembaga : "UKM",
-          group : input.group
-        }
-      })
+        where: {
+          lembaga: "UKM",
+          group: input.group,
+        },
+      });
       return units;
     }),
   // Menampilan seluruh unit sebagai key-value pair dengan key lembaga dan value array unit

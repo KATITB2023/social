@@ -8,6 +8,8 @@ import { useState } from "react";
 import { PopupInputCode } from "~/components/showcase/PopupInputCode";
 import { UnitProfile } from "@prisma/client";
 import { api } from "~/utils/api";
+import PopupVisitedCoin from "./PopupVisitedCoin";
+import PopupWrongCode from "./PopupWrongCode";
 
 interface UnitProfileVisited extends UnitProfile {
   visited: boolean;
@@ -51,8 +53,11 @@ export const OrganizationPage = ({
 }) => {
   const router = useRouter();
   const [visitPopup, setVisitPopup] = useState(false);
+  const [visitedSuccess, setVisitedSuccess] = useState<boolean>(false);
+  const [visitedFail, setVisitedFail] = useState<boolean>(false);
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
   const unit = data as UnitProfileVisited;
+  console.log(unit,"Ini unit")
   return (
     <Layout title={`${type}: ${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
@@ -191,11 +196,26 @@ export const OrganizationPage = ({
             </ReactMarkdown>
           </Flex>
         </Flex>
-
-        <PopupInputCode
-          isOpen={visitPopup}
-          onClose={() => setVisitPopup(false)}
-        />
+        {visitedSuccess ? (
+          <PopupVisitedCoin
+            onClose={() => setVisitedSuccess(false)}
+            isOpen={visitedSuccess}
+          />
+        ) : visitedFail ? (
+          <PopupWrongCode
+            onClose={() => setVisitedFail(false)}
+            isOpen={visitedFail}
+          />
+        ) : (
+          <PopupInputCode
+            isOpen={visitPopup}
+            onClose={() => setVisitPopup(false)}
+            unitId={organizationId}
+            setVisitedFail={setVisitedFail}
+            setVisitedSuccess={setVisitedSuccess}
+          />
+        )}
+        {/* {visitedFail && <PopupWrongCode />} */}
       </BackgroundAndNavbar>
     </Layout>
   );

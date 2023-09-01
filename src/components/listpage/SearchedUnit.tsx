@@ -5,13 +5,14 @@ import { ViewCard } from "../showcase/ViewCard";
 
 interface SearchedUnitProps {
   searchQuery: string;
-  group: string;
+  group?: string;
+  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
 }
-const SearchedUnit = ({ searchQuery, group }: SearchedUnitProps) => {
+const SearchedUnit = ({ searchQuery, group, lembaga }: SearchedUnitProps) => {
   const [debouncedFilter, setDebouncedFilter] = useState(searchQuery);
   const { data, isFetching } = api.showcase.getAllUnits.useQuery({
     searchValue: debouncedFilter,
-    lembaga: "UKM",
+    lembaga: lembaga,
     group: group,
   });
   useEffect(() => {
@@ -26,15 +27,23 @@ const SearchedUnit = ({ searchQuery, group }: SearchedUnitProps) => {
     <>
       {isFetching ? (
         <Text align={"center"}>Loading ...</Text>
+      ) : data?.length === 0 ? (
+        <Text align={"center"}>Tidak ada hasil yang sesuai ...</Text>
       ) : (
         data?.map((each) => {
+          const route =
+            lembaga === "UKM"
+              ? `${group ? group : ""}/${each.userId}`
+              : lembaga === "BSO"
+              ? `bso/${each.userId}`
+              : `${each.name}`;
           return (
             <ViewCard
               key={each.name}
               width={"full"}
               title={each.name}
               image={each.image ?? ""}
-              route={`/showcase/himpunan/${each.userId}`}
+              route={route}
             />
           );
         })

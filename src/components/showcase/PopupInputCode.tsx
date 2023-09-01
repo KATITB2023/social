@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { type Dispatch, type SetStateAction, useState } from "react";
 import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
+import { api } from "~/utils/api";
 
 export const PopupInputCode = ({
   isOpen,
   onClose,
+  unitId,
+  setVisitedSuccess,
+  setVisitedFail,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  unitId: string;
+  setVisitedSuccess: Dispatch<SetStateAction<boolean>>;
+  setVisitedFail: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [isInputValid, setIsInputValid] = useState<boolean>(false);
+
+  const visitMutation = api.showcase.visitUnit.useMutation();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -20,13 +29,27 @@ export const PopupInputCode = ({
 
   const handleSubmit = () => {
     if (isInputValid) {
-      console.log("Input submitted:", inputValue);
+      visitMutation.mutate(
+        { unitId: unitId, pin: inputValue },
+        {
+          onError(error, variables, context) {
+            setVisitedFail(true);
+          },
+          onSuccess(data, variables, context) {
+            setVisitedSuccess(true);
+          },
+        }
+      );
       onClose();
     }
   };
 
   return (
-    <PopupWithBlackOverlay open={isOpen} setClose={() => onClose()} opacity={0.85}>
+    <PopupWithBlackOverlay
+      open={isOpen}
+      setClose={() => onClose()}
+      opacity={0.85}
+    >
       <Flex
         direction="column"
         alignItems="center"
@@ -34,7 +57,6 @@ export const PopupInputCode = ({
         maxW={"90%"}
         mx={"auto"}
       >
-
         <Text
           width="100%"
           textAlign="center"
