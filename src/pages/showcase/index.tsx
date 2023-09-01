@@ -240,7 +240,7 @@ export default function ShowcasePage() {
             justifyContent={"space-between"}
             marginTop="10px"
           >
-            <Link href={"/"}>
+            <Link href={"https://go.oskmitb.com/GuidebookShowcaseUser"}>
               <Button
                 w={"48%"}
                 textColor="yellow.5"
