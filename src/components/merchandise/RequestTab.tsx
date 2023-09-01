@@ -4,6 +4,7 @@ import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
 import { RequestGagalPopup } from "./RequestGagalPopup";
 import { Merchandise } from "@prisma/client";
+import { api } from "~/utils/api";
 
 type CartData = {
   merchRequested: Merchandise;
@@ -15,18 +16,35 @@ const Request = ({
   itemAmount,
   sumCoinPrice,
   merch,
+  onClearCart,
 }: {
   currentUserCoin: number;
   itemAmount: number;
   sumCoinPrice: number;
   merch: CartData[];
+  onClearCart : () => void;
 }) => {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [berhasilPopup, setBerhasilPopup] = useState(false);
+  const [gagalPopup, setGagalPopup] = useState(false);
+
+  const checkoutMutation = api.showcase.checkoutMerchandise.useMutation();
 
   const handleSubmitRequest = () => {
     setConfirmPopup(false);
-    setBerhasilPopup(true);
+    
+    let available = true;
+    for ( let i = 0; i < merch.length; i++){
+      if (merch[i]!.requestAmount > merch[i]!.merchRequested.stock){
+        available = false;
+      }
+      console.log(merch[i])
+    }
+    if (available && (currentUserCoin >= sumCoinPrice)){
+      setBerhasilPopup(true);
+    } else {
+      setGagalPopup(true);
+    }
   };
 
   return (
@@ -47,11 +65,11 @@ const Request = ({
       gap={2}
       zIndex={3}
     >
-      <Flex justifyContent="space-between" alignItems="center" gap={4}>
+      <Flex justifyContent="space-between" alignItems="center" gap={2}>
         <Flex
           justifyContent="flex-start"
           alignItems="center"
-          gap={8}
+          gap={4}
           display="flex"
         >
           <Text
@@ -59,14 +77,13 @@ const Request = ({
             fontSize={12}
             fontFamily="SomarRounded-Regular"
             fontWeight="700"
-            wordBreak="break-word"
+            // wordBreak="break-word"
           >
             Jumlah Koinmu
           </Text>
           <Flex
             justifyContent="flex-start"
             alignItems="center"
-            gap={4}
             display="flex"
           >
             <Text
@@ -74,7 +91,7 @@ const Request = ({
               fontSize={12}
               fontFamily="SomarRounded-Regular"
               fontWeight="700"
-              wordBreak="break-word"
+              // wordBreak="break-word"
             >
               {currentUserCoin}
             </Text>
@@ -173,9 +190,17 @@ const Request = ({
       {berhasilPopup && (
         <RequestBerhasilPopup
           open={berhasilPopup}
-
           setClose={() => setBerhasilPopup(false)}
           coinDecreased={sumCoinPrice}
+          onClearCart={() => onClearCart()}
+        />
+      )}
+
+      {gagalPopup && (
+        <RequestGagalPopup 
+        open={gagalPopup}
+        setClose={() => setGagalPopup(false)}
+        onClearCart={() => onClearCart()}
         />
       )}
     </Flex>

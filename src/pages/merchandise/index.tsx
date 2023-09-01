@@ -19,46 +19,9 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 import { Merchandise } from "@prisma/client";
 import { MdRefresh } from "react-icons/md";
+import CoinCard from "~/components/merchandise/CoinCard";
 
 export const getServerSideProps = withSession({ force: true });
-
-// const DummyMerchData: Merchandise[] = [
-//   {
-//     id: "12345",
-//     image: "/components/merch/bigmug.png",
-//     name: "Merch 1",
-//     price: 300,
-//     stock: 20,
-//   },
-//   {
-//     id: "11335",
-//     image: "/components/merch/bigmug.png",
-//     name: "Merch 2",
-//     price: 500,
-//     stock: 30,
-//   },
-//   {
-//     id: "24345",
-//     image: "/components/merch/bigmug.png",
-//     name: "Merch 3",
-//     price: 100,
-//     stock: 1,
-//   },
-//   {
-//     id: "55112",
-//     image: "/components/merch/bigmug.png",
-//     name: "Merch 4",
-//     price: 250,
-//     stock: 10,
-//   },
-//   {
-//     id: "35213",
-//     image: "/components/merch/bigmug.png",
-//     name: "Merch 5",
-//     price: 80,
-//     stock: 5,
-//   },
-// ];
 
 type CartData = {
   merchRequested: Merchandise;
@@ -185,6 +148,11 @@ export default function MerchandisePage() {
               </Link>
             </Flex>
           </Flex>
+
+          <Flex w={"full"}>
+            <CoinCard coin={coin ? coin : 0} />
+          </Flex>
+
           <Flex w={"85%"}>
             <TextInput
               placeholder="Search..."
@@ -198,7 +166,7 @@ export default function MerchandisePage() {
             flexWrap={"wrap"}
             justify={"space-between"}
             flexDirection={"column"}
-            maxH={"60vh"}
+            maxH={"80vh"}
             gap={"12px"}
             overflowY={"auto"}
             sx={{
@@ -246,6 +214,7 @@ export default function MerchandisePage() {
               itemAmount={selectedItems}
               sumCoinPrice={priceSelectedItems}
               merch={cartArray!}
+              onClearCart={clearCart}
             />
           )}
         </Center>

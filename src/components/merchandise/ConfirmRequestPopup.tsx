@@ -18,13 +18,12 @@ export const ConfirmRequestPopup = ({
   onSubmit,
 }: {
   open: boolean;
-    merch: CartData[];
-    itemAmount: number;
-    sumCoinPrice: number;
+  merch: CartData[];
+  itemAmount: number;
+  sumCoinPrice: number;
   setCloseWindow: () => void;
   onSubmit: () => void;
 }) => {
-
   return (
     <PopupWithBlackOverlay open={open} setClose={setCloseWindow}>
       <Flex
@@ -35,7 +34,7 @@ export const ConfirmRequestPopup = ({
         mx="auto"
         maxW="350px"
         position="relative"
-        p={10}
+        p={5}
         borderRadius="24px"
         justifyContent="center"
         alignItems="center"
@@ -84,80 +83,98 @@ export const ConfirmRequestPopup = ({
           </Text>
         </Flex>
         <Flex
-        w={"full"}
-        justify={"space-between"}
-        flexDirection={"column"}
-        maxH={"35vh"}
-        gap={"12px"}
-        overflowY={"auto"}
-        sx={{
-          "::-webkit-scrollbar": {
-            width: "11px",
-          },
-          "::-webkit-scrollbar-track": {
-            background: "#2F2E2E",
-            borderRadius: "5px",
-          },
-          "::-webkit-scrollbar-thumb": {
-            background: "white",
-            borderRadius: "5px",
-          },
-        }}>
-        {merch.map((each, idx) => {
-          if (each.requestAmount > 0) {
-            return (
-              <Flex
-                w={"100%"}
-                flexDirection={"row"}
-                alignItems={"center"}
-                gap={"8px"}
-                key={idx}
-              >
+          w={"full"}
+          justify={"space-between"}
+          flexDirection={"column"}
+          maxH={"35vh"}
+          gap={"12px"}
+          overflowY={"auto"}
+          sx={{
+            "::-webkit-scrollbar": {
+              width: "11px",
+            },
+            "::-webkit-scrollbar-track": {
+              background: "#2F2E2E",
+              borderRadius: "5px",
+            },
+            "::-webkit-scrollbar-thumb": {
+              background: "white",
+              borderRadius: "5px",
+            },
+          }}
+        >
+          {merch.map((each, idx) => {
+            if (each.requestAmount > 0) {
+              return (
                 <Flex
-                  maxW={"30%"}
-                  maxH={"20vh"}
-                  justifyContent={"center"}
-                  background="#FFFC83"
-                  borderRadius={12}
-                  px={"7.5px"}
+                  w={"100%"}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  gap={"8px"}
+                  key={idx}
                 >
-                  <Image
-                    src={each.merchRequested.image ? each.merchRequested.image : "/logo_showcase.png"}
-                    maxW={"full"}
-                    maxH={"full"}
-                  />
-                </Flex>
-
-                {/* Item Request */}
-                <Flex w="65%" flexDir={"column"}>
-                  <Flex w={"full"} flexDir={"row"} justifyContent={"space-between"}>
-                    <Text
-                      fontFamily={"SomarRounded-Bold"}
-                      fontSize={"16px"}
-                      textAlign={"center"}
-                    >
-                      {each.merchRequested.name}
-                    </Text>
-                    <Text fontFamily={"SomarRounded-Regular"} fontSize={"12px"}>
-                      {each.requestAmount} pcs
-                    </Text>
-                  </Flex>
-                  <Flex w={"full"} flexDirection={"row"} alignItems={"center"}>
+                  <Flex
+                    maxW={"30%"}
+                    maxH={"20vh"}
+                    justifyContent={"center"}
+                    background="#FFFC83"
+                    borderRadius={12}
+                    px={"7.5px"}
+                    aspectRatio={1/1}
+                  >
                     <Image
-                      src="/components/merch/coin.png"
-                      width={"30px"}
-                      height={"30px"}
-                      alt="Koin"
+                      src={
+                        each.merchRequested.image
+                          ? each.merchRequested.image
+                          : "/logo_showcase.png"
+                      }
+                      maxW={"full"}
+                      maxH={"full"}
+                      objectFit={"contain"}
                     />
-                    <Text>{each.merchRequested.price} Coins</Text>
+                  </Flex>
+
+                  {/* Item Request */}
+                  <Flex w="65%" flexDir={"column"}>
+                    <Flex
+                      w={"full"}
+                      flexDir={"row"}
+                      justifyContent={"space-between"}
+                    >
+                      <Text
+                        fontFamily={"SomarRounded-Bold"}
+                        fontSize={"16px"}
+                        textAlign={"left"}
+                        noOfLines={2}
+                      >
+                        {each.merchRequested.name}
+                      </Text>
+                      <Text
+                        fontFamily={"SomarRounded-Regular"}
+                        fontSize={"12px"}
+                      >
+                        {each.requestAmount} pcs
+                      </Text>
+                    </Flex>
+                    <Flex
+                      w={"full"}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                    >
+                      <Image
+                        src="/components/merch/coin.png"
+                        width={"30px"}
+                        height={"30px"}
+                        alt="Koin"
+                      />
+                      <Text>{each.merchRequested.price} Coins</Text>
+                    </Flex>
                   </Flex>
                 </Flex>
-              </Flex>
-            )
-          }
-          
-        })}
-          </Flex>
+              );
+            }
+          })}
+        </Flex>
 
         {/* Request Button */}
         <Flex
