@@ -10,7 +10,7 @@ import { api } from "~/utils/api";
 import PopupVisitedCoin from "./PopupVisitedCoin";
 import PopupWrongCode from "./PopupWrongCode";
 
-// Data Input
+/** TODO: HAPUS INI */
 const dummyUKMData: { [key: string]: string | undefined } = {
   nama: "LFM",
   logo: "/logo-ukm.png",

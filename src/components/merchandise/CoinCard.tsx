@@ -5,6 +5,7 @@ import React from "react";
 interface CoinCardProps {
   coin: number;
 }
+
 const CoinCard = ({ coin }: CoinCardProps) => {
   return (
     <Flex

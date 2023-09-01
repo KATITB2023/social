@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import TextInput from "~/components/friends/TextInput";
 import { api } from "~/utils/api";
 
+/** TODO: HAPUS INI */
 const defaultData: UnitProfile[] = [
   {
     userId: "",
@@ -108,10 +109,13 @@ export default function RiwayatPage({
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [queryEntered, setQueryEntered] = useState<string>("");
+
+  /** TODO: UBAH INI JADI INFINITE QUERY */
   const { data: fetchedData } = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: queryEntered,
     limit,
   });
+
   const [data, setData] = useState<UnitProfile[] | undefined>(fetchedData);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [spinnerIsVisible, setSpinnerIsVisible] = useState<boolean>(false);
@@ -120,7 +124,8 @@ export default function RiwayatPage({
     setSearchQuery(e.target.value);
   };
 
-  function handleInfiniteScroll() {
+  /** TODO: UBAH INI JADI REFETCH INFINITE QUERY */
+  const handleInfiniteScroll = () => {
     const newData = defaultData;
 
     setData((prev) => {
@@ -129,7 +134,8 @@ export default function RiwayatPage({
     });
 
     setSpinnerIsVisible(false);
-  }
+  };
+
   const handleEnter = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") setQueryEntered(searchQuery);
   };

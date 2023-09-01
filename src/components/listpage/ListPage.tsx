@@ -33,7 +33,7 @@ export default function ListPage({
   };
 
   const handleEnter = (e: React.KeyboardEvent) => {
-    if (e.key == "Enter") setQueryEntered(searchQuery);
+    if (e.key === "Enter") setQueryEntered(searchQuery);
   };
 
   useEffect(() => {
