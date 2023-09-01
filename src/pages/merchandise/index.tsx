@@ -71,8 +71,8 @@ export default function MerchandisePage() {
   // console.log(merchData);
   const user = api.profile.getUserProfile.useQuery();
 
-  // const point = user.data?.point;
-  const point = 100000;
+  const coin = user.data?.coin;
+  // const coin = 100000;
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priceSelectedItems, setPriceSelectedItems] = useState(0);
@@ -84,20 +84,24 @@ export default function MerchandisePage() {
   };
 
   useEffect(() => {
-    if (merchData) {
-      const tempArr: CartData[] = new Array<CartData>(merchData.length);
-      for (let i = 0; i < merchData.length; i++) {
-        tempArr[i] = {
-          merchRequested: merchData[i]!,
-          requestAmount: 0,
-          index: i,
-        };
+    const createCartArray = () => {
+      // console.log(merchData);
+      if (merchData) {
+        const tempArr: CartData[] = new Array<CartData>(merchData?.length);
+        for (let i = 0; i < merchData?.length; i++) {
+          tempArr[i] = {
+            merchRequested: merchData[i]!,
+            requestAmount: 0,
+            index: i,
+          };
+        }
+        setCartArray(tempArr);
       }
-      setCartArray(tempArr);
-    }
-  }, []);
+    };
+    setTimeout(createCartArray, 100);
+  }, [merchData]);
 
-  console.log(cartArray)
+  // console.log(cartArray);
 
   const handleChangeItem = (change: number, idx: number) => {
     if (cartArray) {
@@ -211,33 +215,34 @@ export default function MerchandisePage() {
               },
             }}
           >
-            {filteredMerchData && filteredMerchData.map((each, idx) => {
-              const originalIdx = merchData
-                ? merchData.findIndex((item) => item.id === each.id)
-                : 0;
-              return (
-                <CardItem
-                  key={each.id}
-                  currentAmountItem={selectedItems}
-                  changeAmountItem={handleChangeItem}
-                  currentSumCoinPrice={priceSelectedItems}
-                  changeSumCoinPrice={handleChangePrice}
-                  id={each.id}
-                  image={each.image}
-                  name={each.name}
-                  price={each.price}
-                  stock={each.stock}
-                  idx={originalIdx}
-                  requestQuota={
-                    cartArray ? cartArray[originalIdx]!.requestAmount : 0
-                  }
-                />
-              );
-            })}
+            {filteredMerchData &&
+              filteredMerchData.map((each, idx) => {
+                const originalIdx = merchData
+                  ? merchData.findIndex((item) => item.id === each.id)
+                  : 0;
+                return (
+                  <CardItem
+                    key={each.id}
+                    currentAmountItem={selectedItems}
+                    changeAmountItem={handleChangeItem}
+                    currentSumCoinPrice={priceSelectedItems}
+                    changeSumCoinPrice={handleChangePrice}
+                    id={each.id}
+                    image={each.image}
+                    name={each.name}
+                    price={each.price}
+                    stock={each.stock}
+                    idx={originalIdx}
+                    requestQuota={
+                      cartArray ? cartArray[originalIdx]!.requestAmount : 0
+                    }
+                  />
+                );
+              })}
           </Wrap>
           {selectedItems > 0 && (
             <RequestTab
-              currentUserCoin={point}
+              currentUserCoin={coin || 0}
               itemAmount={selectedItems}
               sumCoinPrice={priceSelectedItems}
               merch={cartArray!}

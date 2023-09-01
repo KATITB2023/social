@@ -122,7 +122,7 @@ export default function HistoryPage() {
                           <ViewCard
                             image={item.image}
                             title={item.name}
-                            route={`/showcase/ukm/${item.group}/${item.userId}`}
+                            route={item.group? `/showcase/ukm/${item.group}/${item.userId}` : "/"}
                             width={"100%"}
                           />
                         </Flex>

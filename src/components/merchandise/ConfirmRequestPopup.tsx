@@ -111,6 +111,7 @@ export const ConfirmRequestPopup = ({
                 flexDirection={"row"}
                 alignItems={"center"}
                 gap={"8px"}
+                key={idx}
               >
                 <Flex
                   maxW={"30%"}
