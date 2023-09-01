@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ConfirmRequestPopup } from "./ConfirmRequestPopup";
 import { RequestBerhasilPopup } from "./RequestBerhasilPopup";
 import { RequestGagalPopup } from "./RequestGagalPopup";
-import { Merchandise } from "~/server/types/merchandise";
+import { Merchandise } from "@prisma/client";
 
 type CartData = {
   merchRequested: Merchandise;

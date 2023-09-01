@@ -5,7 +5,7 @@ import { useState } from "react";
 
 interface CardItemInfo {
   id: string;
-  image: string;
+  image: string | null;
   name: string;
   price: number;
   stock: number;
@@ -28,7 +28,7 @@ const CardItem = ({
   price,
   stock,
   idx,
-  requestQuota
+  requestQuota,
 }: CardItemInfo) => {
   const [berhasilPopup, setBerhasilPopup] = useState(false);
   // const [requestQuota, setRequestQuota] = useState(0);
@@ -69,7 +69,10 @@ const CardItem = ({
           borderRadius={12}
           justifyContent={"center"}
         >
-          <Image src={image} alt={`Merchandise ${name} image`} />
+          <Image
+            src={image || "/logo_showcase.png"}
+            alt={`Merchandise ${name} image`}
+          />
           <Button
             position={"absolute"}
             top={0}
@@ -202,6 +205,7 @@ const CardItem = ({
             </Text>
           </Button>
         </Flex>
+
         {/* Pop up image */}
         {berhasilPopup && (
           <PopupWithBlackOverlay
@@ -219,16 +223,27 @@ const CardItem = ({
               justifyContent="center"
               alignItems="center"
             >
-              <Image src="/components/merch/bigmug.png" />
               <Image
-                cursor="pointer"
-                src="/close.png"
+                src={image || "/logo_showcase.png"}
+                alt={`Merchandise ${name} image`}
+              />
+
+              <Flex
+                bg={"purple.2"}
+                w={"20px"}
+                aspectRatio={1 / 1}
                 position="absolute"
                 top={5}
-                right={5}
+                cursor="pointer"
                 onClick={() => setBerhasilPopup(false)}
-                alt="close"
-              />
+                right={5}
+                justifyContent={"center"}
+                alignItems={"center"}
+                borderRadius={"full"}
+              >
+                {" "}
+                <Text textAlign={"center"} fontWeight={"bold"}> x </Text>
+              </Flex>
             </Flex>
           </PopupWithBlackOverlay>
         )}
