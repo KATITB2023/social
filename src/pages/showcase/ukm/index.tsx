@@ -74,7 +74,9 @@ export default function UKMPage() {
                 <ViewCard
                   key={item}
                   title={item}
+                  image={`/ukm/${item}.png`}
                   route={`/showcase/ukm/${item}`}
+                  hideBorder={true}
                 />
               );
             })}

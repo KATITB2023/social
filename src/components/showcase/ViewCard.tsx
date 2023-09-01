@@ -8,12 +8,14 @@ export const ViewCard = ({
   route,
   width = "45%",
   unitId,
+  hideBorder = false,
 }: {
   image?: string | null;
   title: string;
   route: string;
   width?: string | number;
   unitId?: string;
+  hideBorder?: boolean;
 }) => {
   return (
     <Flex
@@ -24,7 +26,7 @@ export const ViewCard = ({
       aspectRatio={3 / 4}
       position={"relative"}
       overflow={"hidden"}
-      border={"1px white solid"}
+      border={hideBorder ? "0px" : "1px white solid"}
     >
       {/* <Link href={route}> */}
       <Flex>
