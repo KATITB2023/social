@@ -1,17 +1,17 @@
 import React from "react";
-import { Box, Icon } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { api } from "~/utils/api";
 import { ViewCard } from "./ViewCard";
+import { Lembaga } from "@prisma/client";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 interface CardSliderProps {
   lembaga?: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
-  general?: boolean;
 }
 
-export const CardSlider = ({ lembaga, general = true }: CardSliderProps) => {
+export const CardSlider = ({ lembaga }: CardSliderProps) => {
   const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: "",
     lembaga: lembaga,

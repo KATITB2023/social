@@ -55,7 +55,7 @@ const CardItem = ({
         backgroundImage="linear-gradient(207deg, rgba(118.43, 95.94, 182.75, 0.93) 0%, rgba(204.99, 97.55, 207.19, 0.93) 46%, rgba(58.19, 48.70, 60.56, 0.93) 100%), radial-gradient(43.45% 36.33% at 31.24% 29.39%, rgba(164.69, 238.74, 255, 0.20) 0%, rgba(109.97, 190.80, 244.37, 0.04) 77%, rgba(69.95, 144.07, 212.50, 0) 100%)"
         flexDirection="column"
         justifyContent="flex-start"
-        alignItems={'flex-start'}
+        alignItems={"flex-start"}
         gap={3}
       >
         <Flex
@@ -65,7 +65,7 @@ const CardItem = ({
           background="#FFFC83"
           borderRadius={12}
           justifyContent={"center"}
-          aspectRatio={1/1}
+          aspectRatio={1 / 1}
         >
           <Image
             src={image || "/logo_showcase.png"}
@@ -130,7 +130,7 @@ const CardItem = ({
             {price} Coins
           </Text>
         </Flex>
-        
+
         <Flex
           maxW={"100%"}
           h={"10%"}
@@ -214,7 +214,7 @@ const CardItem = ({
               borderRadius="24px"
               justifyContent="center"
               alignItems="center"
-              aspectRatio={1/1}
+              aspectRatio={1 / 1}
             >
               <Image
                 src={image || "/logo_showcase.png"}
@@ -235,7 +235,10 @@ const CardItem = ({
                 borderRadius={"full"}
               >
                 {" "}
-                <Text textAlign={"center"} fontWeight={"bold"}> x </Text>
+                <Text textAlign={"center"} fontWeight={"bold"}>
+                  {" "}
+                  x{" "}
+                </Text>
               </Flex>
             </Flex>
           </PopupWithBlackOverlay>

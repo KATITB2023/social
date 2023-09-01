@@ -1,12 +1,11 @@
 import BackgroundAndNavbar from "../BackgroundAndNavbar";
 import { Flex, Image, Button, Heading, Text, Wrap } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import TextInput from "../friends/TextInput";
+import TextInput from "~/components/friends/TextInput";
 import { api } from "~/utils/api";
 import { ViewCard } from "../showcase/ViewCard";
 import { useState } from "react";
-import SearchedUnit from "./SearchedUnit";
-import { Lembaga, type UnitProfile } from "@prisma/client";
+import {type Lembaga, type UnitProfile } from "@prisma/client";
 import SearchedHistory from "./SearchedHistory";
 
 export default function RiwayatUnitPage({ title, group }: { title: string, group?:string }) {
@@ -28,21 +27,21 @@ export default function RiwayatUnitPage({ title, group }: { title: string, group
   return (
     <BackgroundAndNavbar bg="/background.png">
       <Flex
-        w={"full"}
-        alignItems={"center"}
-        flexDirection={"column"}
-        position={"relative"}
-        px={"25px"}
+        w="full"
+        alignItems="center"
+        flexDirection="column"
+        position="relative"
+        px="25px"
         gap="25px"
-        pt={"50px"}
+        pt="50px"
       >
         <Button
           onClick={() => router.back()}
-          bgColor={"transparent"}
-          position={"absolute"}
+          bgColor="transparent"
+          position="absolute"
           top={0}
           left={3}
-          borderRadius={"full"}
+          borderRadius="full"
           width={10}
           height={10}
           padding={0}
@@ -52,17 +51,17 @@ export default function RiwayatUnitPage({ title, group }: { title: string, group
 
         {historyData && historyData.length > 0 ? (
           <>
-            <Flex alignItems={"center"} flexDirection={"column"} maxW={"90%"}>
+            <Flex alignItems="center" flexDirection="column" maxW="90%">
               <Heading
                 size="H4"
                 textShadow="0px 4px 30px #72D8BA"
                 color="yellow.5"
-                textAlign={"center"}
+                textAlign="center"
               >
                 {title}
               </Heading>
-              <Text wordBreak={"break-word"} width="60%" align={"center"}>
-                {`Berikut ini adalah daftar ${title} yang telah kamu kunjungi.`}
+              <Text wordBreak="break-word" width="60%" align="center">
+                Berikut ini adalah daftar {title} yang telah kamu kunjungi.
               </Text>
             </Flex>
 
@@ -73,10 +72,10 @@ export default function RiwayatUnitPage({ title, group }: { title: string, group
             />
 
             <Wrap
-              justify={"space-evenly"}
-              w={"full"}
-              maxH={"700px"}
-              overflow={"auto"}
+              justify="space-evenly"
+              w="full"
+              maxH="700px"
+              overflow="auto"
               sx={{
                 "::-webkit-scrollbar": {
                   width: "5px",

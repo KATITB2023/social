@@ -1,8 +1,7 @@
 import React from "react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 import { Flex, Image, Button, Text } from "@chakra-ui/react";
-import { useState } from "react";
-import { Merchandise } from "@prisma/client";
+import { type Merchandise } from "@prisma/client";
 
 type CartData = {
   merchRequested: Merchandise;
@@ -120,7 +119,7 @@ export const ConfirmRequestPopup = ({
                     background="#FFFC83"
                     borderRadius={12}
                     px={"7.5px"}
-                    aspectRatio={1/1}
+                    aspectRatio={1 / 1}
                   >
                     <Image
                       src={

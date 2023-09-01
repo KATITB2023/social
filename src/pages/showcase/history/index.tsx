@@ -1,21 +1,24 @@
 import React from "react";
-import { Flex, Text, Heading} from "@chakra-ui/react";
+import { Flex, Text, Heading, Box } from "@chakra-ui/react";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Link from "next/link";
 import { CardSlider } from "~/components/showcase/CardSlider";
 import { api } from "~/utils/api";
+import { Lembaga } from "@prisma/client";
 
 export default function HistoryPage() {
-
   const ukmVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
-    lembaga: "UKM",
+    lembaga: Lembaga.UKM,
+    limit: 5,
   }).data;
   const bsoVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
-    lembaga: "BSO",
+    lembaga: Lembaga.BSO,
+    limit: 5,
   }).data;
   const hmjVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
-    lembaga: "HMJ",
+    lembaga: Lembaga.HMJ,
+    limit: 5,
   }).data;
 
   return (
@@ -23,7 +26,7 @@ export default function HistoryPage() {
       <BackgroundAndNavbar bg="/background.png">
         <Flex
           w="80%"
-          justifyContent={"space-evenly"}
+          justifyContent="space-evenly"
           margin="auto"
           my="30px"
           flexDirection="column"
@@ -32,16 +35,16 @@ export default function HistoryPage() {
           (!bsoVisitedArr || bsoVisitedArr.length === 0) &&
           (!hmjVisitedArr || hmjVisitedArr.length === 0) ? (
             <Flex
-              justifyContent={"center"}
-              alignItems={"center"}
-              flexDir={"column"}
-              my={"25vh"}
+              justifyContent="center"
+              alignItems="center"
+              flexDir="column"
+              my="25vh"
             >
-              <Heading textAlign={"center"} textColor={"yellow.5"}>
+              <Heading textAlign="center" textColor="yellow.5">
                 {" "}
                 Waduh!{" "}
               </Heading>
-              <Text textAlign={"center"} fontSize={"16px"}>
+              <Text textAlign="center" fontSize="16px">
                 Kamu belum mengunjungi UKM, BSO, maupun Himpunan manapun.
                 Silakan kunjungi halaman organisasi yang ingin kamu tuju!
               </Text>
@@ -67,14 +70,13 @@ export default function HistoryPage() {
                     <Heading size="SH4" textColor="white" fontWeight="700">
                       UKM
                     </Heading>
-                    <Link href={"history/ukm"}>
+                    <Link href="history/ukm">
                       <Text size="B3" textColor="yellow.5" fontWeight="700">
                         View all
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider lembaga="UKM" general={false}/>
-                    
+                  <CardSlider lembaga={Lembaga.UKM} />
                 </>
               )}
 
@@ -95,8 +97,7 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider lembaga="BSO" />
-                    
+                  <CardSlider lembaga={Lembaga.BSO} />
                 </>
               )}
 
@@ -117,8 +118,7 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider lembaga="HMJ" />
-                    
+                  <CardSlider lembaga={Lembaga.HMJ} />
                 </>
               )}
             </>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Layout from "~/layout";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import { Center, Flex, Heading, Image, Button } from "@chakra-ui/react";
@@ -6,16 +6,11 @@ import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import { PopupInputCode } from "~/components/showcase/PopupInputCode";
-import { UnitProfile } from "@prisma/client";
 import { api } from "~/utils/api";
 import PopupVisitedCoin from "./PopupVisitedCoin";
 import PopupWrongCode from "./PopupWrongCode";
-import NotFound from "~/pages/404";
 
-interface UnitProfileVisited extends UnitProfile {
-  visited: boolean;
-}
-// Data Input
+/** TODO: HAPUS INI */
 const dummyUKMData: { [key: string]: string | undefined } = {
   nama: "LFM",
   logo: "/logo-ukm.png",
@@ -57,10 +52,9 @@ export const OrganizationPage = ({
   const [visitedSuccess, setVisitedSuccess] = useState<boolean>(false);
   const [visitedFail, setVisitedFail] = useState<boolean>(false);
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
-  const unit = data as UnitProfileVisited;
-  console.log(unit, "Ini unit");
+
   return (
-    <Layout title={`${type}: ${unit?.name}`}>
+    <Layout title={`${type}: ${data?.name ?? ""}`}>
       <BackgroundAndNavbar bg="/background.png">
         {data ? (
           <>
@@ -91,16 +85,16 @@ export const OrganizationPage = ({
                     textAlign="center"
                     mb="10%"
                   >
-                    {unit?.name}
+                    {data?.name}
                   </Heading>
                   <Image
                     alt="Logo"
-                    src={unit.image ? unit.image : "/logo_showcase.png"}
+                    src={data.image ?? "/logo_showcase.png"}
                     w="80%"
                     mb="15%"
                     mx={"auto"}
                   />
-                  {!unit?.visited && (
+                  {!data?.visited && (
                     <Center>
                       <Button
                         padding="8px 24px"
@@ -125,7 +119,7 @@ export const OrganizationPage = ({
               <Flex textAlign={"justify"} flexDir={"column"}>
                 <ReactMarkdown
                   components={{
-                    h1: ({ node, ...props }) => (
+                    h1: ({ ...props }) => (
                       <h1
                         style={{
                           fontFamily: "subheading",
@@ -135,7 +129,7 @@ export const OrganizationPage = ({
                         {...props}
                       />
                     ),
-                    p: ({ node, ...props }) => (
+                    p: ({ ...props }) => (
                       <div
                         style={{
                           fontFamily: "body",
@@ -145,7 +139,7 @@ export const OrganizationPage = ({
                         {...props}
                       />
                     ),
-                    img: ({ node, ...props }) => {
+                    img: ({ ...props }) => {
                       if (props.alt === "instagram") {
                         return (
                           <div style={{ color: "#FFE655" }}>
@@ -196,7 +190,7 @@ export const OrganizationPage = ({
                     },
                   }}
                 >
-                  {unit?.bio}
+                  {data?.bio}
                 </ReactMarkdown>
               </Flex>
             </Flex>
@@ -223,7 +217,7 @@ export const OrganizationPage = ({
         ) : (
           // Datanya ga ketemu
           // <NotFound/>
-          <Flex/>
+          <Flex />
         )}
       </BackgroundAndNavbar>
     </Layout>

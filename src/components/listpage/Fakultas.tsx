@@ -6,21 +6,21 @@ import {
   AccordionPanel,
   Heading,
   Wrap,
-  Text
+  Text,
 } from "@chakra-ui/react";
-import { ViewCard } from "../showcase/ViewCard";
+import { ViewCard } from "~/components/showcase/ViewCard";
+import { Lembaga } from "@prisma/client";
 import { api } from "~/utils/api";
 
 interface FakultasProps {
   title: string;
 }
 
-
 const Fakultas = ({ title }: FakultasProps) => {
-  const {data,isFetching} = api.showcase.getAllUnits.useQuery({
-    lembaga:'HMJ',
-    group:title
-  })
+  const { data, isFetching } = api.showcase.getAllUnits.useQuery({
+    lembaga: Lembaga.HMJ,
+    group: title,
+  });
   return (
     <AccordionItem marginBottom={2} border={"transparent"}>
       <AccordionButton
@@ -63,19 +63,21 @@ const Fakultas = ({ title }: FakultasProps) => {
             },
           }}
         >
-          {
-          isFetching ? <Text align={"center"}>Loading ...</Text> :  
-          data?.map((each) => {
-            return (
-              <ViewCard
-                key={each.name}
-                width={"full"}
-                title={each.name}
-                image={each.image ?? ''}
-                route={`/showcase/himpunan/${each.userId}`}
-              />
-            );
-          })}
+          {isFetching ? (
+            <Text align={"center"}>Loading ...</Text>
+          ) : (
+            data?.map((each) => {
+              return (
+                <ViewCard
+                  key={each.name}
+                  width={"full"}
+                  title={each.name}
+                  image={each.image ?? ""}
+                  route={`/showcase/himpunan/${each.userId}`}
+                />
+              );
+            })
+          )}
         </Wrap>
       </AccordionPanel>
     </AccordionItem>
