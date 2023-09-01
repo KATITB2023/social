@@ -10,6 +10,7 @@ import { UnitProfile } from "@prisma/client";
 import { api } from "~/utils/api";
 import PopupVisitedCoin from "./PopupVisitedCoin";
 import PopupWrongCode from "./PopupWrongCode";
+import NotFound from "~/pages/404";
 
 interface UnitProfileVisited extends UnitProfile {
   visited: boolean;
@@ -57,165 +58,173 @@ export const OrganizationPage = ({
   const [visitedFail, setVisitedFail] = useState<boolean>(false);
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
   const unit = data as UnitProfileVisited;
-  console.log(unit,"Ini unit")
+  console.log(unit, "Ini unit");
   return (
     <Layout title={`${type}: ${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
-        <Flex
-          flexDirection="column"
-          justifyContent="space-between"
-          align-items="center"
-          mx="5%"
-          my="5%"
-          position="relative"
-        >
-          <Image
-            cursor={"pointer"}
-            onClick={() => {
-              void router.back();
-            }}
-            alt="Back"
-            src="/backbutton-detailukmhim.png"
-            w={"24px"}
-          />
-          <Center>
-            <Flex flexDirection="column">
-              <Heading
-                fontStyle="H3"
-                fontSize="170%"
-                color="yellow.5"
-                textShadow="0px 4px 30px #72D8BA"
-                textAlign="center"
-                mb="10%"
-              >
-                {unit?.name}
-              </Heading>
-              <Image
-                alt="Logo"
-                src={unit ? unit.image! : ""}
-                sizes="10%"
-                mb="15%"
-              />
-              {!unit?.visited && (
-                <Center>
-                  <Button
-                    padding="8px 24px"
-                    justifyContent="center"
-                    alignItems="center"
-                    borderRadius="12px"
-                    background="yellow.5"
-                    fontFamily="subheading"
-                    fontSize="12px"
-                    width="80%"
-                    height="relative"
-                    color="#4909b3"
-                    onClick={() => setVisitPopup(true)}
-                    mb="15%"
-                  >
-                    Tandai Kunjungan
-                  </Button>
-                </Center>
-              )}
-            </Flex>
-          </Center>
-          <Flex textAlign={"justify"} flexDir={"column"}>
-            <ReactMarkdown
-              components={{
-                h1: ({ node, ...props }) => (
-                  <h1
-                    style={{
-                      fontFamily: "subheading",
-                      fontSize: "100%",
-                      marginBottom: "1%",
-                    }}
-                    {...props}
-                  />
-                ),
-                p: ({ node, ...props }) => (
-                  <div
-                    style={{
-                      fontFamily: "body",
-                      fontSize: "80%",
-                      marginBottom: "5%",
-                    }}
-                    {...props}
-                  />
-                ),
-                img: ({ node, ...props }) => {
-                  if (props.alt === "instagram") {
-                    return (
-                      <div style={{ color: "#FFE655" }}>
-                        <a
-                          href={dummyUKMData.linkinstagram}
-                          style={{ display: "flex" }}
-                        >
-                          <Image
-                            alt={props.alt}
-                            src={props.src}
-                            mb="2%"
-                            {...props}
-                          />
-                          &nbsp; {dummyUKMData.usernameinstagram}
-                        </a>
-                      </div>
-                    );
-                  } else if (props.alt === "Twitter") {
-                    return (
-                      <div style={{ color: "#FFE655" }}>
-                        <a
-                          href={dummyUKMData.linktwitter}
-                          style={{ display: "flex" }}
-                        >
-                          <Image
-                            alt={props.alt}
-                            src={props.src}
-                            mb="2%"
-                            {...props}
-                          />
-                          &nbsp; {dummyUKMData.usernametwitter}
-                        </a>
-                      </div>
-                    );
-                  }
-                  // Handle image 'Foto Kegiatan'
-                  return (
-                    <Image
-                      alt={props.alt}
-                      src={props.src}
-                      maxWidth="100%"
-                      height="auto"
-                      borderRadius="15px"
-                      mb="5%"
-                      {...props}
-                    />
-                  );
-                },
-              }}
+        {data ? (
+          <>
+            <Flex
+              flexDirection="column"
+              justifyContent="space-between"
+              align-items="center"
+              mx="5%"
+              my="5%"
+              position="relative"
             >
-              {unit?.bio}
-            </ReactMarkdown>
-          </Flex>
-        </Flex>
-        {visitedSuccess ? (
-          <PopupVisitedCoin
-            onClose={() => setVisitedSuccess(false)}
-            isOpen={visitedSuccess}
-          />
-        ) : visitedFail ? (
-          <PopupWrongCode
-            onClose={() => setVisitedFail(false)}
-            isOpen={visitedFail}
-          />
+              <Image
+                cursor={"pointer"}
+                onClick={() => {
+                  void router.back();
+                }}
+                alt="Back"
+                src="/backbutton-detailukmhim.png"
+                w={"24px"}
+              />
+              <Center>
+                <Flex flexDirection="column">
+                  <Heading
+                    fontStyle="H3"
+                    fontSize="200%"
+                    color="yellow.5"
+                    textShadow="0px 4px 30px #72D8BA"
+                    textAlign="center"
+                    mb="10%"
+                  >
+                    {unit?.name}
+                  </Heading>
+                  <Image
+                    alt="Logo"
+                    src={unit.image ? unit.image : "/logo_showcase.png"}
+                    w="80%"
+                    mb="15%"
+                    mx={"auto"}
+                  />
+                  {!unit?.visited && (
+                    <Center>
+                      <Button
+                        padding="8px 24px"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="12px"
+                        background="yellow.5"
+                        fontFamily="subheading"
+                        fontSize="12px"
+                        width="60%"
+                        height="relative"
+                        color="#4909b3"
+                        onClick={() => setVisitPopup(true)}
+                        mb="15%"
+                      >
+                        Tandai Kunjungan
+                      </Button>
+                    </Center>
+                  )}
+                </Flex>
+              </Center>
+              <Flex textAlign={"justify"} flexDir={"column"}>
+                <ReactMarkdown
+                  components={{
+                    h1: ({ node, ...props }) => (
+                      <h1
+                        style={{
+                          fontFamily: "subheading",
+                          fontSize: "100%",
+                          marginBottom: "1%",
+                        }}
+                        {...props}
+                      />
+                    ),
+                    p: ({ node, ...props }) => (
+                      <div
+                        style={{
+                          fontFamily: "body",
+                          fontSize: "80%",
+                          marginBottom: "5%",
+                        }}
+                        {...props}
+                      />
+                    ),
+                    img: ({ node, ...props }) => {
+                      if (props.alt === "instagram") {
+                        return (
+                          <div style={{ color: "#FFE655" }}>
+                            <a
+                              href={dummyUKMData.linkinstagram}
+                              style={{ display: "flex" }}
+                            >
+                              <Image
+                                alt={props.alt}
+                                src={props.src}
+                                mb="2%"
+                                {...props}
+                              />
+                              &nbsp; {dummyUKMData.usernameinstagram}
+                            </a>
+                          </div>
+                        );
+                      } else if (props.alt === "Twitter") {
+                        return (
+                          <div style={{ color: "#FFE655" }}>
+                            <a
+                              href={dummyUKMData.linktwitter}
+                              style={{ display: "flex" }}
+                            >
+                              <Image
+                                alt={props.alt}
+                                src={props.src}
+                                mb="2%"
+                                {...props}
+                              />
+                              &nbsp; {dummyUKMData.usernametwitter}
+                            </a>
+                          </div>
+                        );
+                      }
+                      // Handle image 'Foto Kegiatan'
+                      return (
+                        <Image
+                          alt={props.alt}
+                          src={props.src}
+                          maxWidth="100%"
+                          height="auto"
+                          borderRadius="15px"
+                          mb="5%"
+                          {...props}
+                        />
+                      );
+                    },
+                  }}
+                >
+                  {unit?.bio}
+                </ReactMarkdown>
+              </Flex>
+            </Flex>
+            {visitedSuccess ? (
+              <PopupVisitedCoin
+                onClose={() => setVisitedSuccess(false)}
+                isOpen={visitedSuccess}
+              />
+            ) : visitedFail ? (
+              <PopupWrongCode
+                onClose={() => setVisitedFail(false)}
+                isOpen={visitedFail}
+              />
+            ) : (
+              <PopupInputCode
+                isOpen={visitPopup}
+                onClose={() => setVisitPopup(false)}
+                unitId={organizationId}
+                setVisitedFail={setVisitedFail}
+                setVisitedSuccess={setVisitedSuccess}
+              />
+            )}
+          </>
         ) : (
-          <PopupInputCode
-            isOpen={visitPopup}
-            onClose={() => setVisitPopup(false)}
-            unitId={organizationId}
-            setVisitedFail={setVisitedFail}
-            setVisitedSuccess={setVisitedSuccess}
-          />
+          // Datanya ga ketemu
+          // <NotFound/>
+          <Flex/>
         )}
-        {/* {visitedFail && <PopupWrongCode />} */}
       </BackgroundAndNavbar>
     </Layout>
   );

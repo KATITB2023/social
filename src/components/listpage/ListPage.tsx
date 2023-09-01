@@ -165,20 +165,6 @@ export default function ListPage({
           onEnter={handleEnter}
         />
 
-        {/* <Grid
-          width="100%"
-          height="520px"
-          rowGap={`${gridgappx * 2}px`}
-          overflow={"auto"}
-          gridTemplateColumns={"1fr 1fr"}
-          gridTemplateRows={`calc(${100 / 3}% - ${
-            (gridgappx * 4) / 3
-          }px) calc(${100 / 3}% - ${(gridgappx * 4) / 3}px) calc(${
-            100 / 3
-          }% - ${(gridgappx * 4) / 3}px)`}
-          gridAutoRows={`calc(${100 / 3}% - ${(gridgappx * 4) / 3}px)`}
-        > */}
-
         <Wrap
           justify={"space-evenly"}
           w={"full"}
@@ -212,12 +198,16 @@ export default function ListPage({
                   ? `${title.toLowerCase()}/${each.userId}`
                   : lembaga === "BSO"
                   ? `bso/${each.userId}`
+                  : lembaga === "PUSAT"
+                  ? `pusat/${each.userId}`
+                  : lembaga === "PENGMAS"
+                  ? `pengmas/${each.userId}`
                   : `${each.name}`;
               return (
                 <ViewCard
                   key={each.name}
                   title={each.name}
-                  // image={each.image}
+                  image={each.image}
                   route={route}
                   unitId={each.userId}
                 />
