@@ -42,7 +42,7 @@ const Request = ({
       const finalCartArray = new Array<CartItem>();
       for (let i = 0; i < merch.length; i++){
         if (merch[i]!.requestAmount > 0){
-          let temp : CartItem = {
+          const temp : CartItem = {
             merchandiseId : merch[i]!.merchRequested.id,
             amount : merch[i]!.requestAmount,
           }
@@ -67,7 +67,7 @@ const Request = ({
       console.log(merch[i])
     }
     if (available && (currentUserCoin >= sumCoinPrice)){
-      handleIntegrateToDatabase(merch, user!);
+      void handleIntegrateToDatabase(merch, user!);
       setBerhasilPopup(true);
     } else {
       setGagalPopup(true);

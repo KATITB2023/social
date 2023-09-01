@@ -61,8 +61,7 @@ const MerchandiseRequested = ({
           <Text>{merch.price} Coins</Text>
         </Flex>
         <Flex>
-          {/* Kalau sudah diapproved */}
-          {status && (
+          {!status && (
             <Flex
               width={"156px"}
               minH={"20px"}
@@ -85,7 +84,8 @@ const MerchandiseRequested = ({
               </Text>
             </Flex>
           )}
-          {!status && (
+          {/* Kalau sudah diapproved */}
+          {status && (
             <Flex
               width={"156px"}
               minH={"23px"}
@@ -111,7 +111,7 @@ const MerchandiseRequested = ({
         </Flex>
       </Flex>
       <Text fontFamily={"SomarRounded-Regular"} fontSize={"12px"}>
-        {quantity + " pcs"}
+        {quantity.toString() + " pcs"}
       </Text>
     </Flex>
   );
