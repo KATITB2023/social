@@ -1,7 +1,7 @@
 import { Heading, Flex, Text, Image, Button } from "@chakra-ui/react";
 import React from "react";
 import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
-import PointCard from "~/components/merchandise/PointCard";
+import CoinCard from "~/components/merchandise/CoinCard";
 import MerchandiseRequested from "~/components/requestMerchandise/RequestMerchandise";
 import Layout from "~/layout";
 import { MerchandiseRequest } from "~/server/types/merchandise";
@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 const RequestMerchandise = () => {
   const result = api.showcase.getMerchandiseCheckoutHistory.useQuery();
   const user = api.profile.getUserProfile.useQuery();
-  const point = user.data?.point;
+  const coin = user.data?.coin;
   const data = result.data as MerchandiseRequest[];
   const router = useRouter();
 
@@ -64,7 +64,7 @@ const RequestMerchandise = () => {
               di booth merchandise
             </Text>
           </Flex>
-          <PointCard point={point ? point : 0} />
+          <CoinCard coin={coin ? coin : 0} />
           <Flex
             flexDirection={"column"}
             w={"full"}
