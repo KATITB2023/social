@@ -23,10 +23,10 @@ export const PopupInputCode = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    if(inputValue.length < 6) {
+    if(newValue.length < 6) {
       setInputValue(newValue);
       setIsInputValid(newValue.trim() !== "");
-    }
+    } 
   };
 
   const handleSubmit = () => {
