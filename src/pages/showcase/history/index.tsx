@@ -9,38 +9,6 @@ import { CardSlider } from "~/components/showcase/CardSlider";
 import { api } from "~/utils/api";
 
 export default function HistoryPage() {
-  // DUMMY DATA
-  // const ukmItems = [
-  //   { image: "/base.png", name: "1", userId: "/" },
-  //   { image: "/base.png", name: "2", userId: "/" },
-  //   { image: "/base.png", name: "3", userId: "/" },
-  //   { image: "/base.png", name: "4", userId: "/" },
-  //   { image: "/base.png", name: "5", userId: "/" },
-  //   { image: "/base.png", name: "6", userId: "/" },
-  //   { image: "/base.png", name: "7", userId: "/" },
-  //   { image: "/base.png", name: "8", userId: "/" },
-  //   { image: "/base.png", name: "7", userId: "/" },
-  //   { image: "/base.png", name: "8", userId: "/" },
-  //   { image: "/base.png", name: "7", userId: "/" },
-  //   { image: "/base.png", name: "8", userId: "/" },
-  // ];
-
-  // const bsoItems = [
-  //   { image: "/base.png", name: "1", userId: "/" },
-  //   { image: "/base.png", name: "2", userId: "/" },
-  //   { image: "/base.png", name: "3", userId: "/" },
-  //   { image: "/base.png", name: "4", userId: "/" },
-  //   { image: "/base.png", name: "5", userId: "/" },
-  //   { image: "/base.png", name: "6", userId: "/" },
-  // ];
-  // const himpunanItems = [
-  //   { image: "/base.png", name: "LFM", userId: "/" },
-  //   { image: "/base.png", name: "Radio kambing sejahtera", userId: "/" },
-  //   { image: "/base.png", name: "tes", userId: "/" },
-  //   { image: "/base.png", name: "Radio kambing sejahtera", userId: "/" },
-  //   { image: "/base.png", name: "LPM3", userId: "/" },
-  //   { image: "/base.png", name: "Si paling Berenang", userId: "/" },
-  // ];
 
   const ukmVisitedArr = api.showcase.getAllVisitedUnits.useQuery({
     lembaga: "UKM",
@@ -115,19 +83,8 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider>
-                    {ukmVisitedArr &&
-                      ukmVisitedArr.map((item, index) => (
-                        <Flex mx={"5px"} key={index}>
-                          <ViewCard
-                            image={item.image}
-                            title={item.name}
-                            route={item.group? `/showcase/ukm/${item.group}/${item.userId}` : "/"}
-                            width={"100%"}
-                          />
-                        </Flex>
-                      ))}
-                  </CardSlider>
+                  <CardSlider lembaga="UKM"/>
+                    
                 </>
               )}
 
@@ -148,19 +105,8 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider>
-                    {bsoVisitedArr &&
-                      bsoVisitedArr.map((item, index) => (
-                        <Flex mx={"5px"} key={index}>
-                          <ViewCard
-                            image={item.image}
-                            title={item.name}
-                            route={`/showcase/bso/${item.userId}`}
-                            width={"100%"}
-                          />
-                        </Flex>
-                      ))}
-                  </CardSlider>
+                  <CardSlider lembaga="BSO" />
+                    
                 </>
               )}
 
@@ -181,18 +127,8 @@ export default function HistoryPage() {
                       </Text>
                     </Link>
                   </Flex>
-                  <CardSlider>
-                    {hmjVisitedArr.map((item, index) => (
-                      <Flex mx={"5px"} key={index}>
-                        <ViewCard
-                          image={item.image}
-                          title={item.name}
-                          route={`/showcase/himpunan/${item.userId}`}
-                          width={"100%"}
-                        />
-                      </Flex>
-                    ))}
-                  </CardSlider>
+                  <CardSlider lembaga="HMJ" />
+                    
                 </>
               )}
             </>

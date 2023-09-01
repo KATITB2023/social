@@ -6,18 +6,23 @@ import "slick-carousel/slick/slick-theme.css";
 import { api } from "~/utils/api";
 import { ViewCard } from "./ViewCard";
 
+interface CardSliderProps{
+  lembaga? : "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+}
 
-export const CardSlider= () => {
+export const CardSlider= ({lembaga} : CardSliderProps) => {
   const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: "",
+    lembaga : lembaga,
   }).data;
+  const slidesToShow : number = visitedUnitArr? visitedUnitArr.length > 1 ? 2 : 1 : 0;
   const settings = {
     dots: true,
     infinite: true,
     // autoplay: true,
     autoplaySpeed: 4000,
     speed: 500,
-    slidesToShow: 2,
+    slidesToShow: slidesToShow,
     slidesToScroll: 2,
   };
 
@@ -34,7 +39,7 @@ export const CardSlider= () => {
 
           return (
             <ViewCard
-              width={"150px"}
+              width={"130px"}
               image={unit.image}
               title={unit.name}
               route={route}
