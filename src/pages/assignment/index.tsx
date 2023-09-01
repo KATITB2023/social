@@ -365,7 +365,7 @@ export default function AssignmentListPage() {
 
   return (
     <Layout title={"Assignment"}>
-      <BackgroundAndNavbar>
+      <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"
           alignItems={"center"}

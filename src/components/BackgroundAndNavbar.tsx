@@ -1,16 +1,23 @@
-import React, { type PropsWithChildren } from "react";
+import React from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
 
-function BackgroundAndNavbar({ children }: PropsWithChildren) {
+function BackgroundAndNavbar({
+  children,
+  bg,
+}: {
+  children: string | JSX.Element | JSX.Element[];
+  bg: string;
+}) {
   return (
     <>
       <Box
         position="relative"
-        height="100%"
+        height={"100%"}
+        minH={"100vh"}
         overflow={"hidden"}
-        backgroundImage={"/background.png"}
+        backgroundImage={bg}
         backgroundSize={"cover"}
         backgroundPosition={"center"}
         backgroundRepeat={"no-repeat"}

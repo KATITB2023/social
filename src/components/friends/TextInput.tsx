@@ -1,20 +1,21 @@
-import { InputGroup, InputLeftElement, Input, InputProps } from "@chakra-ui/react";
+import {
+  InputGroup,
+  InputLeftElement,
+  Input,
+  type InputProps,
+} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React from "react";
 
 interface TextInputProps extends InputProps {
   placeholder: string;
+  onEnter?: (e: React.KeyboardEvent) => void;
 }
 
-const TextInput = ({
-  ...props
-}:TextInputProps) => {
+const TextInput = ({ ...props }: TextInputProps) => {
   return (
     <InputGroup>
-      <InputLeftElement
-        pointerEvents="none"
-        color='white'
-      >
+      <InputLeftElement pointerEvents="none" color="white">
         <Search2Icon />
       </InputLeftElement>
       <Input
@@ -38,6 +39,7 @@ const TextInput = ({
         }}
         value={props.value}
         onChange={props.onChange}
+        onKeyDown={props.onEnter}
         placeholder={props.placeholder}
         _invalid={{
           borderColor: "red.300",

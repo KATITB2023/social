@@ -8,7 +8,7 @@ import { AskRevealStatus } from "~/server/types/message";
 import { Peraturan } from "../PopupChat/Peraturan";
 import { api } from "~/utils/api";
 import SatSetSatSet from "../PopupChat/SatSetSatSet";
-import PopupWithBlackOverlay from "../profile/PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 
 export const AnonMenu = ({
   setOpen,
@@ -160,7 +160,7 @@ export const AnonMenu = ({
           isSatSet ||
           isPeraturan
         }
-        setOpen={() => closeAll()}
+        setClose={() => closeAll()}
       >
         <>
           {isKamuYakin && (
@@ -174,7 +174,7 @@ export const AnonMenu = ({
               setOpen={setEhAdaApaNih}
               onSubmit={(text) => {
                 setSatSet(true);
-                void reportMutation.mutateAsync({
+                reportMutation.mutate({
                   message: text,
                   userId: partnerId,
                 });

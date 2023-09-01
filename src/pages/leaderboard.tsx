@@ -1,17 +1,25 @@
-import { Box, Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
-import Navbar from "~/components/Navbar";
-import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import CardLeaderboardTop3 from "~/components/leaderboard/CardLeaderboardTop3";
-import CardLeaderboardSelf from "~/components/leaderboard/CardLeaderboardSelf";
-import CardLeaderboardParticipant from "~/components/leaderboard/CardLeaderboardParticipant";
+import React, { useState } from "react";
 import Footer from "~/components/Footer";
-import { api } from "~/utils/api";
-import Layout from "~/layout";
-import { FUTUREFLAG } from "~/constant";
-import ComingSoon from "~/components/screen/ComingSoon";
-import { withSession } from "~/server/auth/withSession";
 import LoadingScreen from "~/components/LoadingScreen";
+import Navbar from "~/components/Navbar";
+import CardLeaderboardParticipant from "~/components/leaderboard/CardLeaderboardParticipant";
+import CardLeaderboardSelf from "~/components/leaderboard/CardLeaderboardSelf";
+import CardLeaderboardTop3 from "~/components/leaderboard/CardLeaderboardTop3";
+import ComingSoon from "~/components/screen/ComingSoon";
+import { FUTUREFLAG } from "~/constant";
+import Layout from "~/layout";
+import { withSession } from "~/server/auth/withSession";
+import { api } from "~/utils/api";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -247,16 +255,24 @@ const LeaderboardPage = () => {
           zIndex="2"
         >
           <Flex justifyContent="space-between" alignItems="center">
-            <Image
-              src="previouspage.svg"
-              alt="Previous Page"
+            <Box
+              role="button"
               onClick={() => handlePageChange(currentPage - 1)}
-              style={{ cursor: currentPage > 1 ? "pointer" : "not-allowed" }}
+              cursor={currentPage <= 1 ? "not-allowed" : "pointer"}
               zIndex="1"
-            />
+            >
+              <Image
+                src="previouspage.svg"
+                alt="Previous Page"
+                margin={0}
+                width={"24px"}
+                height={"24px"}
+              />
+            </Box>
 
             {getPageButtons().map((button, index) => (
-              <Container
+              <Button
+                variant={"unstyled"}
                 position="relative"
                 key={index}
                 w="40px"
@@ -294,17 +310,18 @@ const LeaderboardPage = () => {
                 >
                   {button}
                 </Text>
-              </Container>
+              </Button>
             ))}
-            <Image
-              src="nextpage.svg"
-              alt="Next Page"
-              zIndex="1"
+            <Box
+              role="button"
               onClick={() => handlePageChange(currentPage + 1)}
               style={{
                 cursor: currentPage < totalPages ? "pointer" : "not-allowed",
               }}
-            />
+              zIndex="1"
+            >
+              <Image src="nextpage.svg" alt="Next Page" zIndex="1" />
+            </Box>
           </Flex>
         </Container>
 

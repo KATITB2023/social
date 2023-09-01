@@ -29,11 +29,5 @@
     "**/*.cjs",
     "**/*.mjs"
   ],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "esm": true,
-    "compilerOptions": {
-      "module": "NodeNext",
-    }
-  }
+  "exclude": ["node_modules"]
 }

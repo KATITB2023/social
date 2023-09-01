@@ -20,7 +20,7 @@ import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { ChatTopic } from "~/server/types/message";
 import PopUp from "~/components/PopupChat/PopUp";
-import PopupWithBlackOverlay from "~/components/profile/PopupWithBlackOverlay";
+import PopupWithBlackOverlay from "~/components/PopupWithBlackOverlay";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -109,7 +109,7 @@ const Match: NextPage = () => {
 
   if (isLoading) {
     return (
-      <Flex position={"relative"} w={"full"}>
+      <Flex position={"relative"}>
         <LoadingScreen />
         <Flex mx={"auto"} position={"absolute"} bottom={10} right={10}>
           <Heading color={"yellow.5"} size={"H3"}>
@@ -121,7 +121,7 @@ const Match: NextPage = () => {
         {/* For NotFoundPopup */}
         <PopupWithBlackOverlay
           open={notFoundPopUp}
-          setOpen={() => handleNotFound()}
+          setClose={() => handleNotFound()}
         >
           <PopUp
             content1="Belum ada pasangan yang cocok untuk kamu saat ini."

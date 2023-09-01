@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,7 +11,9 @@ import { FUTUREFLAG } from "~/constant";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
-import { BackgroundAndNavigationBar, ProfilePicture } from "../profile";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
+import ProfilePicture from "~/components/profile/ProfilePicture";
+import { TRPCClientError } from "@trpc/client";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -22,27 +24,48 @@ export default function FriendProfilePage() {
   const profileQuery = api.friend.getOtherUserProfile.useQuery({
     userId: pairId,
   });
+  const toast = useToast();
 
   const removeFriend = api.friend.removeFriend.useMutation();
   const addFriend = api.friend.addFriend.useMutation();
   const incrementVisit = api.friend.incrementVisitCounter.useMutation();
 
-  const removeFriendExecutor = () => {
-    removeFriend
-      .mutateAsync({
+  const removeFriendExecutor = async () => {
+    try {
+      removeFriend.mutate({
         userId: pairId,
-      })
-      .catch(() => undefined);
-    window.location.reload();
+      });
+      await profileQuery.refetch();
+    } catch (e) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
-  const addFriendExecutor = () => {
-    addFriend
-      .mutateAsync({
+  const addFriendExecutor = async () => {
+    try {
+      addFriend.mutate({
         userId: pairId,
-      })
-      .catch(() => undefined);
-    window.location.reload();
+      });
+      await profileQuery.refetch();
+    } catch (e) {
+      if (!(e instanceof TRPCClientError)) throw e;
+      toast({
+        title: "Failed",
+        status: "error",
+        description: e.message,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
   useEffect(() => {
@@ -64,9 +87,8 @@ export default function FriendProfilePage() {
   }
   return (
     <Layout title={`Profile: ${student.name}`}>
-      <BackgroundAndNavigationBar>
+      <BackgroundAndNavbar bg="/profile_bg.png">
         <Flex mx="24px" my="36px" flexDirection="column" gap="20px">
-
           {/* Friends Profile  */}
           <Flex
             gap="14px"
@@ -135,7 +157,7 @@ export default function FriendProfilePage() {
               py="12px"
               backgroundColor="pink.1"
               color="white"
-              onClick={() => removeFriendExecutor()}
+              onClick={() => void removeFriendExecutor()}
             >
               <Text size="B3">Delete Friend</Text>
             </Button>
@@ -147,7 +169,7 @@ export default function FriendProfilePage() {
                 py="12px"
                 backgroundColor="green.1"
                 color="white"
-                onClick={() => addFriendExecutor()}
+                onClick={() => void addFriendExecutor()}
               >
                 <Text size="B3">Accept Friend Request</Text>
               </Button>
@@ -157,7 +179,7 @@ export default function FriendProfilePage() {
                 py="12px"
                 backgroundColor="yellow.1"
                 color="white"
-                onClick={() => removeFriendExecutor()}
+                onClick={() => void removeFriendExecutor()}
               >
                 <Text size="B3">Decline Friend Request</Text>
               </Button>
@@ -180,7 +202,7 @@ export default function FriendProfilePage() {
               py="12px"
               backgroundColor="navy.5"
               color="white"
-              onClick={() => addFriendExecutor()}
+              onClick={() => void addFriendExecutor()}
             >
               <Text size="B3">Add Friend</Text>
             </Button>
@@ -188,7 +210,7 @@ export default function FriendProfilePage() {
             <div />
           )}
         </Flex>
-      </BackgroundAndNavigationBar>
+      </BackgroundAndNavbar>
     </Layout>
   );
 }

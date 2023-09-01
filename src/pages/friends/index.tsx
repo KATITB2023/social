@@ -1,8 +1,8 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import React, { useState, useRef } from "react";
 import { Flex, IconButton } from "@chakra-ui/react";
 import TextInput from "~/components/friends/TextInput";
-import BackgroundAndNavigationBar from "~/components/profile/BackgroundAndNavigationBar";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Layout from "~/layout";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -32,20 +32,24 @@ const ProfileFriendsPage: NextPage = () => {
     cursor,
     limit,
   });
-  const getFriendData = api.friend.friendCount.useQuery();
-  const totalFriends = getFriendData.data;
+  const getFriendData = api.profile.getUserProfile.useQuery();
+  const totalFriends = getFriendData.data?.friendCount;
+  
   const requestData = getRequestData.data;
+
   if (!requestData) {
     return <Layout title="Profile Friends"></Layout>;
   }
+
   if (!sessionStatus) {
     return <Layout title="Profile Friends"></Layout>;
   }
+
   const totalRequest = requestData.data.length;
 
   return (
     <Layout title="Friends">
-      <BackgroundAndNavigationBar>
+      <BackgroundAndNavbar bg="/profile_bg.png">
         <Flex
           flexDirection="column"
           justifyContent="space-between"
@@ -75,12 +79,16 @@ const ProfileFriendsPage: NextPage = () => {
             )}
           </Flex>
           {searchQuery == "" && requestData.data ? (
-            <MenuList totalFriends={totalFriends ? totalFriends:0} totalRequest={totalRequest} ref={flexRef} />
+            <MenuList
+              totalFriends={totalFriends ? totalFriends : 0}
+              totalRequest={totalRequest}
+              ref={flexRef}
+            />
           ) : (
             <SearchedFriends searchQuery={searchQuery} />
           )}
         </Flex>
-      </BackgroundAndNavigationBar>
+      </BackgroundAndNavbar>
     </Layout>
   );
 };

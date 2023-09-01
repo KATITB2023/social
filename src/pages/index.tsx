@@ -2,11 +2,12 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
-import BackgroundAndNavbar from "~/components/feeds/BackgroundAndNavbar";
+import BackgroundAndNavbar from "~/components/BackgroundAndNavbar";
 import Feed from "~/components/feeds/Feed";
 import Layout from "~/layout";
 import { withSession } from "~/server/auth/withSession";
 import { api } from "~/utils/api";
+import { useState } from "react";
 
 export const getServerSideProps = withSession({ force: true });
 
@@ -14,8 +15,8 @@ export default function FeedsPage() {
   useSession({ required: true });
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const bottomView = useInView(bottomRef);
-
-  // const rankdata = api.leaderboard.getSelfLeaderboard.useQuery();
+  const [test, setTest] = useState(true);
+  
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     api.feed.getFeeds.useInfiniteQuery(
@@ -35,7 +36,7 @@ export default function FeedsPage() {
 
   return (
     <Layout title={"Beranda"}>
-      <BackgroundAndNavbar>
+      <BackgroundAndNavbar bg="/feeds_bg.png">
         <Box>
           <Flex flexDirection={"column"} justifyContent={"center"}>
             {data?.pages
@@ -55,7 +56,7 @@ export default function FeedsPage() {
               })}
             <div ref={bottomRef}></div>
           </Flex>
-        </Box>
+        </ Box>
       </BackgroundAndNavbar>
     </Layout>
   );

@@ -1,5 +1,5 @@
-import { Flex, Text, Box, Card } from "@chakra-ui/react";
-import React from "react";
+import { Box, Card, Flex, Text } from "@chakra-ui/react";
+import ProfilePicture from "../profile/ProfilePicture";
 
 interface CardProps {
   name: string;
@@ -45,16 +45,7 @@ const CardLeaderboardSelf = ({
           #{ranking}
         </Text>
 
-        <Box
-          minW={"45px"}
-          minH={"45px"}
-          maxW={"45px"}
-          maxH={"45px"}
-          backgroundImage={image ? image : undefined}
-          backgroundPosition={"center"}
-          backgroundSize={"cover"}
-          borderRadius={"full"}
-        />
+        <ProfilePicture src={image ?? undefined} size={45} disableBorder />
 
         <Box
           position="relative"

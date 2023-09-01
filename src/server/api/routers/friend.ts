@@ -16,25 +16,22 @@ const ACCEPTED_FRIENDSHIP_STATUS = [
 
 export const friendRouter = createTRPCRouter({
   friendCount: protectedProcedure.query(async ({ ctx }) => {
-    const agg = await ctx.prisma.friendship.aggregate({
+    const profile = await ctx.prisma.profile.findUnique({
       where: {
-        OR: [
-          {
-            userInitiatorId: ctx.session.user.id,
-          },
-          {
-            userReceiverId: ctx.session.user.id,
-          },
-        ],
-        accepted: true,
+        userId: ctx.session.user.id,
       },
-      _count: {
-        userInitiatorId: true,
+      select: {
+        friendCount: true,
       },
     });
 
-    return agg._count.userInitiatorId;
+    if (!profile) {
+      return 0;
+    }
+
+    return profile.friendCount;
   }),
+
   searchUsers: protectedProcedure
     .input(
       z.object({
@@ -124,6 +121,7 @@ export const friendRouter = createTRPCRouter({
 
       return userProfiles;
     }),
+
   removeFriend: protectedProcedure
     .input(
       z.object({
@@ -146,39 +144,38 @@ export const friendRouter = createTRPCRouter({
         },
       });
 
-      if (friendship !== null) {
-        if (friendship.accepted) {
-          await ctx.prisma.profile.updateMany({
-            where: {
-              userId: {
-                in: [ctx.session.user.id, input.userId],
-              },
-            },
-            data: {
-              friendCount: {
-                decrement: 1,
-              },
-            },
-          });
-        }
+      if (!friendship) {
+        throw new TRPCError({
+          message: "User is not a friend or in request for friendship",
+          code: "BAD_REQUEST",
+        });
+      }
 
-        await ctx.prisma.friendship.delete({
+      if (friendship.accepted) {
+        await ctx.prisma.profile.updateMany({
           where: {
-            userInitiatorId_userReceiverId: {
-              userReceiverId: friendship.userReceiverId,
-              userInitiatorId: friendship.userInitiatorId,
+            userId: {
+              in: [ctx.session.user.id, input.userId],
+            },
+          },
+          data: {
+            friendCount: {
+              decrement: 1,
             },
           },
         });
-
-        return true;
       }
 
-      throw new TRPCError({
-        message: "User is not a friend or in request for friendship",
-        code: "BAD_REQUEST",
+      await ctx.prisma.friendship.delete({
+        where: {
+          userInitiatorId_userReceiverId: {
+            userReceiverId: friendship.userReceiverId,
+            userInitiatorId: friendship.userInitiatorId,
+          },
+        },
       });
     }),
+
   addFriend: protectedProcedure
     .input(
       z.object({
@@ -273,6 +270,7 @@ export const friendRouter = createTRPCRouter({
         });
       }
     }),
+
   friendList: protectedProcedure
     .input(
       z
@@ -463,7 +461,5 @@ export const friendRouter = createTRPCRouter({
           code: "BAD_REQUEST",
         });
       }
-
-      return true;
     }),
 });
