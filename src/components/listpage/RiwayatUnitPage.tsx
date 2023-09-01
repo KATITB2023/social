@@ -83,10 +83,12 @@ export default function RiwayatUnitPage({ title }: { title: string }) {
                   <ViewCard
                     key={each.name}
                     title={each.name}
-                    // image={each.image}
+                    image={each.image}
                     route={
                       title === "UKM"
-                        ? `/showcase/ukm/${each.group}/${each.userId}`
+                        ? each.group
+                          ? `/showcase/ukm/${each.group}/${each.userId}`
+                          : "/"
                         : `/showcase/${title.toLowerCase()}/${each.userId}`
                     }
                   />

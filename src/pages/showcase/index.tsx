@@ -14,7 +14,8 @@ export const getServerSideProps = withSession({ force: true });
 export default function ShowcasePage() {
   useSession({ required: true });
   const profileQuery = api.profile.getUserProfile.useQuery();
-  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:10}).data;
+  const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({limit:5}).data;
+  // console.log(visitedUnitArr)
 
   return (
     <Layout title="Showcase">
@@ -438,15 +439,17 @@ export default function ShowcasePage() {
           >
             APA SAJA YANG SUDAH KAMU KUNJUNGI?
           </Heading>
+
           <CardSlider>
             {visitedUnitArr && visitedUnitArr.map((item, index) => (
               <Flex mx={"5px"} key={index}>
-                <ViewCard
+                {/* <ViewCard
                   image={item.image}
                   title={item.name}
                   route={item.userId}
                   width={"100%"}
-                />
+                /> */}
+                <Text> hehe </Text>
               </Flex>
             ))}
           </CardSlider>
