@@ -32,14 +32,15 @@ export const PopupInputCode = ({
       visitMutation.mutate(
         { unitId: unitId, pin: inputValue },
         {
-          onError(error, variables, context) {
+          onError() {
             setVisitedFail(true);
           },
-          onSuccess(data, variables, context) {
+          onSuccess() {
             setVisitedSuccess(true);
           },
         }
       );
+
       onClose();
     }
   };
@@ -81,6 +82,7 @@ export const PopupInputCode = ({
             height="75%"
             position="absolute"
             zIndex="1"
+            alt=""
           />
           <Image
             src="/Vector 2.svg"
@@ -89,6 +91,7 @@ export const PopupInputCode = ({
             position="relative"
             zIndex="2"
             style={{ transform: "translateY(-20px)" }}
+            alt=""
           />
           <Image
             src="/Bulan 1 glow 1.svg"
@@ -97,6 +100,7 @@ export const PopupInputCode = ({
             position="absolute"
             zIndex="3"
             style={{ transform: "translateY(-160px)" }}
+            alt=""
           />
           <div
             style={{

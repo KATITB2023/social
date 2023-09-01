@@ -1,12 +1,13 @@
 import { Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Lembaga } from "@prisma/client";
+import { ViewCard } from "~/components/showcase/ViewCard";
 import { api } from "~/utils/api";
-import { ViewCard } from "../showcase/ViewCard";
 
 interface SearchedUnitProps {
   searchQuery: string;
   group?: string;
-  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+  lembaga?: Lembaga;
 }
 const SearchedUnit = ({ searchQuery, group, lembaga }: SearchedUnitProps) => {
   const [debouncedFilter, setDebouncedFilter] = useState(searchQuery);
@@ -19,34 +20,36 @@ const SearchedUnit = ({ searchQuery, group, lembaga }: SearchedUnitProps) => {
     const handler = setTimeout(() => {
       setDebouncedFilter(searchQuery);
     }, 500);
+
     return () => {
       clearTimeout(handler);
     };
   }, [searchQuery]);
+
   return (
     <>
       {isFetching ? (
-        <Text align={"center"}>Loading ...</Text>
+        <Text align="center">Loading ...</Text>
       ) : data?.length === 0 ? (
-        <Text align={"center"}>Tidak ada hasil yang sesuai ...</Text>
+        <Text align="center">Tidak ada hasil yang sesuai ...</Text>
       ) : (
         data?.map((each) => {
           const route =
-            lembaga === "UKM"
-              ? `${group ? group : ""}/${each.userId}`
-              : lembaga === "BSO"
+            lembaga === Lembaga.UKM
+              ? `${group ?? ""}/${each.userId}`
+              : lembaga === Lembaga.BSO
               ? `bso/${each.userId}`
-              : lembaga === "PUSAT"
+              : lembaga === Lembaga.PUSAT
               ? `pusat/${each.userId}`
-              : lembaga === "PENGMAS"
+              : lembaga === Lembaga.PENGMAS
               ? `pengmas/${each.userId}`
-              : `${each.name}`;
+              : each.name;
           return (
             <ViewCard
               key={each.name}
-              width={"full"}
+              width="full"
               title={each.name}
-              image={each.image ?? ""}
+              image={each.image}
               route={route}
             />
           );

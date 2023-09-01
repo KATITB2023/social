@@ -1,21 +1,26 @@
 import React from "react";
-import { Box, Icon } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { api } from "~/utils/api";
 import { ViewCard } from "./ViewCard";
+import { Lembaga } from "@prisma/client";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-interface CardSliderProps{
-  lembaga? : "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
+interface CardSliderProps {
+  lembaga?: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
 }
 
-export const CardSlider= ({lembaga} : CardSliderProps) => {
+export const CardSlider = ({ lembaga }: CardSliderProps) => {
   const visitedUnitArr = api.showcase.getAllVisitedUnits.useQuery({
     searchValue: "",
-    lembaga : lembaga,
+    lembaga: lembaga,
   }).data;
-  const slidesToShow : number = visitedUnitArr? visitedUnitArr.length > 1 ? 2 : 1 : 0;
+  const slidesToShow: number = visitedUnitArr
+    ? visitedUnitArr.length > 1
+      ? 2
+      : 1
+    : 0;
   const settings = {
     dots: true,
     infinite: true,
@@ -31,9 +36,9 @@ export const CardSlider= ({lembaga} : CardSliderProps) => {
       <Slider {...settings}>
         {visitedUnitArr?.map((unit) => {
           const route =
-            unit.lembaga === "UKM"
+            unit.lembaga === Lembaga.UKM
               ? `showcase/ukm/${unit.group ? unit.group : ""}/${unit.userId}`
-              : unit.lembaga === "HMJ"
+              : unit.lembaga === Lembaga.HMJ
               ? `/showcase/himpunan/${unit.userId}`
               : `showcase/${unit.lembaga.toLowerCase()}/${unit.userId}`;
 

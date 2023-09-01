@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -6,16 +7,15 @@ import {
   Image,
   Spinner,
   Text,
+  Wrap,
 } from "@chakra-ui/react";
-import TextInput from "../friends/TextInput";
-import { Wrap } from "@chakra-ui/react";
-import { ViewCard } from "../showcase/ViewCard";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import { api } from "~/utils/api";
 import { type UnitProfile } from "@prisma/client";
+import { ViewCard } from "~/components/showcase/ViewCard";
+import { useRouter } from "next/router";
+import TextInput from "~/components/friends/TextInput";
+import { api } from "~/utils/api";
 
-export const defaultData: UnitProfile[] = [
+const defaultData: UnitProfile[] = [
   {
     userId: "",
     name: "LFM",
@@ -91,7 +91,6 @@ interface RiwayatPageProps {
   description?: string;
   withbackbutton?: boolean;
   additionTitle?: string;
-  lembaga: "HMJ" | "UKM" | "BSO" | "PUSAT" | undefined;
   withInfiniteScroll?: boolean;
   limit?: number;
 }
@@ -101,7 +100,6 @@ export default function RiwayatPage({
   description,
   additionTitle,
   withbackbutton = false,
-  lembaga,
   withInfiniteScroll = false,
   limit = 100,
 }: RiwayatPageProps) {
@@ -123,7 +121,6 @@ export default function RiwayatPage({
   };
 
   function handleInfiniteScroll() {
-    console.log("fetches more...");
     const newData = defaultData;
 
     setData((prev) => {
@@ -134,7 +131,7 @@ export default function RiwayatPage({
     setSpinnerIsVisible(false);
   }
   const handleEnter = (e: React.KeyboardEvent) => {
-    if (e.key == "Enter") setQueryEntered(searchQuery);
+    if (e.key === "Enter") setQueryEntered(searchQuery);
   };
 
   useEffect(() => {
