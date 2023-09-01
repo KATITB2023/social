@@ -57,8 +57,9 @@ export default function ShowcasePage() {
             top="190px"
             right="0"
           ></Image>
+
           <Image
-            src="logo_showcase.png"
+            src="/logo_showcase.png"
             alt="profile pic"
             borderRadius="full"
             width="40%"
@@ -422,7 +423,7 @@ export default function ShowcasePage() {
           flexDirection="column"
           alignItems="center"
           marginTop="140px"
-          h="400px"
+          h="full"
           position={"relative"}
         >
           <Heading
@@ -437,7 +438,6 @@ export default function ShowcasePage() {
           >
             APA SAJA YANG SUDAH KAMU KUNJUNGI?
           </Heading>
-
           <CardSlider>
             {visitedUnitArr && visitedUnitArr.map((item, index) => (
               <Flex mx={"5px"} key={index}>

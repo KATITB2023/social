@@ -122,7 +122,7 @@ export default function HistoryPage() {
                           <ViewCard
                             image={item.image}
                             title={item.name}
-                            route={item.userId}
+                            route={`/showcase/ukm/${item.group}/${item.userId}`}
                             width={"100%"}
                           />
                         </Flex>
@@ -155,7 +155,7 @@ export default function HistoryPage() {
                           <ViewCard
                             image={item.image}
                             title={item.name}
-                            route={item.userId}
+                            route={`/showcase/bso/${item.userId}`}
                             width={"100%"}
                           />
                         </Flex>
@@ -187,7 +187,7 @@ export default function HistoryPage() {
                         <ViewCard
                           image={item.image}
                           title={item.name}
-                          route={item.userId}
+                          route={`/showcase/himpunan/${item.userId}`}
                           width={"100%"}
                         />
                       </Flex>

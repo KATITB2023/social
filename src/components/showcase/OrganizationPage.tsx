@@ -54,7 +54,7 @@ export const OrganizationPage = ({
   const { data } = api.showcase.getUnitById.useQuery({ id: organizationId });
   const unit = data as UnitProfileVisited;
   return (
-    <Layout title={`${type}:${unit?.name}`}>
+    <Layout title={`${type}: ${unit?.name}`}>
       <BackgroundAndNavbar bg="/background.png">
         <Flex
           flexDirection="column"

@@ -17,58 +17,58 @@ import RequestTab from "~/components/merchandise/RequestTab";
 import { useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import Link from "next/link";
-import { Merchandise } from "~/server/types/merchandise";
+import { Merchandise } from "@prisma/client";
 import { MdRefresh } from "react-icons/md";
 
 export const getServerSideProps = withSession({ force: true });
 
-const DummyMerchData: Merchandise[] = [
-  {
-    id: "12345",
-    image: "/components/merch/bigmug.png",
-    name: "Merch 1",
-    price: 300,
-    stock: 20,
-  },
-  {
-    id: "11335",
-    image: "/components/merch/bigmug.png",
-    name: "Merch 2",
-    price: 500,
-    stock: 30,
-  },
-  {
-    id: "24345",
-    image: "/components/merch/bigmug.png",
-    name: "Merch 3",
-    price: 100,
-    stock: 1,
-  },
-  {
-    id: "55112",
-    image: "/components/merch/bigmug.png",
-    name: "Merch 4",
-    price: 250,
-    stock: 10,
-  },
-  {
-    id: "35213",
-    image: "/components/merch/bigmug.png",
-    name: "Merch 5",
-    price: 80,
-    stock: 5,
-  },
-];
+// const DummyMerchData: Merchandise[] = [
+//   {
+//     id: "12345",
+//     image: "/components/merch/bigmug.png",
+//     name: "Merch 1",
+//     price: 300,
+//     stock: 20,
+//   },
+//   {
+//     id: "11335",
+//     image: "/components/merch/bigmug.png",
+//     name: "Merch 2",
+//     price: 500,
+//     stock: 30,
+//   },
+//   {
+//     id: "24345",
+//     image: "/components/merch/bigmug.png",
+//     name: "Merch 3",
+//     price: 100,
+//     stock: 1,
+//   },
+//   {
+//     id: "55112",
+//     image: "/components/merch/bigmug.png",
+//     name: "Merch 4",
+//     price: 250,
+//     stock: 10,
+//   },
+//   {
+//     id: "35213",
+//     image: "/components/merch/bigmug.png",
+//     name: "Merch 5",
+//     price: 80,
+//     stock: 5,
+//   },
+// ];
 
 type CartData = {
-  merchRequested:Merchandise;
+  merchRequested: Merchandise;
   requestAmount: number;
   index: number;
 };
 
 export default function MerchandisePage() {
-  const merchItem = api.showcase.getAllMerchandise.useQuery({}).data;
-  console.log(merchItem);
+  const merchData = api.showcase.getAllMerchandise.useQuery({}).data;
+  // console.log(merchData);
   const user = api.profile.getUserProfile.useQuery();
 
   // const point = user.data?.point;
@@ -84,18 +84,20 @@ export default function MerchandisePage() {
   };
 
   useEffect(() => {
-    const tempArr: CartData[] = new Array<CartData>(DummyMerchData.length);
-    for (let i = 0; i < DummyMerchData.length; i++) {
-      tempArr[i] = {
-        merchRequested: DummyMerchData[i]!,
-        requestAmount: 0,
-        index: i,
-      };
+    if (merchData) {
+      const tempArr: CartData[] = new Array<CartData>(merchData.length);
+      for (let i = 0; i < merchData.length; i++) {
+        tempArr[i] = {
+          merchRequested: merchData[i]!,
+          requestAmount: 0,
+          index: i,
+        };
+      }
+      setCartArray(tempArr);
     }
-    setCartArray(tempArr);
   }, []);
 
-  // console.log(cartArray)
+  console.log(cartArray)
 
   const handleChangeItem = (change: number, idx: number) => {
     if (cartArray) {
@@ -119,9 +121,11 @@ export default function MerchandisePage() {
   };
 
   // TODO: ganti dummy jd merch data asli
-  const filteredMerchData = DummyMerchData.filter((merch) =>
-    merch.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredMerchData = merchData
+    ? merchData.filter((merch) =>
+        merch.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : undefined;
 
   return (
     <Layout title="Merchandise">
@@ -207,8 +211,10 @@ export default function MerchandisePage() {
               },
             }}
           >
-            {filteredMerchData.map((each, idx) => {
-              const originalIdx = DummyMerchData.findIndex(item => item.id === each.id);
+            {filteredMerchData && filteredMerchData.map((each, idx) => {
+              const originalIdx = merchData
+                ? merchData.findIndex((item) => item.id === each.id)
+                : 0;
               return (
                 <CardItem
                   key={each.id}
@@ -222,7 +228,9 @@ export default function MerchandisePage() {
                   price={each.price}
                   stock={each.stock}
                   idx={originalIdx}
-                  requestQuota={cartArray ? cartArray[originalIdx]!.requestAmount : 0}
+                  requestQuota={
+                    cartArray ? cartArray[originalIdx]!.requestAmount : 0
+                  }
                 />
               );
             })}

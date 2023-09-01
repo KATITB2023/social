@@ -2,7 +2,7 @@ import React from "react";
 import PopupWithBlackOverlay from "../PopupWithBlackOverlay";
 import { Flex, Image, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { Merchandise } from "~/server/types/merchandise";
+import { Merchandise } from "@prisma/client";
 
 type CartData = {
   merchRequested: Merchandise;
@@ -121,8 +121,7 @@ export const ConfirmRequestPopup = ({
                   px={"7.5px"}
                 >
                   <Image
-                    src={each.merchRequested.image}
-                    //alt
+                    src={each.merchRequested.image ? each.merchRequested.image : "/logo_showcase.png"}
                     maxW={"full"}
                     maxH={"full"}
                   />
